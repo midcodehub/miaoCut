@@ -120,33 +120,70 @@
             handleFiles(files);
         });
 
+        // 与后端一致的白名单；后端 MAX_UPLOAD_MB 默认 10，这里保持同步
+        const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+        const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+
+        // 前端极致压缩：利用 Canvas 将大图无损或微损转换为小体积 WebP
+        async function compressImage(file, maxWidth = 1920) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.src = URL.createObjectURL(file);
+                img.onload = () => {
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    // 等比例缩放，限制最大宽度
+                    if (width > maxWidth) {
+                        height = Math.round((height * maxWidth) / width);
+                        width = maxWidth;
+                    }
+                    
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // 输出为 webp，质量 0.85，能极大减小体积且肉眼看不出画质损失
+                    canvas.toBlob((blob) => {
+                        resolve(new File([blob], file.name.split('.')[0] + '.webp', { type: 'image/webp' }));
+                    }, 'image/webp', 0.85); 
+                };
+            });
+        }
+
         async function handleFiles(files) {
             const file = files[0];
-            
-            // 简单校验文件类型
-            if (!file.type.match('image.*')) {
-                alert('请上传图片文件');
+
+            // 类型白名单
+            if (!ALLOWED_TYPES.includes(file.type)) {
+                alert('仅支持 JPG / PNG / WebP 格式的图片');
                 return;
             }
 
-            console.log(`[MiaoCut] 开始处理图片: ${file.name}`);
+            console.log(`[MiaoCut] 原始图片: ${file.name} (${(file.size/1024/1024).toFixed(2)} MB)`);
 
             // 1. 模拟 Loading 状态
-            // 锁定 Dropzone，避免重复点击
             dropzone.classList.add('pointer-events-none');
-            
-            // 替换 Dropzone 内部 HTML 为 Loading 状态
             dropzoneContent.innerHTML = `
                 <svg class="animate-spin w-10 h-10 text-gray-800 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                <p class="text-lg font-medium text-gray-700 animate-pulse">AI 正在精细处理边缘...</p>
+                <p class="text-lg font-medium text-gray-700 animate-pulse">正在压缩与处理中...</p>
             `;
 
-            // 2. 发起真实的后端请求
+            // 2. 前端极速压缩 (超过 500KB 才压缩，避免小图被过度处理)
+            let uploadFile = file;
+            if (file.size > 500 * 1024) {
+                uploadFile = await compressImage(file);
+                console.log(`[MiaoCut] 压缩后: ${uploadFile.name} (${(uploadFile.size/1024).toFixed(2)} KB)`);
+            }
+
+            // 3. 发起真实的后端请求
             const formData = new FormData();
-            formData.append('file', file);
+            formData.append('file', uploadFile);
 
             try {
                 const response = await fetch('/api/remove-background', {
@@ -155,8 +192,15 @@
                 });
 
                 if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(errorText || '网络请求失败');
+                    // 后端统一返回 JSON { detail: "..." }，尽量提取 detail 字段；失败则退回原文
+                    let message = `请求失败（${response.status}）`;
+                    try {
+                        const data = await response.json();
+                        if (data && typeof data.detail === 'string') message = data.detail;
+                    } catch (_) {
+                        try { message = (await response.text()) || message; } catch (_) {}
+                    }
+                    throw new Error(message);
                 }
 
                 // 3. 获取返回的图片流
@@ -183,13 +227,21 @@
 
             } catch (error) {
                 console.error("API Error:", error);
-                dropzoneContent.innerHTML = `
-                    <svg class="w-12 h-12 text-red-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <p class="text-lg font-medium text-gray-800 mb-1">抱歉，处理失败</p>
-                    <p class="text-sm text-gray-500 max-w-xs px-4 truncate">${error.message}</p>
-                `;
+                // 用 DOM 拼装而不是 innerHTML 拼字符串，防止 error.message 里若含 HTML 被当标签执行（XSS）
+                dropzoneContent.innerHTML = '';
+                const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                icon.setAttribute('class', 'w-12 h-12 text-red-500 mb-4');
+                icon.setAttribute('fill', 'none');
+                icon.setAttribute('stroke', 'currentColor');
+                icon.setAttribute('viewBox', '0 0 24 24');
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>';
+                const title = document.createElement('p');
+                title.className = 'text-lg font-medium text-gray-800 mb-1';
+                title.textContent = '抱歉，处理失败';
+                const detail = document.createElement('p');
+                detail.className = 'text-sm text-gray-500 max-w-xs px-4 truncate';
+                detail.textContent = error.message; // textContent 自动转义
+                dropzoneContent.append(icon, title, detail);
             } finally {
                 // 不管成功失败，2 秒后恢复初始上传状态
                 setTimeout(() => {

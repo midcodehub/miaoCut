@@ -10,6 +10,11 @@
             "justMyCode": true,
             "env": {
                 "U2NET_HOME": "${workspaceFolder}/.u2net"
+            },
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "Uvicorn running on http://.*:8000",
+                "uriFormat": "http://127.0.0.1:8000"
             }
         }
     ]
