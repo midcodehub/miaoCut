@@ -28,5 +28,8 @@ __pycache__/
 # (因为我们在 launch.json 配置了将模型下载到项目目录下的 .u2net 文件夹，所以必须忽略，防止提交 170MB 的模型)
 .u2net/
 
+# User Data (feedback etc.)
+data/
+
 # Logs
 *.log

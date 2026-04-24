@@ -4,12 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MiaoCut - 1秒纯净抠图</title>
+    <meta name="description" content="MiaoCut - 免费在线抠图工具，AI 驱动，1秒去除背景，隐私安全，无需注册。">
     <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!--
+      Umami Analytics - 隐私友好的流量统计
+      设置步骤：
+      1. 访问 https://cloud.umami.is 注册免费账号
+      2. 添加你的网站，获取 data-website-id
+      3. 把下面的 YOUR_WEBSITE_ID 替换成你的真实 ID
+      4. 如果自部署 Umami，把 src 也换成你自己的地址
+    -->
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
     <style>
-        /* Smooth transitions for dropzone */
-        #dropzone {
-            transition: all 0.2s ease-in-out;
+        #dropzone { transition: all 0.2s ease-in-out; }
+        #bookmark-banner {
+            transform: translateY(-100%);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #bookmark-banner.show { transform: translateY(0); }
+        #feedback-panel {
+            transform: scale(0.9) translateY(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #feedback-panel.open {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+            pointer-events: auto;
         }
     </style>
 </head>
@@ -63,6 +86,37 @@
         </div>
 
     </main>
+
+    <!-- Bookmark Banner -->
+    <div id="bookmark-banner" class="fixed top-0 left-0 right-0 z-50 bg-gray-900 text-white">
+        <div class="max-w-3xl mx-auto flex items-center justify-between px-6 py-3">
+            <div class="flex items-center gap-3">
+                <span class="text-lg">&#11088;</span>
+                <p class="text-sm">&#21916;&#27426; MiaoCut &#21527;&#65311;&#25353; <kbd id="shortcut-key" class="px-1.5 py-0.5 bg-gray-700 rounded text-xs font-mono">Ctrl + D</kbd> &#21152;&#20837;&#20070;&#31614;&#65292;&#19979;&#27425;&#25248;&#22270;&#21482;&#38656; 1 &#31186;&#65281;</p>
+            </div>
+            <button id="dismiss-banner" class="text-gray-400 hover:text-white transition-colors ml-4 shrink-0" aria-label="close">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Feedback Widget -->
+    <div id="feedback-widget" class="fixed bottom-6 right-6 z-40">
+        <div id="feedback-panel" class="absolute bottom-14 right-0 w-72 bg-white rounded-xl shadow-2xl border border-gray-100 p-5">
+            <h3 class="text-sm font-semibold text-gray-900 mb-3">&#9749; &#25552;&#28857;&#24314;&#35758;</h3>
+            <form id="feedback-form">
+                <textarea id="feedback-msg" class="w-full h-20 text-sm border border-gray-200 rounded-lg p-2.5 resize-none focus:outline-none focus:ring-2 focus:ring-gray-300 placeholder-gray-400" placeholder="&#26377;&#20160;&#20040;&#24819;&#27861;&#65311;"></textarea>
+                <input id="feedback-email" type="email" class="w-full mt-2 text-sm border border-gray-200 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-gray-300 placeholder-gray-400" placeholder="&#37038;&#31665;&#65288;&#36873;&#22635;&#65292;&#26041;&#20415;&#25105;&#20204;&#22238;&#22797;&#20320;&#65289;">
+                <button type="submit" class="w-full mt-3 bg-gray-900 text-white text-sm font-medium py-2 rounded-lg hover:bg-gray-800 transition-colors">&#21457;&#36865;</button>
+            </form>
+            <div id="feedback-thanks" class="hidden text-center py-6">
+                <p class="text-2xl mb-2">&#127881;</p>
+                <p class="text-sm font-medium text-gray-800">&#24863;&#35874;&#20320;&#30340;&#24314;&#35758;&#65281;</p>
+                <p class="text-xs text-gray-500 mt-1">&#25105;&#20204;&#20250;&#35748;&#30495;&#23545;&#24453;&#27599;&#19968;&#26465;&#21453;&#39304;</p>
+            </div>
+        </div>
+        <button id="feedback-trigger" class="w-11 h-11 bg-white border border-gray-200 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl hover:scale-110 transition-all text-lg" title="feedback">&#9749;</button>
+    </div>
 
     <script>
         const dropzone = document.getElementById('dropzone');
@@ -124,8 +178,10 @@
         const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
         const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 
-        // 前端极致压缩：利用 Canvas 将大图无损或微损转换为小体积 WebP
-        async function compressImage(file, maxWidth = 1920) {
+        // 前端智能压缩：保留细节的前提下减小体积
+        // maxWidth=2560 保证细线条（如登山杖）不被缩没
+        // quality=0.95 保证边缘信息不被压缩损坏
+        async function compressImage(file, maxWidth = 2560) {
             return new Promise((resolve) => {
                 const img = new Image();
                 img.src = URL.createObjectURL(file);
@@ -145,10 +201,10 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    // 输出为 webp，质量 0.85，能极大减小体积且肉眼看不出画质损失
+                    // 质量 0.95：在体积与细节之间取最优平衡
                     canvas.toBlob((blob) => {
                         resolve(new File([blob], file.name.split('.')[0] + '.webp', { type: 'image/webp' }));
-                    }, 'image/webp', 0.85); 
+                    }, 'image/webp', 0.95); 
                 };
             });
         }
@@ -225,6 +281,9 @@
                     <p class="text-sm text-gray-500">正在为您自动下载...</p>
                 `;
 
+                // 6. 首次成功后弹出书签提示
+                showBookmarkBanner();
+
             } catch (error) {
                 console.error("API Error:", error);
                 // 用 DOM 拼装而不是 innerHTML 拼字符串，防止 error.message 里若含 HTML 被当标签执行（XSS）
@@ -251,6 +310,70 @@
                 }, 2000);
             }
         }
+
+        // ========== Bookmark Banner ==========
+        let bannerShown = false;
+        function showBookmarkBanner() {
+            if (bannerShown) return;
+            bannerShown = true;
+            const isMac = navigator.platform.toUpperCase().includes('MAC')
+                       || navigator.userAgent.toUpperCase().includes('MAC');
+            document.getElementById('shortcut-key').textContent = isMac ? '\u2318 + D' : 'Ctrl + D';
+            const banner = document.getElementById('bookmark-banner');
+            setTimeout(() => banner.classList.add('show'), 1000);
+            setTimeout(() => banner.classList.remove('show'), 9000);
+        }
+        document.getElementById('dismiss-banner').addEventListener('click', () => {
+            document.getElementById('bookmark-banner').classList.remove('show');
+        });
+
+        // ========== Feedback Widget ==========
+        const feedbackTrigger = document.getElementById('feedback-trigger');
+        const feedbackPanel = document.getElementById('feedback-panel');
+        const feedbackForm = document.getElementById('feedback-form');
+        const feedbackThanks = document.getElementById('feedback-thanks');
+
+        feedbackTrigger.addEventListener('click', () => {
+            feedbackPanel.classList.toggle('open');
+        });
+        document.addEventListener('click', (e) => {
+            if (!document.getElementById('feedback-widget').contains(e.target)) {
+                feedbackPanel.classList.remove('open');
+            }
+        });
+        feedbackForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('feedback-msg').value.trim();
+            if (!msg) return;
+            const email = document.getElementById('feedback-email').value.trim();
+
+            // POST to backend
+            try {
+                await fetch('/api/feedback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: msg, email: email || undefined })
+                });
+            } catch (err) {
+                console.warn('[MiaoCut] Feedback send failed:', err);
+            }
+
+            // Umami custom event tracking
+            if (typeof umami !== 'undefined') {
+                umami.track('feedback-submitted');
+            }
+
+            feedbackForm.classList.add('hidden');
+            feedbackThanks.classList.remove('hidden');
+            setTimeout(() => {
+                feedbackPanel.classList.remove('open');
+                setTimeout(() => {
+                    feedbackForm.classList.remove('hidden');
+                    feedbackThanks.classList.add('hidden');
+                    feedbackForm.reset();
+                }, 300);
+            }, 2000);
+        });
     </script>
 </body>
 </html>
