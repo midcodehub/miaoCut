@@ -5,6 +5,8 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 import io
 import uvicorn
+import webbrowser
+from threading import Timer
 from rembg import remove
 from PIL import Image
 
@@ -63,4 +65,6 @@ async def remove_background(request: Request, file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail="图片处理失败，可能图片过于复杂，请重试。")
 
 if __name__ == "__main__":
+    # 延迟 1.5 秒后自动打开浏览器，给后端启动预留一点时间
+    Timer(1.5, lambda: webbrowser.open("http://127.0.0.1:8000")).start()
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

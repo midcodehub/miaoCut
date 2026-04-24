@@ -1,0 +1,32 @@
+# Python Virtual Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Mac OS System Files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDEs / Editors
+.idea/
+.vscode/*
+!.vscode/launch.json
+*.swp
+*.swo
+
+# AI Models & Data 
+# (因为我们在 launch.json 配置了将模型下载到项目目录下的 .u2net 文件夹，所以必须忽略，防止提交 170MB 的模型)
+.u2net/
+
+# Logs
+*.log
