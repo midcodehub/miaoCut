@@ -36,7 +36,6 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT || 22 }}
           command_timeout: 10m
-          script_stop: true
           script: |
             set -e
 
@@ -44,8 +43,12 @@ jobs:
             cd /opt/miaoCut
 
             if [ ! -d ".git" ]; then
-              echo "==> Cloning repository..."
-              git clone https://github.com/midcodehub/miaoCut.git .
+              echo "==> Initializing repository..."
+              git init
+              git remote add origin https://github.com/midcodehub/miaoCut.git
+              git fetch origin
+              git reset --hard origin/main
+              git branch -M main
             else
               echo "==> Pulling latest code..."
               git pull origin main
