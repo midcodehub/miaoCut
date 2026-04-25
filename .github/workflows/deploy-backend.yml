@@ -35,11 +35,11 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT || 22 }}
+          command_timeout: 10m
           script_stop: true
           script: |
             set -e
 
-            # 项目目录（首次部署需要先手动 git clone）
             cd /opt/miaoCut
 
             echo "==> Pulling latest code..."
@@ -63,17 +63,24 @@ jobs:
               -v miaocut-data:/app/data \
               miaocut-api
 
-            echo "==> Waiting for startup..."
-            sleep 5
+            # 健康检查：最多等 120 秒（首次需下载 230MB 模型）
+            echo "==> Waiting for server to be ready (up to 120s)..."
+            for i in $(seq 1 24); do
+              if curl -sf http://127.0.0.1:8000/ > /dev/null 2>&1; then
+                echo "==> ✅ Deploy SUCCESS! (ready in ~$((i*5))s)"
+                docker image prune -f
+                exit 0
+              fi
+              # 检查容器是否还活着
+              if ! docker ps -q -f name=miaocut | grep -q .; then
+                echo "==> ❌ Container crashed! Logs:"
+                docker logs --tail 30 miaocut
+                exit 1
+              fi
+              echo "    waiting... ($((i*5))s)"
+              sleep 5
+            done
 
-            # 健康检查
-            if curl -sf http://127.0.0.1:8000/ > /dev/null; then
-              echo "==> ✅ Deploy SUCCESS!"
-            else
-              echo "==> ❌ Health check failed! Check logs:"
-              docker logs --tail 20 miaocut
-              exit 1
-            fi
-
-            # 清理旧镜像（节省磁盘）
-            docker image prune -f
+            echo "==> ❌ Server did not respond within 120s. Logs:"
+            docker logs --tail 30 miaocut
+            exit 1
