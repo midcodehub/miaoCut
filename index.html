@@ -192,7 +192,10 @@
     </div>
 
     <script>
-        
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileInput');
+        const dropzoneContent = document.getElementById('dropzone-content');
+
         // ============================================================
         // i18n 国际化支持
         // ============================================================
@@ -342,11 +345,9 @@
         }
 
         // 页面加载即初始化语言
-        document.addEventListener('DOMContentLoaded', () => {
-            updateLanguage(currentLang);
-            document.getElementById('lang-switch').addEventListener('change', (e) => {
-                updateLanguage(e.target.value);
-            });
+        updateLanguage(currentLang);
+        document.getElementById('lang-switch').addEventListener('change', (e) => {
+            updateLanguage(e.target.value);
         });
 
         // ============================================================
@@ -355,13 +356,6 @@
         // 自动识别环境：如果是在本地开发环境运行，则请求本地后端；否则请求线上 VPS
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         const API_BASE = isLocal ? 'http://127.0.0.1:8000' : 'https://api.miaocut.app';
-
-        const dropzone = document.getElementById('dropzone');
-        const fileInput = document.getElementById('fileInput');
-        const dropzoneContent = document.getElementById('dropzone-content');
-
-        // 保存原始的 HTML 内容，以便恢复
-        
 
         // 阻止默认拖拽行为
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
