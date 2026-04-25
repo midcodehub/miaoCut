@@ -55,18 +55,22 @@ jobs:
             docker run -d \
               --name miaocut \
               --restart unless-stopped \
-              -p 8000:8000 \
-              -e ALLOWED_ORIGINS=https://miaocut.com,https://www.miaocut.com \
+              -p 443:8000 \
+              -e ALLOWED_ORIGINS=https://miaocut.app,https://www.miaocut.app \
               -e TRUST_PROXY=1 \
               -e MAX_CONCURRENCY=2 \
               -v miaocut-models:/app/.u2net \
               -v miaocut-data:/app/data \
-              miaocut-api
+              -v /opt/miaoCut/certs:/app/certs:ro \
+              miaocut-api \
+              uvicorn main:app --host 0.0.0.0 --port 8000 \
+                --ssl-certfile /app/certs/cert.pem \
+                --ssl-keyfile /app/certs/key.pem
 
             # 健康检查：最多等 120 秒（首次需下载 230MB 模型）
             echo "==> Waiting for server to be ready (up to 120s)..."
             for i in $(seq 1 24); do
-              if curl -sf http://127.0.0.1:8000/ > /dev/null 2>&1; then
+              if curl -skf https://127.0.0.1:443/ > /dev/null 2>&1; then
                 echo "==> ✅ Deploy SUCCESS! (ready in ~$((i*5))s)"
                 docker image prune -f
                 exit 0
