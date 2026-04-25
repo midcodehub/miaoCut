@@ -45,14 +45,16 @@ jobs:
             if [ ! -d ".git" ]; then
               echo "==> Initializing repository..."
               git init
-              git remote add origin https://github.com/midcodehub/miaoCut.git
-              git fetch origin
-              git reset --hard origin/main
               git branch -M main
-            else
-              echo "==> Pulling latest code..."
-              git pull origin main
             fi
+
+            # 注入 GitHub Token 进行自动免密拉取（解决 No such device 报错）
+            git remote remove origin 2>/dev/null || true
+            git remote add origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+
+            echo "==> Pulling latest code..."
+            git fetch origin main
+            git reset --hard origin/main
 
             echo "==> Building Docker image..."
             docker build -t miaocut-api .
