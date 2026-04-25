@@ -166,33 +166,136 @@
         const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 
         // 前端智能压缩：保留细节的前提下减小体积
-        // maxWidth=2560 保证细线条（如登山杖）不被缩没
-        // quality=0.95 保证边缘信息不被压缩损坏
-        async function compressImage(file, maxWidth = 2560) {
-            return new Promise((resolve) => {
+        // maxWidth=1920：BiRefNet 内部按 1024×1024 推理，1920 已经是 2x 余量，
+        //   再大就是浪费上传带宽（之前 2560 比 1920 大 78%，但抠图质量无差异）。
+        // quality=0.95：保证边缘信息不被压缩损坏，对后续 mask 锐度无影响。
+        async function compressImage(file, maxWidth = 1920) {
+            return new Promise((resolve, reject) => {
+                const url = URL.createObjectURL(file);
                 const img = new Image();
-                img.src = URL.createObjectURL(file);
                 img.onload = () => {
+                    URL.revokeObjectURL(url); // 加载完立刻释放，防内存泄漏
                     let width = img.width;
                     let height = img.height;
-                    
+
                     // 等比例缩放，限制最大宽度
                     if (width > maxWidth) {
                         height = Math.round((height * maxWidth) / width);
                         width = maxWidth;
                     }
-                    
+
                     const canvas = document.createElement('canvas');
                     canvas.width = width;
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-                    
-                    // 质量 0.95：在体积与细节之间取最优平衡
+
                     canvas.toBlob((blob) => {
+                        if (!blob) {
+                            // 极少数老 Safari 可能不支持 image/webp encode，给个明确错误而不是卡死
+                            reject(new Error('压缩失败，浏览器可能不支持 WebP 编码'));
+                            return;
+                        }
                         resolve(new File([blob], file.name.split('.')[0] + '.webp', { type: 'image/webp' }));
-                    }, 'image/webp', 0.95); 
+                    }, 'image/webp', 0.95);
                 };
+                img.onerror = () => {
+                    URL.revokeObjectURL(url);
+                    reject(new Error('图片解析失败，文件可能已损坏'));
+                };
+                img.src = url;
+            });
+        }
+
+        // ============================================================
+        // 进度 UI
+        // ============================================================
+        // 进度条策略：
+        //   ① 压缩中            0% → 15%
+        //   ② 上传中  XX%       15% → 70%（XHR upload.onprogress 真实进度）
+        //   ③ AI 处理中         70% → 95%（后端推理无 chunk 进度，用对数曲线"软爬"）
+        //   ④ 完成!             100%（响应到达瞬间）
+        //
+        // 第一次调用建 DOM，后续只更新 width 和 label，避免 DOM 重建闪烁。
+        // 用 querySelector 而非缓存变量，可以在 dropzoneContent.innerHTML 被外部重置后自愈。
+        function showProgress(percent, label) {
+            let fill = document.getElementById('progress-fill');
+            if (!fill) {
+                dropzoneContent.innerHTML = `
+                    <svg class="animate-spin w-10 h-10 text-gray-800 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <p id="progress-label" class="text-lg font-medium text-gray-700 mb-3">${label}</p>
+                    <div class="w-64 h-1 bg-gray-200 rounded-full overflow-hidden">
+                        <div id="progress-fill" class="h-full bg-gray-900 transition-all duration-300 ease-out" style="width: ${percent}%"></div>
+                    </div>
+                `;
+            } else {
+                fill.style.width = percent + '%';
+                document.getElementById('progress-label').textContent = label;
+            }
+        }
+
+        // ============================================================
+        // 用 XMLHttpRequest 拿真实上传进度
+        // ============================================================
+        // fetch() 至今没有 upload progress 事件（ReadableStream upload 还在 origin trial），
+        // XHR 是唯一稳妥拿到上传字节进度的方式。
+        function uploadWithProgress(formData) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', API_BASE + '/api/remove-background');
+                xhr.responseType = 'blob';
+
+                // ② 上传阶段：实时映射到 15% → 70%
+                xhr.upload.onprogress = (e) => {
+                    if (!e.lengthComputable) return;
+                    const ratio = e.loaded / e.total;
+                    const pct = 15 + Math.round(ratio * 55);
+                    showProgress(pct, `上传中... ${Math.round(ratio * 100)}%`);
+                };
+
+                // 上传字节全部发完 → 进入 ③ AI 推理阶段
+                // 后端推理没有 chunk 进度，用对数曲线 70% → 95% 软爬，4s 内涨到 95% 后停住
+                xhr.upload.onload = () => {
+                    showProgress(70, 'AI 处理中...');
+                    const startTime = Date.now();
+                    const tick = () => {
+                        // 响应已到（readyState=4）就不再爬，让真实的 100% 接管
+                        if (xhr.readyState >= 4) return;
+                        const elapsed = Date.now() - startTime;
+                        // 1 - exp(-3t)：t=0 时 0；t=1（4s）时 ≈0.95；前快后慢，符合"AI 在思考"的体感
+                        const t = Math.min(elapsed / 4000, 1);
+                        const pct = 70 + Math.round(25 * (1 - Math.exp(-3 * t)));
+                        showProgress(pct, 'AI 处理中...');
+                        requestAnimationFrame(tick);
+                    };
+                    requestAnimationFrame(tick);
+                };
+
+                xhr.onload = async () => {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        showProgress(100, '完成!');
+                        resolve(xhr.response);
+                    } else {
+                        // 错误时 responseType=blob，需要把 blob 读成 text 再解 JSON
+                        let message = `请求失败（${xhr.status}）`;
+                        try {
+                            const text = await xhr.response.text();
+                            const data = JSON.parse(text);
+                            if (data && typeof data.detail === 'string') message = data.detail;
+                            else message = text || message;
+                        } catch (_) { /* 解析失败用兜底 message */ }
+                        reject(new Error(message));
+                    }
+                };
+
+                xhr.onerror   = () => reject(new Error('网络错误，请检查连接'));
+                xhr.ontimeout = () => reject(new Error('请求超时，请重试'));
+                xhr.onabort   = () => reject(new Error('请求被中断'));
+
+                xhr.send(formData);
             });
         }
 
@@ -207,59 +310,36 @@
 
             console.log(`[MiaoCut] 原始图片: ${file.name} (${(file.size/1024/1024).toFixed(2)} MB)`);
 
-            // 1. 模拟 Loading 状态
             dropzone.classList.add('pointer-events-none');
-            dropzoneContent.innerHTML = `
-                <svg class="animate-spin w-10 h-10 text-gray-800 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <p class="text-lg font-medium text-gray-700 animate-pulse">正在压缩与处理中...</p>
-            `;
-
-            // 2. 前端极速压缩 (超过 500KB 才压缩，避免小图被过度处理)
-            let uploadFile = file;
-            if (file.size > 500 * 1024) {
-                uploadFile = await compressImage(file);
-                console.log(`[MiaoCut] 压缩后: ${uploadFile.name} (${(uploadFile.size/1024).toFixed(2)} KB)`);
-            }
-
-            // 3. 发起真实的后端请求
-            const formData = new FormData();
-            formData.append('file', uploadFile);
 
             try {
-                const response = await fetch(API_BASE + '/api/remove-background', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    // 后端统一返回 JSON { detail: "..." }，尽量提取 detail 字段；失败则退回原文
-                    let message = `请求失败（${response.status}）`;
-                    try {
-                        const data = await response.json();
-                        if (data && typeof data.detail === 'string') message = data.detail;
-                    } catch (_) {
-                        try { message = (await response.text()) || message; } catch (_) {}
-                    }
-                    throw new Error(message);
+                // ① 压缩阶段
+                showProgress(5, '压缩中...');
+                let uploadFile = file;
+                if (file.size > 500 * 1024) {
+                    uploadFile = await compressImage(file);
+                    console.log(`[MiaoCut] 压缩后: ${uploadFile.name} (${(uploadFile.size/1024).toFixed(2)} KB)`);
                 }
+                showProgress(15, '上传中...');
 
-                // 3. 获取返回的图片流
-                const blob = await response.blob();
+                // ②③ 上传 + AI 处理（进度由 uploadWithProgress 内部驱动）
+                const formData = new FormData();
+                formData.append('file', uploadFile);
+                const blob = await uploadWithProgress(formData);
+
+                // ④ 触发本地下载
                 const resultUrl = URL.createObjectURL(blob);
-                
-                // 4. 极简设计：直接触发本地下载
                 const a = document.createElement('a');
                 a.href = resultUrl;
                 const originalName = file.name.split('.')[0];
-                a.download = `${originalName}_nobg.png`;
+                a.download = `${originalName}_nobg.webp`; // 后端现在返回 WebP
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
+                // 1s 后释放，给浏览器留出实际开始下载的时间
+                setTimeout(() => URL.revokeObjectURL(resultUrl), 1000);
 
-                // 5. 更新界面为成功状态 (2秒后恢复原样)
+                // 成功 UI
                 dropzoneContent.innerHTML = `
                     <svg class="w-12 h-12 text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -267,8 +347,6 @@
                     <p class="text-lg font-medium text-gray-800 mb-1">处理成功！</p>
                     <p class="text-sm text-gray-500">正在为您自动下载...</p>
                 `;
-
-                // 6. 首次成功后弹出书签提示
                 showBookmarkBanner();
 
             } catch (error) {

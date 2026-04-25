@@ -326,9 +326,13 @@ def _run_rembg_sync(data: bytes) -> bytes:
 
     # 合成最终结果（RGB 保持原样，只改 alpha）
     result_img[:, :, 3] = alpha_clean
-    _, output_png = cv2.imencode(".png", result_img)
 
-    return output_png.tobytes()
+    # WebP 比 PNG 体积小 60~70%，encode 速度也快约 2x。
+    # 透明度通道由 libwebp 单独编码，对 alpha 的有损压缩极轻微（人眼不可察觉）。
+    # quality=95 视觉无损；如果未来用户报"边缘有色块"再考虑改成 PIL + lossless WebP。
+    _, output_webp = cv2.imencode(".webp", result_img, [cv2.IMWRITE_WEBP_QUALITY, 95])
+
+    return output_webp.tobytes()
 
 
 async def run_rembg(data: bytes) -> bytes:
@@ -417,11 +421,11 @@ async def remove_background(request: Request, file: UploadFile = File(...)):
     ascii_name = _ASCII_UNSAFE.sub("_", basename) or "image"
     return Response(
         content=output_data,
-        media_type="image/png",
+        media_type="image/webp",
         headers={
             "Content-Disposition": (
-                f'attachment; filename="{ascii_name}_nobg.png"; '
-                f"filename*=UTF-8''{quote(basename)}_nobg.png"
+                f'attachment; filename="{ascii_name}_nobg.webp"; '
+                f"filename*=UTF-8''{quote(basename)}_nobg.webp"
             ),
             "X-Content-Type-Options": "nosniff",
             "Referrer-Policy": "no-referrer",
