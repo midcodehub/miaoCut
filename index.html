@@ -122,8 +122,9 @@
         // ============================================================
         // API 配置
         // ============================================================
-        // 后端 API 地址（VPS）
-        const API_BASE = 'https://api.miaocut.app';
+        // 自动识别环境：如果是在本地开发环境运行，则请求本地后端；否则请求线上 VPS
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const API_BASE = isLocal ? 'http://127.0.0.1:8000' : 'https://api.miaocut.app';
 
         const dropzone = document.getElementById('dropzone');
         const fileInput = document.getElementById('fileInput');

@@ -40,10 +40,16 @@ jobs:
           script: |
             set -e
 
+            mkdir -p /opt/miaoCut
             cd /opt/miaoCut
 
-            echo "==> Pulling latest code..."
-            git pull origin main
+            if [ ! -d ".git" ]; then
+              echo "==> Cloning repository..."
+              git clone https://github.com/midcodehub/miaoCut.git .
+            else
+              echo "==> Pulling latest code..."
+              git pull origin main
+            fi
 
             echo "==> Building Docker image..."
             docker build -t miaocut-api .
@@ -58,7 +64,7 @@ jobs:
               -p 80:8000 \
               -e ALLOWED_ORIGINS=https://miaocut.app,https://www.miaocut.app \
               -e TRUST_PROXY=1 \
-              -e MAX_CONCURRENCY=1 \
+              -e MAX_CONCURRENCY=2 \
               -v miaocut-models:/app/.u2net \
               -v miaocut-data:/app/data \
               miaocut-api
