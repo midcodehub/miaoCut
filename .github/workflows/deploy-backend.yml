@@ -1,0 +1,79 @@
+# ============================================================
+# MiaoCut 后端自动部署
+# ============================================================
+# 触发条件：push 到 main 分支且后端文件有变动
+# 部署方式：SSH 到 VPS → git pull → docker build → 重启容器
+#
+# 需要在 GitHub 仓库 Settings → Secrets and variables → Actions 中添加：
+#   VPS_HOST     - VPS IP 或域名（如 api.miaocut.com）
+#   VPS_USER     - SSH 用户名（如 root）
+#   VPS_SSH_KEY  - SSH 私钥（在 VPS 上用 ssh-keygen 生成，把私钥贴这里）
+#   VPS_PORT     - SSH 端口（可选，默认 22）
+# ============================================================
+
+name: Deploy Backend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'main.py'
+      - 'requirements.txt'
+      - 'Dockerfile'
+      - '.github/workflows/deploy-backend.yml'
+
+jobs:
+  deploy:
+    name: Deploy to VPS
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script_stop: true
+          script: |
+            set -e
+
+            # 项目目录（首次部署需要先手动 git clone）
+            cd /opt/miaoCut
+
+            echo "==> Pulling latest code..."
+            git pull origin main
+
+            echo "==> Building Docker image..."
+            docker build -t miaocut-api .
+
+            echo "==> Restarting container..."
+            docker stop miaocut 2>/dev/null || true
+            docker rm miaocut 2>/dev/null || true
+
+            docker run -d \
+              --name miaocut \
+              --restart unless-stopped \
+              -p 8000:8000 \
+              -e ALLOWED_ORIGINS=https://miaocut.com,https://www.miaocut.com \
+              -e TRUST_PROXY=1 \
+              -e MAX_CONCURRENCY=2 \
+              -v miaocut-models:/app/.u2net \
+              -v miaocut-data:/app/data \
+              miaocut-api
+
+            echo "==> Waiting for startup..."
+            sleep 5
+
+            # 健康检查
+            if curl -sf http://127.0.0.1:8000/ > /dev/null; then
+              echo "==> ✅ Deploy SUCCESS!"
+            else
+              echo "==> ❌ Health check failed! Check logs:"
+              docker logs --tail 20 miaocut
+              exit 1
+            fi
+
+            # 清理旧镜像（节省磁盘）
+            docker image prune -f

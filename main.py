@@ -36,6 +36,7 @@ from urllib.parse import quote
 
 import uvicorn
 from fastapi import Depends, FastAPI, File, HTTPException, Request, Response, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from PIL import Image
 from rembg import new_session, remove
@@ -182,6 +183,28 @@ app = FastAPI(
 )
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# ============================================================
+# CORS（前后端分离部署时必须）
+# ============================================================
+# 前端部署在 Cloudflare Pages，后端在 VPS，浏览器会发 CORS 预检请求。
+# ALLOWED_ORIGINS 为空时允许所有来源（本地 dev 友好）。
+if ALLOWED_ORIGINS:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=list(ALLOWED_ORIGINS),
+        allow_methods=["GET", "POST", "OPTIONS"],
+        allow_headers=["*"],
+        max_age=3600,  # 预检缓存 1 小时，减少 OPTIONS 请求
+    )
+else:
+    # 本地开发：允许所有来源
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_methods=["GET", "POST", "OPTIONS"],
+        allow_headers=["*"],
+    )
 
 
 # ============================================================

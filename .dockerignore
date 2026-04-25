@@ -1,0 +1,11 @@
+.git
+.gitignore
+.venv
+.vscode
+__pycache__
+.u2net
+data
+*.pyc
+*.log
+.DS_Store
+README.md

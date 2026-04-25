@@ -119,6 +119,12 @@
     </div>
 
     <script>
+        // ============================================================
+        // API 配置
+        // ============================================================
+        // 后端 API 地址（VPS）
+        const API_BASE = 'https://api.miaocut.com';
+
         const dropzone = document.getElementById('dropzone');
         const fileInput = document.getElementById('fileInput');
         const dropzoneContent = document.getElementById('dropzone-content');
@@ -242,7 +248,7 @@
             formData.append('file', uploadFile);
 
             try {
-                const response = await fetch('/api/remove-background', {
+                const response = await fetch(API_BASE + '/api/remove-background', {
                     method: 'POST',
                     body: formData
                 });
@@ -349,7 +355,7 @@
 
             // POST to backend
             try {
-                await fetch('/api/feedback', {
+                await fetch(API_BASE + '/api/feedback', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: msg, email: email || undefined })
