@@ -262,67 +262,21 @@ def safe_basename(name: Optional[str]) -> str:
     return stem or "image"
 
 
-def _guided_filter(guide: 'np.ndarray', src: 'np.ndarray', radius: int, eps: float) -> 'np.ndarray':
-    """
-    边缘感知引导滤波 (Guided Filter)。
-
-    与高斯模糊的本质区别：
-      - 高斯模糊：所有像素一视同仁地平滑 → 边缘也被糊掉。
-      - 引导滤波：以原图（guide）的边缘结构为"指引"，只在平坦区域平滑，
-        在边缘附近保持锐利。效果类似双边滤波，但速度快得多（O(N)）。
-
-    在抠图场景中：
-      guide = 原始 RGB 图（提供边缘信息）
-      src   = rembg 输出的 alpha 通道
-      输出  = 边缘锐利、平坦区域平滑的精修 alpha
-
-    参数：
-      radius: 滤波窗口半径。越大平滑越强，但边缘保持不变。推荐 4~8。
-      eps:    正则化参数。越小越忠于 guide 的边缘，推荐 1e-4 ~ 1e-2。
-    """
-    import cv2
-    import numpy as np
-
-    guide_f = guide.astype(np.float64) / 255.0
-    src_f = src.astype(np.float64) / 255.0
-
-    ksize = 2 * radius + 1
-
-    mean_g = cv2.boxFilter(guide_f, -1, (ksize, ksize))
-    mean_s = cv2.boxFilter(src_f, -1, (ksize, ksize))
-    mean_gs = cv2.boxFilter(guide_f * src_f, -1, (ksize, ksize))
-    mean_gg = cv2.boxFilter(guide_f * guide_f, -1, (ksize, ksize))
-
-    cov_gs = mean_gs - mean_g * mean_s
-    var_g = mean_gg - mean_g * mean_g
-
-    a = cov_gs / (var_g + eps)
-    b = mean_s - a * mean_g
-
-    mean_a = cv2.boxFilter(a, -1, (ksize, ksize))
-    mean_b = cv2.boxFilter(b, -1, (ksize, ksize))
-
-    result = mean_a * guide_f + mean_b
-    return np.clip(result * 255, 0, 255).astype(np.uint8)
-
-
 def _run_rembg_sync(data: bytes) -> bytes:
     """
-    三阶段顶级抠图流水线：
+    三阶段抠图流水线：
 
     第一阶段 - BiRefNet (SOTA) 直出 mask：
       不开 alpha_matting。BiRefNet 原生 mask 已经足够锐利，
       alpha_matting 反而会在边缘产生过宽的半透明过渡带（"光晕"）。
 
-    第二阶段 - 引导滤波 (Guided Filter) 轻度精修：
-      以原图灰度为引导，只消除平坦区域的细小噪点，
-      不影响边缘锐度。参数非常保守 (eps=1e-2)。
+    第二阶段 - Alpha 曲线重映射（Adobe 式硬边策略）：
+      用陡峭 S 曲线把 BiRefNet 输出的 5~20px 半透明过渡带压到 1~2px，
+      消除任何底色下都会出现的"深色毛边"。详见函数体内注释。
 
-    第三阶段 - 前景色去污染 (Color Decontamination)：
-      这是消除"杂边/白边"的关键技术，也是 Adobe 等专业工具的核心差异。
-      原理：在半透明边缘像素中，RGB 通道包含了背景色的混合信息。
-      即使 alpha 值正确，显示时仍会看到背景色"渗透"出来（光晕效果）。
-      去污染通过估算纯前景色并替换受污染的 RGB 值来消除这个问题。
+    第三阶段 - 1px 高斯抗锯齿：
+      硬边之后用极轻的高斯模糊（kernel 3, sigma 0.5）做亚像素抗锯齿，
+      让边缘视觉上平滑而非锯齿状（但仍然是锐利的）。
     """
     import cv2
     import numpy as np
@@ -340,18 +294,6 @@ def _run_rembg_sync(data: bytes) -> bytes:
 
     if result_img is None or result_img.ndim < 3 or result_img.shape[2] < 4:
         return output_data
-
-    # 读取原图
-    original = np.frombuffer(data, np.uint8)
-    original = cv2.imdecode(original, cv2.IMREAD_COLOR)
-
-    if original is None:
-        return output_data
-
-    # 确保尺寸一致
-    h, w = result_img.shape[:2]
-    if original.shape[:2] != (h, w):
-        original = cv2.resize(original, (w, h), interpolation=cv2.INTER_LINEAR)
 
     alpha = result_img[:, :, 3].astype(np.float64)
 
@@ -411,6 +353,13 @@ async def run_rembg(data: bytes) -> bytes:
 @app.get("/")
 async def root():
     return FileResponse("index.html")
+
+
+@app.get("/output.css")
+async def output_css():
+    """本地 dev 时 index.html 通过后端 / 返回，样式同源加载需要这个端点；
+    生产由 Cloudflare Pages 直接服务静态文件，此路径无人访问。"""
+    return FileResponse("output.css", media_type="text/css")
 
 
 @app.post("/api/remove-background", dependencies=[Depends(verify_origin)])

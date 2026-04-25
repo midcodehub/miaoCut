@@ -9,3 +9,8 @@ data
 *.log
 .DS_Store
 README.md
+node_modules
+package.json
+package-lock.json
+tailwind.config.js
+src

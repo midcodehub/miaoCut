@@ -5,36 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MiaoCut - 1秒纯净抠图</title>
     <meta name="description" content="MiaoCut - 免费在线抠图工具，AI 驱动，1秒去除背景，隐私安全，无需注册。">
-    <!-- Tailwind CSS via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!--
+      Tailwind CSS - 本地构建
+      源：src/input.css；构建命令：npm run build:css；输出：output.css
+      改动 index.html 的 class 后必须重新跑 build:css 并把 output.css 一起提交。
+    -->
+    <link rel="stylesheet" href="/output.css">
     <!--
       Umami Analytics - 隐私友好的流量统计
-      设置步骤：
-      1. 访问 https://cloud.umami.is 注册免费账号
-      2. 添加你的网站，获取 data-website-id
-      3. 把下面的 YOUR_WEBSITE_ID 替换成你的真实 ID
-      4. 如果自部署 Umami，把 src 也换成你自己的地址
     -->
     <script defer src="https://cloud.umami.is/script.js" data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
-    <style>
-        #dropzone { transition: all 0.2s ease-in-out; }
-        #bookmark-banner {
-            transform: translateY(-100%);
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        #bookmark-banner.show { transform: translateY(0); }
-        #feedback-panel {
-            transform: scale(0.9) translateY(10px);
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        #feedback-panel.open {
-            transform: scale(1) translateY(0);
-            opacity: 1;
-            pointer-events: auto;
-        }
-    </style>
 </head>
 <body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-gray-200">
 

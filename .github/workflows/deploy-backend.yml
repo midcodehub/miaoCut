@@ -1,14 +1,18 @@
 # ============================================================
 # MiaoCut 后端自动部署
 # ============================================================
-# 触发条件：push 到 main 分支且后端文件有变动
-# 部署方式：SSH 到 VPS → git pull → docker build → 重启容器
+# 流程：
+#   1. build  job：在 GitHub Actions runner 上 docker build，并推到 GHCR。
+#   2. deploy job：SSH 到 VPS，docker login GHCR → pull → 替换容器。
 #
-# 需要在 GitHub 仓库 Settings → Secrets and variables → Actions 中添加：
-#   VPS_HOST     - VPS IP 或域名（如 api.miaocut.com）
-#   VPS_USER     - SSH 用户名（如 root）
-#   VPS_SSH_KEY  - SSH 私钥（在 VPS 上用 ssh-keygen 生成，把私钥贴这里）
-#   VPS_PORT     - SSH 端口（可选，默认 22）
+# 为什么不在 VPS 上 build？
+#   小内存 VPS 跑 docker build (PyTorch + onnxruntime + opencv) 很容易 OOM
+#   (历史 commit 4daa030 即为此降并发)。Runner 4 vCPU/16GB 构建只要 1~2 分钟。
+#
+# GitHub 仓库 Settings → Secrets and variables → Actions 中需配置：
+#   VPS_HOST / VPS_USER / VPS_SSH_KEY / VPS_PORT(可选)
+# 不需要再配额外的 GHCR token，build 用 GITHUB_TOKEN（仓库内置），
+# VPS pull 用同一个 GITHUB_TOKEN（短期有效，run 结束即过期，安全）。
 # ============================================================
 
 name: Deploy Backend
@@ -20,69 +24,125 @@ on:
       - 'main.py'
       - 'requirements.txt'
       - 'Dockerfile'
+      - 'index.html'
+      - 'output.css'
       - '.github/workflows/deploy-backend.yml'
+  workflow_dispatch:  # 允许在 GitHub UI 手动触发，用于强制 redeploy
+
+env:
+  REGISTRY: ghcr.io
 
 jobs:
+  # ----------------------------------------------------------
+  # 1) Build & push image
+  # ----------------------------------------------------------
+  build:
+    name: Build & push image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image: ${{ steps.meta.outputs.image }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # GHCR 要求镜像 path 全部小写，仓库名含大写时直接 push 会被拒
+      - name: Compute lowercase image name
+        id: meta
+        run: |
+          IMAGE_LC="$(echo ghcr.io/${{ github.repository }} | tr '[:upper:]' '[:lower:]')"
+          echo "image=${IMAGE_LC}" >> "$GITHUB_OUTPUT"
+          echo "Image base: ${IMAGE_LC}"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 用 commit SHA 做唯一 tag 便于回滚，同时打 latest
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ steps.meta.outputs.image }}:latest
+            ${{ steps.meta.outputs.image }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ----------------------------------------------------------
+  # 2) Deploy to VPS
+  # ----------------------------------------------------------
   deploy:
     name: Deploy to VPS
     runs-on: ubuntu-latest
-
+    needs: build
     steps:
-      - name: Deploy via SSH
+      - name: Pull & restart on VPS
         uses: appleboy/ssh-action@v1
+        env:
+          IMAGE: ${{ needs.build.outputs.image }}:${{ github.sha }}
+          GHCR_USER: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT || 22 }}
-          command_timeout: 10m
+          command_timeout: 5m
+          # envs 把上面 env 块里的变量带进 ssh script
+          envs: IMAGE,GHCR_USER,GHCR_TOKEN
           script: |
             set -e
 
-            mkdir -p /opt/miaoCut
-            cd /opt/miaoCut
+            echo "==> Logging in to GHCR..."
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
 
-            if [ ! -d ".git" ]; then
-              echo "==> Initializing repository..."
-              git init
-              git branch -M main
-            fi
+            echo "==> Pulling image: $IMAGE"
+            docker pull "$IMAGE"
 
-            # 注入 GitHub Token 进行自动免密拉取（解决 No such device 报错）
-            git remote remove origin 2>/dev/null || true
-            git remote add origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-
-            echo "==> Pulling latest code..."
-            git fetch origin main
-            git reset --hard origin/main
-
-            echo "==> Building Docker image..."
-            docker build -t miaocut-api .
-
-            echo "==> Restarting container..."
+            echo "==> Stopping old container..."
             docker stop miaocut 2>/dev/null || true
-            docker rm miaocut 2>/dev/null || true
+            docker rm   miaocut 2>/dev/null || true
 
+            echo "==> Starting new container..."
+            # --memory=12g：容器最多用 12GB 物理内存（VPS 共 16GB，留 4GB 给系统）
+            # --memory-swap=12g：禁止使用 swap（值等于 --memory 即关闭 swap）
+            #   原因：BiRefNet 模型权重一旦被 page-out，下次推理 latency 从 1~3s 变 30s+
+            #   宿主机的 4GB swap 是给系统/sshd 用的应急减压阀，不是给抠图服务用的
             docker run -d \
               --name miaocut \
               --restart unless-stopped \
               -p 80:8000 \
+              --memory=12g \
+              --memory-swap=12g \
               -e ALLOWED_ORIGINS=https://miaocut.app,https://www.miaocut.app \
               -e TRUST_PROXY=1 \
               -e MAX_CONCURRENCY=8 \
               -v miaocut-models:/app/.u2net \
               -v miaocut-data:/app/data \
-              miaocut-api
+              "$IMAGE"
 
-            # 健康检查：最多等 120 秒（首次需下载 230MB 模型）
+            # logout 抹掉 ~/.docker/config.json 里的临时凭证
+            docker logout ghcr.io || true
+
+            # 健康检查：最多等 120s（首次需下载 230MB 模型）
             echo "==> Waiting for server to be ready (up to 120s)..."
             for i in $(seq 1 24); do
               if curl -sf http://127.0.0.1:80/ > /dev/null 2>&1; then
                 echo "==> ✅ Deploy SUCCESS! (ready in ~$((i*5))s)"
+                # 清理悬挂镜像（保留有 tag 的，方便回滚）
                 docker image prune -f
                 exit 0
               fi
-              # 检查容器是否还活着
               if ! docker ps -q -f name=miaocut | grep -q .; then
                 echo "==> ❌ Container crashed! Logs:"
                 docker logs --tail 30 miaocut

@@ -1,0 +1,13 @@
+{
+  "name": "miaocut-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MiaoCut 前端构建：用 Tailwind CLI 把 src/input.css 编译为根目录 output.css",
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/input.css -o ./output.css --minify",
+    "watch:css": "tailwindcss -i ./src/input.css -o ./output.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}

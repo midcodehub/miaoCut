@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 项目自定义样式（原本以 <style> 内联在 index.html）*/
+@layer components {
+  #dropzone {
+    transition: all 0.2s ease-in-out;
+  }
+
+  #bookmark-banner {
+    transform: translateY(-100%);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  #bookmark-banner.show {
+    transform: translateY(0);
+  }
+
+  #feedback-panel {
+    transform: scale(0.9) translateY(10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  #feedback-panel.open {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+}

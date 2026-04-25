@@ -37,6 +37,7 @@ COPY --from=builder /install /usr/local
 # 拷贝应用代码
 COPY main.py .
 COPY index.html .
+COPY output.css .
 
 # 模型缓存目录（首次启动自动下载 BiRefNet ~230MB）
 # 用 volume 持久化，避免每次重启都重新下载

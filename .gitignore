@@ -33,3 +33,7 @@ data/
 
 # Logs
 *.log
+
+# Node / Tailwind
+node_modules/
+# 注意：output.css 必须提交（CF Pages 直接当静态文件 serve）
