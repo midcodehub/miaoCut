@@ -64,7 +64,7 @@ jobs:
               -p 80:8000 \
               -e ALLOWED_ORIGINS=https://miaocut.app,https://www.miaocut.app \
               -e TRUST_PROXY=1 \
-              -e MAX_CONCURRENCY=2 \
+              -e MAX_CONCURRENCY=8 \
               -v miaocut-models:/app/.u2net \
               -v miaocut-data:/app/data \
               miaocut-api
