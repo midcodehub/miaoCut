@@ -257,21 +257,10 @@
                 };
 
                 // 上传字节全部发完 → 进入 ③ AI 推理阶段
-                // 后端推理没有 chunk 进度，用对数曲线 70% → 95% 软爬，4s 内涨到 95% 后停住
+                // 不再做"软爬"假进度：进度条慢慢爬到 95% 卡住反而比定住更焦虑（已实测确认）。
+                // 直接跳到 90%，让 spinner 转着，用户视觉焦点回到"AI 处理中"文字而不是进度数字。
                 xhr.upload.onload = () => {
-                    showProgress(70, 'AI 处理中...');
-                    const startTime = Date.now();
-                    const tick = () => {
-                        // 响应已到（readyState=4）就不再爬，让真实的 100% 接管
-                        if (xhr.readyState >= 4) return;
-                        const elapsed = Date.now() - startTime;
-                        // 1 - exp(-3t)：t=0 时 0；t=1（4s）时 ≈0.95；前快后慢，符合"AI 在思考"的体感
-                        const t = Math.min(elapsed / 4000, 1);
-                        const pct = 70 + Math.round(25 * (1 - Math.exp(-3 * t)));
-                        showProgress(pct, 'AI 处理中...');
-                        requestAnimationFrame(tick);
-                    };
-                    requestAnimationFrame(tick);
+                    showProgress(90, 'AI 处理中...');
                 };
 
                 xhr.onload = async () => {
@@ -332,7 +321,7 @@
                 const a = document.createElement('a');
                 a.href = resultUrl;
                 const originalName = file.name.split('.')[0];
-                a.download = `${originalName}_nobg.webp`; // 后端现在返回 WebP
+                a.download = `${originalName}_nobg.png`; // 后端现在返回 WebP
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);

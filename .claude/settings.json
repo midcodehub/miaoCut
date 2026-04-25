@@ -2,7 +2,14 @@
   "permissions": {
     "allow": [
       "Bash(python -c \"import ast; ast.parse\\(open\\('main.py'\\).read\\(\\)\\); print\\('main.py: OK'\\)\")",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Bash(git -C /Users/wuchao/git/miaoCut log --oneline -10)",
+      "Bash(git -C /Users/wuchao/git/miaoCut status)",
+      "Bash(git -C /Users/wuchao/git/miaoCut show --stat 2e6086d)",
+      "Bash(git -C /Users/wuchao/git/miaoCut show --stat e2264e8)",
+      "Bash(.venv/bin/python)",
+      "Bash(.venv/bin/python -c \"import ast; ast.parse\\(open\\('main.py'\\).read\\(\\)\\); print\\('OK'\\)\")",
+      "Bash(grep -v \":0$\")"
     ]
   }
 }

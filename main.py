@@ -327,12 +327,12 @@ def _run_rembg_sync(data: bytes) -> bytes:
     # 合成最终结果（RGB 保持原样，只改 alpha）
     result_img[:, :, 3] = alpha_clean
 
-    # WebP 比 PNG 体积小 60~70%，encode 速度也快约 2x。
-    # 透明度通道由 libwebp 单独编码，对 alpha 的有损压缩极轻微（人眼不可察觉）。
-    # quality=95 视觉无损；如果未来用户报"边缘有色块"再考虑改成 PIL + lossless WebP。
-    _, output_webp = cv2.imencode(".webp", result_img, [cv2.IMWRITE_WEBP_QUALITY, 95])
+    # 用 PNG 而非 WebP：实测 cv2.imencode 对带 alpha 的高质量 WebP 比 PNG 慢 ~100ms
+    # （libwebp 要单独编 alpha plane）。WebP 文件小 70% 但用户感知不到下载差异，
+    # 反而 encode 多出来的 100ms 直接叠加在"AI 处理中"进度末尾，体感变慢。
+    _, output_png = cv2.imencode(".png", result_img)
 
-    return output_webp.tobytes()
+    return output_png.tobytes()
 
 
 async def run_rembg(data: bytes) -> bytes:
@@ -421,11 +421,11 @@ async def remove_background(request: Request, file: UploadFile = File(...)):
     ascii_name = _ASCII_UNSAFE.sub("_", basename) or "image"
     return Response(
         content=output_data,
-        media_type="image/webp",
+        media_type="image/png",
         headers={
             "Content-Disposition": (
-                f'attachment; filename="{ascii_name}_nobg.webp"; '
-                f"filename*=UTF-8''{quote(basename)}_nobg.webp"
+                f'attachment; filename="{ascii_name}_nobg.png"; '
+                f"filename*=UTF-8''{quote(basename)}_nobg.png"
             ),
             "X-Content-Type-Options": "nosniff",
             "Referrer-Policy": "no-referrer",
