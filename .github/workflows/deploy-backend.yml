@@ -19,15 +19,16 @@ name: Deploy Backend
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
     paths:
-      - 'main.py'
-      - 'requirements.txt'
-      - 'Dockerfile'
-      - 'index.html'
-      - 'output.css'
-      - '.github/workflows/deploy-backend.yml'
-  workflow_dispatch:  # 允许在 GitHub UI 手动触发，用于强制 redeploy
+      - "main.py"
+      - "requirements.txt"
+      - "Dockerfile"
+      - "index.html"
+      - "output.css"
+      - ".github/workflows/deploy-backend.yml"
+  workflow_dispatch:
+    # 允许在 GitHub UI 手动触发，用于强制 redeploy
 
 env:
   REGISTRY: ghcr.io
@@ -118,15 +119,16 @@ jobs:
             # --memory-swap=12g：禁止使用 swap（值等于 --memory 即关闭 swap）
             #   原因：BiRefNet 模型权重一旦被 page-out，下次推理 latency 从 1~3s 变 30s+
             #   宿主机的 4GB swap 是给系统/sshd 用的应急减压阀，不是给抠图服务用的
+            # MAX_CONCURRENCY=2：BiRefNet 单请求峰值很高，先保 RSS 稳定，再按压测结果上调。
             docker run -d \
               --name miaocut \
               --restart unless-stopped \
               -p 80:8000 \
-              --memory=12g \
-              --memory-swap=12g \
+              --memory=14g \
+              --memory-swap=4g \
               -e ALLOWED_ORIGINS=https://miaocut.app,https://www.miaocut.app \
               -e TRUST_PROXY=1 \
-              -e MAX_CONCURRENCY=8 \
+              -e MAX_CONCURRENCY=2 \
               -v miaocut-models:/app/.u2net \
               -v miaocut-data:/app/data \
               "$IMAGE"
@@ -134,7 +136,7 @@ jobs:
             # logout 抹掉 ~/.docker/config.json 里的临时凭证
             docker logout ghcr.io || true
 
-            # 健康检查：最多等 120s（首次需下载 230MB 模型）
+            # 健康检查：最多等 120s。模型默认懒加载，因此这里只确认 Web/API 进程已启动。
             echo "==> Waiting for server to be ready (up to 120s)..."
             for i in $(seq 1 24); do
               if curl -sf http://127.0.0.1:80/ > /dev/null 2>&1; then
