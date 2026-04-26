@@ -10,6 +10,72 @@
     <meta property="og:description" content="Instantly remove backgrounds from images for free. High resolution, no watermarks, powered by AI.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://miaocut.app/">
+    <!-- 默认英文 locale；切换语言时 JS 会改成 zh_CN -->
+    <meta property="og:locale" content="en_US">
+    <!-- Twitter Card：未单独设置时，X/Twitter 会回退到 OpenGraph，但显式声明 summary_large_image 可拿到大图卡片 -->
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="canonical" href="https://miaocut.app/">
+
+    <!-- 结构化数据（JSON-LD）：让 Google 把首页识别为应用 + 拿到 FAQ Rich Result。
+         注意：单页站，FAQ 内容跟 HTML 里 i18nData.en 的 faqXX 字段必须一致；
+         改 FAQ 文案时记得同步更新这里。 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "MiaoCut",
+      "url": "https://miaocut.app/",
+      "description": "Free AI background remover. Remove image backgrounds in 1 second with SOTA AI (BiRefNet). No sign-up, no watermark, high resolution.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Any",
+      "browserRequirements": "Requires JavaScript. Requires HTML5.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "AI background removal in 1 second",
+        "High definition output, no watermark",
+        "Supports JPG, PNG, WebP",
+        "No sign-up required",
+        "Privacy first: in-memory processing"
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is this AI background remover really free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes! MiaoCut is built by an independent developer to provide a genuinely free alternative to expensive subscription tools like remove.bg. There are no watermarks and no strict resolution limits."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What image formats are supported?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You can upload JPG, PNG, and WebP images. The output will be a high-quality PNG image with a transparent background, ready for your designs."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How good is the edge detection for hair or fur?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MiaoCut utilizes the latest SOTA AI models (BiRefNet) which excel at complex edges. It perfectly handles human hair, animal fur, and even semi-transparent objects like glass or wedding dresses."
+          }
+        }
+      ]
+    }
+    </script>
+
     <!--
       Tailwind CSS - 本地构建
       源：src/input.css；构建命令：npm run build:css；输出：output.css
@@ -24,7 +90,9 @@
 <body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-gray-200">
 
     <!-- 顶部导航 -->
-    <header class="w-full flex items-center justify-between px-8 py-6">
+    <!-- relative z-10：<main> 用了 -mt-16 会盖住 header，必须把 header 提到上层，
+         否则右上角语言切换/GitHub 链接的点击都会落到 main 上。 -->
+    <header class="relative z-10 w-full flex items-center justify-between px-8 py-6">
         <div class="text-2xl font-black tracking-tight text-gray-900">
             MiaoCut
         </div>
@@ -197,10 +265,40 @@
         const dropzoneContent = document.getElementById('dropzone-content');
 
         // ============================================================
+        // 埋点（Umami custom events）
+        // ============================================================
+        // 统一封装：umami 脚本异步加载，未就绪/被广告拦截时直接 no-op，不让分析故障影响主流程。
+        // 事件命名约定：动词-状态（cutout-success / cutout-failed），便于在 Umami 后台分组。
+        // event data 字段全部用枚举/桶值（size_bucket / duration_bucket / reason），避免高基数维度爆炸。
+        function track(name, data) {
+            if (typeof umami === 'undefined') return;
+            try {
+                if (data) umami.track(name, data); else umami.track(name);
+            } catch (_) { /* analytics 失败不影响业务 */ }
+        }
+        function sizeBucket(bytes) {
+            if (bytes < 500 * 1024) return '<500K';
+            if (bytes < 2 * 1024 * 1024) return '500K-2M';
+            if (bytes < 5 * 1024 * 1024) return '2M-5M';
+            return '5M-10M';
+        }
+        function durationBucket(ms) {
+            const s = ms / 1000;
+            if (s < 2) return '<2s';
+            if (s < 5) return '2-5s';
+            if (s < 10) return '5-10s';
+            return '>10s';
+        }
+
+        // ============================================================
         // i18n 国际化支持
         // ============================================================
         const i18nData = {
             zh: {
+                // SEO / 分享卡片用的 meta，updateLanguage() 会同步到 <meta> 标签
+                metaDescription: "免费 AI 在线抠图工具，1 秒去除图片背景。基于 SOTA 模型 BiRefNet，无需注册、无水印、保留原图分辨率。",
+                ogTitle: "MiaoCut — 免费 AI 抠图工具",
+                ogLocale: "zh_CN",
                 title: "1秒纯净抠图",
                 subtitle: "不谈排版，只给白底。",
                 dropzoneTitle: "将图片拖拽至此，或点击上传",
@@ -250,6 +348,9 @@
                 alertSize: "仅支持 JPG / PNG / WebP 格式的图片"
             },
             en: {
+                metaDescription: "Remove image backgrounds instantly in 1 second. Powered by SOTA AI (BiRefNet). Completely free, high resolution, no watermarks, no sign-up required.",
+                ogTitle: "MiaoCut - Free AI Background Remover",
+                ogLocale: "en_US",
                 title: "1-Second HD Cutout",
                 subtitle: "No fuss, just pure transparent backgrounds.",
                 dropzoneTitle: "Drag & drop image here, or click to upload",
@@ -311,7 +412,18 @@
             localStorage.setItem('lang', lang);
             document.documentElement.lang = lang;
             document.title = lang === 'zh' ? "MiaoCut - 1秒纯净抠图" : "MiaoCut - Free AI Background Remover | 1-Second HD Cutout";
-            
+
+            // 同步 SEO/分享卡片相关 meta：搜索引擎 + 社交分享抓取时主要看这些
+            const pack = i18nData[lang];
+            const setMeta = (selector, value) => {
+                const el = document.querySelector(selector);
+                if (el && value) el.setAttribute('content', value);
+            };
+            setMeta('meta[name="description"]', pack.metaDescription);
+            setMeta('meta[property="og:title"]', pack.ogTitle);
+            setMeta('meta[property="og:description"]', pack.metaDescription);
+            setMeta('meta[property="og:locale"]', pack.ogLocale);
+
             const selectEl = document.getElementById('lang-switch');
             if (selectEl) selectEl.value = lang;
 
@@ -347,7 +459,11 @@
         // 页面加载即初始化语言
         updateLanguage(currentLang);
         document.getElementById('lang-switch').addEventListener('change', (e) => {
-            updateLanguage(e.target.value);
+            const from = currentLang;
+            const to = e.target.value;
+            updateLanguage(to);
+            // 只埋人为切换，不埋初始化（初始化的语言分布看 Umami 默认的 lang 维度即可）
+            track('lang-switched', { from, to });
         });
 
         // ============================================================
@@ -520,13 +636,17 @@
                             if (data && typeof data.detail === 'string') message = data.detail;
                             else message = text || message;
                         } catch (_) { /* 解析失败用兜底 message */ }
-                        reject(new Error(message));
+                        const err = new Error(message);
+                        err.status = xhr.status; // 给埋点分类用（429/5xx 区分）
+                        reject(err);
                     }
                 };
 
-                xhr.onerror   = () => reject(new Error('网络错误，请检查连接'));
-                xhr.ontimeout = () => reject(new Error('请求超时，请重试'));
-                xhr.onabort   = () => reject(new Error('请求被中断'));
+                // 错误对象挂上 kind，上层 catch 转成 reason 维度
+                const failWith = (msg, kind) => { const e = new Error(msg); e.kind = kind; return e; };
+                xhr.onerror   = () => reject(failWith('网络错误，请检查连接', 'network'));
+                xhr.ontimeout = () => reject(failWith('请求超时，请重试', 'timeout'));
+                xhr.onabort   = () => reject(failWith('请求被中断', 'abort'));
 
                 xhr.send(formData);
             });
@@ -537,11 +657,16 @@
 
             // 类型白名单
             if (!ALLOWED_TYPES.includes(file.type)) {
+                track('format-rejected', { type: file && file.type ? file.type : 'unknown' });
                 alert(t('alertSize'));
                 return;
             }
 
             console.log(`[MiaoCut] 原始图片: ${file.name} (${(file.size/1024/1024).toFixed(2)} MB)`);
+            // 用原始文件大小+类型分桶（不记真实文件名/字节数，避免高基数 + 隐私）
+            const fileExt = file.type.replace('image/', '');
+            track('upload-started', { type: fileExt, size: sizeBucket(file.size) });
+            const startedAt = performance.now();
 
             dropzone.classList.add('pointer-events-none');
 
@@ -572,6 +697,13 @@
                 // 1s 后释放，给浏览器留出实际开始下载的时间
                 setTimeout(() => URL.revokeObjectURL(resultUrl), 1000);
 
+                // 关键转化事件：从用户拖图到下载触发的整段端到端耗时
+                track('cutout-success', {
+                    type: fileExt,
+                    size: sizeBucket(file.size),
+                    duration: durationBucket(performance.now() - startedAt),
+                });
+
                 // 成功 UI
                 dropzoneContent.innerHTML = `
                     <svg class="w-12 h-12 text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -584,6 +716,12 @@
 
             } catch (error) {
                 console.error("API Error:", error);
+                // reason 维度优先用 HTTP 状态（http-429 = 限流；http-5xx = 服务端错），
+                // 没 status 的退回到 kind（network/timeout/abort），最后兜底 unknown。
+                // 'compress' 用于把 compressImage 的报错和上传失败区分开。
+                const reason = error.status ? `http-${error.status}`
+                    : (error.kind || (error.message && /压缩|WebP/.test(error.message) ? 'compress' : 'unknown'));
+                track('cutout-failed', { type: fileExt, reason });
                 // 用 DOM 拼装而不是 innerHTML 拼字符串，防止 error.message 里若含 HTML 被当标签执行（XSS）
                 dropzoneContent.innerHTML = '';
                 const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -623,6 +761,7 @@
         }
         document.getElementById('dismiss-banner').addEventListener('click', () => {
             document.getElementById('bookmark-banner').classList.remove('show');
+            track('bookmark-banner-dismissed');
         });
 
         // ========== Feedback Widget ==========
@@ -632,7 +771,10 @@
         const feedbackThanks = document.getElementById('feedback-thanks');
 
         feedbackTrigger.addEventListener('click', () => {
+            // 只在"打开"那次埋点，再点"关闭"不重复计数
+            const opening = !feedbackPanel.classList.contains('open');
             feedbackPanel.classList.toggle('open');
+            if (opening) track('feedback-opened');
         });
         document.addEventListener('click', (e) => {
             if (!document.getElementById('feedback-widget').contains(e.target)) {
@@ -656,10 +798,7 @@
                 console.warn('[MiaoCut] Feedback send failed:', err);
             }
 
-            // Umami custom event tracking
-            if (typeof umami !== 'undefined') {
-                umami.track('feedback-submitted');
-            }
+            track('feedback-submitted', { has_email: email ? 'yes' : 'no' });
 
             feedbackForm.classList.add('hidden');
             feedbackThanks.classList.remove('hidden');
