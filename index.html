@@ -120,6 +120,20 @@
 
         <!-- Dropzone -->
         <div class="w-full max-w-3xl">
+
+            <!-- 质量模式切换：sharp 走默认快速通道，fur 触发 alpha matting + 前景色去污染（细腻但慢 ~3s）。
+                 选中态由 JS 切类，不依赖 CSS :checked 选择器（input type=button 没 :checked）。 -->
+            <div id="profile-toggle" class="mb-4 flex items-center justify-center gap-2 text-sm flex-wrap">
+                <span class="text-gray-500" data-i18n="profileLabel">Quality:</span>
+                <button type="button" data-profile="sharp" class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors">
+                    <span data-i18n="profileSharp">Fast</span>
+                </button>
+                <button type="button" data-profile="fur" class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors">
+                    <span data-i18n="profileFur">Fine (hair / fur)</span>
+                </button>
+                <span id="profile-hint" class="text-xs text-gray-400 ml-1" data-i18n="profileHintSharp">~1s · everyday photos</span>
+            </div>
+
             <div id="dropzone" class="relative group cursor-pointer bg-white border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center min-h-[320px] hover:border-gray-400 hover:bg-gray-50 overflow-hidden">
                 <input type="file" id="fileInput" class="hidden" accept="image/jpeg, image/png, image/webp">
                 
@@ -305,6 +319,11 @@
                 dropzoneSub: "（支持 JPG / PNG / WebP）",
                 trustTitle: "你的图片绝对安全。",
                 trustSub: "纯内存处理，15分钟后自动销毁，绝不用于 AI 训练。",
+                profileLabel: "质量：",
+                profileSharp: "快速",
+                profileFur: "细腻（毛发/发丝）",
+                profileHintSharp: "约 1 秒 · 适合日常照片",
+                profileHintFur: "约 3~5 秒 · 适合宠物、长发、羽毛、植物",
                 bookmarkText: "喜欢 MiaoCut 吗？按",
                 bookmarkSuffix: "加入书签，下次抠图只需 1 秒！",
                 fbTitle: "☕ 提出建议",
@@ -357,6 +376,11 @@
                 dropzoneSub: "(Supports JPG / PNG / WebP)",
                 trustTitle: "Your images are 100% safe.",
                 trustSub: "Processed in-memory, destroyed automatically. Never used for AI training.",
+                profileLabel: "Quality:",
+                profileSharp: "Fast",
+                profileFur: "Fine (hair / fur)",
+                profileHintSharp: "~1s · everyday photos",
+                profileHintFur: "~3-5s · pets, long hair, feathers, plants",
                 bookmarkText: "Like MiaoCut? Press",
                 bookmarkSuffix: "to bookmark, next cutout is just 1 sec away!",
                 fbTitle: "☕ Feedback",
@@ -465,6 +489,44 @@
             // 只埋人为切换，不埋初始化（初始化的语言分布看 Umami 默认的 lang 维度即可）
             track('lang-switched', { from, to });
         });
+
+        // ============================================================
+        // 抠图质量 profile（sharp / fur）
+        // ============================================================
+        // sharp = 默认快速通道；fur = alpha matting + 前景色去污染（毛发场景细腻很多但慢 ~3s）。
+        // 选中状态用 dataset 标记 + 一段 active class 控制视觉，跨语言切换无副作用。
+        // 持久化到 localStorage，避免用户每次刷新都被重置。
+        let currentProfile = localStorage.getItem('cutoutProfile');
+        if (currentProfile !== 'sharp' && currentProfile !== 'fur') currentProfile = 'sharp';
+
+        function updateProfileButtons() {
+            document.querySelectorAll('.profile-btn').forEach(btn => {
+                const active = btn.dataset.profile === currentProfile;
+                btn.classList.toggle('bg-gray-900', active);
+                btn.classList.toggle('text-white', active);
+                btn.classList.toggle('border-gray-900', active);
+                btn.classList.toggle('text-gray-700', !active);
+                btn.classList.toggle('border-gray-300', !active);
+            });
+            const hint = document.getElementById('profile-hint');
+            const hintKey = currentProfile === 'fur' ? 'profileHintFur' : 'profileHintSharp';
+            hint.setAttribute('data-i18n', hintKey);
+            hint.textContent = t(hintKey);
+        }
+
+        document.querySelectorAll('.profile-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const next = btn.dataset.profile;
+                if (next !== 'sharp' && next !== 'fur') return;
+                if (next === currentProfile) return;
+                const from = currentProfile;
+                currentProfile = next;
+                localStorage.setItem('cutoutProfile', next);
+                updateProfileButtons();
+                track('profile-switched', { from, to: next });
+            });
+        });
+        updateProfileButtons();
 
         // ============================================================
         // API 配置
@@ -634,7 +696,9 @@
         function uploadWithProgress(formData) {
             return new Promise((resolve, reject) => {
                 const xhr = new XMLHttpRequest();
-                xhr.open('POST', API_BASE + '/api/remove-background');
+                // 始终带上 ?profile=，服务端对未知值会静默回退到 env 默认，老 SDK 也兼容
+                const url = `${API_BASE}/api/remove-background?profile=${encodeURIComponent(currentProfile)}`;
+                xhr.open('POST', url);
                 xhr.responseType = 'blob';
 
                 // ② 上传阶段：实时映射到 15% → 70%
@@ -694,7 +758,7 @@
             console.log(`[MiaoCut] 原始图片: ${file.name} (${(file.size/1024/1024).toFixed(2)} MB)`);
             // 用原始文件大小+类型分桶（不记真实文件名/字节数，避免高基数 + 隐私）
             const fileExt = file.type.replace('image/', '');
-            track('upload-started', { type: fileExt, size: sizeBucket(file.size) });
+            track('upload-started', { type: fileExt, size: sizeBucket(file.size), profile: currentProfile });
             const startedAt = performance.now();
 
             dropzone.classList.add('pointer-events-none');

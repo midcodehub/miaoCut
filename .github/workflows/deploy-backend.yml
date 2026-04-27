@@ -115,20 +115,29 @@ jobs:
             docker rm   miaocut 2>/dev/null || true
 
             echo "==> Starting new container..."
-            # --memory=12g：容器最多用 12GB 物理内存（VPS 共 16GB，留 4GB 给系统）
-            # --memory-swap=12g：禁止使用 swap（值等于 --memory 即关闭 swap）
-            #   原因：BiRefNet 模型权重一旦被 page-out，下次推理 latency 从 1~3s 变 30s+
-            #   宿主机的 4GB swap 是给系统/sshd 用的应急减压阀，不是给抠图服务用的
-            # MAX_CONCURRENCY=2：BiRefNet 单请求峰值很高，先保 RSS 稳定，再按压测结果上调。
+            # --memory=14g：容器最多用 14GB 物理内存（VPS 共 16GB，留 2GB 给系统/sshd）
+            # --memory-swap=14g：禁止容器使用 swap（值等于 --memory 即关闭 swap）
+            #   原因：BiRefNet 模型权重一旦被 page-out，下次推理 latency 从 1~3s 变 30s+。
+            #   ⚠️ 必须 ≥ --memory，否则 Docker 报错或静默降级；等于 --memory 才是真禁 swap。
+            #   宿主机另有 4GB swap，是给系统/sshd 用的应急减压阀，与容器配置完全独立。
+            # MAX_CONCURRENCY=2：BiRefNet+fur 模式单请求峰值 ~1.5GB，2 路并发实测 RSS ~4GB；
+            #   想提速可压测后上调到 4（峰值 ~7GB，仍有大富余）。
+            # MALLOC_ARENA_MAX=2：glibc 默认按 8×CPU 数开 malloc arena，4 核机器 = 32 个 arena，
+            #   每个最多缓存 ~64MB free chunks → 仅碎片就能吃 GB 级。限到 2 个，约束碎片上限。
+            # MALLOC_TRIM_THRESHOLD_=131072：把 trim 阈值从默认 8MB 降到 128KB，让 glibc
+            #   更主动地把 free 页归还内核（与 main.py 里 malloc_trim(0) 显式调用形成双保险）。
+            #   注意结尾下划线 `_`，是 glibc 的 env 变量命名约定，少一个字符就不生效。
             docker run -d \
               --name miaocut \
               --restart unless-stopped \
               -p 80:8000 \
               --memory=14g \
-              --memory-swap=4g \
+              --memory-swap=14g \
               -e ALLOWED_ORIGINS=https://miaocut.app,https://www.miaocut.app \
               -e TRUST_PROXY=1 \
               -e MAX_CONCURRENCY=2 \
+              -e MALLOC_ARENA_MAX=2 \
+              -e MALLOC_TRIM_THRESHOLD_=131072 \
               -v miaocut-models:/app/.u2net \
               -v miaocut-data:/app/data \
               "$IMAGE"

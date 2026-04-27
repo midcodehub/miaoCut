@@ -10,7 +10,31 @@
       "Bash(.venv/bin/python)",
       "Bash(.venv/bin/python -c \"import ast; ast.parse\\(open\\('main.py'\\).read\\(\\)\\); print\\('OK'\\)\")",
       "Bash(grep -v \":0$\")",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(curl -sS -A \"Mozilla/5.0 \\(compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm\\)\" -o /dev/null -w \"status=%{http_code} time_total=%{time_total}s size=%{size_download} content_type=%{content_type}\\\\n\" https://miaocut.app/)",
+      "Bash(curl -sS -A \"Mozilla/5.0 \\(compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm\\)\" -D - -o /dev/null https://miaocut.app/)",
+      "Bash(curl -sS -A \"Mozilla/5.0 \\(compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm\\)\" -o /dev/null -w \"robots=%{http_code} \" https://miaocut.app/robots.txt)",
+      "Bash(curl -sS -A \"Mozilla/5.0 \\(compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm\\)\" -o /dev/null -w \"sitemap=%{http_code}\\\\n\" https://miaocut.app/sitemap.xml)",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('main.py'\\).read\\(\\)\\); print\\('OK'\\)\")",
+      "Read(//opt/homebrew/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/bin/**)",
+      "Bash(python -c \"import rembg, pymatting, cv2; print\\('all ok'\\)\")",
+      "Bash(.venv/bin/python _bench_profile.py)",
+      "Bash(.venv/bin/python _compose_dark.py)",
+      "Bash(.venv/bin/python _smoke_dispatch.py)",
+      "Bash(.venv/bin/python -c \"from rembg import new_session; import inspect; print\\(inspect.signature\\(new_session\\)\\)\")",
+      "Bash(.venv/bin/python -c ' *)",
+      "Bash(.venv/bin/python -c \"import psutil\")",
+      "Bash(.venv/bin/pip install *)",
+      "Bash(.venv/bin/python -c \"import psutil; print\\(psutil.__version__\\)\")",
+      "Bash(.venv/bin/python _mem_profile.py)",
+      "Bash(.venv/bin/python _mem_profile2.py)",
+      "Bash(.venv/bin/python _mem_profile3.py on)",
+      "Bash(.venv/bin/python _mem_profile3.py off)",
+      "Bash(.venv/bin/python -c \"import ast; ast.parse\\(open\\('main.py'\\).read\\(\\)\\); print\\('syntax OK'\\)\")",
+      "Bash(.venv/bin/python _smoke_mem.py)"
+    ],
+    "additionalDirectories": [
+      "/Users/wuchao/git/miaoCut"
     ]
   }
 }

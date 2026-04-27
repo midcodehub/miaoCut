@@ -23,6 +23,8 @@ MiaoCut 后端：1 秒纯净抠图。
 """
 
 import asyncio
+import ctypes
+import gc
 import io
 import ipaddress
 import json
@@ -34,12 +36,14 @@ from pathlib import Path
 from typing import Optional
 from urllib.parse import quote
 
+import onnxruntime as ort
 import uvicorn
 from fastapi import Depends, FastAPI, File, HTTPException, Request, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from PIL import Image
-from rembg import new_session, remove
+from rembg import remove
+from rembg.sessions import sessions_class
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
@@ -74,6 +78,15 @@ MAX_IMAGE_PIXELS = int(os.getenv("MAX_IMAGE_PIXELS", str(4096 * 4096)))
 MAX_CONCURRENCY = int(os.getenv("MAX_CONCURRENCY", "4"))
 ENABLE_DOCS = os.getenv("ENABLE_DOCS", "0") == "1"
 
+# 抠图 profile：决定 _run_rembg_sync 走哪条流水线。
+#   sharp（默认）：BiRefNet 直出 + 温和 gamma 校正 + 1px 抗锯齿。
+#                 ~1s/张（M1）/ ~2s/张（VPS），适合人物、商品、Logo 等"硬边"主体。
+#   fur         ：BiRefNet + alpha matting + 前景色去污染。
+#                 ~3~5s/张，单图内存峰值 +500MB；适合白猫/卷发/羽毛/植物等"软边"主体。
+# 想做成"用户在前端按需选模式"时，把读取位置从环境变量改成 query/header 即可，pipeline 函数不感知。
+_raw_profile = os.getenv("CUTOUT_PROFILE", "sharp").lower()
+CUTOUT_PROFILE = _raw_profile if _raw_profile in ("sharp", "fur") else "sharp"
+
 ALLOWED_MIME_TYPES = {"image/jpeg", "image/png", "image/webp"}
 
 # PIL 全局像素上限：超过会抛 DecompressionBombWarning，2 倍以上直接抛 Error。
@@ -105,11 +118,37 @@ logger = logging.getLogger("miaocut")
 # providers=["CPUExecutionProvider"]：强制 CPU 推理。
 # Apple Silicon 上 onnxruntime 默认尝试 CoreML EP，但部分算子不支持会报错。
 # 纯 CPU 在 M1/M2 上单张图 1~3 秒，完全够用。
-logger.info("Loading BiRefNet (SOTA) AI model for background removal...")
-high_quality_session = new_session(
-    "birefnet-general",
-    providers=["CPUExecutionProvider"],
-)
+def _create_birefnet_session():
+    """加载 BiRefNet 并禁用 onnxruntime 的两个内存大坑。
+
+    rembg 自带的 new_session() 内部硬写 ort.SessionOptions()，没法外部覆盖；
+    所以这里直接构造 session 类，复刻 new_session 中需要保留的 OMP 线程配置。
+
+    enable_cpu_mem_arena=False
+      ort 默认 CPU 内存池会"缓存推理峰值"——第一次跑大图后，arena 永久持有那个峰值的内存量，
+      即使后续都是小图也不释放。实测 RSS 从 ~5.5GB → ~3GB（macOS）/ 预计 ~9GB → ~5GB（Linux），
+      推理时间无回归（甚至略快，arena 的池化收益没起作用）。
+    enable_mem_pattern=False
+      mem_pattern 是针对"固定 shape 反复推理"做的分配模式缓存；我们每张图大小都不同，
+      它反而会按最大见过的 shape 预留缓冲，纯负担。
+    """
+    sess_opts = ort.SessionOptions()
+    sess_opts.enable_cpu_mem_arena = False
+    sess_opts.enable_mem_pattern = False
+    # 兼容 OMP_NUM_THREADS（new_session 原生支持，这里手动复刻）
+    if "OMP_NUM_THREADS" in os.environ:
+        n = int(os.environ["OMP_NUM_THREADS"])
+        sess_opts.inter_op_num_threads = n
+        sess_opts.intra_op_num_threads = n
+
+    cls = next((sc for sc in sessions_class if sc.name() == "birefnet-general"), None)
+    if cls is None:
+        raise RuntimeError("birefnet-general session class not found in rembg")
+    return cls("birefnet-general", sess_opts, ["CPUExecutionProvider"])
+
+
+logger.info("Loading BiRefNet (SOTA) AI model for background removal... (cutout_profile=%s)", CUTOUT_PROFILE)
+high_quality_session = _create_birefnet_session()
 
 
 # ============================================================
@@ -168,6 +207,33 @@ logger.info("RateLimiter storage: memory (single-process), trust_proxy=%s", TRUS
 # 用信号量排队，超出的请求会 await 等待，不会报错（行为更友好）。
 # 若想直接拒绝，可以改成 wait_for(acquire, timeout) + 429。
 rembg_semaphore = asyncio.Semaphore(MAX_CONCURRENCY)
+
+
+# ============================================================
+# 主动内存回收
+# ============================================================
+# Linux glibc 默认要等"堆顶有 8MB 连续 free 块"才把页归还内核（M_TRIM_THRESHOLD=128KB×64）。
+# 抠图任务的临时缓冲多是几百 MB 大块，free 之后散落在堆中间，RSS 长时间不下降。
+# 显式跑 malloc_trim(0) 立即触发 trim，配合 Docker 端 MALLOC_ARENA_MAX=2 效果最佳。
+#
+# macOS/Windows/musl libc 上 dlopen 会失败，置 None → _release_memory 退化为只跑 gc.collect。
+try:
+    _libc_malloc_trim = ctypes.CDLL("libc.so.6").malloc_trim
+    _libc_malloc_trim.argtypes = [ctypes.c_size_t]
+    logger.info("malloc_trim hook ready (glibc detected)")
+except (OSError, AttributeError):
+    _libc_malloc_trim = None
+
+
+def _release_memory() -> None:
+    """每次推理结束后主动归还内存：gc 收循环引用，malloc_trim 把 free 页还给 OS。
+
+    单次开销 ~5ms（gc 主导），相对 1~5s 的推理可忽略。
+    在信号量内调用，确保下一个排队请求拿到的是已 trim 过的状态，不是峰值后的胖进程。
+    """
+    gc.collect()
+    if _libc_malloc_trim is not None:
+        _libc_malloc_trim(0)
 
 
 # ============================================================
@@ -262,80 +328,137 @@ def safe_basename(name: Optional[str]) -> str:
     return stem or "image"
 
 
-def _run_rembg_sync(data: bytes) -> bytes:
+def _run_rembg_sync(data: bytes, profile: Optional[str] = None) -> bytes:
     """
-    三阶段抠图流水线：
+    根据 profile 选择抠图流水线：
+      - sharp（默认）：BiRefNet 直出 + 温和 gamma + 1px 抗锯齿，速度优先
+      - fur          ：BiRefNet + alpha matting + 前景色去污染，毛发细腻优先
 
-    第一阶段 - BiRefNet (SOTA) 直出 mask：
-      不开 alpha_matting。BiRefNet 原生 mask 已经足够锐利，
-      alpha_matting 反而会在边缘产生过宽的半透明过渡带（"光晕"）。
+    profile 取值优先级：调用方显式传入 > CUTOUT_PROFILE 环境变量 > "sharp"。
+    详见 _run_sharp_pipeline / _run_fur_pipeline 头注释。
+    """
+    chosen = profile if profile in ("sharp", "fur") else CUTOUT_PROFILE
+    if chosen == "fur":
+        return _run_fur_pipeline(data)
+    return _run_sharp_pipeline(data)
 
-    第二阶段 - Alpha 曲线重映射（Adobe 式硬边策略）：
-      用陡峭 S 曲线把 BiRefNet 输出的 5~20px 半透明过渡带压到 1~2px，
-      消除任何底色下都会出现的"深色毛边"。详见函数体内注释。
 
-    第三阶段 - 1px 高斯抗锯齿：
-      硬边之后用极轻的高斯模糊（kernel 3, sigma 0.5）做亚像素抗锯齿，
-      让边缘视觉上平滑而非锯齿状（但仍然是锐利的）。
+def _run_sharp_pipeline(data: bytes) -> bytes:
+    """
+    Sharp 模式：BiRefNet 直出 mask + 温和 gamma 校正 + 1px 高斯抗锯齿。
+
+    历史踩坑：早期版本用陡峭 S 曲线 [0.20, 0.80] 把半透明带压成 1~2px"硬边"。
+    这对人物/商品有效，但对毛发是灾难——
+      1. alpha < 20% 的细毛全部被砍 → 毛尖出现"啃过似的"断裂
+      2. 自然的 0~1 渐变被强行拉伸到 60% 区间 → 边缘看起来像阶梯
+      3. 半透明像素 RGB 仍混着旧背景色 → 换底色时发灰
+    现在改为：
+      - 极窄死区 [0.02, 0.98]：仅清除 BiRefNet 输出端点的浮点噪声
+      - gamma = 0.85：把中段 alpha 略微抬一点，让主体扎实但保留软过渡
+
+    速度同前（~1s/张 on M1，~2s/张 on VPS），适合人物、商品、Logo 等"硬边"主体。
+    对毛发场景请改用 CUTOUT_PROFILE=fur。
     """
     import cv2
     import numpy as np
 
-    # ---- 第一阶段：BiRefNet 直出（不开 alpha_matting）----
     output_data = remove(
         data,
         session=high_quality_session,
         alpha_matting=False,
     )
 
-    # ---- 解码结果 ----
     result_img = np.frombuffer(output_data, np.uint8)
     result_img = cv2.imdecode(result_img, cv2.IMREAD_UNCHANGED)
-
     if result_img is None or result_img.ndim < 3 or result_img.shape[2] < 4:
         return output_data
 
-    alpha = result_img[:, :, 3].astype(np.float64)
+    alpha = result_img[:, :, 3].astype(np.float32) / 255.0
+    # 极窄死区：去 BiRefNet 输出端点的浮点噪声，不影响真正的过渡区域
+    alpha = np.where(alpha < 0.02, 0.0, alpha)
+    alpha = np.where(alpha > 0.98, 1.0, alpha)
+    # 温和 gamma：中段抬一点点，主体更扎实；端点不变；软过渡完整保留
+    alpha = np.power(alpha, 0.85)
+    alpha_u8 = (alpha * 255).astype(np.uint8)
 
-    # ---- 第二阶段：Alpha 曲线重映射（Adobe 式硬边策略）----
-    # 问题的根源：BiRefNet 输出的边缘有 5~20px 宽的半透明过渡带，
-    # 这些半透明像素混合了背景色，在任何底色上都会显示为深色毛边。
-    #
-    # Adobe 的策略不是去"修复"这些像素的颜色，
-    # 而是直接用陡峭的 S 曲线把半透明区域压缩到极窄的 1~2px：
-    #   alpha < 20% → 0（全透明，直接裁掉）
-    #   alpha > 80% → 255（全不透明，完全保留）
-    #   中间部分 → 线性拉伸到 0~255
-    #
-    # 效果：边缘干净利落，像用剪刀剪的，没有任何毛边。
-    low_thresh = 0.20   # alpha 低于 20% 的像素直接透明
-    high_thresh = 0.80  # alpha 高于 80% 的像素直接不透明
+    # 1px 抗锯齿：极轻的高斯（kernel 3, sigma 0.5）做亚像素抗锯齿
+    alpha_u8 = cv2.GaussianBlur(alpha_u8, (3, 3), sigmaX=0.5)
 
-    alpha_norm = alpha / 255.0
-    # 线性重映射：[low, high] → [0, 1]
-    alpha_remapped = (alpha_norm - low_thresh) / (high_thresh - low_thresh)
-    alpha_remapped = np.clip(alpha_remapped, 0.0, 1.0)
-
-    # 转回 uint8
-    alpha_clean = (alpha_remapped * 255).astype(np.uint8)
-
-    # ---- 第三阶段：1px 抗锯齿 ----
-    # 硬边之后用极轻的高斯模糊做 1px 的亚像素抗锯齿，
-    # 让边缘在视觉上平滑而非锯齿状（但仍然是锐利的）
-    alpha_clean = cv2.GaussianBlur(alpha_clean, (3, 3), sigmaX=0.5)
-
-    # 合成最终结果（RGB 保持原样，只改 alpha）
-    result_img[:, :, 3] = alpha_clean
+    result_img[:, :, 3] = alpha_u8
 
     # 用 PNG 而非 WebP：实测 cv2.imencode 对带 alpha 的高质量 WebP 比 PNG 慢 ~100ms
     # （libwebp 要单独编 alpha plane）。WebP 文件小 70% 但用户感知不到下载差异，
     # 反而 encode 多出来的 100ms 直接叠加在"AI 处理中"进度末尾，体感变慢。
     _, output_png = cv2.imencode(".png", result_img)
-
     return output_png.tobytes()
 
 
-async def run_rembg(data: bytes) -> bytes:
+def _run_fur_pipeline(data: bytes) -> bytes:
+    """
+    Fur 模式：alpha matting（保留软过渡）+ 前景色去污染（消背景色调）。
+
+    解决 sharp 模式无法处理的两个问题：
+
+    1. BiRefNet 直出 mask 的"未知带"只有 1~2px，毛发末端会被一刀切。
+       alpha_matting=True 让 rembg 用 BiRefNet mask 自动生成 trimap，
+       再用 pymatting closed-form 解算法在 trimap "未知带"求 alpha，
+       逐根毛的透明度才精准——这是图 1（Adobe）效果的第一半秘密。
+
+    2. 半透明像素 RGB = α·前景 + (1-α)·背景；直接换底色时会带旧背景色调
+       （白猫黑底 → 毛尖发灰；卷发亮底 → 发尾偏白）。
+       estimate_foreground_ml 用迭代法解出"纯前景色"，换底色后毛尖才干净——
+       这是图 1 效果的第二半秘密，也是 sharp 模式无法补救的根本差距。
+
+    成本：~3~5s/张（VPS），单图内存峰值 +500MB。开 fur 后 MAX_CONCURRENCY 要按
+    内存重新拍（建议除以 1.5）。
+
+    参数（已实测 cat / 长发人物）：
+      foreground_threshold=240：mask >= 240 当确定前景
+      background_threshold=15 ：mask <= 15  当确定背景
+      erode_size=8            ：trimap 未知带 8px，刚够覆盖一般毛发宽度
+                              （再大 pymatting 会慢且产生光晕）
+    """
+    import cv2
+    import numpy as np
+    from pymatting import estimate_foreground_ml
+
+    output_data = remove(
+        data,
+        session=high_quality_session,
+        alpha_matting=True,
+        alpha_matting_foreground_threshold=240,
+        alpha_matting_background_threshold=15,
+        alpha_matting_erode_size=8,
+    )
+
+    result_img = np.frombuffer(output_data, np.uint8)
+    result_img = cv2.imdecode(result_img, cv2.IMREAD_UNCHANGED)
+    if result_img is None or result_img.ndim < 3 or result_img.shape[2] < 4:
+        return output_data
+
+    alpha_norm = result_img[:, :, 3].astype(np.float32) / 255.0
+
+    # 仅当存在真正的半透明区域时才跑前景估算（纯硬边图省 0.5~1.5s）
+    if np.any((alpha_norm > 0.02) & (alpha_norm < 0.98)):
+        # pymatting 期望 RGB 顺序、范围 [0, 1]
+        rgb_norm = cv2.cvtColor(result_img[:, :, :3], cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
+        fg_rgb = estimate_foreground_ml(rgb_norm, alpha_norm)
+        fg_bgr = cv2.cvtColor(
+            (fg_rgb * 255.0).clip(0, 255).astype(np.uint8),
+            cv2.COLOR_RGB2BGR,
+        )
+        result_img[:, :, :3] = fg_bgr
+
+    # 清理 trimap 求解后零星的浮点 noise（< ~1% 透明度直接归零，避免暗色像素散点）
+    alpha_u8 = result_img[:, :, 3]
+    alpha_u8 = np.where(alpha_u8 < 3, 0, alpha_u8).astype(np.uint8)
+    result_img[:, :, 3] = alpha_u8
+
+    _, output_png = cv2.imencode(".png", result_img)
+    return output_png.tobytes()
+
+
+async def run_rembg(data: bytes, profile: Optional[str] = None) -> bytes:
     """
     在线程池里跑 rembg，同时用信号量限并发。
 
@@ -346,9 +469,16 @@ async def run_rembg(data: bytes) -> bytes:
     为什么先抢信号量再进线程池：
       信号量排队是 await 级别的，成本极低；线程池资源有限（默认 40 线程），
       先抢令牌能让超额请求在 await 这里排队，不占线程。
+
+    为什么 finally 里跑 _release_memory：
+      推理产生的 numpy/pymatting 临时大块在 Python 层 free 之后，glibc 不会立刻归还内核。
+      在信号量内做 trim，下一个排队的请求拿到的就是瘦身后的进程，避免 RSS 持续累积。
     """
     async with rembg_semaphore:
-        return await asyncio.to_thread(_run_rembg_sync, data)
+        try:
+            return await asyncio.to_thread(_run_rembg_sync, data, profile)
+        finally:
+            _release_memory()
 
 
 # ============================================================
@@ -409,8 +539,12 @@ async def remove_background(request: Request, file: UploadFile = File(...)):
         )
 
     # ---------- 4. 真正处理 ----------
+    # profile 来自 query param ?profile=sharp|fur；非法值（含拼写错）静默回退到 env 默认。
+    # 故意不报 400：这是个体验向开关，前端老版本可能根本没传，不应破坏既有调用。
+    profile_param = request.query_params.get("profile")
+    profile = profile_param if profile_param in ("sharp", "fur") else None
     try:
-        output_data = await run_rembg(input_data)
+        output_data = await run_rembg(input_data, profile=profile)
     except Exception as e:
         logger.exception("rembg failed: %s", e)
         raise HTTPException(status_code=500, detail="图片处理失败，可能图片过于复杂，请重试。")
