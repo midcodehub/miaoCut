@@ -30,6 +30,7 @@ __pycache__/
 
 # User Data (feedback etc.)
 data/
+examples/raw/
 
 # Logs
 *.log

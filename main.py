@@ -41,6 +41,7 @@ import uvicorn
 from fastapi import Depends, FastAPI, File, HTTPException, Request, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from PIL import Image
 from rembg import remove
 from rembg.sessions import sessions_class
@@ -506,6 +507,12 @@ async def app_js():
 # ---------- SEO landing 子页 ----------
 # 每加一个 use case 子页都要在这里登记一行；不用 StaticFiles 是为了避免暴露整个项目目录
 # （main.py / Dockerfile / requirements.txt 等不该被 HTTP 访问到）。
+
+# ---------- Examples gallery 静态文件 ----------
+# examples/ 目录里只有 .webp 图片，不含敏感文件，直接挂 StaticFiles 即可。
+# 生产由 Cloudflare Pages 直接服务，此 mount 仅本地 dev 生效。
+from fastapi.staticfiles import StaticFiles
+app.mount("/examples", StaticFiles(directory="examples"), name="examples")
 @app.get("/product-photo-background-remover/")
 @app.get("/product-photo-background-remover")
 async def landing_product_photo():

@@ -31,7 +31,13 @@
       "Bash(.venv/bin/python _mem_profile3.py on)",
       "Bash(.venv/bin/python _mem_profile3.py off)",
       "Bash(.venv/bin/python -c \"import ast; ast.parse\\(open\\('main.py'\\).read\\(\\)\\); print\\('syntax OK'\\)\")",
-      "Bash(.venv/bin/python _smoke_mem.py)"
+      "Bash(.venv/bin/python _smoke_mem.py)",
+      "Bash(chmod +x /Users/wuchao/git/miaoCut/scripts/build-examples.sh)",
+      "Bash(bash -n /Users/wuchao/git/miaoCut/scripts/build-examples.sh)",
+      "Bash(command -v cwebp)",
+      "Bash(cwebp -version)",
+      "Bash(echo \"cwebp: $\\(cwebp -version 2>&1)",
+      "Bash(python -c \"from main import app; print\\('OK'\\)\")"
     ],
     "additionalDirectories": [
       "/Users/wuchao/git/miaoCut"
