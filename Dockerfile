@@ -36,7 +36,14 @@ COPY --from=builder /install /usr/local
 
 # 拷贝应用代码
 COPY main.py .
-
+COPY index.html .
+COPY output.css .
+COPY app.js .
+# SEO landing 子页：每加一个新子页要在这里追加一行
+COPY product-photo-background-remover/ ./product-photo-background-remover/
+COPY portrait-background-remover/ ./portrait-background-remover/
+# Examples gallery 图片（首页展示用的抠图样本 webp）
+COPY examples/ ./examples/
 
 # 模型缓存目录（首次启动自动下载 BiRefNet ~230MB）
 # 用 volume 持久化，避免每次重启都重新下载
