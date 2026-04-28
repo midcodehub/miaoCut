@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=gb2312" />
+    <meta name="sogou_site_verification" content="lLMMvkZKud" />
+    <meta name="baidu-site-verification" content="codeva-bJiTOFPj58" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portrait Background Remover - Free AI for Headshots & Profile Pictures | MiaoCut</title>
+    <meta name="description"
+        content="Remove background from portraits, headshots, and selfies for free. Perfect for LinkedIn, resumes, social media, and ID photos. HD transparent PNG, no watermark.">
+    <meta name="keywords"
+        content="portrait background remover, profile picture background remover, headshot background remover, selfie background remover, linkedin photo background, passport photo background, ai portrait cutout">
+    <meta property="og:title"
+        content="Portrait Background Remover - Free AI for Headshots & Profile Pictures | MiaoCut">
+    <meta property="og:description"
+        content="Remove background from portraits, headshots, and selfies for free. Perfect for LinkedIn, resumes, social media, and ID photos. HD transparent PNG, no watermark.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://miaocut.app/portrait-background-remover/">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="canonical" href="https://miaocut.app/portrait-background-remover/">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "MiaoCut Portrait Background Remover",
+      "url": "https://miaocut.app/portrait-background-remover/",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Web",
+      "description": "Free AI background remover for portraits, headshots, profile pictures, and selfies. Output HD transparent PNG cutouts ready for LinkedIn, resumes, social media, and ID photos.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "MiaoCut", "item": "https://miaocut.app/" },
+        { "@type": "ListItem", "position": 2, "name": "Portrait Background Remover", "item": "https://miaocut.app/portrait-background-remover/" }
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Will it handle long hair, curly hair, or flyaways properly?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Switch the quality toggle to 'Fine (hair / fur)' mode. MiaoCut uses BiRefNet plus alpha matting to preserve individual hair strands and minimize the green/grey halo that simpler tools leave behind."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use the cutout for LinkedIn, resumes, or ID photos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The output is a transparent PNG. Composite it onto a white, blue, or red background in any image editor to meet LinkedIn, resume, or government ID photo requirements."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What about glasses, earrings, hats, or accessories?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Glasses frames, earrings, hats, and headwear are kept as part of the subject. The AI segments by person, not by face, so accessories worn on the head or upper body are preserved."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my photo private and safe?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Photos are processed in-memory on the server and discarded immediately after the cutout is returned. We never store your image, never use it for AI training, and there is no signup required."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it work on group photos with multiple people?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, but works best with a clear primary subject. For tight group shots where everyone is the foreground, all people are kept and the background is removed together."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <link rel="stylesheet" href="/output.css">
+    <script defer src="https://cloud.umami.is/script.js"
+        data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
+</head>
+
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-gray-200">
+
+    <header class="relative z-10 w-full flex items-center justify-between px-8 py-6">
+        <a href="/" class="text-2xl font-black tracking-tight text-gray-900 hover:text-gray-600 transition-colors">
+            MiaoCut
+        </a>
+        <div class="flex items-center gap-4">
+            <select id="lang-switch"
+                class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
+                <option value="en">English</option>
+                <option value="zh">简体中文</option>
+            </select>
+            <a href="#" class="text-gray-400 hover:text-gray-900 transition-colors" title="GitHub">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill-rule="evenodd"
+                        d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                        clip-rule="evenodd" />
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <nav class="w-full max-w-3xl mx-auto px-4 mb-4 text-sm text-gray-500" aria-label="Breadcrumb">
+        <ol class="flex items-center gap-2">
+            <li><a href="/" class="hover:text-gray-900" data-i18n="breadcrumbHome">MiaoCut</a></li>
+            <li class="text-gray-300">/</li>
+            <li class="text-gray-700" data-i18n="breadcrumbCurrent">Portrait Background Remover</li>
+        </ol>
+    </nav>
+
+    <main class="flex-grow flex flex-col items-center justify-center px-4">
+
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4" data-i18n="title">Portrait
+                Background Remover</h1>
+            <p class="text-lg text-gray-500 max-w-2xl mx-auto" data-i18n="subtitle">Create clean transparent cutouts for
+                headshots, LinkedIn, resumes, and social media. Free AI tool with HD output, no watermark, no
+                signup.</p>
+        </div>
+
+        <div class="w-full max-w-3xl">
+
+            <div id="profile-toggle" class="mb-4 flex items-center justify-center gap-2 text-sm flex-wrap">
+                <span class="text-gray-500" data-i18n="profileLabel">Quality:</span>
+                <button type="button" data-profile="sharp"
+                    class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors">
+                    <span data-i18n="profileSharp">Fast</span>
+                </button>
+                <button type="button" data-profile="fur"
+                    class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors">
+                    <span data-i18n="profileFur">Fine (hair / fur)</span>
+                </button>
+                <span id="profile-hint" class="text-xs text-gray-400 ml-1" data-i18n="profileHintSharp">~1s · everyday
+                    photos</span>
+            </div>
+
+            <div id="dropzone"
+                class="relative group cursor-pointer bg-white border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center min-h-[320px] hover:border-gray-400 hover:bg-gray-50 overflow-hidden">
+                <input type="file" id="fileInput" class="hidden" accept="image/jpeg, image/png, image/webp">
+                <div id="dropzone-content"
+                    class="flex flex-col items-center justify-center text-center p-8 pointer-events-none">
+                    <svg class="w-12 h-12 text-gray-400 mb-4 group-hover:text-gray-500 transition-colors" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                    </svg>
+                    <p class="text-lg font-medium text-gray-700 mb-1" data-i18n="dropzoneTitle">Drag & drop image here,
+                        or click to upload</p>
+                    <p class="text-sm text-gray-400" data-i18n="dropzoneSub">(Supports JPG / PNG / WebP)</p>
+                </div>
+            </div>
+
+            <div class="mt-6 flex flex-col items-center justify-center text-center text-gray-500 text-sm">
+                <div class="flex items-center gap-1.5 mb-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                        </path>
+                    </svg>
+                    <span class="font-medium" data-i18n="trustTitle">Your images are 100% safe.</span>
+                </div>
+                <p data-i18n="trustSub">Processed in-memory, destroyed automatically. Never used for AI training.</p>
+            </div>
+
+            <div class="mt-8 text-center text-sm text-gray-500 leading-relaxed max-w-2xl mx-auto">
+                <p data-i18n="seoIntro">MiaoCut's AI background remover handles complex hair, glasses, and earrings on
+                    portraits and headshots. Upload a JPG, PNG, or WebP photo and download a clean transparent PNG —
+                    perfect for LinkedIn, resumes, ID photos, and social media.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <div class="w-full flex justify-center bg-white border-t border-gray-200 mt-12 pt-16 pb-20 px-6">
+        <div class="w-full max-w-4xl text-left">
+
+            <section class="mb-16">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="howItWorks">How to Remove
+                    Background from a Portrait</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-gray-600">
+                    <div
+                        class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
+                        <div class="text-4xl mb-4">📸</div>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="howStep1Title">1. Upload Your
+                            Portrait</h3>
+                        <p class="text-sm leading-relaxed" data-i18n="howStep1Desc">Upload a headshot, selfie, or
+                            full-body portrait in JPG, PNG, or WebP. No signup required.</p>
+                    </div>
+                    <div
+                        class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
+                        <div class="text-4xl mb-4">✂️</div>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="howStep2Title">2. AI Cuts You Out
+                        </h3>
+                        <p class="text-sm leading-relaxed" data-i18n="howStep2Desc">MiaoCut detects the person and
+                            removes the background, preserving hair strands, glasses, and accessories.</p>
+                    </div>
+                    <div
+                        class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
+                        <div class="text-4xl mb-4">💼</div>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="howStep3Title">3. Use Anywhere</h3>
+                        <p class="text-sm leading-relaxed" data-i18n="howStep3Desc">Download a transparent PNG —
+                            composite onto white for LinkedIn, blue for ID photos, or any social background.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-16">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="whyTitle">Why Use MiaoCut
+                    for Portraits</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
+                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1" data-i18n="why1Title">Strand-Level Hair
+                                Detail</strong>
+                            <span class="text-sm text-gray-600" data-i18n="why1Desc">BiRefNet plus alpha matting
+                                preserves individual hair strands and flyaways. Long, curly, and frizzy hair come out
+                                clean — no grey halo.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
+                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1" data-i18n="why2Title">LinkedIn / Resume
+                                Ready</strong>
+                            <span class="text-sm text-gray-600" data-i18n="why2Desc">Transparent PNG drops onto any
+                                solid background — white for LinkedIn, blue for ID, or a branded color for your
+                                website.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
+                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1" data-i18n="why3Title">Privacy First</strong>
+                            <span class="text-sm text-gray-600" data-i18n="why3Desc">Photos are processed in-memory,
+                                never stored, never used for AI training. No account, no email needed.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
+                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1" data-i18n="why4Title">No Watermark, HD
+                                Output</strong>
+                            <span class="text-sm text-gray-600" data-i18n="why4Desc">Up to 2048px on the long edge,
+                                no watermark, no resolution downgrade. Use the result anywhere.</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-16">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="tipsTitle">Tips for the
+                    Cleanest Portrait Cutouts</h2>
+                <ul class="space-y-3 text-gray-700 text-sm md:text-base list-disc list-inside max-w-3xl mx-auto">
+                    <li data-i18n="tip1">Face the camera with even, front-facing lighting. Backlit photos make hair
+                        edges harder to separate.</li>
+                    <li data-i18n="tip2">Avoid backgrounds that match your hair or clothing color — that's where most
+                        AI tools blur the boundary.</li>
+                    <li data-i18n="tip3">For long, curly, or layered hair, switch to <strong>Fine (hair / fur)</strong>
+                        mode. The extra ~3 seconds is worth it.</li>
+                    <li data-i18n="tip4">Single-subject photos work best. Group shots are supported but tighter crops
+                        give cleaner results.</li>
+                </ul>
+            </section>
+
+            <section class="mb-16">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="faqTitle">Frequently
+                    Asked Questions</h2>
+                <div class="space-y-4">
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">Will it handle long hair,
+                            curly hair, or flyaways properly?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq1A">Yes. Switch the quality
+                            toggle to "Fine (hair / fur)" mode. MiaoCut uses BiRefNet plus alpha matting to preserve
+                            individual hair strands and minimize the green/grey halo that simpler tools leave behind.
+                        </p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq2Q">Can I use the cutout for
+                            LinkedIn, resumes, or ID photos?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq2A">Yes. The output is a
+                            transparent PNG. Composite it onto a white, blue, or red background in any image editor to
+                            meet LinkedIn, resume, or government ID photo requirements.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq3Q">What about glasses,
+                            earrings, hats, or accessories?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq3A">Glasses frames, earrings,
+                            hats, and headwear are kept as part of the subject. The AI segments by person, not by
+                            face, so accessories worn on the head or upper body are preserved.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq4Q">Is my photo private and
+                            safe?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq4A">Yes. Photos are processed
+                            in-memory on the server and discarded immediately after the cutout is returned. We never
+                            store your image, never use it for AI training, and there is no signup required.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq5Q">Does it work on group
+                            photos with multiple people?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq5A">Yes, but works best with a
+                            clear primary subject. For tight group shots where everyone is the foreground, all people
+                            are kept and the background is removed together.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center" data-i18n="moreTitle">More MiaoCut Tools
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <a href="/product-photo-background-remover/"
+                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
+                        <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkProductTitle">Product Photo
+                            Background Remover →</h3>
+                        <p class="text-sm text-gray-600" data-i18n="moreLinkProductDesc">For Amazon, Shopify, Etsy, and
+                            eBay sellers.</p>
+                    </a>
+                    <a href="/"
+                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
+                        <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkHomeTitle">All-Purpose
+                            Background Remover →</h3>
+                        <p class="text-sm text-gray-600" data-i18n="moreLinkHomeDesc">Logos, pets, complex edges,
+                            anything else.</p>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div id="bookmark-banner" class="fixed top-0 left-0 right-0 z-50 bg-gray-900 text-white">
+        <div class="max-w-3xl mx-auto flex items-center justify-between px-6 py-3">
+            <div class="flex items-center gap-3">
+                <span class="text-lg">&#11088;</span>
+                <p class="text-sm"><span data-i18n="bookmarkText">Like MiaoCut? Press</span> <kbd id="shortcut-key"
+                        class="px-1.5 py-0.5 bg-gray-700 rounded text-xs font-mono">Ctrl + D</kbd> <span
+                        data-i18n="bookmarkSuffix">to bookmark, next cutout is just 1 sec away!</span></p>
+            </div>
+            <button id="dismiss-banner" class="text-gray-400 hover:text-white transition-colors ml-4 shrink-0"
+                aria-label="close">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div id="feedback-widget" class="fixed bottom-6 right-6 z-40">
+        <div id="feedback-panel"
+            class="absolute bottom-14 right-0 w-72 bg-white rounded-xl shadow-2xl border border-gray-100 p-5">
+            <h3 class="text-sm font-semibold text-gray-900 mb-3" data-i18n="fbTitle">&#9749; Feedback</h3>
+            <form id="feedback-form">
+                <textarea id="feedback-msg"
+                    class="w-full h-20 text-sm border border-gray-200 rounded-lg p-2.5 resize-none focus:outline-none focus:ring-2 focus:ring-gray-300 placeholder-gray-400"
+                    placeholder="What's on your mind?" data-i18n-ph="fbPlaceholder"></textarea>
+                <input id="feedback-email" type="email"
+                    class="w-full mt-2 text-sm border border-gray-200 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-gray-300 placeholder-gray-400"
+                    placeholder="Email (Optional)" data-i18n-ph="fbEmail">
+                <button type="submit"
+                    class="w-full mt-3 bg-gray-900 text-white text-sm font-medium py-2 rounded-lg hover:bg-gray-800 transition-colors"
+                    data-i18n="fbSend">Send</button>
+            </form>
+            <div id="feedback-thanks" class="hidden text-center py-6">
+                <p class="text-2xl mb-2">&#127881;</p>
+                <p class="text-sm font-medium text-gray-800" data-i18n="fbThanks">Thanks for your feedback!</p>
+                <p class="text-xs text-gray-500 mt-1" data-i18n="fbThanksSub">We read every single message.</p>
+            </div>
+        </div>
+        <button id="feedback-trigger"
+            class="w-11 h-11 bg-white border border-gray-200 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl hover:scale-110 transition-all text-lg"
+            title="feedback">&#9749;</button>
+    </div>
+
+    <script>
+        window.MIAOCUT_PAGE_KEY = 'portrait';
+        window.MIAOCUT_PAGE_TITLES = {
+            zh: "人像背景去除工具 — 免费 AI 头像 / 证件照抠图 | MiaoCut",
+            en: "Portrait Background Remover - Free AI for Headshots & Profile Pictures | MiaoCut"
+        };
+        window.MIAOCUT_PAGE_I18N = {
+            zh: {
+                metaDescription: "免费在线为人像、头像、自拍去除背景。适合 LinkedIn、简历、社交媒体、证件照。输出高清透明 PNG，无水印。",
+                metaKeywords: "人像抠图,头像抠图,人像去背景,LinkedIn 头像,证件照抠图,自拍抠图,免费人像抠图",
+                ogTitle: "人像背景去除工具 — 免费 AI 头像 / 证件照抠图 | MiaoCut",
+                ogLocale: "zh_CN",
+                breadcrumbHome: "MiaoCut",
+                breadcrumbCurrent: "人像背景去除",
+                title: "人像背景去除工具",
+                subtitle: "为头像、LinkedIn、简历、社交媒体生成干净的透明抠图。免费 AI 工具，高清输出，无水印，无需注册。",
+                seoIntro: "MiaoCut 的 AI 抠图能精细处理人像中的发丝、眼镜、耳饰。上传 JPG、PNG 或 WebP 照片，立即下载干净的透明 PNG — 适用于 LinkedIn、简历、证件照和社交媒体。",
+                howItWorks: "如何为人像去除背景",
+                howStep1Title: "1. 上传你的人像",
+                howStep1Desc: "上传头像、自拍或全身照（JPG / PNG / WebP），无需注册。",
+                howStep2Title: "2. AI 抠出人像",
+                howStep2Desc: "MiaoCut 自动识别人物并去除背景，保留发丝、眼镜和配饰。",
+                howStep3Title: "3. 任意场景使用",
+                howStep3Desc: "下载透明 PNG — 合成到白底用于 LinkedIn、蓝底用于证件照、或任意社交背景。",
+                whyTitle: "为什么用 MiaoCut 处理人像",
+                why1Title: "发丝级精细度",
+                why1Desc: "BiRefNet + alpha matting 保留每根发丝和飞发，长发、卷发、毛躁头发都干净 — 没有灰色光晕。",
+                why2Title: "LinkedIn / 简历直用",
+                why2Desc: "透明 PNG 可合成到任意纯色底 — 白色用于 LinkedIn、蓝色用于证件照、品牌色用于官网。",
+                why3Title: "隐私优先",
+                why3Desc: "图片纯内存处理，绝不存储、绝不用于 AI 训练。无需账号，无需邮箱。",
+                why4Title: "无水印高清输出",
+                why4Desc: "长边最高 2048px，无水印，无分辨率降级，结果可任意使用。",
+                tipsTitle: "拍出最干净人像抠图的小技巧",
+                tip1: "正面对镜头，使用均匀的正面光。逆光会让发丝边缘更难分离。",
+                tip2: "避免背景颜色与头发或衣服相近 — 这是大多数 AI 工具最容易模糊边界的地方。",
+                tip3: "长发、卷发、多层次发型请切到 <strong>Fine（毛发/发丝）</strong>模式。多花 3 秒值得。",
+                tip4: "单人照效果最好。支持合影，但裁紧画面后效果更干净。",
+                faqTitle: "常见问题",
+                faq1Q: "能正确处理长发、卷发或飞发吗？",
+                faq1A: "可以。把质量切到 \"Fine（毛发/发丝）\" 模式。MiaoCut 使用 BiRefNet + alpha matting 保留每根发丝，最大限度减少其他工具会留下的绿色/灰色光晕。",
+                faq2Q: "抠图可以用于 LinkedIn、简历或证件照吗？",
+                faq2A: "可以。输出是透明 PNG。在任意图片编辑器中合成到白色、蓝色或红色背景，即可满足 LinkedIn、简历或证件照要求。",
+                faq3Q: "眼镜、耳饰、帽子或配饰怎么处理？",
+                faq3A: "眼镜框、耳饰、帽子和头饰会作为人物的一部分保留。AI 是按人分割而非按脸分割，所以头部和上半身的配饰都会被保留。",
+                faq4Q: "我的照片安全吗？",
+                faq4A: "安全。照片纯内存处理，抠图返回后立即销毁。我们绝不存储您的图片，绝不用于 AI 训练，无需注册账号。",
+                faq5Q: "能处理多人合影吗？",
+                faq5A: "可以，但单一主体效果最好。对于所有人都属于前景的紧凑合影，会保留所有人物，整体去除背景。",
+                moreTitle: "更多 MiaoCut 工具",
+                moreLinkProductTitle: "商品图抠图 →",
+                moreLinkProductDesc: "适合亚马逊、Shopify、Etsy、eBay 卖家。",
+                moreLinkHomeTitle: "通用背景去除 →",
+                moreLinkHomeDesc: "Logo、宠物、复杂边缘等任何场景。"
+            },
+            en: {
+                metaDescription: "Remove background from portraits, headshots, and selfies for free. Perfect for LinkedIn, resumes, social media, and ID photos. HD transparent PNG, no watermark.",
+                metaKeywords: "portrait background remover, profile picture background remover, headshot background remover, selfie background remover, linkedin photo background, passport photo background, ai portrait cutout",
+                ogTitle: "Portrait Background Remover - Free AI for Headshots & Profile Pictures | MiaoCut",
+                ogLocale: "en_US",
+                breadcrumbHome: "MiaoCut",
+                breadcrumbCurrent: "Portrait Background Remover",
+                title: "Portrait Background Remover",
+                subtitle: "Create clean transparent cutouts for headshots, LinkedIn, resumes, and social media. Free AI tool with HD output, no watermark, no signup.",
+                seoIntro: "MiaoCut's AI background remover handles complex hair, glasses, and earrings on portraits and headshots. Upload a JPG, PNG, or WebP photo and download a clean transparent PNG — perfect for LinkedIn, resumes, ID photos, and social media.",
+                howItWorks: "How to Remove Background from a Portrait",
+                howStep1Title: "1. Upload Your Portrait",
+                howStep1Desc: "Upload a headshot, selfie, or full-body portrait in JPG, PNG, or WebP. No signup required.",
+                howStep2Title: "2. AI Cuts You Out",
+                howStep2Desc: "MiaoCut detects the person and removes the background, preserving hair strands, glasses, and accessories.",
+                howStep3Title: "3. Use Anywhere",
+                howStep3Desc: "Download a transparent PNG — composite onto white for LinkedIn, blue for ID photos, or any social background.",
+                whyTitle: "Why Use MiaoCut for Portraits",
+                why1Title: "Strand-Level Hair Detail",
+                why1Desc: "BiRefNet plus alpha matting preserves individual hair strands and flyaways. Long, curly, and frizzy hair come out clean — no grey halo.",
+                why2Title: "LinkedIn / Resume Ready",
+                why2Desc: "Transparent PNG drops onto any solid background — white for LinkedIn, blue for ID, or a branded color for your website.",
+                why3Title: "Privacy First",
+                why3Desc: "Photos are processed in-memory, never stored, never used for AI training. No account, no email needed.",
+                why4Title: "No Watermark, HD Output",
+                why4Desc: "Up to 2048px on the long edge, no watermark, no resolution downgrade. Use the result anywhere.",
+                tipsTitle: "Tips for the Cleanest Portrait Cutouts",
+                tip1: "Face the camera with even, front-facing lighting. Backlit photos make hair edges harder to separate.",
+                tip2: "Avoid backgrounds that match your hair or clothing color — that's where most AI tools blur the boundary.",
+                tip3: "For long, curly, or layered hair, switch to <strong>Fine (hair / fur)</strong> mode. The extra ~3 seconds is worth it.",
+                tip4: "Single-subject photos work best. Group shots are supported but tighter crops give cleaner results.",
+                faqTitle: "Frequently Asked Questions",
+                faq1Q: "Will it handle long hair, curly hair, or flyaways properly?",
+                faq1A: "Yes. Switch the quality toggle to \"Fine (hair / fur)\" mode. MiaoCut uses BiRefNet plus alpha matting to preserve individual hair strands and minimize the green/grey halo that simpler tools leave behind.",
+                faq2Q: "Can I use the cutout for LinkedIn, resumes, or ID photos?",
+                faq2A: "Yes. The output is a transparent PNG. Composite it onto a white, blue, or red background in any image editor to meet LinkedIn, resume, or government ID photo requirements.",
+                faq3Q: "What about glasses, earrings, hats, or accessories?",
+                faq3A: "Glasses frames, earrings, hats, and headwear are kept as part of the subject. The AI segments by person, not by face, so accessories worn on the head or upper body are preserved.",
+                faq4Q: "Is my photo private and safe?",
+                faq4A: "Yes. Photos are processed in-memory on the server and discarded immediately after the cutout is returned. We never store your image, never use it for AI training, and there is no signup required.",
+                faq5Q: "Does it work on group photos with multiple people?",
+                faq5A: "Yes, but works best with a clear primary subject. For tight group shots where everyone is the foreground, all people are kept and the background is removed together.",
+                moreTitle: "More MiaoCut Tools",
+                moreLinkProductTitle: "Product Photo Background Remover →",
+                moreLinkProductDesc: "For Amazon, Shopify, Etsy, and eBay sellers.",
+                moreLinkHomeTitle: "All-Purpose Background Remover →",
+                moreLinkHomeDesc: "Logos, pets, complex edges, anything else."
+            }
+        };
+    </script>
+    <script src="/app.js"></script>
+
+</body>
+
+</html>

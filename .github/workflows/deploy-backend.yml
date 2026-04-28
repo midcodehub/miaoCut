@@ -26,6 +26,9 @@ on:
       - "Dockerfile"
       - "index.html"
       - "output.css"
+      - "app.js"
+      - "product-photo-background-remover/**"
+      - "portrait-background-remover/**"
       - ".github/workflows/deploy-backend.yml"
   workflow_dispatch:
     # 允许在 GitHub UI 手动触发，用于强制 redeploy

@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=gb2312" />
+    <meta name="sogou_site_verification" content="lLMMvkZKud" />
+    <meta name="baidu-site-verification" content="codeva-bJiTOFPj58" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Photo Background Remover - Free AI Tool for E-commerce | MiaoCut</title>
+    <meta name="description"
+        content="Remove background from product photos for free. AI background remover for Amazon, Shopify, Etsy, and eBay sellers. HD transparent PNG, no watermark, no signup.">
+    <meta name="keywords"
+        content="product photo background remover, remove background from product photo, white background product photos, amazon product image background, shopify product photo background, ecommerce background remover">
+    <meta property="og:title"
+        content="Product Photo Background Remover - Free AI Tool for E-commerce | MiaoCut">
+    <meta property="og:description"
+        content="Remove background from product photos for free. AI background remover for Amazon, Shopify, Etsy, and eBay sellers. HD transparent PNG, no watermark, no signup.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://miaocut.app/product-photo-background-remover/">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="canonical" href="https://miaocut.app/product-photo-background-remover/">
+
+    <!-- WebApplication schema：复用首页的同一个工具，但 description 锚定子页主题词 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "MiaoCut Product Photo Background Remover",
+      "url": "https://miaocut.app/product-photo-background-remover/",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Web",
+      "description": "Free AI background remover for product photos. Cut out items from JPG, PNG, and WebP images and download transparent PNG cutouts ready for Amazon, Shopify, Etsy, and eBay listings.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+    </script>
+    <!-- BreadcrumbList：让搜索结果出 breadcrumb rich snippet，CTR 提升 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "MiaoCut", "item": "https://miaocut.app/" },
+        { "@type": "ListItem", "position": 2, "name": "Product Photo Background Remover", "item": "https://miaocut.app/product-photo-background-remover/" }
+      ]
+    }
+    </script>
+    <!-- FAQPage：内容必须与下方 HTML FAQ 一致 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can I use this background remover for Amazon listings?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. MiaoCut outputs a transparent PNG. To meet Amazon's pure white background requirement, place the cutout on a white canvas in any image editor or use a free online tool like Photopea."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is the output high enough resolution for Shopify and Etsy?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. MiaoCut preserves the original image resolution up to about 4 megapixels (2048px on the long edge), which exceeds Shopify (2048px recommended) and Etsy (2000px) requirements."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it handle reflective items, jewelry, glass, or plastic?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Switch the quality toggle to 'Fine (hair / fur)' mode for products with soft, reflective, or semi-transparent edges. It uses alpha matting for cleaner results on tricky materials."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I process product photos in bulk?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MiaoCut currently processes one image at a time, but usage is unlimited and free. There are no daily or monthly caps for casual sellers."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the result include a watermark?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The output is a clean transparent PNG without any watermark, fully usable for commercial product listings."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <link rel="stylesheet" href="/output.css">
+    <script defer src="https://cloud.umami.is/script.js"
+        data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
+</head>
+
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-gray-200">
+
+    <!-- 顶部导航 -->
+    <header class="relative z-10 w-full flex items-center justify-between px-8 py-6">
+        <a href="/" class="text-2xl font-black tracking-tight text-gray-900 hover:text-gray-600 transition-colors">
+            MiaoCut
+        </a>
+        <div class="flex items-center gap-4">
+            <select id="lang-switch"
+                class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
+                <option value="en">English</option>
+                <option value="zh">简体中文</option>
+            </select>
+            <a href="#" class="text-gray-400 hover:text-gray-900 transition-colors" title="GitHub">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill-rule="evenodd"
+                        d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                        clip-rule="evenodd" />
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <!-- 面包屑：辅助 SEO + 用户导航 -->
+    <nav class="w-full max-w-3xl mx-auto px-4 mb-4 text-sm text-gray-500" aria-label="Breadcrumb">
+        <ol class="flex items-center gap-2">
+            <li><a href="/" class="hover:text-gray-900" data-i18n="breadcrumbHome">MiaoCut</a></li>
+            <li class="text-gray-300">/</li>
+            <li class="text-gray-700" data-i18n="breadcrumbCurrent">Product Photo Background Remover</li>
+        </ol>
+    </nav>
+
+    <!-- 核心区域 -->
+    <main class="flex-grow flex flex-col items-center justify-center px-4">
+
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4" data-i18n="title">Product
+                Photo Background Remover</h1>
+            <p class="text-lg text-gray-500 max-w-2xl mx-auto" data-i18n="subtitle">Get clean transparent backgrounds
+                for Amazon, Shopify, Etsy, and eBay product photos. Free AI tool with HD output, no watermark, no
+                signup.</p>
+        </div>
+
+        <div class="w-full max-w-3xl">
+
+            <div id="profile-toggle" class="mb-4 flex items-center justify-center gap-2 text-sm flex-wrap">
+                <span class="text-gray-500" data-i18n="profileLabel">Quality:</span>
+                <button type="button" data-profile="sharp"
+                    class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors">
+                    <span data-i18n="profileSharp">Fast</span>
+                </button>
+                <button type="button" data-profile="fur"
+                    class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors">
+                    <span data-i18n="profileFur">Fine (hair / fur)</span>
+                </button>
+                <span id="profile-hint" class="text-xs text-gray-400 ml-1" data-i18n="profileHintSharp">~1s · everyday
+                    photos</span>
+            </div>
+
+            <div id="dropzone"
+                class="relative group cursor-pointer bg-white border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center min-h-[320px] hover:border-gray-400 hover:bg-gray-50 overflow-hidden">
+                <input type="file" id="fileInput" class="hidden" accept="image/jpeg, image/png, image/webp">
+                <div id="dropzone-content"
+                    class="flex flex-col items-center justify-center text-center p-8 pointer-events-none">
+                    <svg class="w-12 h-12 text-gray-400 mb-4 group-hover:text-gray-500 transition-colors" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                    </svg>
+                    <p class="text-lg font-medium text-gray-700 mb-1" data-i18n="dropzoneTitle">Drag & drop image here,
+                        or click to upload</p>
+                    <p class="text-sm text-gray-400" data-i18n="dropzoneSub">(Supports JPG / PNG / WebP)</p>
+                </div>
+            </div>
+
+            <div class="mt-6 flex flex-col items-center justify-center text-center text-gray-500 text-sm">
+                <div class="flex items-center gap-1.5 mb-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                        </path>
+                    </svg>
+                    <span class="font-medium" data-i18n="trustTitle">Your images are 100% safe.</span>
+                </div>
+                <p data-i18n="trustSub">Processed in-memory, destroyed automatically. Never used for AI training.</p>
+            </div>
+
+            <div class="mt-8 text-center text-sm text-gray-500 leading-relaxed max-w-2xl mx-auto">
+                <p data-i18n="seoIntro">MiaoCut's AI helps online sellers remove backgrounds from product photos in
+                    seconds. Upload JPG, PNG, or WebP product images and download HD transparent PNG cutouts ready for
+                    your e-commerce listings.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- SEO 内容区 -->
+    <div class="w-full flex justify-center bg-white border-t border-gray-200 mt-12 pt-16 pb-20 px-6">
+        <div class="w-full max-w-4xl text-left">
+
+            <!-- How to -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="howItWorks">How to Remove
+                    Background from a Product Photo</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-gray-600">
+                    <div
+                        class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
+                        <div class="text-4xl mb-4">📤</div>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="howStep1Title">1. Upload Your
+                            Product Image</h3>
+                        <p class="text-sm leading-relaxed" data-i18n="howStep1Desc">Upload a JPG, PNG, or WebP photo of
+                            your product. No signup or credit card required.</p>
+                    </div>
+                    <div
+                        class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
+                        <div class="text-4xl mb-4">🤖</div>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="howStep2Title">2. AI Cuts Out the
+                            Product</h3>
+                        <p class="text-sm leading-relaxed" data-i18n="howStep2Desc">MiaoCut's AI detects the product
+                            outline and removes the background, including reflective and semi-transparent edges.</p>
+                    </div>
+                    <div
+                        class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
+                        <div class="text-4xl mb-4">🛒</div>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="howStep3Title">3. Download &amp; List
+                        </h3>
+                        <p class="text-sm leading-relaxed" data-i18n="howStep3Desc">Download a transparent PNG ready for
+                            Amazon, Shopify, Etsy, eBay, or your own storefront.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Why MiaoCut for product photos -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="whyTitle">Why Sellers
+                    Choose MiaoCut for Product Photos</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
+                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1" data-i18n="why1Title">Marketplace-Ready
+                                Output</strong>
+                            <span class="text-sm text-gray-600" data-i18n="why1Desc">Transparent PNG that drops
+                                straight into Amazon, Shopify, Etsy, eBay listings, or composites onto a pure white
+                                background in one click.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
+                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1" data-i18n="why2Title">HD Resolution
+                                Preserved</strong>
+                            <span class="text-sm text-gray-600" data-i18n="why2Desc">Up to 2048px on the long edge —
+                                meets Shopify (2048px), Etsy (2000px), and Amazon zoom (1000px+) requirements without
+                                upscaling.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
+                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1" data-i18n="why3Title">No Watermark, Commercial
+                                Safe</strong>
+                            <span class="text-sm text-gray-600" data-i18n="why3Desc">Free for commercial use. Sell the
+                                listing photos on any marketplace without licensing fees or branding overlays.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
+                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1" data-i18n="why4Title">Handles Tricky
+                                Materials</strong>
+                            <span class="text-sm text-gray-600" data-i18n="why4Desc">Switch to Fine mode to cleanly
+                                cut out jewelry, glass, plastic, and reflective items where standard tools leave
+                                halos.</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tips -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="tipsTitle">Tips for the
+                    Cleanest Product Cutouts</h2>
+                <ul class="space-y-3 text-gray-700 text-sm md:text-base list-disc list-inside max-w-3xl mx-auto">
+                    <li data-i18n="tip1">Shoot with even, diffuse lighting — harsh shadows confuse the edge detector.
+                    </li>
+                    <li data-i18n="tip2">Keep the camera roughly perpendicular to the product to avoid distortion the
+                        AI may misread as a separate object.</li>
+                    <li data-i18n="tip3">Crop tight before uploading. Smaller frames give the model less background
+                        clutter to disambiguate.</li>
+                    <li data-i18n="tip4">For jewelry, glass, plastic bottles, or anything reflective, use the
+                        <strong>Fine (hair / fur)</strong> mode — alpha matting handles the soft edges much better.
+                    </li>
+                </ul>
+            </section>
+
+            <!-- FAQ -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="faqTitle">Frequently
+                    Asked Questions</h2>
+                <div class="space-y-4">
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">Can I use this background
+                            remover for Amazon listings?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq1A">Yes. MiaoCut outputs a
+                            transparent PNG. To meet Amazon's pure white background requirement, place the cutout on a
+                            white canvas in any image editor or use a free online tool like Photopea.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq2Q">Is the output high enough
+                            resolution for Shopify and Etsy?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq2A">Yes. MiaoCut preserves the
+                            original image resolution up to about 4 megapixels (2048px on the long edge), which exceeds
+                            Shopify (2048px recommended) and Etsy (2000px) requirements.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq3Q">Does it handle reflective
+                            items, jewelry, glass, or plastic?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq3A">Yes. Switch the quality
+                            toggle to "Fine (hair / fur)" mode for products with soft, reflective, or semi-transparent
+                            edges. It uses alpha matting for cleaner results on tricky materials.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq4Q">Can I process product
+                            photos in bulk?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq4A">MiaoCut currently processes
+                            one image at a time, but usage is unlimited and free. There are no daily or monthly caps
+                            for casual sellers.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq5Q">Does the result include a
+                            watermark?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq5A">No. The output is a clean
+                            transparent PNG without any watermark, fully usable for commercial product listings.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cross-link -->
+            <section>
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center" data-i18n="moreTitle">More MiaoCut Tools
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <a href="/portrait-background-remover/"
+                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
+                        <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkPortraitTitle">Portrait
+                            Background Remover →</h3>
+                        <p class="text-sm text-gray-600" data-i18n="moreLinkPortraitDesc">Headshots, profile pictures,
+                            and social media cutouts.</p>
+                    </a>
+                    <a href="/"
+                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
+                        <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkHomeTitle">All-Purpose
+                            Background Remover →</h3>
+                        <p class="text-sm text-gray-600" data-i18n="moreLinkHomeDesc">Logos, pets, complex edges,
+                            anything else.</p>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Bookmark Banner -->
+    <div id="bookmark-banner" class="fixed top-0 left-0 right-0 z-50 bg-gray-900 text-white">
+        <div class="max-w-3xl mx-auto flex items-center justify-between px-6 py-3">
+            <div class="flex items-center gap-3">
+                <span class="text-lg">&#11088;</span>
+                <p class="text-sm"><span data-i18n="bookmarkText">Like MiaoCut? Press</span> <kbd id="shortcut-key"
+                        class="px-1.5 py-0.5 bg-gray-700 rounded text-xs font-mono">Ctrl + D</kbd> <span
+                        data-i18n="bookmarkSuffix">to bookmark, next cutout is just 1 sec away!</span></p>
+            </div>
+            <button id="dismiss-banner" class="text-gray-400 hover:text-white transition-colors ml-4 shrink-0"
+                aria-label="close">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Feedback Widget -->
+    <div id="feedback-widget" class="fixed bottom-6 right-6 z-40">
+        <div id="feedback-panel"
+            class="absolute bottom-14 right-0 w-72 bg-white rounded-xl shadow-2xl border border-gray-100 p-5">
+            <h3 class="text-sm font-semibold text-gray-900 mb-3" data-i18n="fbTitle">&#9749; Feedback</h3>
+            <form id="feedback-form">
+                <textarea id="feedback-msg"
+                    class="w-full h-20 text-sm border border-gray-200 rounded-lg p-2.5 resize-none focus:outline-none focus:ring-2 focus:ring-gray-300 placeholder-gray-400"
+                    placeholder="What's on your mind?" data-i18n-ph="fbPlaceholder"></textarea>
+                <input id="feedback-email" type="email"
+                    class="w-full mt-2 text-sm border border-gray-200 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-gray-300 placeholder-gray-400"
+                    placeholder="Email (Optional)" data-i18n-ph="fbEmail">
+                <button type="submit"
+                    class="w-full mt-3 bg-gray-900 text-white text-sm font-medium py-2 rounded-lg hover:bg-gray-800 transition-colors"
+                    data-i18n="fbSend">Send</button>
+            </form>
+            <div id="feedback-thanks" class="hidden text-center py-6">
+                <p class="text-2xl mb-2">&#127881;</p>
+                <p class="text-sm font-medium text-gray-800" data-i18n="fbThanks">Thanks for your feedback!</p>
+                <p class="text-xs text-gray-500 mt-1" data-i18n="fbThanksSub">We read every single message.</p>
+            </div>
+        </div>
+        <button id="feedback-trigger"
+            class="w-11 h-11 bg-white border border-gray-200 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl hover:scale-110 transition-all text-lg"
+            title="feedback">&#9749;</button>
+    </div>
+
+    <!-- 页面专属 i18n + 标题，必须在 /app.js 之前执行 -->
+    <script>
+        window.MIAOCUT_PAGE_KEY = 'product-photo';
+        window.MIAOCUT_PAGE_TITLES = {
+            zh: "商品图抠图工具 — 免费 AI 电商背景去除 | MiaoCut",
+            en: "Product Photo Background Remover - Free AI Tool for E-commerce | MiaoCut"
+        };
+        window.MIAOCUT_PAGE_I18N = {
+            zh: {
+                metaDescription: "免费在线为商品图去除背景。专为亚马逊、Shopify、Etsy、eBay 卖家打造的 AI 抠图工具，输出高清透明 PNG，无水印、无需注册。",
+                metaKeywords: "商品图抠图,商品图去背景,电商抠图,亚马逊白底图,Shopify 商品图,Etsy 商品图,免费商品抠图",
+                ogTitle: "商品图抠图工具 — 免费 AI 电商背景去除 | MiaoCut",
+                ogLocale: "zh_CN",
+                breadcrumbHome: "MiaoCut",
+                breadcrumbCurrent: "商品图抠图",
+                title: "商品图抠图工具",
+                subtitle: "为亚马逊、Shopify、Etsy、eBay 商品图打造干净的透明背景。免费 AI 工具，高清输出，无水印，无需注册。",
+                seoIntro: "MiaoCut 帮助电商卖家在几秒内为商品图去除背景。上传 JPG、PNG 或 WebP 商品照片，立即下载可直接上架的高清透明 PNG。",
+                howItWorks: "如何为商品图去除背景",
+                howStep1Title: "1. 上传商品图",
+                howStep1Desc: "上传 JPG、PNG 或 WebP 商品照片，无需注册，无需信用卡。",
+                howStep2Title: "2. AI 抠出商品",
+                howStep2Desc: "MiaoCut 的 AI 自动识别商品轮廓并去除背景，包括反光和半透明边缘。",
+                howStep3Title: "3. 下载并上架",
+                howStep3Desc: "下载透明 PNG，可直接用于亚马逊、Shopify、Etsy、eBay 或自有店铺。",
+                whyTitle: "为什么卖家选择 MiaoCut 处理商品图",
+                why1Title: "可直接上架的输出",
+                why1Desc: "透明 PNG 可直接放入亚马逊、Shopify、Etsy、eBay 列表，或一键合成纯白背景。",
+                why2Title: "保留高清分辨率",
+                why2Desc: "长边最高 2048px，满足 Shopify（2048px）、Etsy（2000px）、亚马逊缩放（1000px+）要求，无需放大。",
+                why3Title: "无水印，可商用",
+                why3Desc: "完全免费可商用。任何平台上架使用都无需付费授权或显示品牌水印。",
+                why4Title: "处理棘手材质",
+                why4Desc: "切换到 Fine 模式，可干净抠出珠宝、玻璃、塑料、反光物品，告别毛边和光晕。",
+                tipsTitle: "拍出最干净商品抠图的小技巧",
+                tip1: "使用均匀柔光拍摄 — 强烈阴影会干扰 AI 边缘识别。",
+                tip2: "镜头与商品保持垂直，避免畸变被识别为额外物体。",
+                tip3: "上传前裁紧画面。背景越少，模型越好判断主体。",
+                tip4: "珠宝、玻璃、塑料瓶等反光物品请使用 <strong>Fine（毛发/发丝）</strong>模式 — alpha matting 处理软边效果好得多。",
+                faqTitle: "常见问题",
+                faq1Q: "可以用来做亚马逊商品图吗？",
+                faq1A: "可以。MiaoCut 输出透明 PNG。要满足亚马逊纯白底要求，把抠图放到任意图片编辑器（如免费的 Photopea）的白色画布上即可。",
+                faq2Q: "分辨率够 Shopify 和 Etsy 用吗？",
+                faq2A: "够。MiaoCut 保留原图分辨率，长边最高约 4MP（2048px），超过 Shopify（推荐 2048px）和 Etsy（2000px）要求。",
+                faq3Q: "能处理反光、珠宝、玻璃、塑料吗？",
+                faq3A: "可以。把质量切换到 \"Fine（毛发/发丝）\" 模式，对软边、反光、半透明商品效果更好，使用 alpha matting 算法清理棘手材质。",
+                faq4Q: "可以批量处理商品图吗？",
+                faq4A: "MiaoCut 当前一次处理一张图，但完全免费且无使用上限，对个人卖家没有日/月配额。",
+                faq5Q: "结果有水印吗？",
+                faq5A: "没有。输出是干净的透明 PNG，不带任何水印，可商用。",
+                moreTitle: "更多 MiaoCut 工具",
+                moreLinkPortraitTitle: "人像背景去除 →",
+                moreLinkPortraitDesc: "头像、证件照、社交媒体抠图。",
+                moreLinkHomeTitle: "通用背景去除 →",
+                moreLinkHomeDesc: "Logo、宠物、复杂边缘等任何场景。"
+            },
+            en: {
+                metaDescription: "Remove background from product photos for free. AI background remover for Amazon, Shopify, Etsy, and eBay sellers. HD transparent PNG, no watermark, no signup.",
+                metaKeywords: "product photo background remover, remove background from product photo, white background product photos, amazon product image background, shopify product photo background, ecommerce background remover",
+                ogTitle: "Product Photo Background Remover - Free AI Tool for E-commerce | MiaoCut",
+                ogLocale: "en_US",
+                breadcrumbHome: "MiaoCut",
+                breadcrumbCurrent: "Product Photo Background Remover",
+                title: "Product Photo Background Remover",
+                subtitle: "Get clean transparent backgrounds for Amazon, Shopify, Etsy, and eBay product photos. Free AI tool with HD output, no watermark, no signup.",
+                seoIntro: "MiaoCut's AI helps online sellers remove backgrounds from product photos in seconds. Upload JPG, PNG, or WebP product images and download HD transparent PNG cutouts ready for your e-commerce listings.",
+                howItWorks: "How to Remove Background from a Product Photo",
+                howStep1Title: "1. Upload Your Product Image",
+                howStep1Desc: "Upload a JPG, PNG, or WebP photo of your product. No signup or credit card required.",
+                howStep2Title: "2. AI Cuts Out the Product",
+                howStep2Desc: "MiaoCut's AI detects the product outline and removes the background, including reflective and semi-transparent edges.",
+                howStep3Title: "3. Download & List",
+                howStep3Desc: "Download a transparent PNG ready for Amazon, Shopify, Etsy, eBay, or your own storefront.",
+                whyTitle: "Why Sellers Choose MiaoCut for Product Photos",
+                why1Title: "Marketplace-Ready Output",
+                why1Desc: "Transparent PNG that drops straight into Amazon, Shopify, Etsy, eBay listings, or composites onto a pure white background in one click.",
+                why2Title: "HD Resolution Preserved",
+                why2Desc: "Up to 2048px on the long edge — meets Shopify (2048px), Etsy (2000px), and Amazon zoom (1000px+) requirements without upscaling.",
+                why3Title: "No Watermark, Commercial Safe",
+                why3Desc: "Free for commercial use. Sell the listing photos on any marketplace without licensing fees or branding overlays.",
+                why4Title: "Handles Tricky Materials",
+                why4Desc: "Switch to Fine mode to cleanly cut out jewelry, glass, plastic, and reflective items where standard tools leave halos.",
+                tipsTitle: "Tips for the Cleanest Product Cutouts",
+                tip1: "Shoot with even, diffuse lighting — harsh shadows confuse the edge detector.",
+                tip2: "Keep the camera roughly perpendicular to the product to avoid distortion the AI may misread as a separate object.",
+                tip3: "Crop tight before uploading. Smaller frames give the model less background clutter to disambiguate.",
+                tip4: "For jewelry, glass, plastic bottles, or anything reflective, use the <strong>Fine (hair / fur)</strong> mode — alpha matting handles the soft edges much better.",
+                faqTitle: "Frequently Asked Questions",
+                faq1Q: "Can I use this background remover for Amazon listings?",
+                faq1A: "Yes. MiaoCut outputs a transparent PNG. To meet Amazon's pure white background requirement, place the cutout on a white canvas in any image editor or use a free online tool like Photopea.",
+                faq2Q: "Is the output high enough resolution for Shopify and Etsy?",
+                faq2A: "Yes. MiaoCut preserves the original image resolution up to about 4 megapixels (2048px on the long edge), which exceeds Shopify (2048px recommended) and Etsy (2000px) requirements.",
+                faq3Q: "Does it handle reflective items, jewelry, glass, or plastic?",
+                faq3A: "Yes. Switch the quality toggle to \"Fine (hair / fur)\" mode for products with soft, reflective, or semi-transparent edges. It uses alpha matting for cleaner results on tricky materials.",
+                faq4Q: "Can I process product photos in bulk?",
+                faq4A: "MiaoCut currently processes one image at a time, but usage is unlimited and free. There are no daily or monthly caps for casual sellers.",
+                faq5Q: "Does the result include a watermark?",
+                faq5A: "No. The output is a clean transparent PNG without any watermark, fully usable for commercial product listings.",
+                moreTitle: "More MiaoCut Tools",
+                moreLinkPortraitTitle: "Portrait Background Remover →",
+                moreLinkPortraitDesc: "Headshots, profile pictures, and social media cutouts.",
+                moreLinkHomeTitle: "All-Purpose Background Remover →",
+                moreLinkHomeDesc: "Logos, pets, complex edges, anything else."
+            }
+        };
+    </script>
+    <script src="/app.js"></script>
+
+</body>
+
+</html>

@@ -496,6 +496,28 @@ async def output_css():
     return FileResponse("output.css", media_type="text/css")
 
 
+@app.get("/app.js")
+async def app_js():
+    """共享前端逻辑（dropzone、上传、i18n 合并等）；同样仅本地 dev 路径，
+    生产由 Cloudflare Pages 直接服务。"""
+    return FileResponse("app.js", media_type="application/javascript")
+
+
+# ---------- SEO landing 子页 ----------
+# 每加一个 use case 子页都要在这里登记一行；不用 StaticFiles 是为了避免暴露整个项目目录
+# （main.py / Dockerfile / requirements.txt 等不该被 HTTP 访问到）。
+@app.get("/product-photo-background-remover/")
+@app.get("/product-photo-background-remover")
+async def landing_product_photo():
+    return FileResponse("product-photo-background-remover/index.html")
+
+
+@app.get("/portrait-background-remover/")
+@app.get("/portrait-background-remover")
+async def landing_portrait():
+    return FileResponse("portrait-background-remover/index.html")
+
+
 @app.post("/api/remove-background", dependencies=[Depends(verify_origin)])
 @limiter.limit("5/minute;50/day")  # 按真实 IP 限流：每分钟 5 次，每天 50 次
 async def remove_background(request: Request, file: UploadFile = File(...)):

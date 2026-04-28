@@ -7,13 +7,16 @@
     <meta name="sogou_site_verification" content="lLMMvkZKud" />
     <meta name="baidu-site-verification" content="codeva-bJiTOFPj58" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MiaoCut - Free AI Background Remover | 1-Second HD Cutout</title>
+    <title>MiaoCut - Free AI Background Remover Online | Remove Background from Image</title>
     <meta name="description"
-        content="Remove image backgrounds instantly in 1 second. Powered by SOTA AI (BiRefNet). Completely free, high resolution, no watermarks, no sign-up required.">
+        content="Remove background from images instantly with MiaoCut AI. Free online background remover with HD cutouts, no watermark, no signup, and privacy-first processing.">
+    <!-- 关键词 meta：Google 已忽略，但 Bing/Yandex/百度 仍会参考；切语言时 updateLanguage() 会同步中文版本 -->
+    <meta name="keywords"
+        content="ai background remover, remove background, remove background from image, free background remover, background remover no watermark, remove bg, transparent background">
     <!-- OpenGraph SEO Tags -->
-    <meta property="og:title" content="MiaoCut - Free AI Background Remover">
+    <meta property="og:title" content="MiaoCut - Free AI Background Remover Online | Remove Background from Image">
     <meta property="og:description"
-        content="Instantly remove backgrounds from images for free. High resolution, no watermarks, powered by AI.">
+        content="Remove background from images instantly with MiaoCut AI. Free online background remover with HD cutouts, no watermark, no signup, and privacy-first processing.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://miaocut.app/">
     <!-- 默认英文 locale；切换语言时 JS 会改成 zh_CN -->
@@ -31,21 +34,22 @@
       "@type": "WebApplication",
       "name": "MiaoCut",
       "url": "https://miaocut.app/",
-      "description": "Free AI background remover. Remove image backgrounds in 1 second with SOTA AI (BiRefNet). No sign-up, no watermark, high resolution.",
       "applicationCategory": "MultimediaApplication",
-      "operatingSystem": "Any",
+      "operatingSystem": "Web",
       "browserRequirements": "Requires JavaScript. Requires HTML5.",
+      "description": "Free AI background remover online. Remove background from images and download HD transparent PNG cutouts with no watermark.",
       "offers": {
         "@type": "Offer",
         "price": "0",
         "priceCurrency": "USD"
       },
       "featureList": [
-        "AI background removal in 1 second",
-        "High definition output, no watermark",
+        "Free AI background remover",
+        "Remove background from image in 1 second",
+        "HD transparent PNG output, no watermark",
         "Supports JPG, PNG, WebP",
-        "No sign-up required",
-        "Privacy first: in-memory processing"
+        "No signup required",
+        "Privacy-first: in-memory processing"
       ]
     }
     </script>
@@ -76,6 +80,46 @@
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "MiaoCut utilizes the latest SOTA AI models (BiRefNet) which excel at complex edges. It perfectly handles human hair, animal fur, and even semi-transparent objects like glass or wedding dresses."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I remove background from an image for free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. MiaoCut is a free AI background remover. You can upload images and download transparent PNG results without watermark."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does MiaoCut add a watermark?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. MiaoCut provides clean background-removed images without watermark."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need to sign up?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. You can remove image backgrounds online without creating an account."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use it for product photos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. MiaoCut works well for product images, e-commerce photos, portraits, logos, pets, and more."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the output format?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The output is a high-quality PNG image with a transparent background."
           }
         }
       ]
@@ -125,9 +169,11 @@
 
         <!-- 标语 -->
         <div class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4" data-i18n="title">1-Second
-                HD Cutout</h1>
-            <p class="text-lg text-gray-500" data-i18n="subtitle">No fuss, just pure transparent backgrounds.</p>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4" data-i18n="title">Free
+                AI Background Remover</h1>
+            <p class="text-lg text-gray-500 max-w-2xl mx-auto" data-i18n="subtitle">Remove background from images
+                online in 1 second. Get HD transparent PNG cutouts with no watermark, no signup, and privacy-first
+                processing.</p>
         </div>
 
         <!-- Dropzone -->
@@ -179,6 +225,13 @@
                 </div>
                 <p data-i18n="trustSub">Processed in-memory, destroyed automatically. Never used for AI training.</p>
             </div>
+
+            <!-- 首屏关键词说明区：紧贴上传区下方，给搜索引擎抓主题词，给用户做一行价值锚定 -->
+            <div class="mt-8 text-center text-sm text-gray-500 leading-relaxed max-w-2xl mx-auto">
+                <p data-i18n="seoIntro">MiaoCut is a free AI background remover that helps you remove background from
+                    images automatically. Upload JPG, PNG, or WebP photos and download clean transparent PNG cutouts
+                    instantly.</p>
+            </div>
         </div>
 
     </main>
@@ -189,37 +242,77 @@
 
             <!-- How it works -->
             <section class="mb-16">
-                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="howItWorks">How It Works
-                </h2>
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="howItWorks">How to Remove
+                    Background from an Image</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-gray-600">
                     <div
                         class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
                         <div class="text-4xl mb-4">📤</div>
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="uploadImg">1. Upload Image</h3>
-                        <p class="text-sm leading-relaxed" data-i18n="uploadDesc">Drag & drop any JPG, PNG, or WebP
-                            image. No sign-up or credit card required.</p>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="uploadImg">1. Upload Your Image</h3>
+                        <p class="text-sm leading-relaxed" data-i18n="uploadDesc">Upload a JPG, PNG, or WebP image. No
+                            signup or credit card required.</p>
                     </div>
                     <div
                         class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
                         <div class="text-4xl mb-4">🤖</div>
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="aiProc">2. AI Processing</h3>
-                        <p class="text-sm leading-relaxed" data-i18n="aiDesc">Our SOTA AI model (BiRefNet) analyzes and
-                            removes the background precisely in just 1 second.</p>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="aiProc">2. AI Removes the Background
+                        </h3>
+                        <p class="text-sm leading-relaxed" data-i18n="aiDesc">MiaoCut's AI background remover detects
+                            the subject and removes the background automatically, including hair, fur, and complex
+                            edges.</p>
                     </div>
                     <div
                         class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
                         <div class="text-4xl mb-4">✨</div>
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="dlFree">3. Download Free</h3>
-                        <p class="text-sm leading-relaxed" data-i18n="dlDesc">Instantly get your transparent background
-                            cutout in high resolution.</p>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="dlFree">3. Download Transparent PNG
+                        </h3>
+                        <p class="text-sm leading-relaxed" data-i18n="dlDesc">Download your HD cutout as a transparent
+                            PNG with no watermark.</p>
                     </div>
+                </div>
+            </section>
+
+            <!-- Examples Gallery -->
+            <!-- ⚠️ 图片需放到 examples/ 目录后再提交；推荐 webp 512×512、单张 <60KB。
+                 alt 文案是 SEO 关键词锚点，4 个 alt 各占一类长尾词，不要本地化成中文（目标是英文搜索流量）。
+                 文件未补全时浏览器会显示破图占位，所以最好和图片一起 commit。 -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="examplesTitle">See MiaoCut
+                    in Action</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200">
+                        <img src="/examples/product-cutout.webp" alt="remove background from product image"
+                            width="512" height="512" loading="lazy" decoding="async"
+                            class="w-full h-auto block">
+                        <figcaption class="text-xs text-gray-500 text-center py-2" data-i18n="exampleProduct">Product
+                            photo</figcaption>
+                    </figure>
+                    <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200">
+                        <img src="/examples/portrait-cutout.webp" alt="transparent background cutout example"
+                            width="512" height="512" loading="lazy" decoding="async"
+                            class="w-full h-auto block">
+                        <figcaption class="text-xs text-gray-500 text-center py-2" data-i18n="examplePortrait">Portrait
+                        </figcaption>
+                    </figure>
+                    <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200">
+                        <img src="/examples/logo-cutout.webp" alt="free background remover no watermark" width="512"
+                            height="512" loading="lazy" decoding="async" class="w-full h-auto block">
+                        <figcaption class="text-xs text-gray-500 text-center py-2" data-i18n="exampleLogo">Logo
+                        </figcaption>
+                    </figure>
+                    <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200">
+                        <img src="/examples/pet-cutout.webp" alt="ai background remover example" width="512"
+                            height="512" loading="lazy" decoding="async" class="w-full h-auto block">
+                        <figcaption class="text-xs text-gray-500 text-center py-2" data-i18n="examplePet">Pet
+                        </figcaption>
+                    </figure>
                 </div>
             </section>
 
             <!-- Why Choose Us -->
             <section class="mb-16">
                 <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="whyChoose">Why Choose
-                    MiaoCut?</h2>
+                    MiaoCut AI Background Remover?</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="flex items-start bg-gray-50 p-5 rounded-xl">
                         <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor"
@@ -228,10 +321,10 @@
                             </path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="freeLimit">100% Free &
-                                Unlimited</strong>
-                            <span class="text-sm text-gray-600" data-i18n="freeDesc">No hidden costs, no subscription
-                                traps. Process as many images as you need.</span>
+                            <strong class="block text-gray-900 mb-1" data-i18n="freeLimit">Free Background
+                                Remover</strong>
+                            <span class="text-sm text-gray-600" data-i18n="freeDesc">100% free with no hidden costs, no
+                                subscription traps, and unlimited image processing.</span>
                         </div>
                     </div>
                     <div class="flex items-start bg-gray-50 p-5 rounded-xl">
@@ -241,9 +334,9 @@
                             </path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="hdQuality">High Definition (HD)</strong>
-                            <span class="text-sm text-gray-600" data-i18n="hdDesc">Unlike other tools that compress your
-                                results, we maintain the original high quality.</span>
+                            <strong class="block text-gray-900 mb-1" data-i18n="hdQuality">HD Transparent PNG</strong>
+                            <span class="text-sm text-gray-600" data-i18n="hdDesc">Download high-definition transparent
+                                PNG cutouts at original resolution — never compressed.</span>
                         </div>
                     </div>
                     <div class="flex items-start bg-gray-50 p-5 rounded-xl">
@@ -253,9 +346,9 @@
                             </path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="noWatermark">No Watermarks</strong>
-                            <span class="text-sm text-gray-600" data-i18n="noWDesc">Use your transparent cutouts for
-                                e-commerce, design, or personal projects freely.</span>
+                            <strong class="block text-gray-900 mb-1" data-i18n="noWatermark">No Watermark</strong>
+                            <span class="text-sm text-gray-600" data-i18n="noWDesc">Get clean background-removed images
+                                with no watermark, ready for e-commerce, design, or personal use.</span>
                         </div>
                     </div>
                     <div class="flex items-start bg-gray-50 p-5 rounded-xl">
@@ -265,10 +358,72 @@
                             </path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="privacyFirst">Privacy First</strong>
+                            <strong class="block text-gray-900 mb-1" data-i18n="noSignup">No Signup Required</strong>
+                            <span class="text-sm text-gray-600" data-i18n="noSignupDesc">Remove backgrounds online
+                                instantly — no account, no login, no email needed.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
+                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1" data-i18n="privacyFirst">Privacy-First Image
+                                Processing</strong>
                             <span class="text-sm text-gray-600" data-i18n="privacyDesc">Images are processed in-memory
-                                and destroyed automatically. We don't train on your data.</span>
+                                and destroyed automatically. We never use your data for AI training.</span>
                         </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
+                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1" data-i18n="sotaModel">Powered by BiRefNet</strong>
+                            <span class="text-sm text-gray-600" data-i18n="sotaDesc">SOTA AI model handles JPG, PNG, and
+                                WebP with precise edges on hair, fur, and semi-transparent objects.</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Use Cases -->
+            <!-- 前两张卡片是独立 landing page 的内链入口（指向 use case 子页，吃精准长尾流量）；
+                 后两张暂留为静态 div，新增子页时再换成 <a>。 -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="useCasesTitle">Popular
+                    Use Cases</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <a href="/product-photo-background-remover/"
+                        class="block bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCaseProductTitle">Product Photos
+                        </h3>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCaseProductDesc">Remove
+                            backgrounds from product images for e-commerce, Amazon, Shopify, Etsy, and online stores.
+                        </p>
+                    </a>
+                    <a href="/portrait-background-remover/"
+                        class="block bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCasePortraitTitle">Portraits &
+                            Profile Pictures</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCasePortraitDesc">Create clean
+                            transparent cutouts for avatars, social media, resumes, and profile photos.</p>
+                    </a>
+                    <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow">
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCaseLogoTitle">Logos & Design
+                            Assets</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCaseLogoDesc">Remove white or
+                            messy backgrounds from logos, icons, and graphics.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow">
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCasePetsTitle">Pets, Hair & Fur
+                        </h3>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCasePetsDesc">Use AI to handle
+                            complex edges like hair, fur, and semi-transparent objects.</p>
                     </div>
                 </div>
             </section>
@@ -298,6 +453,36 @@
                         <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq3A">MiaoCut utilizes the latest
                             SOTA AI models (BiRefNet) which excel at complex edges. It perfectly handles human hair,
                             animal fur, and even semi-transparent objects like glass or wedding dresses.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq4Q">Can I remove background
+                            from an image for free?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq4A">Yes. MiaoCut is a free AI
+                            background remover. You can upload images and download transparent PNG results without
+                            watermark.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq5Q">Does MiaoCut add a
+                            watermark?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq5A">No. MiaoCut provides clean
+                            background-removed images without watermark.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq6Q">Do I need to sign up?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq6A">No. You can remove image
+                            backgrounds online without creating an account.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq7Q">Can I use it for product
+                            photos?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq7A">Yes. MiaoCut works well for
+                            product images, e-commerce photos, portraits, logos, pets, and more.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq8Q">What is the output format?
+                        </h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq8A">The output is a high-quality
+                            PNG image with a transparent background.</p>
                     </div>
                 </div>
             </section>
@@ -350,81 +535,61 @@
             title="feedback">&#9749;</button>
     </div>
 
+    <!-- ============================================================
+         页面专属 i18n + 标题，必须在 /app.js 之前执行
+         ============================================================
+         共享 chrome 文案（dropzone 提示、上传状态、反馈表单等）由 app.js 内置 BASE_I18N 提供。
+         这里只声明本页面独有的 SEO/section 文案。新增 use case 子页时复制本块结构即可。
+    -->
     <script>
-        const dropzone = document.getElementById('dropzone');
-        const fileInput = document.getElementById('fileInput');
-        const dropzoneContent = document.getElementById('dropzone-content');
-
-        // ============================================================
-        // 埋点（Umami custom events）
-        // ============================================================
-        // 统一封装：umami 脚本异步加载，未就绪/被广告拦截时直接 no-op，不让分析故障影响主流程。
-        // 事件命名约定：动词-状态（cutout-success / cutout-failed），便于在 Umami 后台分组。
-        // event data 字段全部用枚举/桶值（size_bucket / duration_bucket / reason），避免高基数维度爆炸。
-        function track(name, data) {
-            if (typeof umami === 'undefined') return;
-            try {
-                if (data) umami.track(name, data); else umami.track(name);
-            } catch (_) { /* analytics 失败不影响业务 */ }
-        }
-        function sizeBucket(bytes) {
-            if (bytes < 500 * 1024) return '<500K';
-            if (bytes < 2 * 1024 * 1024) return '500K-2M';
-            if (bytes < 5 * 1024 * 1024) return '2M-5M';
-            return '5M-10M';
-        }
-        function durationBucket(ms) {
-            const s = ms / 1000;
-            if (s < 2) return '<2s';
-            if (s < 5) return '2-5s';
-            if (s < 10) return '5-10s';
-            return '>10s';
-        }
-
-        // ============================================================
-        // i18n 国际化支持
-        // ============================================================
-        const i18nData = {
+        window.MIAOCUT_PAGE_KEY = 'home';
+        window.MIAOCUT_PAGE_TITLES = {
+            zh: "MiaoCut — 免费 AI 抠图工具 | 在线一键去除图片背景",
+            en: "MiaoCut - Free AI Background Remover Online | Remove Background from Image"
+        };
+        window.MIAOCUT_PAGE_I18N = {
             zh: {
-                // SEO / 分享卡片用的 meta，updateLanguage() 会同步到 <meta> 标签
-                metaDescription: "免费 AI 在线抠图工具，1 秒去除图片背景。基于 SOTA 模型 BiRefNet，无需注册、无水印、保留原图分辨率。",
-                ogTitle: "MiaoCut — 免费 AI 抠图工具",
+                metaDescription: "MiaoCut 是免费的在线 AI 抠图工具，1 秒去除图片背景，输出高清透明 PNG，无水印、无需注册、纯内存处理。",
+                metaKeywords: "AI 抠图,在线抠图,免费抠图,去除图片背景,透明背景,免水印抠图,PNG 抠图,商品图抠图",
+                ogTitle: "MiaoCut — 免费 AI 抠图工具 | 在线一键去除图片背景",
                 ogLocale: "zh_CN",
-                title: "1秒纯净抠图",
-                subtitle: "不谈排版，只给白底。",
-                dropzoneTitle: "将图片拖拽至此，或点击上传",
-                dropzoneSub: "（支持 JPG / PNG / WebP）",
-                trustTitle: "你的图片绝对安全。",
-                trustSub: "纯内存处理，15分钟后自动销毁，绝不用于 AI 训练。",
-                profileLabel: "质量：",
-                profileSharp: "快速",
-                profileFur: "细腻（毛发/发丝）",
-                profileHintSharp: "约 1 秒 · 适合日常照片",
-                profileHintFur: "约 3~5 秒 · 适合宠物、长发、羽毛、植物",
-                bookmarkText: "喜欢 MiaoCut 吗？按",
-                bookmarkSuffix: "加入书签，下次抠图只需 1 秒！",
-                fbTitle: "☕ 提出建议",
-                fbPlaceholder: "有什么想法？",
-                fbEmail: "邮箱（选填，方便我们回复你）",
-                fbSend: "发送",
-                fbThanks: "感谢你的建议！",
-                fbThanksSub: "我们会认真对待每一条反馈",
-                howItWorks: "工作原理",
-                uploadImg: "1. 上传图片",
-                uploadDesc: "拖拽任何 JPG, PNG, 或 WebP 图片。无需注册。",
-                aiProc: "2. AI 智能处理",
-                aiDesc: "我们的 SOTA AI 模型 (BiRefNet) 会在 1 秒内精准去除背景。",
-                dlFree: "3. 免费下载",
-                dlDesc: "瞬间获得高分辨率的透明背景图片。",
-                whyChoose: "为什么选择 MiaoCut？",
-                freeLimit: "100% 免费无限制",
-                freeDesc: "没有隐藏收费，没有订阅陷阱。想抠多少张就抠多少张。",
-                hdQuality: "超清画质 (HD)",
-                hdDesc: "不像其他工具会压缩画质，我们保留原图的高清分辨率。",
+                title: "免费 AI 抠图工具",
+                subtitle: "1 秒在线去除图片背景，输出高清透明 PNG，无水印、无需注册、纯内存处理。",
+                seoIntro: "MiaoCut 是一款免费的 AI 抠图工具，可以自动去除图片背景。上传 JPG、PNG 或 WebP 照片，立即下载干净的高清透明 PNG。",
+                howItWorks: "如何在线去除图片背景",
+                uploadImg: "1. 上传你的图片",
+                uploadDesc: "上传 JPG、PNG 或 WebP 图片，无需注册，无需信用卡。",
+                aiProc: "2. AI 自动抠除背景",
+                aiDesc: "MiaoCut 的 AI 抠图模型会自动识别主体并去除背景，对头发、毛发和复杂边缘也能轻松处理。",
+                dlFree: "3. 下载透明 PNG",
+                dlDesc: "下载无水印的高清透明 PNG 抠图。",
+                whyChoose: "为什么选择 MiaoCut AI 抠图？",
+                freeLimit: "免费抠图工具",
+                freeDesc: "100% 免费，没有隐藏收费、没有订阅陷阱，想抠多少张就抠多少张。",
+                hdQuality: "高清透明 PNG",
+                hdDesc: "保留原图分辨率，输出高清透明 PNG 抠图，绝不压缩画质。",
                 noWatermark: "无水印",
-                noWDesc: "透明背景图可直接用于电商、设计或个人项目。",
-                privacyFirst: "隐私优先",
-                privacyDesc: "图片纯内存处理，自动销毁。我们绝不使用你的数据进行训练。",
+                noWDesc: "无水印的抠图结果，可直接用于电商、设计或个人项目。",
+                noSignup: "无需注册",
+                noSignupDesc: "直接在线抠图，无需账号、无需登录、无需邮箱。",
+                privacyFirst: "隐私优先处理",
+                privacyDesc: "图片纯内存处理并自动销毁，我们绝不使用你的数据进行 AI 训练。",
+                sotaModel: "由 BiRefNet 驱动",
+                sotaDesc: "SOTA AI 模型支持 JPG、PNG、WebP，对头发、毛发、半透明物体的边缘也能精准还原。",
+                examplesTitle: "AI 抠图样例",
+                exampleProduct: "商品图",
+                examplePortrait: "人像",
+                exampleLogo: "Logo",
+                examplePet: "宠物",
+                useCasesTitle: "热门使用场景",
+                useCaseProductTitle: "商品图",
+                useCaseProductDesc: "为电商、亚马逊、Shopify、Etsy 等在线商店去除商品图背景。",
+                useCasePortraitTitle: "人像与头像",
+                useCasePortraitDesc: "为头像、社交媒体、简历、个人照片生成干净的透明抠图。",
+                useCaseLogoTitle: "Logo 与设计素材",
+                useCaseLogoDesc: "去除 Logo、图标、图形上的白底或杂乱背景。",
+                useCasePetsTitle: "宠物、毛发与发丝",
+                useCasePetsDesc: "AI 智能处理头发、毛发、半透明等复杂边缘。",
                 faqTitle: "常见问题解答",
                 faq1Q: "这个 AI 抠图真的是免费的吗？",
                 faq1A: "是的！MiaoCut 由独立开发者构建，旨在提供昂贵订阅工具的真正免费替代方案。无水印，无严格的分辨率限制。",
@@ -432,56 +597,59 @@
                 faq2A: "您可以上传 JPG、PNG 和 WebP 图片。输出将是具有透明背景的高质量 PNG 图片。",
                 faq3Q: "对头发或毛发的边缘处理效果如何？",
                 faq3A: "MiaoCut 使用了最新的 SOTA AI 模型（BiRefNet），非常擅长处理复杂的边缘。它能完美处理头发、动物毛发，甚至玻璃或婚纱等半透明物体。",
-                // JS States
-                compressing: "压缩中...",
-                uploading: "上传中...",
-                processing: "AI 处理中...",
-                done: "完成!",
-                formatErr: "仅支持 JPG / PNG / WebP 格式的图片",
-                successTitle: "处理成功！",
-                successSub: "正在为您自动下载...",
-                failTitle: "抱歉，处理失败",
-                alertSize: "仅支持 JPG / PNG / WebP 格式的图片"
+                faq4Q: "可以免费在线去除图片背景吗？",
+                faq4A: "可以。MiaoCut 是一款免费的 AI 抠图工具，您可以上传图片并下载无水印的透明 PNG 结果。",
+                faq5Q: "MiaoCut 会添加水印吗？",
+                faq5A: "不会。MiaoCut 输出的抠图结果完全没有水印。",
+                faq6Q: "需要注册账号吗？",
+                faq6A: "不需要。您可以直接在线去除图片背景，无需创建账号。",
+                faq7Q: "可以用于商品图吗？",
+                faq7A: "可以。MiaoCut 适用于商品图、电商照片、人像、Logo、宠物等多种场景。",
+                faq8Q: "输出格式是什么？",
+                faq8A: "输出为高质量的透明背景 PNG 图片。"
             },
             en: {
-                metaDescription: "Remove image backgrounds instantly in 1 second. Powered by SOTA AI (BiRefNet). Completely free, high resolution, no watermarks, no sign-up required.",
-                ogTitle: "MiaoCut - Free AI Background Remover",
+                metaDescription: "Remove background from images instantly with MiaoCut AI. Free online background remover with HD cutouts, no watermark, no signup, and privacy-first processing.",
+                metaKeywords: "ai background remover, remove background, remove background from image, free background remover, background remover no watermark, remove bg, transparent background",
+                ogTitle: "MiaoCut - Free AI Background Remover Online | Remove Background from Image",
                 ogLocale: "en_US",
-                title: "1-Second HD Cutout",
-                subtitle: "No fuss, just pure transparent backgrounds.",
-                dropzoneTitle: "Drag & drop image here, or click to upload",
-                dropzoneSub: "(Supports JPG / PNG / WebP)",
-                trustTitle: "Your images are 100% safe.",
-                trustSub: "Processed in-memory, destroyed automatically. Never used for AI training.",
-                profileLabel: "Quality:",
-                profileSharp: "Fast",
-                profileFur: "Fine (hair / fur)",
-                profileHintSharp: "~1s · everyday photos",
-                profileHintFur: "~3-5s · pets, long hair, feathers, plants",
-                bookmarkText: "Like MiaoCut? Press",
-                bookmarkSuffix: "to bookmark, next cutout is just 1 sec away!",
-                fbTitle: "☕ Feedback",
-                fbPlaceholder: "What's on your mind?",
-                fbEmail: "Email (Optional)",
-                fbSend: "Send",
-                fbThanks: "Thanks for your feedback!",
-                fbThanksSub: "We read every single message.",
-                howItWorks: "How It Works",
-                uploadImg: "1. Upload Image",
-                uploadDesc: "Drag & drop any JPG, PNG, or WebP image. No sign-up required.",
-                aiProc: "2. AI Processing",
-                aiDesc: "Our SOTA AI model (BiRefNet) analyzes and removes the background precisely in just 1 second.",
-                dlFree: "3. Download Free",
-                dlDesc: "Instantly get your transparent background cutout in high resolution.",
-                whyChoose: "Why Choose MiaoCut?",
-                freeLimit: "100% Free & Unlimited",
-                freeDesc: "No hidden costs, no subscription traps. Process as many images as you need.",
-                hdQuality: "High Definition (HD)",
-                hdDesc: "Unlike other tools that compress your results, we maintain the original high quality.",
-                noWatermark: "No Watermarks",
-                noWDesc: "Use your transparent cutouts for e-commerce, design, or personal projects freely.",
-                privacyFirst: "Privacy First",
-                privacyDesc: "Images are processed in-memory and destroyed automatically. We don't train on your data.",
+                title: "Free AI Background Remover",
+                subtitle: "Remove background from images online in 1 second. Get HD transparent PNG cutouts with no watermark, no signup, and privacy-first processing.",
+                seoIntro: "MiaoCut is a free AI background remover that helps you remove background from images automatically. Upload JPG, PNG, or WebP photos and download clean transparent PNG cutouts instantly.",
+                howItWorks: "How to Remove Background from an Image",
+                uploadImg: "1. Upload Your Image",
+                uploadDesc: "Upload a JPG, PNG, or WebP image. No signup or credit card required.",
+                aiProc: "2. AI Removes the Background",
+                aiDesc: "MiaoCut's AI background remover detects the subject and removes the background automatically, including hair, fur, and complex edges.",
+                dlFree: "3. Download Transparent PNG",
+                dlDesc: "Download your HD cutout as a transparent PNG with no watermark.",
+                whyChoose: "Why Choose MiaoCut AI Background Remover?",
+                freeLimit: "Free Background Remover",
+                freeDesc: "100% free with no hidden costs, no subscription traps, and unlimited image processing.",
+                hdQuality: "HD Transparent PNG",
+                hdDesc: "Download high-definition transparent PNG cutouts at original resolution — never compressed.",
+                noWatermark: "No Watermark",
+                noWDesc: "Get clean background-removed images with no watermark, ready for e-commerce, design, or personal use.",
+                noSignup: "No Signup Required",
+                noSignupDesc: "Remove backgrounds online instantly — no account, no login, no email needed.",
+                privacyFirst: "Privacy-First Image Processing",
+                privacyDesc: "Images are processed in-memory and destroyed automatically. We never use your data for AI training.",
+                sotaModel: "Powered by BiRefNet",
+                sotaDesc: "SOTA AI model handles JPG, PNG, and WebP with precise edges on hair, fur, and semi-transparent objects.",
+                examplesTitle: "See MiaoCut in Action",
+                exampleProduct: "Product photo",
+                examplePortrait: "Portrait",
+                exampleLogo: "Logo",
+                examplePet: "Pet",
+                useCasesTitle: "Popular Use Cases",
+                useCaseProductTitle: "Product Photos",
+                useCaseProductDesc: "Remove backgrounds from product images for e-commerce, Amazon, Shopify, Etsy, and online stores.",
+                useCasePortraitTitle: "Portraits & Profile Pictures",
+                useCasePortraitDesc: "Create clean transparent cutouts for avatars, social media, resumes, and profile photos.",
+                useCaseLogoTitle: "Logos & Design Assets",
+                useCaseLogoDesc: "Remove white or messy backgrounds from logos, icons, and graphics.",
+                useCasePetsTitle: "Pets, Hair & Fur",
+                useCasePetsDesc: "Use AI to handle complex edges like hair, fur, and semi-transparent objects.",
                 faqTitle: "Frequently Asked Questions",
                 faq1Q: "Is this AI background remover really free?",
                 faq1A: "Yes! MiaoCut is built by an independent developer to provide a genuinely free alternative to expensive subscription tools like remove.bg. There are no watermarks and no strict resolution limits.",
@@ -489,497 +657,21 @@
                 faq2A: "You can upload JPG, PNG, and WebP images. The output will be a high-quality PNG image with a transparent background, ready for your designs.",
                 faq3Q: "How good is the edge detection for hair or fur?",
                 faq3A: "MiaoCut utilizes the latest SOTA AI models (BiRefNet) which excel at complex edges. It perfectly handles human hair, animal fur, and even semi-transparent objects like glass or wedding dresses.",
-                // JS States
-                compressing: "Compressing...",
-                uploading: "Uploading...",
-                processing: "AI Processing...",
-                done: "Done!",
-                formatErr: "Only JPG / PNG / WebP formats are supported",
-                successTitle: "Success!",
-                successSub: "Downloading automatically...",
-                failTitle: "Sorry, processing failed",
-                alertSize: "Only JPG / PNG / WebP formats are supported"
+                faq4Q: "Can I remove background from an image for free?",
+                faq4A: "Yes. MiaoCut is a free AI background remover. You can upload images and download transparent PNG results without watermark.",
+                faq5Q: "Does MiaoCut add a watermark?",
+                faq5A: "No. MiaoCut provides clean background-removed images without watermark.",
+                faq6Q: "Do I need to sign up?",
+                faq6A: "No. You can remove image backgrounds online without creating an account.",
+                faq7Q: "Can I use it for product photos?",
+                faq7A: "Yes. MiaoCut works well for product images, e-commerce photos, portraits, logos, pets, and more.",
+                faq8Q: "What is the output format?",
+                faq8A: "The output is a high-quality PNG image with a transparent background."
             }
         };
-
-        let currentLang = localStorage.getItem('lang') || (navigator.language.startsWith('zh') ? 'zh' : 'en');
-
-        function t(key) {
-            return i18nData[currentLang][key] || key;
-        }
-
-        function updateLanguage(lang) {
-            currentLang = lang;
-            localStorage.setItem('lang', lang);
-            document.documentElement.lang = lang;
-            document.title = lang === 'zh' ? "MiaoCut - 1秒纯净抠图" : "MiaoCut - Free AI Background Remover | 1-Second HD Cutout";
-
-            // 同步 SEO/分享卡片相关 meta：搜索引擎 + 社交分享抓取时主要看这些
-            const pack = i18nData[lang];
-            const setMeta = (selector, value) => {
-                const el = document.querySelector(selector);
-                if (el && value) el.setAttribute('content', value);
-            };
-            setMeta('meta[name="description"]', pack.metaDescription);
-            setMeta('meta[property="og:title"]', pack.ogTitle);
-            setMeta('meta[property="og:description"]', pack.metaDescription);
-            setMeta('meta[property="og:locale"]', pack.ogLocale);
-
-            const selectEl = document.getElementById('lang-switch');
-            if (selectEl) selectEl.value = lang;
-
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (i18nData[lang][key]) {
-                    el.textContent = i18nData[lang][key];
-                }
-            });
-            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
-                const key = el.getAttribute('data-i18n-ph');
-                if (i18nData[lang][key]) {
-                    el.placeholder = i18nData[lang][key];
-                }
-            });
-
-            // 如果处于初始状态，刷新 Dropzone 里的文字
-            if (!dropzone.classList.contains('pointer-events-none')) {
-                resetDropzone();
-            }
-        }
-
-        function resetDropzone() {
-            dropzoneContent.innerHTML = `
-                <svg class="w-12 h-12 text-gray-400 mb-4 group-hover:text-gray-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
-                </svg>
-                <p class="text-lg font-medium text-gray-700 mb-1" data-i18n="dropzoneTitle">${t('dropzoneTitle')}</p>
-                <p class="text-sm text-gray-400" data-i18n="dropzoneSub">${t('dropzoneSub')}</p>
-            `;
-        }
-
-        // 页面加载即初始化语言
-        updateLanguage(currentLang);
-        document.getElementById('lang-switch').addEventListener('change', (e) => {
-            const from = currentLang;
-            const to = e.target.value;
-            updateLanguage(to);
-            // 只埋人为切换，不埋初始化（初始化的语言分布看 Umami 默认的 lang 维度即可）
-            track('lang-switched', { from, to });
-        });
-
-        // ============================================================
-        // 抠图质量 profile（sharp / fur）
-        // ============================================================
-        // sharp = 默认快速通道；fur = alpha matting + 前景色去污染（毛发场景细腻很多但慢 ~3s）。
-        // 选中状态用 dataset 标记 + 一段 active class 控制视觉，跨语言切换无副作用。
-        // 持久化到 localStorage，避免用户每次刷新都被重置。
-        let currentProfile = localStorage.getItem('cutoutProfile');
-        if (currentProfile !== 'sharp' && currentProfile !== 'fur') currentProfile = 'sharp';
-
-        function updateProfileButtons() {
-            document.querySelectorAll('.profile-btn').forEach(btn => {
-                const active = btn.dataset.profile === currentProfile;
-                btn.classList.toggle('bg-gray-900', active);
-                btn.classList.toggle('text-white', active);
-                btn.classList.toggle('border-gray-900', active);
-                btn.classList.toggle('text-gray-700', !active);
-                btn.classList.toggle('border-gray-300', !active);
-            });
-            const hint = document.getElementById('profile-hint');
-            const hintKey = currentProfile === 'fur' ? 'profileHintFur' : 'profileHintSharp';
-            hint.setAttribute('data-i18n', hintKey);
-            hint.textContent = t(hintKey);
-        }
-
-        document.querySelectorAll('.profile-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const next = btn.dataset.profile;
-                if (next !== 'sharp' && next !== 'fur') return;
-                if (next === currentProfile) return;
-                const from = currentProfile;
-                currentProfile = next;
-                localStorage.setItem('cutoutProfile', next);
-                updateProfileButtons();
-                track('profile-switched', { from, to: next });
-            });
-        });
-        updateProfileButtons();
-
-        // ============================================================
-        // API 配置
-        // ============================================================
-        // 自动识别环境：如果是在本地开发环境运行，则请求本地后端；否则请求线上 VPS
-        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        const API_BASE = isLocal ? 'http://127.0.0.1:8000' : 'https://api.miaocut.app';
-
-        // 阻止默认拖拽行为
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropzone.addEventListener(eventName, preventDefaults, false);
-            document.body.addEventListener(eventName, preventDefaults, false);
-        });
-
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-
-        // 拖入时高亮效果
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropzone.addEventListener(eventName, () => {
-                dropzone.classList.add('border-gray-600', 'bg-gray-100');
-                dropzone.classList.remove('border-gray-300', 'bg-white', 'hover:border-gray-400', 'hover:bg-gray-50');
-            }, false);
-        });
-
-        // 拖出时恢复效果
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropzone.addEventListener(eventName, () => {
-                dropzone.classList.remove('border-gray-600', 'bg-gray-100');
-                dropzone.classList.add('border-gray-300', 'bg-white', 'hover:border-gray-400', 'hover:bg-gray-50');
-            }, false);
-        });
-
-        // 点击触发文件选择
-        dropzone.addEventListener('click', () => {
-            // 如果正在 loading，则不响应点击
-            if (dropzone.classList.contains('pointer-events-none')) return;
-            fileInput.click();
-        });
-
-        // 文件选择处理
-        fileInput.addEventListener('change', function (e) {
-            if (this.files && this.files.length > 0) {
-                handleFiles(this.files);
-            }
-        });
-
-        // 拖拽释放处理
-        dropzone.addEventListener('drop', function (e) {
-            let dt = e.dataTransfer;
-            let files = dt.files;
-            handleFiles(files);
-        });
-
-        // 与后端一致的白名单；后端 MAX_UPLOAD_MB 默认 10，这里保持同步
-        const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
-        const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
-        const MAX_CLIENT_DIMENSION = 2048;
-        const MAX_CLIENT_IMAGE_PIXELS = 2048 * 2048;
-
-        // 前端智能压缩：保留细节的前提下减小体积和后端像素内存
-        // BiRefNet 内部按 1024×1024 推理，约 4MP 已经是 2x 余量；
-        // 同时限制长边和总像素，避免超高长图绕过单纯 maxWidth。
-        // quality=0.95：保证边缘信息不被压缩损坏，对后续 mask 锐度无影响。
-        async function compressImage(file, maxDimension = MAX_CLIENT_DIMENSION, maxPixels = MAX_CLIENT_IMAGE_PIXELS) {
-            return new Promise((resolve, reject) => {
-                const url = URL.createObjectURL(file);
-                const img = new Image();
-                img.onload = () => {
-                    URL.revokeObjectURL(url); // 加载完立刻释放，防内存泄漏
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (!width || !height) {
-                        reject(new Error('图片解析失败，尺寸无效'));
-                        return;
-                    }
-
-                    const scale = Math.min(
-                        1,
-                        maxDimension / width,
-                        maxDimension / height,
-                        Math.sqrt(maxPixels / (width * height))
-                    );
-
-                    // 小图不重编码，避免无意义的 canvas 峰值内存。
-                    if (scale >= 1 && file.size <= 500 * 1024) {
-                        img.onload = null;
-                        img.onerror = null;
-                        img.src = '';
-                        resolve(file);
-                        return;
-                    }
-
-                    width = Math.max(1, Math.round(width * scale));
-                    height = Math.max(1, Math.round(height * scale));
-
-                    const canvas = document.createElement('canvas');
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    if (!ctx) {
-                        reject(new Error('压缩失败，浏览器不支持 Canvas'));
-                        return;
-                    }
-                    ctx.drawImage(img, 0, 0, width, height);
-                    img.onload = null;
-                    img.onerror = null;
-                    img.src = '';
-
-                    canvas.toBlob((blob) => {
-                        canvas.width = 0;
-                        canvas.height = 0;
-                        if (!blob) {
-                            // 极少数老 Safari 可能不支持 image/webp encode，给个明确错误而不是卡死
-                            reject(new Error('压缩失败，浏览器可能不支持 WebP 编码'));
-                            return;
-                        }
-                        resolve(new File([blob], file.name.split('.')[0] + '.webp', { type: 'image/webp' }));
-                    }, 'image/webp', 0.95);
-                };
-                img.onerror = () => {
-                    URL.revokeObjectURL(url);
-                    reject(new Error('图片解析失败，文件可能已损坏'));
-                };
-                img.src = url;
-            });
-        }
-
-        // ============================================================
-        // 进度 UI
-        // ============================================================
-        // 进度条策略：
-        //   ① 压缩中            0% → 15%
-        //   ② 上传中  XX%       15% → 70%（XHR upload.onprogress 真实进度）
-        //   ③ AI 处理中         70% → 95%（后端推理无 chunk 进度，用对数曲线"软爬"）
-        //   ④ 完成!             100%（响应到达瞬间）
-        //
-        // 第一次调用建 DOM，后续只更新 width 和 label，避免 DOM 重建闪烁。
-        // 用 querySelector 而非缓存变量，可以在 dropzoneContent.innerHTML 被外部重置后自愈。
-        function showProgress(percent, label) {
-            let fill = document.getElementById('progress-fill');
-            if (!fill) {
-                dropzoneContent.innerHTML = `
-                    <svg class="animate-spin w-10 h-10 text-gray-800 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <p id="progress-label" class="text-lg font-medium text-gray-700 mb-3">${label}</p>
-                    <div class="w-64 h-1 bg-gray-200 rounded-full overflow-hidden">
-                        <div id="progress-fill" class="h-full bg-gray-900 transition-all duration-300 ease-out" style="width: ${percent}%"></div>
-                    </div>
-                `;
-            } else {
-                fill.style.width = percent + '%';
-                document.getElementById('progress-label').textContent = label;
-            }
-        }
-
-        // ============================================================
-        // 用 XMLHttpRequest 拿真实上传进度
-        // ============================================================
-        // fetch() 至今没有 upload progress 事件（ReadableStream upload 还在 origin trial），
-        // XHR 是唯一稳妥拿到上传字节进度的方式。
-        function uploadWithProgress(formData) {
-            return new Promise((resolve, reject) => {
-                const xhr = new XMLHttpRequest();
-                // 始终带上 ?profile=，服务端对未知值会静默回退到 env 默认，老 SDK 也兼容
-                const url = `${API_BASE}/api/remove-background?profile=${encodeURIComponent(currentProfile)}`;
-                xhr.open('POST', url);
-                xhr.responseType = 'blob';
-
-                // ② 上传阶段：实时映射到 15% → 70%
-                xhr.upload.onprogress = (e) => {
-                    if (!e.lengthComputable) return;
-                    const ratio = e.loaded / e.total;
-                    const pct = 15 + Math.round(ratio * 55);
-                    showProgress(pct, `${t('uploading')} ${Math.round(ratio * 100)}%`);
-                };
-
-                // 上传字节全部发完 → 进入 ③ AI 推理阶段
-                // 不再做"软爬"假进度：进度条慢慢爬到 95% 卡住反而比定住更焦虑（已实测确认）。
-                // 直接跳到 90%，让 spinner 转着，用户视觉焦点回到"AI 处理中"文字而不是进度数字。
-                xhr.upload.onload = () => {
-                    showProgress(90, t('processing'));
-                };
-
-                xhr.onload = async () => {
-                    if (xhr.status >= 200 && xhr.status < 300) {
-                        showProgress(100, t('done'));
-                        resolve(xhr.response);
-                    } else {
-                        // 错误时 responseType=blob，需要把 blob 读成 text 再解 JSON
-                        let message = `请求失败（${xhr.status}）`;
-                        try {
-                            const text = await xhr.response.text();
-                            const data = JSON.parse(text);
-                            if (data && typeof data.detail === 'string') message = data.detail;
-                            else message = text || message;
-                        } catch (_) { /* 解析失败用兜底 message */ }
-                        const err = new Error(message);
-                        err.status = xhr.status; // 给埋点分类用（429/5xx 区分）
-                        reject(err);
-                    }
-                };
-
-                // 错误对象挂上 kind，上层 catch 转成 reason 维度
-                const failWith = (msg, kind) => { const e = new Error(msg); e.kind = kind; return e; };
-                xhr.onerror = () => reject(failWith('网络错误，请检查连接', 'network'));
-                xhr.ontimeout = () => reject(failWith('请求超时，请重试', 'timeout'));
-                xhr.onabort = () => reject(failWith('请求被中断', 'abort'));
-
-                xhr.send(formData);
-            });
-        }
-
-        async function handleFiles(files) {
-            const file = files[0];
-
-            // 类型白名单
-            if (!ALLOWED_TYPES.includes(file.type)) {
-                track('format-rejected', { type: file && file.type ? file.type : 'unknown' });
-                alert(t('alertSize'));
-                return;
-            }
-
-            console.log(`[MiaoCut] 原始图片: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
-            // 用原始文件大小+类型分桶（不记真实文件名/字节数，避免高基数 + 隐私）
-            const fileExt = file.type.replace('image/', '');
-            track('upload-started', { type: fileExt, size: sizeBucket(file.size), profile: currentProfile });
-            const startedAt = performance.now();
-
-            dropzone.classList.add('pointer-events-none');
-
-            try {
-                // ① 压缩阶段
-                showProgress(5, t('compressing'));
-                let uploadFile = file;
-                uploadFile = await compressImage(file);
-                console.log(`[MiaoCut] 上传图片: ${uploadFile.name} (${(uploadFile.size / 1024).toFixed(2)} KB)`);
-                showProgress(15, t('uploading'));
-
-                // ②③ 上传 + AI 处理（进度由 uploadWithProgress 内部驱动）
-                const formData = new FormData();
-                formData.append('file', uploadFile);
-                const blob = await uploadWithProgress(formData);
-
-                // ④ 触发本地下载
-                const resultUrl = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = resultUrl;
-                const originalName = file.name.split('.')[0];
-                a.download = `${originalName}_nobg.png`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                // 1s 后释放，给浏览器留出实际开始下载的时间
-                setTimeout(() => URL.revokeObjectURL(resultUrl), 1000);
-
-                // 关键转化事件：从用户拖图到下载触发的整段端到端耗时
-                track('cutout-success', {
-                    type: fileExt,
-                    size: sizeBucket(file.size),
-                    duration: durationBucket(performance.now() - startedAt),
-                });
-
-                // 成功 UI
-                dropzoneContent.innerHTML = `
-                    <svg class="w-12 h-12 text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <p class="text-lg font-medium text-gray-800 mb-1">${t('successTitle')}</p>
-                    <p class="text-sm text-gray-500">${t('successSub')}</p>
-                `;
-                showBookmarkBanner();
-
-            } catch (error) {
-                console.error("API Error:", error);
-                // reason 维度优先用 HTTP 状态（http-429 = 限流；http-5xx = 服务端错），
-                // 没 status 的退回到 kind（network/timeout/abort），最后兜底 unknown。
-                // 'compress' 用于把 compressImage 的报错和上传失败区分开。
-                const reason = error.status ? `http-${error.status}`
-                    : (error.kind || (error.message && /压缩|WebP/.test(error.message) ? 'compress' : 'unknown'));
-                track('cutout-failed', { type: fileExt, reason });
-                // 用 DOM 拼装而不是 innerHTML 拼字符串，防止 error.message 里若含 HTML 被当标签执行（XSS）
-                dropzoneContent.innerHTML = '';
-                const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                icon.setAttribute('class', 'w-12 h-12 text-red-500 mb-4');
-                icon.setAttribute('fill', 'none');
-                icon.setAttribute('stroke', 'currentColor');
-                icon.setAttribute('viewBox', '0 0 24 24');
-                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>';
-                const title = document.createElement('p');
-                title.className = 'text-lg font-medium text-gray-800 mb-1';
-                title.textContent = t('failTitle');
-                const detail = document.createElement('p');
-                detail.className = 'text-sm text-gray-500 max-w-xs px-4 truncate';
-                detail.textContent = error.message; // textContent 自动转义
-                dropzoneContent.append(icon, title, detail);
-            } finally {
-                // 不管成功失败，2 秒后恢复初始上传状态
-                setTimeout(() => {
-                    resetDropzone();
-                    dropzone.classList.remove('pointer-events-none');
-                    fileInput.value = '';
-                }, 2000);
-            }
-        }
-
-        // ========== Bookmark Banner ==========
-        let bannerShown = false;
-        function showBookmarkBanner() {
-            if (bannerShown) return;
-            bannerShown = true;
-            const isMac = navigator.platform.toUpperCase().includes('MAC')
-                || navigator.userAgent.toUpperCase().includes('MAC');
-            document.getElementById('shortcut-key').textContent = isMac ? '\u2318 + D' : 'Ctrl + D';
-            const banner = document.getElementById('bookmark-banner');
-            setTimeout(() => banner.classList.add('show'), 1000);
-            setTimeout(() => banner.classList.remove('show'), 9000);
-        }
-        document.getElementById('dismiss-banner').addEventListener('click', () => {
-            document.getElementById('bookmark-banner').classList.remove('show');
-            track('bookmark-banner-dismissed');
-        });
-
-        // ========== Feedback Widget ==========
-        const feedbackTrigger = document.getElementById('feedback-trigger');
-        const feedbackPanel = document.getElementById('feedback-panel');
-        const feedbackForm = document.getElementById('feedback-form');
-        const feedbackThanks = document.getElementById('feedback-thanks');
-
-        feedbackTrigger.addEventListener('click', () => {
-            // 只在"打开"那次埋点，再点"关闭"不重复计数
-            const opening = !feedbackPanel.classList.contains('open');
-            feedbackPanel.classList.toggle('open');
-            if (opening) track('feedback-opened');
-        });
-        document.addEventListener('click', (e) => {
-            if (!document.getElementById('feedback-widget').contains(e.target)) {
-                feedbackPanel.classList.remove('open');
-            }
-        });
-        feedbackForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const msg = document.getElementById('feedback-msg').value.trim();
-            if (!msg) return;
-            const email = document.getElementById('feedback-email').value.trim();
-
-            // POST to backend
-            try {
-                await fetch(API_BASE + '/api/feedback', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: msg, email: email || undefined })
-                });
-            } catch (err) {
-                console.warn('[MiaoCut] Feedback send failed:', err);
-            }
-
-            track('feedback-submitted', { has_email: email ? 'yes' : 'no' });
-
-            feedbackForm.classList.add('hidden');
-            feedbackThanks.classList.remove('hidden');
-            setTimeout(() => {
-                feedbackPanel.classList.remove('open');
-                setTimeout(() => {
-                    feedbackForm.classList.remove('hidden');
-                    feedbackThanks.classList.add('hidden');
-                    feedbackForm.reset();
-                }, 300);
-            }, 2000);
-        });
     </script>
+    <script src="/app.js"></script>
+
 </body>
 
 </html>
