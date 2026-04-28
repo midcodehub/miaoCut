@@ -149,9 +149,11 @@ def _create_birefnet_session():
     sess_opts = ort.SessionOptions()
     sess_opts.enable_cpu_mem_arena = False
     sess_opts.enable_mem_pattern = False
-    # 兼容 OMP_NUM_THREADS（new_session 原生支持，这里手动复刻）
-    if "OMP_NUM_THREADS" in os.environ:
-        n = int(os.environ["OMP_NUM_THREADS"])
+    # Hugging Face Space 不允许用户配置 OMP_NUM_THREADS 这类保留变量；
+    # 用自己的变量名控制 onnxruntime 线程数，同时兼容本地开发里的 OMP_NUM_THREADS。
+    threads = os.getenv("MIAOCUT_OMP_NUM_THREADS") or os.getenv("OMP_NUM_THREADS")
+    if threads:
+        n = int(threads)
         sess_opts.inter_op_num_threads = n
         sess_opts.intra_op_num_threads = n
 

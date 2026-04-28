@@ -102,6 +102,7 @@ ENABLE_DOCS=0          # 关掉 /docs 防接口枚举
 CUTOUT_PROFILE=sharp   # 默认；前端 toggle 可按请求覆盖到 fur
 DATA_DIR=/data          # Space Persistent Storage
 PORT=7860               # Hugging Face Docker Space
+MIAOCUT_OMP_NUM_THREADS=2
 FEEDBACK_ENDPOINT=https://<worker-domain>/feedback
 FEEDBACK_TOKEN=<same-secret-as-worker>
 FEEDBACK_IP_HASH_SALT=<random-secret-for-ip-hmac>
