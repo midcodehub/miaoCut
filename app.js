@@ -262,7 +262,7 @@
     // API 配置
     // ============================================================
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const API_BASE = isLocal ? 'http://127.0.0.1:8000' : 'https://api.miaocut.app';
+    const API_BASE = isLocal ? 'http://127.0.0.1:8000' : 'https://api2.miaocut.app';
 
     // ============================================================
     // 拖拽 / 点击交互
@@ -587,7 +587,12 @@
                 await fetch(API_BASE + '/api/feedback', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: msg, email: email || undefined })
+                    body: JSON.stringify({
+                        message: msg,
+                        email: email || undefined,
+                        page: window.MIAOCUT_PAGE_KEY || 'home',
+                        profile: currentProfile
+                    })
                 });
             } catch (err) {
                 console.warn('[MiaoCut] Feedback send failed:', err);

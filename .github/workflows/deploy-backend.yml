@@ -1,18 +1,15 @@
 # ============================================================
-# MiaoCut 后端自动部署
+# MiaoCut 后端自动分发部署到 Hugging Face Spaces
 # ============================================================
 # 流程：
-#   1. build  job：在 GitHub Actions runner 上 docker build，并推到 GHCR。
-#   2. deploy job：SSH 到 VPS，docker login GHCR → pull → 替换容器。
-#
-# 为什么不在 VPS 上 build？
-#   小内存 VPS 跑 docker build (PyTorch + onnxruntime + opencv) 很容易 OOM
-#   (历史 commit 4daa030 即为此降并发)。Runner 4 vCPU/16GB 构建只要 1~2 分钟。
+#   1. main 分支相关文件变更后触发。
+#   2. GitHub Actions 将当前提交依次推送到 Docker Spaces：
+#      https://huggingface.co/spaces/midcodex/miao_cut
+#      https://huggingface.co/spaces/midcodex/miao_cut2
+#      https://huggingface.co/spaces/midcodex/miao_cut3
 #
 # GitHub 仓库 Settings → Secrets and variables → Actions 中需配置：
-#   VPS_HOST / VPS_USER / VPS_SSH_KEY / VPS_PORT(可选)
-# 不需要再配额外的 GHCR token，build 用 GITHUB_TOKEN（仓库内置），
-# VPS pull 用同一个 GITHUB_TOKEN（短期有效，run 结束即过期，安全）。
+#   HF_TOKEN：有以上 Space 写权限的 Hugging Face access token。
 # ============================================================
 
 name: Deploy Backend
@@ -24,6 +21,7 @@ on:
       - "main.py"
       - "requirements.txt"
       - "Dockerfile"
+      - "README.md"
       - "index.html"
       - "output.css"
       - "app.js"
@@ -34,139 +32,42 @@ on:
   workflow_dispatch:
     # 允许在 GitHub UI 手动触发，用于强制 redeploy
 
-env:
-  REGISTRY: ghcr.io
-
 jobs:
-  # ----------------------------------------------------------
-  # 1) Build & push image
-  # ----------------------------------------------------------
-  build:
-    name: Build & push image
+  deploy:
+    name: Push to Hugging Face Spaces
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
-    outputs:
-      image: ${{ steps.meta.outputs.image }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      # GHCR 要求镜像 path 全部小写，仓库名含大写时直接 push 会被拒
-      - name: Compute lowercase image name
-        id: meta
+      - name: Configure Git
         run: |
-          IMAGE_LC="$(echo ghcr.io/${{ github.repository }} | tr '[:upper:]' '[:lower:]')"
-          echo "image=${IMAGE_LC}" >> "$GITHUB_OUTPUT"
-          echo "Image base: ${IMAGE_LC}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      # 用 commit SHA 做唯一 tag 便于回滚，同时打 latest
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: |
-            ${{ steps.meta.outputs.image }}:latest
-            ${{ steps.meta.outputs.image }}:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-  # ----------------------------------------------------------
-  # 2) Deploy to VPS
-  # ----------------------------------------------------------
-  deploy:
-    name: Deploy to VPS
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Pull & restart on VPS
-        uses: appleboy/ssh-action@v1
+      - name: Push current commit to Spaces
         env:
-          IMAGE: ${{ needs.build.outputs.image }}:${{ github.sha }}
-          GHCR_USER: ${{ github.actor }}
-          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_PORT || 22 }}
-          command_timeout: 5m
-          # envs 把上面 env 块里的变量带进 ssh script
-          envs: IMAGE,GHCR_USER,GHCR_TOKEN
-          script: |
-            set -e
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          set -euo pipefail
 
-            echo "==> Logging in to GHCR..."
-            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
-
-            echo "==> Pulling image: $IMAGE"
-            docker pull "$IMAGE"
-
-            echo "==> Stopping old container..."
-            docker stop miaocut 2>/dev/null || true
-            docker rm   miaocut 2>/dev/null || true
-
-            echo "==> Starting new container..."
-            # --memory=14g：容器最多用 14GB 物理内存（VPS 共 16GB，留 2GB 给系统/sshd）
-            # --memory-swap=14g：禁止容器使用 swap（值等于 --memory 即关闭 swap）
-            #   原因：BiRefNet 模型权重一旦被 page-out，下次推理 latency 从 1~3s 变 30s+。
-            #   ⚠️ 必须 ≥ --memory，否则 Docker 报错或静默降级；等于 --memory 才是真禁 swap。
-            #   宿主机另有 4GB swap，是给系统/sshd 用的应急减压阀，与容器配置完全独立。
-            # MAX_CONCURRENCY=2：BiRefNet+fur 模式单请求峰值 ~1.5GB，2 路并发实测 RSS ~4GB；
-            #   想提速可压测后上调到 4（峰值 ~7GB，仍有大富余）。
-            # MALLOC_ARENA_MAX=2：glibc 默认按 8×CPU 数开 malloc arena，4 核机器 = 32 个 arena，
-            #   每个最多缓存 ~64MB free chunks → 仅碎片就能吃 GB 级。限到 2 个，约束碎片上限。
-            # MALLOC_TRIM_THRESHOLD_=131072：把 trim 阈值从默认 8MB 降到 128KB，让 glibc
-            #   更主动地把 free 页归还内核（与 main.py 里 malloc_trim(0) 显式调用形成双保险）。
-            #   注意结尾下划线 `_`，是 glibc 的 env 变量命名约定，少一个字符就不生效。
-            docker run -d \
-              --name miaocut \
-              --restart unless-stopped \
-              -p 80:8000 \
-              --memory=14g \
-              --memory-swap=14g \
-              -e ALLOWED_ORIGINS=https://miaocut.app,https://www.miaocut.app \
-              -e TRUST_PROXY=1 \
-              -e MAX_CONCURRENCY=2 \
-              -e MALLOC_ARENA_MAX=2 \
-              -e MALLOC_TRIM_THRESHOLD_=131072 \
-              -v miaocut-models:/app/.u2net \
-              -v miaocut-data:/app/data \
-              "$IMAGE"
-
-            # logout 抹掉 ~/.docker/config.json 里的临时凭证
-            docker logout ghcr.io || true
-
-            # 健康检查：最多等 120s。模型默认懒加载，因此这里只确认 Web/API 进程已启动。
-            echo "==> Waiting for server to be ready (up to 120s)..."
-            for i in $(seq 1 24); do
-              if curl -sf http://127.0.0.1:80/ > /dev/null 2>&1; then
-                echo "==> ✅ Deploy SUCCESS! (ready in ~$((i*5))s)"
-                # 清理悬挂镜像（保留有 tag 的，方便回滚）
-                docker image prune -f
-                exit 0
-              fi
-              if ! docker ps -q -f name=miaocut | grep -q .; then
-                echo "==> ❌ Container crashed! Logs:"
-                docker logs --tail 30 miaocut
-                exit 1
-              fi
-              echo "    waiting... ($((i*5))s)"
-              sleep 5
-            done
-
-            echo "==> ❌ Server did not respond within 120s. Logs:"
-            docker logs --tail 30 miaocut
+          if [ -z "$HF_TOKEN" ]; then
+            echo "HF_TOKEN secret is not configured."
             exit 1
+          fi
+
+          spaces=(
+            "miao_cut"
+            "miao_cut2"
+            "miao_cut3"
+          )
+
+          for space in "${spaces[@]}"; do
+            repo="huggingface.co/spaces/midcodex/${space}"
+            echo "==> Pushing to https://${repo}"
+            git push "https://midcodex:${HF_TOKEN}@${repo}" HEAD:main --force
+          done

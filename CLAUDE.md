@@ -7,8 +7,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 MiaoCut 是一个免登录的在线 AI 抠图服务（[miaocut.app](https://miaocut.app)）。仓库同时包含前端和后端，但部署到不同的位置：
 
 - **前端**：单文件 [index.html](index.html) + 编译后的 [output.css](output.css) → 部署到 Cloudflare Pages
-- **后端**：FastAPI [main.py](main.py) + BiRefNet（rembg）→ Docker 镜像 → VPS（GHCR 自动部署）
-- 前端通过 `https://api.miaocut.app` 调后端；本地开发时切到 `http://127.0.0.1:8000`（判断逻辑在 [index.html:535](index.html#L535)）
+- **后端**：FastAPI [main.py](main.py) + BiRefNet（rembg）→ Hugging Face Docker Spaces（[midcodex/miao_cut](https://huggingface.co/spaces/midcodex/miao_cut)、[midcodex/miao_cut2](https://huggingface.co/spaces/midcodex/miao_cut2)、[midcodex/miao_cut3](https://huggingface.co/spaces/midcodex/miao_cut3)）
+- 前端通过 `https://api2.miaocut.app` 调后端；本地开发时切到 `http://127.0.0.1:8000`（判断逻辑在 [app.js](app.js)）
 
 跨进程的状态（限流计数、并发信号量、模型权重）全部在后端 Python 进程内存里，**不**依赖 Redis 等外部存储。
 
@@ -26,7 +26,7 @@ pip install -r requirements.txt
 
 # 构建并本地运行 Docker 镜像
 docker build -t miaocut-api .
-docker run -d -p 8000:8000 -e MAX_CONCURRENCY=2 -v miaocut-data:/app/data miaocut-api
+docker run --rm -p 7860:7860 -e PORT=7860 -e MAX_CONCURRENCY=1 -v miaocut-data:/data miaocut-api
 ```
 
 注意：
@@ -48,7 +48,7 @@ npm run watch:css
 
 ### 部署
 
-`main` 分支 push 后，[.github/workflows/deploy-backend.yml](.github/workflows/deploy-backend.yml) 自动触发：GitHub Actions 上 build Docker 镜像 → push 到 GHCR → SSH 到 VPS pull + 重启容器。只在改了 `main.py / requirements.txt / Dockerfile / index.html / output.css / 该 workflow 文件` 时触发。手动 redeploy 走 GitHub Actions UI 的 `workflow_dispatch`。
+`main` 分支 push 后，[.github/workflows/deploy-backend.yml](.github/workflows/deploy-backend.yml) 自动触发：GitHub Actions 将当前提交分发推送到 Hugging Face Docker Spaces `midcodex/miao_cut`、`midcodex/miao_cut2`、`midcodex/miao_cut3`，由各 Space 分别构建和启动容器。GitHub Actions 需要配置 `HF_TOKEN` secret，且 token 需要有这 3 个 Space 的写权限。只在改了 `main.py / requirements.txt / Dockerfile / README.md / index.html / output.css / app.js / SEO 子页 / examples / 该 workflow 文件` 时触发。手动 redeploy 走 GitHub Actions UI 的 `workflow_dispatch`。
 
 前端由 Cloudflare Pages 直接 serve `index.html` + `output.css`，没有单独的 CI。
 
@@ -74,7 +74,7 @@ npm run watch:css
   - sharp 单请求峰值 ~300~500MB
   - fur 单请求峰值 ~1~1.5GB（alpha matting + foreground estimation 是大头）
 
-生产 VPS（16GB RAM + 4GB host swap）在 [.github/workflows/deploy-backend.yml:123](.github/workflows/deploy-backend.yml#L123) 配的是 `MAX_CONCURRENCY=2` + `--memory=14g --memory-swap=14g`（值相等即禁 swap，因为模型权重一旦被换出，下次推理 latency 从 1~3s 涨到 30s+；宿主机的 4GB swap 留给系统/sshd 当应急减压阀，与容器无关）。压测后想提速可上调到 4（peak ~7GB）。
+Hugging Face Space 建议先配 `MAX_CONCURRENCY=1`，稳定后再压测上调到 2。Space 侧不能像 VPS 一样通过 `docker run --memory` 精细控内存，所以并发旋钮要保守。
 
 ### 前端：单文件 SPA
 
@@ -88,7 +88,7 @@ npm run watch:css
 
 ### 反馈接口
 
-`POST /api/feedback` ([main.py:515](main.py#L515)) 把留言写到 `data/feedback.json`（JSON Lines 追加）。`data/` 在 Docker 里是 named volume `miaocut-data`，重启不丢。`data/` 已在 `.gitignore`，不要提交。
+`POST /api/feedback` ([main.py](main.py)) 只在请求内完成校验和排队，然后用 FastAPI `BackgroundTasks` 异步投递到 Cloudflare Worker（`FEEDBACK_ENDPOINT`），由 Worker 写入 D1。未配置 Worker 时退回 `${DATA_DIR}/feedback.json`；Worker 投递失败时写 `${DATA_DIR}/feedback-failed.json`。Hugging Face Space 上设置 `DATA_DIR=/data` 并开启 Persistent Storage 后，本地兜底文件重启不丢。`data/` 已在 `.gitignore`，不要提交。
 
 ## 配置（环境变量）
 
@@ -96,10 +96,16 @@ npm run watch:css
 
 ```
 TRUST_PROXY=1
-ALLOWED_ORIGINS=https://miaocut.app,https://www.miaocut.app
-MAX_CONCURRENCY=<按机器内存>
+ALLOWED_ORIGINS=https://miaocut.app,https://www.miaocut.app,https://midcodex-miao-cut.hf.space,https://midcodex-miao-cut2.hf.space,https://midcodex-miao-cut3.hf.space
+MAX_CONCURRENCY=1
 ENABLE_DOCS=0          # 关掉 /docs 防接口枚举
 CUTOUT_PROFILE=sharp   # 默认；前端 toggle 可按请求覆盖到 fur
+DATA_DIR=/data          # Space Persistent Storage
+PORT=7860               # Hugging Face Docker Space
+FEEDBACK_ENDPOINT=https://<worker-domain>/feedback
+FEEDBACK_TOKEN=<same-secret-as-worker>
+FEEDBACK_IP_HASH_SALT=<random-secret-for-ip-hmac>
+BACKEND_SPACE=miao_cut  # 每个 Space 分别设 miao_cut / miao_cut2 / miao_cut3
 ```
 
 `CUTOUT_PROFILE` 只是默认值，前端可以通过 `?profile=sharp|fur` query 参数按请求覆盖。非法/缺失值会静默回退到 env 默认。

@@ -25,22 +25,28 @@ MiaoCut 后端：1 秒纯净抠图。
 import asyncio
 import ctypes
 import gc
+import hashlib
+import hmac
 import io
 import ipaddress
 import json
 import logging
 import os
 import re
+import threading
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 from urllib.parse import quote
 
+import httpx
 import onnxruntime as ort
 import uvicorn
-from fastapi import Depends, FastAPI, File, HTTPException, Request, Response, UploadFile
+from fastapi import BackgroundTasks, Depends, FastAPI, File, HTTPException, Request, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from PIL import Image
 from rembg import remove
 from rembg.sessions import sessions_class
@@ -86,6 +92,14 @@ ENABLE_DOCS = os.getenv("ENABLE_DOCS", "0") == "1"
 # 想做成"用户在前端按需选模式"时，把读取位置从环境变量改成 query/header 即可，pipeline 函数不感知。
 _raw_profile = os.getenv("CUTOUT_PROFILE", "sharp").lower()
 CUTOUT_PROFILE = _raw_profile if _raw_profile in ("sharp", "fur") else "sharp"
+
+# 反馈写入：生产建议配置 Cloudflare Worker，把反馈统一写入 D1。
+# 不配置 FEEDBACK_ENDPOINT 时退回本地 JSONL，方便开发和离线调试。
+FEEDBACK_ENDPOINT = os.getenv("FEEDBACK_ENDPOINT", "").strip()
+FEEDBACK_TOKEN = os.getenv("FEEDBACK_TOKEN", "").strip()
+FEEDBACK_IP_HASH_SALT = os.getenv("FEEDBACK_IP_HASH_SALT", "").strip()
+BACKEND_SPACE = os.getenv("BACKEND_SPACE", os.getenv("SPACE_ID", "")).strip()
+FEEDBACK_TIMEOUT_SECONDS = float(os.getenv("FEEDBACK_TIMEOUT_SECONDS", "2.0"))
 
 ALLOWED_MIME_TYPES = {"image/jpeg", "image/png", "image/webp"}
 
@@ -147,8 +161,19 @@ def _create_birefnet_session():
     return cls("birefnet-general", sess_opts, ["CPUExecutionProvider"])
 
 
-logger.info("Loading BiRefNet (SOTA) AI model for background removal... (cutout_profile=%s)", CUTOUT_PROFILE)
-high_quality_session = _create_birefnet_session()
+_high_quality_session = None
+_high_quality_session_lock = threading.Lock()
+
+
+def get_high_quality_session():
+    """按需加载 BiRefNet，避免 Hugging Face Space 冷启动时阻塞健康检查。"""
+    global _high_quality_session
+    if _high_quality_session is None:
+        with _high_quality_session_lock:
+            if _high_quality_session is None:
+                logger.info("Loading BiRefNet (SOTA) AI model for background removal... (cutout_profile=%s)", CUTOUT_PROFILE)
+                _high_quality_session = _create_birefnet_session()
+    return _high_quality_session
 
 
 # ============================================================
@@ -249,6 +274,7 @@ app = FastAPI(
 )
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.mount("/examples", StaticFiles(directory="examples"), name="examples")
 
 # ============================================================
 # CORS（前后端分离部署时必须）
@@ -364,7 +390,7 @@ def _run_sharp_pipeline(data: bytes) -> bytes:
 
     output_data = remove(
         data,
-        session=high_quality_session,
+        session=get_high_quality_session(),
         alpha_matting=False,
     )
 
@@ -424,7 +450,7 @@ def _run_fur_pipeline(data: bytes) -> bytes:
 
     output_data = remove(
         data,
-        session=high_quality_session,
+        session=get_high_quality_session(),
         alpha_matting=True,
         alpha_matting_foreground_threshold=240,
         alpha_matting_background_threshold=15,
@@ -494,6 +520,21 @@ async def output_css():
     """本地 dev 时 index.html 通过后端 / 返回，样式同源加载需要这个端点；
     生产由 Cloudflare Pages 直接服务静态文件，此路径无人访问。"""
     return FileResponse("output.css", media_type="text/css")
+
+
+@app.get("/app.js")
+async def app_js():
+    return FileResponse("app.js", media_type="application/javascript")
+
+
+@app.get("/product-photo-background-remover/")
+async def product_photo_background_remover():
+    return FileResponse("product-photo-background-remover/index.html")
+
+
+@app.get("/portrait-background-remover/")
+async def portrait_background_remover():
+    return FileResponse("portrait-background-remover/index.html")
 
 
 @app.post("/api/remove-background", dependencies=[Depends(verify_origin)])
@@ -570,21 +611,63 @@ async def remove_background(request: Request, file: UploadFile = File(...)):
 # ============================================================
 # Feedback API
 # ============================================================
-FEEDBACK_FILE = Path("data/feedback.json")
+DATA_DIR = Path(os.getenv("DATA_DIR", "data"))
+FEEDBACK_FILE = DATA_DIR / "feedback.json"
+FEEDBACK_FAILED_FILE = DATA_DIR / "feedback-failed.json"
 FEEDBACK_FILE.parent.mkdir(parents=True, exist_ok=True)
 
 
-@app.post("/api/feedback")
+def _append_jsonl(path: Path, entry: dict) -> None:
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
+
+def _hash_ip(ip: str) -> Optional[str]:
+    """用 HMAC-SHA256 存 IP 指纹，不把明文 IP 写进反馈库。"""
+    if not ip:
+        return None
+    key = FEEDBACK_IP_HASH_SALT or FEEDBACK_TOKEN
+    if not key:
+        return None
+    return hmac.new(key.encode("utf-8"), ip.encode("utf-8"), hashlib.sha256).hexdigest()
+
+
+async def _deliver_feedback(entry: dict) -> None:
+    if not FEEDBACK_ENDPOINT:
+        _append_jsonl(FEEDBACK_FILE, entry)
+        logger.info("Feedback saved locally: %s", entry["id"])
+        return
+
+    headers = {"Content-Type": "application/json"}
+    if FEEDBACK_TOKEN:
+        headers["Authorization"] = f"Bearer {FEEDBACK_TOKEN}"
+
+    try:
+        async with httpx.AsyncClient(timeout=FEEDBACK_TIMEOUT_SECONDS) as client:
+            resp = await client.post(FEEDBACK_ENDPOINT, json=entry, headers=headers)
+            resp.raise_for_status()
+        logger.info("Feedback delivered to Cloudflare Worker: %s", entry["id"])
+    except Exception as exc:
+        logger.warning("Feedback delivery failed, saved to fallback file: %s", exc)
+        failed_entry = {
+            **entry,
+            "delivery_error": str(exc)[:500],
+            "delivery_failed_at": datetime.now(timezone.utc).isoformat(),
+        }
+        _append_jsonl(FEEDBACK_FAILED_FILE, failed_entry)
+
+
+@app.post("/api/feedback", dependencies=[Depends(verify_origin)])
 @limiter.limit("3/minute")  # anti-spam
-async def submit_feedback(request: Request):
+async def submit_feedback(request: Request, background_tasks: BackgroundTasks):
     """
-    Save user feedback to a local JSON file.
+    Queue user feedback for asynchronous delivery.
 
     Request body (JSON):
       { "message": "...", "email": "..." }   // email is optional
 
-    Storage: data/feedback.json (append-only JSON Lines format)
-    Each line is one JSON object with: message, email, ip, timestamp.
+    Production storage: Cloudflare Worker -> D1 (configured by FEEDBACK_ENDPOINT).
+    Fallback storage: JSON Lines under DATA_DIR.
     """
     try:
         body = await request.json()
@@ -596,20 +679,25 @@ async def submit_feedback(request: Request):
         raise HTTPException(status_code=400, detail="Message is required (max 2000 chars)")
 
     email = (body.get("email") or "").strip()[:200]
+    real_ip = get_real_ip(request)
 
     entry = {
+        "id": str(uuid.uuid4()),
         "message": message,
         "email": email or None,
-        "ip": get_real_ip(request),
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "ip_hash": _hash_ip(real_ip),
+        "user_agent": request.headers.get("user-agent", "")[:500] or None,
+        "origin": (request.headers.get("origin") or "").rstrip("/") or None,
+        "referer": request.headers.get("referer", "")[:500] or None,
+        "page": body.get("page") if isinstance(body.get("page"), str) else None,
+        "profile": body.get("profile") if body.get("profile") in ("sharp", "fur") else None,
+        "backend_space": BACKEND_SPACE or None,
+        "created_at": datetime.now(timezone.utc).isoformat(),
     }
 
-    # Append as JSON Lines (one JSON object per line, easy to parse)
-    with open(FEEDBACK_FILE, "a", encoding="utf-8") as f:
-        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
-
-    logger.info("Feedback received: %s", entry)
-    return {"ok": True}
+    background_tasks.add_task(_deliver_feedback, entry)
+    logger.info("Feedback queued: %s", entry["id"])
+    return {"ok": True, "queued": True}
 
 
 if __name__ == "__main__":
@@ -620,5 +708,5 @@ if __name__ == "__main__":
     # ⚠️ 默认不开 reload：uvicorn 的 --reload 会 fork 子进程，onnxruntime 的
     #    线程池在 fork 后经常死锁（进程占 CPU 但永远不 listen）。
     #    需要热重载时改用命令行： uvicorn main:app --reload
-    # 生产：uvicorn main:app --host 0.0.0.0 --port 8000  （单 worker！内存限流不能跨进程）
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # 生产：python main.py（单 worker！内存限流不能跨进程）
+    uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", "8000")))
