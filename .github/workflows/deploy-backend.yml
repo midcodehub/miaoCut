@@ -49,7 +49,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Push current commit to Spaces
+      - name: Push current snapshot to Spaces
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
@@ -66,8 +66,13 @@ jobs:
             "miao_cut3"
           )
 
+          deploy_branch="hf-space-deploy"
+          git checkout --orphan "$deploy_branch"
+          git add -A
+          git commit -m "Deploy ${GITHUB_SHA} to Hugging Face Spaces"
+
           for space in "${spaces[@]}"; do
             repo="huggingface.co/spaces/midcodex/${space}"
             echo "==> Pushing to https://${repo}"
-            git push "https://midcodex:${HF_TOKEN}@${repo}" HEAD:main --force
+            git push "https://midcodex:${HF_TOKEN}@${repo}" "$deploy_branch:main" --force
           done
