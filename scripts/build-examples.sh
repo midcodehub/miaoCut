@@ -4,9 +4,8 @@
 # ============================================================
 # 流程：
 #   examples/raw/{product,portrait,logo,pet}.{jpg,png,webp}
-#     ↓ sips 预压缩到 2048px 以内（和前端一致，避免 413）
-#   *_compressed.jpg（临时文件）
-#     ↓ 调本地后端 /api/remove-background?profile=fur 抠图
+#     ├─ 文件名含 -cut → 已抠图，跳过 API，直接裁剪编码
+#     └─ 否则 → sips 预压缩到 2048px → 调后端 /api/remove-background?profile=fur 抠图
 #   *_nobg.png（临时文件）
 #     ↓ sips 中心裁成 512×512
 #   *_512.png
@@ -67,11 +66,18 @@ mkdir -p "$RAW_DIR" "$OUT_DIR"
 
 # ---------- 找原图 ----------
 # 支持任意常见扩展名，按顺序找第一个匹配
+# 优先匹配 {name}.{ext}，找不到再匹配 {name}-cut.{ext}（已抠图，跳过 API）
 find_raw() {
     local name="$1" ext
     for ext in jpg jpeg png webp JPG JPEG PNG WEBP; do
         if [[ -f "$RAW_DIR/$name.$ext" ]]; then
             echo "$RAW_DIR/$name.$ext"
+            return 0
+        fi
+    done
+    for ext in jpg jpeg png webp JPG JPEG PNG WEBP; do
+        if [[ -f "$RAW_DIR/$name-cut.$ext" ]]; then
+            echo "$RAW_DIR/$name-cut.$ext"
             return 0
         fi
     done
@@ -115,37 +121,48 @@ for target in "${TARGETS[@]}"; do
     # 临时工作文件
     tmp_dir="$(mktemp -d -t miaocut-example.XXXXXX)"
     trap 'rm -rf "$tmp_dir"' EXIT
-    compressed="$tmp_dir/compressed.jpg"
     cutout="$tmp_dir/cutout.png"
     cropped="$tmp_dir/cropped.png"
 
     # 1) 原图预压缩：和前端一样先缩到 2048px 以内，避免触发后端像素上限 413
+    #    文件名含 -cut 的视为已抠图，跳过 API 调用，直接进入裁剪编码
     #    sips 会等比缩放，长边对齐 MAX_DIM，短边自动 ≤ MAX_DIM
-    MAX_DIM=2048
-    W=$(sips -g pixelWidth  "$raw" | awk '/pixelWidth/{print $2}')
-    H=$(sips -g pixelHeight "$raw" | awk '/pixelHeight/{print $2}')
-    if [[ "$W" -gt "$MAX_DIM" || "$H" -gt "$MAX_DIM" ]]; then
-        if [[ "$W" -gt "$H" ]]; then
-            sips --resampleWidth "$MAX_DIM" "$raw" --out "$compressed" >/dev/null
-        else
-            sips --resampleHeight "$MAX_DIM" "$raw" --out "$compressed" >/dev/null
-        fi
-        upload_file="$compressed"
-        ok "原图 ${W}×${H} 超过 ${MAX_DIM}px，已预压缩"
-    else
-        upload_file="$raw"
+    base_noext="$(basename "$raw" | sed 's/\.[^.]*$//')"
+    skip_cut=false
+    if [[ "$base_noext" == *"-cut"* ]]; then
+        skip_cut=true
+        ok "文件名含 -cut，跳过抠图，直接进入裁剪编码"
     fi
 
-    # 2) 调后端抠图
-    # 后端在 ALLOWED_ORIGINS 为空时会跳过 origin 校验（dev 默认）；
-    # 若线上后端开启了校验，curl 默认不带 Origin 也会通过 verify_origin 的"无 origin 直接放行"分支。
-    if ! curl -sf -X POST "$API_BASE/api/remove-background?profile=$PROFILE" \
-         -F "file=@$upload_file" \
-         --output "$cutout"; then
-        err "抠图请求失败（命中限流就等 1 分钟，或者把 main.py 里的 limiter 临时关掉）"
-        FAILED=$((FAILED + 1))
-        rm -rf "$tmp_dir"; trap - EXIT
-        continue
+    upload_file="$raw"
+    if [[ "$skip_cut" == "false" ]]; then
+        MAX_DIM=2048
+        W=$(sips -g pixelWidth  "$raw" | awk '/pixelWidth/{print $2}')
+        H=$(sips -g pixelHeight "$raw" | awk '/pixelHeight/{print $2}')
+        if [[ "$W" -gt "$MAX_DIM" || "$H" -gt "$MAX_DIM" ]]; then
+            compressed="$tmp_dir/compressed.jpg"
+            if [[ "$W" -gt "$H" ]]; then
+                sips --resampleWidth "$MAX_DIM" "$raw" --out "$compressed" >/dev/null
+            else
+                sips --resampleHeight "$MAX_DIM" "$raw" --out "$compressed" >/dev/null
+            fi
+            upload_file="$compressed"
+            ok "原图 ${W}×${H} 超过 ${MAX_DIM}px，已预压缩"
+        fi
+    fi
+
+    # 2) 调后端抠图（-cut 文件跳过）
+    if [[ "$skip_cut" == "true" ]]; then
+        cp "$raw" "$cutout"
+    else
+        if ! curl -sf -X POST "$API_BASE/api/remove-background?profile=$PROFILE" \
+             -F "file=@$upload_file" \
+             --output "$cutout"; then
+            err "抠图请求失败（命中限流就等 1 分钟，或者把 main.py 里的 limiter 临时关掉）"
+            FAILED=$((FAILED + 1))
+            rm -rf "$tmp_dir"; trap - EXIT
+            continue
+        fi
     fi
 
     # 3) 中心裁成 SIZE×SIZE
