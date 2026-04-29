@@ -101,6 +101,13 @@ FEEDBACK_IP_HASH_SALT = os.getenv("FEEDBACK_IP_HASH_SALT", "").strip()
 BACKEND_SPACE = os.getenv("BACKEND_SPACE", os.getenv("SPACE_ID", "")).strip()
 FEEDBACK_TIMEOUT_SECONDS = float(os.getenv("FEEDBACK_TIMEOUT_SECONDS", "2.0"))
 
+# 老照片修复：默认走本进程的轻量 OpenCV 兜底；生产可配置独立 GPU 服务 URL。
+# 这样首页抠图的 BiRefNet 进程不会被 GFPGAN/Real-ESRGAN/CodeFormer 等大模型拖慢。
+RESTORE_PROVIDER_URL = os.getenv("RESTORE_PROVIDER_URL", "").strip()
+RESTORE_PROVIDER_TOKEN = os.getenv("RESTORE_PROVIDER_TOKEN", "").strip()
+RESTORE_TIMEOUT_SECONDS = float(os.getenv("RESTORE_TIMEOUT_SECONDS", "90.0"))
+RESTORE_MAX_CONCURRENCY = int(os.getenv("RESTORE_MAX_CONCURRENCY", "1"))
+
 ALLOWED_MIME_TYPES = {"image/jpeg", "image/png", "image/webp"}
 ID_PHOTO_PRESETS = {
     "one_inch": (295, 413),
@@ -295,6 +302,7 @@ logger.info("RateLimiter storage: memory (single-process), trust_proxy=%s", TRUS
 # 用信号量排队，超出的请求会 await 等待，不会报错（行为更友好）。
 # 若想直接拒绝，可以改成 wait_for(acquire, timeout) + 429。
 rembg_semaphore = asyncio.Semaphore(MAX_CONCURRENCY)
+restore_semaphore = asyncio.Semaphore(RESTORE_MAX_CONCURRENCY)
 
 
 # ============================================================
@@ -934,6 +942,113 @@ async def run_rembg(data: bytes, profile: Optional[str] = None) -> bytes:
         return await asyncio.to_thread(_run_rembg_sync, data, profile)
 
 
+def _normalize_restore_scale(value: str) -> int:
+    try:
+        scale = int(value)
+    except (TypeError, ValueError):
+        scale = 2
+    return scale if scale in (1, 2, 4) else 2
+
+
+def _normalize_restore_strength(value: str) -> str:
+    return value if value in ("gentle", "balanced", "strong") else "balanced"
+
+
+def _restore_old_photo_local_sync(input_data: bytes, scale: int, strength: str) -> tuple[bytes, str]:
+    """轻量本地修复兜底：去噪、对比度恢复、锐化和 Lanczos 放大。
+
+    这不是完整的生成式 AI 老照片修复，但它能在无外部 GPU Provider 时提供可用结果，
+    并保持线上 Space 的镜像体积和冷启动稳定。真正的 AI 高清修复通过
+    RESTORE_PROVIDER_URL 接入独立服务。
+    """
+    import cv2
+    import numpy as np
+
+    arr = np.frombuffer(input_data, np.uint8)
+    bgr = cv2.imdecode(arr, cv2.IMREAD_COLOR)
+    if bgr is None:
+        raise HTTPException(status_code=400, detail="Invalid image file")
+
+    h, w = bgr.shape[:2]
+    max_side = max(h, w)
+    target_scale = scale
+    if max_side * target_scale > 4096:
+        target_scale = max(1.0, 4096 / max_side)
+
+    if target_scale != 1:
+        bgr = cv2.resize(
+            bgr,
+            (max(1, int(w * target_scale)), max(1, int(h * target_scale))),
+            interpolation=cv2.INTER_LANCZOS4,
+        )
+
+    params = {
+        "gentle": {"denoise": 4, "clip": 1.35, "sharp": 0.35},
+        "balanced": {"denoise": 7, "clip": 1.65, "sharp": 0.55},
+        "strong": {"denoise": 10, "clip": 2.0, "sharp": 0.75},
+    }[strength]
+
+    denoised = cv2.fastNlMeansDenoisingColored(
+        bgr,
+        None,
+        params["denoise"],
+        params["denoise"],
+        7,
+        21,
+    )
+
+    lab = cv2.cvtColor(denoised, cv2.COLOR_BGR2LAB)
+    l, a, b = cv2.split(lab)
+    clahe = cv2.createCLAHE(clipLimit=params["clip"], tileGridSize=(8, 8))
+    l = clahe.apply(l)
+    restored = cv2.cvtColor(cv2.merge((l, a, b)), cv2.COLOR_LAB2BGR)
+
+    blur = cv2.GaussianBlur(restored, (0, 0), sigmaX=1.2)
+    amount = params["sharp"]
+    restored = cv2.addWeighted(restored, 1 + amount, blur, -amount, 0)
+
+    ok, encoded = cv2.imencode(".jpg", restored, [int(cv2.IMWRITE_JPEG_QUALITY), 95])
+    if not ok:
+        raise HTTPException(status_code=500, detail="Image encoding failed")
+    return encoded.tobytes(), "image/jpeg"
+
+
+async def _restore_old_photo_external(
+    input_data: bytes,
+    filename: str,
+    content_type: str,
+    scale: int,
+    strength: str,
+) -> tuple[bytes, str]:
+    headers = {}
+    if RESTORE_PROVIDER_TOKEN:
+        headers["Authorization"] = f"Bearer {RESTORE_PROVIDER_TOKEN}"
+
+    files = {"file": (filename or "photo.jpg", input_data, content_type or "application/octet-stream")}
+    data = {"scale": str(scale), "strength": strength}
+    async with httpx.AsyncClient(timeout=RESTORE_TIMEOUT_SECONDS) as client:
+        resp = await client.post(RESTORE_PROVIDER_URL, headers=headers, data=data, files=files)
+        resp.raise_for_status()
+
+    media_type = resp.headers.get("content-type", "image/jpeg").split(";", 1)[0].strip()
+    if not media_type.startswith("image/"):
+        raise HTTPException(status_code=502, detail="Restore provider returned a non-image response")
+    return resp.content, media_type
+
+
+async def run_old_photo_restore(
+    input_data: bytes,
+    filename: str,
+    content_type: str,
+    scale: int,
+    strength: str,
+) -> tuple[bytes, str]:
+    async with restore_semaphore:
+        if RESTORE_PROVIDER_URL:
+            return await _restore_old_photo_external(input_data, filename, content_type, scale, strength)
+        return await asyncio.to_thread(_restore_old_photo_local_sync, input_data, scale, strength)
+
+
 # ============================================================
 # 路由
 # ============================================================
@@ -975,6 +1090,16 @@ if SERVE_STATIC:
     @app.get("/id-photo-maker/id-photo.js")
     async def id_photo_js():
         return FileResponse("id-photo-maker/id-photo.js", media_type="application/javascript")
+
+
+    @app.get("/old-photo-restoration/")
+    async def old_photo_restoration():
+        return FileResponse("old-photo-restoration/index.html")
+
+
+    @app.get("/old-photo-restoration/old-photo.js")
+    async def old_photo_js():
+        return FileResponse("old-photo-restoration/old-photo.js", media_type="application/javascript")
 
 
 @app.post("/api/remove-background", dependencies=[Depends(verify_origin)])
@@ -1041,6 +1166,71 @@ async def remove_background(request: Request, file: UploadFile = File(...)):
             "Content-Disposition": (
                 f'attachment; filename="{ascii_name}_nobg.png"; '
                 f"filename*=UTF-8''{quote(basename)}_nobg.png"
+            ),
+            "X-Content-Type-Options": "nosniff",
+            "Referrer-Policy": "no-referrer",
+        },
+    )
+
+
+@app.post("/api/old-photo/restore", dependencies=[Depends(verify_origin)])
+@limiter.limit("3/minute;20/day")
+async def restore_old_photo(request: Request, file: UploadFile = File(...)):
+    if file.content_type not in ALLOWED_MIME_TYPES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"不支持的文件格式: {file.content_type}。仅支持 JPG, PNG, WebP。",
+        )
+
+    content_length = request.headers.get("content-length")
+    if content_length and content_length.isdigit() and int(content_length) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="文件过大，请压缩后再上传。")
+
+    input_data = await file.read(MAX_UPLOAD_BYTES + 1)
+    if len(input_data) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="文件过大，请压缩后再上传。")
+    if not input_data:
+        raise HTTPException(status_code=400, detail="空文件。")
+
+    try:
+        with Image.open(io.BytesIO(input_data)) as img:
+            img.verify()
+        with Image.open(io.BytesIO(input_data)) as img2:
+            w, h = img2.size
+    except Exception:
+        raise HTTPException(status_code=400, detail="无效的图片文件。")
+
+    if w * h > MAX_IMAGE_PIXELS:
+        raise HTTPException(status_code=413, detail=f"图片尺寸过大（{w}x{h}），请压缩后再试。")
+
+    form = await request.form()
+    scale = _normalize_restore_scale(str(form.get("scale") or "2"))
+    strength = _normalize_restore_strength(str(form.get("strength") or "balanced"))
+
+    try:
+        output_data, media_type = await run_old_photo_restore(
+            input_data,
+            file.filename or "photo.jpg",
+            file.content_type or "application/octet-stream",
+            scale,
+            strength,
+        )
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logger.exception("old photo restore failed: %s", exc)
+        raise HTTPException(status_code=500, detail="照片修复失败，请稍后重试。")
+
+    basename = safe_basename(file.filename)
+    ascii_name = _ASCII_UNSAFE.sub("_", basename) or "photo"
+    ext = "png" if media_type == "image/png" else "jpg"
+    return Response(
+        content=output_data,
+        media_type=media_type,
+        headers={
+            "Content-Disposition": (
+                f'attachment; filename="{ascii_name}_restored.{ext}"; '
+                f"filename*=UTF-8''{quote(basename)}_restored.{ext}"
             ),
             "X-Content-Type-Options": "nosniff",
             "Referrer-Policy": "no-referrer",

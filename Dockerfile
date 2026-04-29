@@ -16,6 +16,12 @@ FROM python:3.12-slim AS builder
 
 WORKDIR /build
 
+# 构建阶段也会 import rembg/mediapipe/OpenCV 来预下载模型；
+# slim 镜像默认没有 libGL，缺失时会在 builder 的 python -c 里失败。
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends libgl1 libglib2.0-0 && \
+    rm -rf /var/lib/apt/lists/*
+
 # 先装依赖（利用 Docker 缓存，改代码不重装依赖）
 COPY requirements.txt .
 RUN pip install --no-cache-dir --prefix=/install -r requirements.txt

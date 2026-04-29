@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://api2.miaocut.app">
+    <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
+    <title>Old Photo Restoration - Restore and Upscale Photos Online | MiaoCut</title>
+    <meta name="description"
+        content="Restore old photos online with MiaoCut. Reduce noise, recover contrast, sharpen details, and upscale vintage family photos with no signup.">
+    <meta name="keywords"
+        content="old photo restoration, restore old photos, photo enhancer, photo upscale, repair old photo, vintage photo restoration">
+    <meta property="og:title" content="Old Photo Restoration - Restore and Upscale Photos Online | MiaoCut">
+    <meta property="og:description"
+        content="Reduce noise, recover contrast, sharpen details, and upscale vintage family photos online.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://miaocut.app/old-photo-restoration/">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="canonical" href="https://miaocut.app/old-photo-restoration/">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "MiaoCut Old Photo Restoration",
+      "url": "https://miaocut.app/old-photo-restoration/",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Web",
+      "description": "Online old photo restoration and upscaling tool.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+    </script>
+    <link rel="stylesheet" href="/output.css">
+    <script defer src="https://cloud.umami.is/script.js"
+        data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
+</head>
+
+<body class="bg-gray-50 min-h-screen font-sans text-gray-900 selection:bg-gray-200">
+    <header class="relative z-10 w-full bg-white border-b border-gray-200">
+        <div class="mx-auto max-w-6xl px-5 py-4 flex items-center justify-between gap-4">
+            <a href="/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
+            <div class="flex items-center gap-4">
+                <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600">
+                    <a href="/" class="hover:text-gray-900 transition-colors" data-i18n="navBg">Background Remover</a>
+                    <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors" data-i18n="navId">ID Photo Maker</a>
+                    <a href="/old-photo-restoration/" class="text-gray-900" data-i18n="navRestore">Old Photo</a>
+                    <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navPortrait">Portrait</a>
+                    <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navProduct">Product</a>
+                </nav>
+                <select id="lang-switch" aria-label="Language"
+                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
+                    <option value="en">English</option>
+                    <option value="zh">简体中文</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <main class="mx-auto max-w-6xl px-5 py-8">
+        <section class="mb-7 flex flex-col gap-2">
+            <p class="text-sm font-semibold text-gray-500" data-i18n="eyebrow">Vintage photos, family albums, scanned prints</p>
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" data-i18n="heroTitle">Old Photo Restoration</h1>
+            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed" data-i18n="heroSub">Recover faded contrast, reduce noise, sharpen soft details, and export a cleaner high-resolution photo.</p>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start">
+            <aside class="bg-white border border-gray-200 rounded-lg p-5">
+                <label id="upload-card"
+                    class="flex min-h-[250px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center hover:border-gray-400 hover:bg-white transition-colors">
+                    <svg id="upload-icon" class="mb-3 h-10 w-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                    </svg>
+                    <img id="upload-preview" alt="Selected photo preview" class="mb-3 hidden max-h-56 w-full rounded border border-gray-200 bg-white object-contain">
+                    <span id="file-name" class="text-sm font-medium text-gray-700" data-i18n="uploadText">Click to upload JPG, PNG, or WebP</span>
+                    <span id="upload-hint" class="mt-1 text-xs text-gray-400" data-i18n="uploadHint">Scanned photos and phone captures both work</span>
+                    <input id="restore-file" type="file" class="hidden" accept="image/jpeg,image/png,image/webp">
+                </label>
+
+                <div class="mt-5 space-y-4">
+                    <div>
+                        <label class="mb-1 block text-sm font-semibold text-gray-700" for="restore-strength" data-i18n="strengthLabel">Repair strength</label>
+                        <select id="restore-strength"
+                            class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300">
+                            <option value="gentle" data-i18n="strengthGentle">Gentle</option>
+                            <option value="balanced" selected data-i18n="strengthBalanced">Balanced</option>
+                            <option value="strong" data-i18n="strengthStrong">Strong</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-sm font-semibold text-gray-700" for="restore-scale" data-i18n="scaleLabel">Output scale</label>
+                        <select id="restore-scale"
+                            class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300">
+                            <option value="1">1x</option>
+                            <option value="2" selected>2x</option>
+                            <option value="4">4x</option>
+                        </select>
+                    </div>
+                    <button id="restore-btn"
+                        class="w-full rounded-lg bg-gray-900 px-4 py-3 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-300 transition-colors"
+                        data-i18n="restoreBtn">Restore Photo</button>
+                    <p id="status" class="min-h-[20px] text-sm text-gray-500"></p>
+                </div>
+            </aside>
+
+            <section class="bg-white border border-gray-200 rounded-lg p-5 min-h-[520px]">
+                <div class="mb-4 flex items-center justify-between gap-3">
+                    <div>
+                        <h2 class="text-lg font-bold" data-i18n="previewTitle">Preview</h2>
+                        <p class="text-sm text-gray-500" data-i18n="previewSub">Compare the uploaded photo with the restored output.</p>
+                    </div>
+                    <button id="download-btn"
+                        class="hidden rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 hover:border-gray-400 hover:text-gray-900 transition-colors"
+                        data-i18n="downloadBtn">Download</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <figure class="min-h-[360px] rounded-lg border border-gray-200 bg-gray-50 p-3">
+                        <figcaption class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400" data-i18n="beforeLabel">Before</figcaption>
+                        <div class="flex min-h-[310px] items-center justify-center">
+                            <img id="before-img" alt="Original photo preview" class="hidden max-h-[430px] max-w-full object-contain">
+                            <p id="before-empty" class="text-sm text-gray-400" data-i18n="beforeEmpty">Original photo will appear here</p>
+                        </div>
+                    </figure>
+                    <figure class="min-h-[360px] rounded-lg border border-gray-200 bg-gray-50 p-3">
+                        <figcaption class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400" data-i18n="afterLabel">After</figcaption>
+                        <div class="flex min-h-[310px] items-center justify-center">
+                            <img id="after-img" alt="Restored photo preview" class="hidden max-h-[430px] max-w-full object-contain">
+                            <p id="after-empty" class="text-sm text-gray-400" data-i18n="afterEmpty">Restored photo will appear here</p>
+                        </div>
+                    </figure>
+                </div>
+            </section>
+        </section>
+
+        <section class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
+            <div class="rounded-lg border border-gray-200 bg-white p-5">
+                <h3 class="mb-2 font-bold text-gray-900" data-i18n="flow1">Restore texture</h3>
+                <p data-i18n="flow1Body">Reduce scan noise and bring faded tonal range back into the photo.</p>
+            </div>
+            <div class="rounded-lg border border-gray-200 bg-white p-5">
+                <h3 class="mb-2 font-bold text-gray-900" data-i18n="flow2">Enhance details</h3>
+                <p data-i18n="flow2Body">Sharpen soft edges and prepare old prints for larger screens.</p>
+            </div>
+            <div class="rounded-lg border border-gray-200 bg-white p-5">
+                <h3 class="mb-2 font-bold text-gray-900" data-i18n="flow3">Keep private</h3>
+                <p data-i18n="flow3Body">Images follow the same in-memory processing policy as other MiaoCut tools.</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="/old-photo-restoration/old-photo.js"></script>
+</body>
+
+</html>

@@ -19,6 +19,7 @@
         en: {
             navBg: 'Background Remover',
             navId: 'ID Photo Maker',
+            navRestore: 'Old Photo',
             navPortrait: 'Portrait',
             navProduct: 'Product',
             eyebrow: 'Passport photos, visa photos, one-inch photos',
@@ -65,6 +66,7 @@
         zh: {
             navBg: 'AI 抠图',
             navId: '证件照',
+            navRestore: '老照片修复',
             navPortrait: '人像',
             navProduct: '商品图',
             eyebrow: '护照照、签证照、一寸照、二寸照',
