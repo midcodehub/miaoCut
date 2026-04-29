@@ -124,6 +124,13 @@ jobs:
             : "${VPS_MAX_CONCURRENCY:=2}"
             : "${VPS_ORT_THREADS:=4}"
 
+            echo "==> Preparing writable data volume..."
+            docker run --rm \
+              --user root \
+              -v miaocut-data:/data \
+              "$IMAGE" \
+              sh -c "mkdir -p /data/.u2net && chown -R 1000:1000 /data"
+
             echo "==> Starting new container..."
             docker run -d \
               --name miaocut \
@@ -133,6 +140,7 @@ jobs:
               --memory-swap=14g \
               -e PORT=7860 \
               -e DATA_DIR=/data \
+              -e U2NET_HOME=/data/.u2net \
               -e SERVE_STATIC_FRONTEND=0 \
               -e ALLOWED_ORIGINS="$ALLOWED_ORIGINS" \
               -e TRUST_PROXY=1 \
@@ -146,7 +154,6 @@ jobs:
               -e FEEDBACK_ENDPOINT="$FEEDBACK_ENDPOINT" \
               -e FEEDBACK_TOKEN="$FEEDBACK_TOKEN" \
               -e FEEDBACK_IP_HASH_SALT="$FEEDBACK_IP_HASH_SALT" \
-              -v miaocut-models:/home/user/app/.u2net \
               -v miaocut-data:/data \
               "$IMAGE"
 

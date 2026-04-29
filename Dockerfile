@@ -28,7 +28,7 @@ FROM python:3.12-slim
 RUN apt-get update && \
     apt-get install -y --no-install-recommends libgl1 libglib2.0-0 && \
     useradd -m -u 1000 user && \
-    mkdir -p /home/user/app /data && \
+    mkdir -p /home/user/app /data/.u2net && \
     chown -R user:user /home/user/app /data && \
     rm -rf /var/lib/apt/lists/*
 
@@ -41,9 +41,9 @@ COPY --from=builder /install /usr/local
 COPY --chown=user:user main.py .
 
 # Hugging Face Spaces 默认公开 7860 端口；反馈数据写 /data 以便挂载持久化存储。
-# 模型缓存不要求持久化，保留在应用目录即可。
+# 模型缓存也放到 /data 下，保证非 root 用户可写；无持久化存储时仍是普通容器目录。
 ENV PORT=7860 \
-    U2NET_HOME=/home/user/app/.u2net \
+    U2NET_HOME=/data/.u2net \
     DATA_DIR=/data \
     MALLOC_ARENA_MAX=2 \
     MALLOC_TRIM_THRESHOLD_=131072

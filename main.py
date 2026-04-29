@@ -147,6 +147,28 @@ logging.basicConfig(
 logger = logging.getLogger("miaocut")
 
 
+def _ensure_writable_model_cache() -> None:
+    """Make rembg/pooch model downloads land in a writable directory."""
+    configured = Path(os.getenv("U2NET_HOME", "/data/.u2net"))
+    fallback = Path("/tmp/miaocut-u2net")
+    for candidate in (configured, fallback):
+        try:
+            candidate.mkdir(parents=True, exist_ok=True)
+            probe = candidate / ".write-test"
+            probe.write_text("ok", encoding="utf-8")
+            probe.unlink(missing_ok=True)
+            os.environ["U2NET_HOME"] = str(candidate)
+            if candidate != configured:
+                logger.warning("U2NET_HOME is not writable; using fallback cache: %s", candidate)
+            return
+        except Exception as exc:
+            logger.warning("Model cache is not writable (%s): %s", candidate, exc)
+    raise RuntimeError("No writable model cache directory found")
+
+
+_ensure_writable_model_cache()
+
+
 # ============================================================
 # AI 模型初始化
 # ============================================================
