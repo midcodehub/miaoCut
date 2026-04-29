@@ -1,22 +1,7 @@
 (function () {
     'use strict';
 
-    const API_STORAGE_KEY = 'miaocutApiEndpoint';
-    const API_ENDPOINTS = {
-        api: 'https://api.miaocut.app',
-        api2: 'https://api2.miaocut.app',
-    };
-
-    function getApiTarget() {
-        const saved = localStorage.getItem(API_STORAGE_KEY);
-        return Object.prototype.hasOwnProperty.call(API_ENDPOINTS, saved) ? saved : 'api';
-    }
-
-    function resolveApiBase() {
-        return API_ENDPOINTS[getApiTarget()];
-    }
-
-    let API_BASE = resolveApiBase();
+    const API_BASE = 'https://api2.miaocut.app';
     const presets = {
         one_inch: [295, 413],
         small_one_inch: [260, 378],
@@ -161,7 +146,6 @@
     const downloadHd = $('download-hd');
     const downloadLayout = $('download-layout');
     const langSwitch = $('lang-switch');
-    const apiSwitch = $('api-switch');
 
     function t(key) {
         return (i18n[state.lang] && i18n[state.lang][key]) || i18n.en[key] || key;
@@ -187,19 +171,6 @@
 
     function setStatus(text) {
         statusEl.textContent = text || '';
-    }
-
-    if (apiSwitch) {
-        apiSwitch.value = getApiTarget();
-        apiSwitch.addEventListener('change', () => {
-            const next = apiSwitch.value;
-            if (!Object.prototype.hasOwnProperty.call(API_ENDPOINTS, next)) return;
-            localStorage.setItem(API_STORAGE_KEY, next);
-            API_BASE = resolveApiBase();
-            if (typeof umami !== 'undefined') {
-                umami.track('api-endpoint-switched', { target: next, host: API_ENDPOINTS[next] });
-            }
-        });
     }
 
     function selectedSize() {

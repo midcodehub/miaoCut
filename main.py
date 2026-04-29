@@ -150,6 +150,12 @@ logger = logging.getLogger("miaocut")
 def _ensure_writable_model_cache() -> None:
     """Make rembg/pooch model downloads land in a writable directory."""
     configured = Path(os.getenv("U2NET_HOME", "/data/.u2net"))
+    bundled_model = configured / "birefnet-general-lite.onnx"
+    if bundled_model.is_file():
+        os.environ["U2NET_HOME"] = str(configured)
+        logger.info("Using bundled model cache: %s", configured)
+        return
+
     fallback = Path("/tmp/miaocut-u2net")
     for candidate in (configured, fallback):
         try:

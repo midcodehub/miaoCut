@@ -10,7 +10,6 @@
 
     <!-- Resource hints：在解析 HTML 时就提前对后端 API 和 Umami 做 TLS 握手，
          用户点上传时直接复用已有连接，省 100~300ms。crossorigin 是因为 Umami 脚本是跨源 CORS 资源。 -->
-    <link rel="preconnect" href="https://api.miaocut.app">
     <link rel="preconnect" href="https://api2.miaocut.app">
     <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
 
@@ -202,18 +201,6 @@
                 </button>
                 <span id="profile-hint" class="text-xs text-gray-500 ml-1" data-i18n="profileHintSharp">~1s · everyday
                     photos</span>
-            </div>
-
-            <div class="mb-4 flex items-center justify-center">
-                <label
-                    class="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-500 shadow-sm">
-                    <span class="font-medium text-gray-600">API</span>
-                    <select id="api-switch" aria-label="API endpoint"
-                        class="cursor-pointer bg-transparent font-medium text-gray-700 outline-none">
-                        <option value="api">VPS - api.miaocut.app</option>
-                        <option value="api2">HF - api2.miaocut.app</option>
-                    </select>
-                </label>
             </div>
 
             <div id="dropzone"
