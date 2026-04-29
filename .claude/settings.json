@@ -37,7 +37,23 @@
       "Bash(command -v cwebp)",
       "Bash(cwebp -version)",
       "Bash(echo \"cwebp: $\\(cwebp -version 2>&1)",
-      "Bash(python -c \"from main import app; print\\('OK'\\)\")"
+      "Bash(python -c \"from main import app; print\\('OK'\\)\")",
+      "Bash(.venv/bin/python _smoke_revert.py)",
+      "Bash(grep -E \"release_memory|enable_cpu_mem_arena|enable_mem_pattern|malloc_trim|^-import \\(ctypes|gc\\)$|^\\\\+import \\(ctypes|gc\\)$|MALLOC_ARENA|MALLOC_TRIM\")",
+      "Bash(.venv/bin/python _speed_diag.py)",
+      "Bash(.venv/bin/python _model_bench.py)",
+      "Bash(.venv/bin/python -u _smoke_lite.py)",
+      "Read(//Users/wuchao/.u2net/**)",
+      "WebFetch(domain:www.googleapis.com)",
+      "WebFetch(domain:developer.chrome.com)",
+      "Bash(curl -sS --max-time 90 \"https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https://miaocut.app&strategy=desktop&category=performance&category=accessibility&category=best-practices&category=seo\" -o /tmp/psi-desktop.json)",
+      "Bash(curl -sS --max-time 120 --retry 2 \"https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https://miaocut.app&strategy=desktop&category=performance&category=accessibility&category=best-practices&category=seo\" -o /tmp/psi-desktop.json)",
+      "Bash(break)",
+      "Read(//private/tmp/**)",
+      "WebFetch(domain:pagespeed.web.dev)",
+      "Bash(curl -sS --max-time 15 https://miaocut.app/robots.txt)",
+      "Bash(curl -sS --max-time 30 --retry 3 --retry-delay 1 https://miaocut.app/robots.txt)",
+      "Bash(cwebp -q 80 -m 6 -resize 256 256 __TRACKED_VAR__.webp -o __TRACKED_VAR__-256.webp)"
     ],
     "additionalDirectories": [
       "/Users/wuchao/git/miaoCut"

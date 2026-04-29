@@ -1,15 +1,18 @@
 # ============================================================
-# MiaoCut 后端自动分发部署到 Hugging Face Spaces
+# MiaoCut 后端双轨部署：VPS + Hugging Face Spaces
 # ============================================================
 # 流程：
-#   1. main 分支相关文件变更后触发。
-#   2. GitHub Actions 将当前提交依次推送到 Docker Spaces：
-#      https://huggingface.co/spaces/midcodex/miao_cut
-#      https://huggingface.co/spaces/midcodex/miao_cut2
-#      https://huggingface.co/spaces/midcodex/miao_cut3
+#   1. build_vps：在 GitHub Actions runner 上 docker build，并推到 GHCR。
+#   2. deploy_vps：SSH 到 VPS，docker login GHCR → pull → 替换容器。
+#   3. deploy_spaces：把后端最小快照推送到多个 Hugging Face Docker Spaces。
 #
 # GitHub 仓库 Settings → Secrets and variables → Actions 中需配置：
-#   HF_TOKEN：有以上 Space 写权限的 Hugging Face access token。
+#   VPS_HOST / VPS_USER / VPS_SSH_KEY / VPS_PORT(可选)
+#   HF_TOKEN：有以下 Space 写权限的 Hugging Face access token。
+#
+# 可选 Secrets：
+#   FEEDBACK_ENDPOINT / FEEDBACK_TOKEN / FEEDBACK_IP_HASH_SALT
+#   ALLOWED_ORIGINS / VPS_MAX_CONCURRENCY / VPS_ORT_THREADS
 # ============================================================
 
 name: Deploy Backend
@@ -22,18 +25,157 @@ on:
       - "requirements.txt"
       - "Dockerfile"
       - "README.md"
-      - "index.html"
-      - "output.css"
-      - "app.js"
-      - "product-photo-background-remover/**"
-      - "portrait-background-remover/**"
-      - "examples/**"
       - ".github/workflows/deploy-backend.yml"
   workflow_dispatch:
     # 允许在 GitHub UI 手动触发，用于强制 redeploy
 
+env:
+  REGISTRY: ghcr.io
+
 jobs:
-  deploy:
+  # ----------------------------------------------------------
+  # 1) Build & push VPS image
+  # ----------------------------------------------------------
+  build_vps:
+    name: Build & push VPS image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image: ${{ steps.meta.outputs.image }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # GHCR 要求镜像 path 全部小写，仓库名含大写时直接 push 会被拒。
+      - name: Compute lowercase image name
+        id: meta
+        run: |
+          IMAGE_LC="$(echo ghcr.io/${{ github.repository }} | tr '[:upper:]' '[:lower:]')"
+          echo "image=${IMAGE_LC}" >> "$GITHUB_OUTPUT"
+          echo "Image base: ${IMAGE_LC}"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ steps.meta.outputs.image }}:latest
+            ${{ steps.meta.outputs.image }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ----------------------------------------------------------
+  # 2) Deploy GHCR image to VPS
+  # ----------------------------------------------------------
+  deploy_vps:
+    name: Deploy to VPS
+    runs-on: ubuntu-latest
+    needs: build_vps
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - name: Pull & restart on VPS
+        uses: appleboy/ssh-action@v1
+        env:
+          IMAGE: ${{ needs.build_vps.outputs.image }}:${{ github.sha }}
+          GHCR_USER: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ALLOWED_ORIGINS: ${{ secrets.ALLOWED_ORIGINS }}
+          VPS_MAX_CONCURRENCY: ${{ secrets.VPS_MAX_CONCURRENCY }}
+          VPS_ORT_THREADS: ${{ secrets.VPS_ORT_THREADS }}
+          FEEDBACK_ENDPOINT: ${{ secrets.FEEDBACK_ENDPOINT }}
+          FEEDBACK_TOKEN: ${{ secrets.FEEDBACK_TOKEN }}
+          FEEDBACK_IP_HASH_SALT: ${{ secrets.FEEDBACK_IP_HASH_SALT }}
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          command_timeout: 8m
+          envs: IMAGE,GHCR_USER,GHCR_TOKEN,ALLOWED_ORIGINS,VPS_MAX_CONCURRENCY,VPS_ORT_THREADS,FEEDBACK_ENDPOINT,FEEDBACK_TOKEN,FEEDBACK_IP_HASH_SALT
+          script: |
+            set -e
+
+            echo "==> Logging in to GHCR..."
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+
+            echo "==> Pulling image: $IMAGE"
+            docker pull "$IMAGE"
+
+            echo "==> Stopping old container..."
+            docker stop miaocut 2>/dev/null || true
+            docker rm   miaocut 2>/dev/null || true
+
+            : "${ALLOWED_ORIGINS:=https://miaocut.app,https://www.miaocut.app}"
+            : "${VPS_MAX_CONCURRENCY:=2}"
+            : "${VPS_ORT_THREADS:=4}"
+
+            echo "==> Starting new container..."
+            docker run -d \
+              --name miaocut \
+              --restart unless-stopped \
+              -p 80:7860 \
+              --memory=14g \
+              --memory-swap=14g \
+              -e PORT=7860 \
+              -e DATA_DIR=/data \
+              -e SERVE_STATIC_FRONTEND=0 \
+              -e ALLOWED_ORIGINS="$ALLOWED_ORIGINS" \
+              -e TRUST_PROXY=1 \
+              -e ENABLE_DOCS=0 \
+              -e CUTOUT_PROFILE=sharp \
+              -e MAX_CONCURRENCY="$VPS_MAX_CONCURRENCY" \
+              -e MIAOCUT_OMP_NUM_THREADS="$VPS_ORT_THREADS" \
+              -e MALLOC_ARENA_MAX=2 \
+              -e MALLOC_TRIM_THRESHOLD_=131072 \
+              -e BACKEND_SPACE=vps \
+              -e FEEDBACK_ENDPOINT="$FEEDBACK_ENDPOINT" \
+              -e FEEDBACK_TOKEN="$FEEDBACK_TOKEN" \
+              -e FEEDBACK_IP_HASH_SALT="$FEEDBACK_IP_HASH_SALT" \
+              -v miaocut-models:/home/user/app/.u2net \
+              -v miaocut-data:/data \
+              "$IMAGE"
+
+            docker logout ghcr.io || true
+
+            echo "==> Waiting for server to be ready (up to 120s)..."
+            for i in $(seq 1 24); do
+              if curl -sf http://127.0.0.1:80/ > /dev/null 2>&1; then
+                echo "==> Deploy SUCCESS! (ready in ~$((i*5))s)"
+                docker image prune -f
+                exit 0
+              fi
+              if ! docker ps -q -f name=miaocut | grep -q .; then
+                echo "==> Container crashed! Logs:"
+                docker logs --tail 60 miaocut
+                exit 1
+              fi
+              echo "    waiting... ($((i*5))s)"
+              sleep 5
+            done
+
+            echo "==> Server did not respond within 120s. Logs:"
+            docker logs --tail 60 miaocut
+            exit 1
+
+  # ----------------------------------------------------------
+  # 3) Push backend-only snapshot to Hugging Face Spaces
+  # ----------------------------------------------------------
+  deploy_spaces:
     name: Push to Hugging Face Spaces
     runs-on: ubuntu-latest
     permissions:
@@ -66,8 +208,13 @@ jobs:
             "miao_cut3"
           )
 
+          deploy_dir="$(mktemp -d)"
+          cp Dockerfile README.md main.py requirements.txt "$deploy_dir"/
+
           deploy_branch="hf-space-deploy"
           git checkout --orphan "$deploy_branch"
+          git rm -rf . >/dev/null 2>&1 || true
+          cp -R "$deploy_dir"/. .
           git add -A
           git commit -m "Deploy ${GITHUB_SHA} to Hugging Face Spaces"
 

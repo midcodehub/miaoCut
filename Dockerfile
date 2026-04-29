@@ -24,7 +24,7 @@ RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 # ============================================================
 FROM python:3.12-slim
 
-# 系统依赖：opencv-python-headless 需要 libGL
+# 系统依赖：MediaPipe/OpenCV 运行时需要 libGL/libglib。
 RUN apt-get update && \
     apt-get install -y --no-install-recommends libgl1 libglib2.0-0 && \
     useradd -m -u 1000 user && \
@@ -37,16 +37,8 @@ WORKDIR /home/user/app
 # 从 builder 拷贝已安装的 Python 包
 COPY --from=builder /install /usr/local
 
-# 拷贝应用代码
+# 拷贝后端运行必需文件。前端由 Cloudflare Pages 托管，不放进 Space 镜像。
 COPY --chown=user:user main.py .
-COPY --chown=user:user index.html .
-COPY --chown=user:user output.css .
-COPY --chown=user:user app.js .
-# SEO landing 子页：每加一个新子页要在这里追加一行
-COPY --chown=user:user product-photo-background-remover/ ./product-photo-background-remover/
-COPY --chown=user:user portrait-background-remover/ ./portrait-background-remover/
-# Examples gallery 图片（首页展示用的抠图样本 webp）
-COPY --chown=user:user examples/ ./examples/
 
 # Hugging Face Spaces 默认公开 7860 端口；反馈数据写 /data 以便挂载持久化存储。
 # 模型缓存不要求持久化，保留在应用目录即可。

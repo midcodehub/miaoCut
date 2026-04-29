@@ -261,8 +261,34 @@
     // ============================================================
     // API 配置
     // ============================================================
-    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const API_BASE = isLocal ? 'http://127.0.0.1:8000' : 'https://api.miaocut.app';
+    const API_STORAGE_KEY = 'miaocutApiEndpoint';
+    const API_ENDPOINTS = {
+        api: 'https://api.miaocut.app',
+        api2: 'https://api2.miaocut.app',
+    };
+
+    function getApiTarget() {
+        const saved = localStorage.getItem(API_STORAGE_KEY);
+        return Object.prototype.hasOwnProperty.call(API_ENDPOINTS, saved) ? saved : 'api';
+    }
+
+    function resolveApiBase() {
+        return API_ENDPOINTS[getApiTarget()];
+    }
+
+    let API_BASE = resolveApiBase();
+
+    const apiSwitch = document.getElementById('api-switch');
+    if (apiSwitch) {
+        apiSwitch.value = getApiTarget();
+        apiSwitch.addEventListener('change', () => {
+            const next = apiSwitch.value;
+            if (!Object.prototype.hasOwnProperty.call(API_ENDPOINTS, next)) return;
+            localStorage.setItem(API_STORAGE_KEY, next);
+            API_BASE = resolveApiBase();
+            track('api-endpoint-switched', { target: next, host: API_ENDPOINTS[next] });
+        });
+    }
 
     // ============================================================
     // 拖拽 / 点击交互

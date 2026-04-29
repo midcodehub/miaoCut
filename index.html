@@ -7,6 +7,13 @@
     <meta name="sogou_site_verification" content="lLMMvkZKud" />
     <meta name="baidu-site-verification" content="codeva-bJiTOFPj58" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Resource hints：在解析 HTML 时就提前对后端 API 和 Umami 做 TLS 握手，
+         用户点上传时直接复用已有连接，省 100~300ms。crossorigin 是因为 Umami 脚本是跨源 CORS 资源。 -->
+    <link rel="preconnect" href="https://api.miaocut.app">
+    <link rel="preconnect" href="https://api2.miaocut.app">
+    <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
+
     <title>MiaoCut - Free AI Background Remover Online | Remove Background from Image</title>
     <meta name="description"
         content="Remove background from images instantly with MiaoCut AI. Free online background remover with HD cutouts, no watermark, no signup, and privacy-first processing.">
@@ -149,12 +156,14 @@
             MiaoCut
         </div>
         <div class="flex items-center gap-4">
-            <select id="lang-switch"
+            <a href="/id-photo-maker/"
+                class="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">ID Photo Maker</a>
+            <select id="lang-switch" aria-label="Language"
                 class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
                 <option value="en">English</option>
                 <option value="zh">简体中文</option>
             </select>
-            <a href="#" class="text-gray-400 hover:text-gray-900 transition-colors" title="GitHub">
+            <a href="#" class="text-gray-500 hover:text-gray-900 transition-colors" title="GitHub" aria-label="GitHub">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path fill-rule="evenodd"
                         d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
@@ -191,8 +200,20 @@
                     class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors">
                     <span data-i18n="profileFur">Fine (hair / fur)</span>
                 </button>
-                <span id="profile-hint" class="text-xs text-gray-400 ml-1" data-i18n="profileHintSharp">~1s · everyday
+                <span id="profile-hint" class="text-xs text-gray-500 ml-1" data-i18n="profileHintSharp">~1s · everyday
                     photos</span>
+            </div>
+
+            <div class="mb-4 flex items-center justify-center">
+                <label
+                    class="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-500 shadow-sm">
+                    <span class="font-medium text-gray-600">API</span>
+                    <select id="api-switch" aria-label="API endpoint"
+                        class="cursor-pointer bg-transparent font-medium text-gray-700 outline-none">
+                        <option value="api">VPS - api.miaocut.app</option>
+                        <option value="api2">HF - api2.miaocut.app</option>
+                    </select>
+                </label>
             </div>
 
             <div id="dropzone"
@@ -201,14 +222,14 @@
 
                 <div id="dropzone-content"
                     class="flex flex-col items-center justify-center text-center p-8 pointer-events-none">
-                    <svg class="w-12 h-12 text-gray-400 mb-4 group-hover:text-gray-500 transition-colors" fill="none"
+                    <svg class="w-12 h-12 text-gray-500 mb-4 group-hover:text-gray-700 transition-colors" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                     </svg>
                     <p class="text-lg font-medium text-gray-700 mb-1" data-i18n="dropzoneTitle">Drag & drop image here,
                         or click to upload</p>
-                    <p class="text-sm text-gray-400" data-i18n="dropzoneSub">(Supports JPG / PNG / WebP)</p>
+                    <p class="text-sm text-gray-500" data-i18n="dropzoneSub">(Supports JPG / PNG / WebP)</p>
                 </div>
             </div>
 
@@ -281,28 +302,42 @@
                     in Action</h2>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200">
-                        <img src="/examples/product-cutout.webp" alt="remove background from product image"
+                        <img src="/examples/product-cutout.webp"
+                            srcset="/examples/product-cutout-256.webp 256w, /examples/product-cutout.webp 512w"
+                            sizes="(max-width: 768px) 50vw, 200px"
+                            alt="remove background from product image"
                             width="512" height="512" loading="lazy" decoding="async"
                             class="w-full h-auto block">
                         <figcaption class="text-xs text-gray-500 text-center py-2" data-i18n="exampleProduct">Product
                             photo</figcaption>
                     </figure>
                     <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200">
-                        <img src="/examples/portrait-cutout.webp" alt="transparent background cutout example"
+                        <img src="/examples/portrait-cutout.webp"
+                            srcset="/examples/portrait-cutout-256.webp 256w, /examples/portrait-cutout.webp 512w"
+                            sizes="(max-width: 768px) 50vw, 200px"
+                            alt="transparent background cutout example"
                             width="512" height="512" loading="lazy" decoding="async"
                             class="w-full h-auto block">
                         <figcaption class="text-xs text-gray-500 text-center py-2" data-i18n="examplePortrait">Portrait
                         </figcaption>
                     </figure>
                     <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200">
-                        <img src="/examples/logo-cutout.webp" alt="free background remover no watermark" width="512"
-                            height="512" loading="lazy" decoding="async" class="w-full h-auto block">
+                        <img src="/examples/logo-cutout.webp"
+                            srcset="/examples/logo-cutout-256.webp 256w, /examples/logo-cutout.webp 512w"
+                            sizes="(max-width: 768px) 50vw, 200px"
+                            alt="free background remover no watermark"
+                            width="512" height="512" loading="lazy" decoding="async"
+                            class="w-full h-auto block">
                         <figcaption class="text-xs text-gray-500 text-center py-2" data-i18n="exampleLogo">Logo
                         </figcaption>
                     </figure>
                     <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200">
-                        <img src="/examples/pet-cutout.webp" alt="ai background remover example" width="512"
-                            height="512" loading="lazy" decoding="async" class="w-full h-auto block">
+                        <img src="/examples/pet-cutout.webp"
+                            srcset="/examples/pet-cutout-256.webp 256w, /examples/pet-cutout.webp 512w"
+                            sizes="(max-width: 768px) 50vw, 200px"
+                            alt="ai background remover example"
+                            width="512" height="512" loading="lazy" decoding="async"
+                            class="w-full h-auto block">
                         <figcaption class="text-xs text-gray-500 text-center py-2" data-i18n="examplePet">Pet
                         </figcaption>
                     </figure>
@@ -434,53 +469,53 @@
                     Questions</h2>
                 <div class="space-y-4">
                     <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">Is this AI background
-                            remover really free?</h4>
+                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">Is this AI background
+                            remover really free?</h3>
                         <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq1A">Yes! MiaoCut is built by an
                             independent developer to provide a genuinely free alternative to expensive subscription
                             tools like remove.bg. There are no watermarks and no strict resolution limits.</p>
                     </div>
                     <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq2Q">What image formats are
-                            supported?</h4>
+                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq2Q">What image formats are
+                            supported?</h3>
                         <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq2A">You can upload JPG, PNG, and
                             WebP images. The output will be a high-quality PNG image with a transparent background,
                             ready for your designs.</p>
                     </div>
                     <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq3Q">How good is the edge
-                            detection for hair or fur?</h4>
+                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq3Q">How good is the edge
+                            detection for hair or fur?</h3>
                         <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq3A">MiaoCut utilizes the latest
                             SOTA AI models (BiRefNet) which excel at complex edges. It perfectly handles human hair,
                             animal fur, and even semi-transparent objects like glass or wedding dresses.</p>
                     </div>
                     <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq4Q">Can I remove background
-                            from an image for free?</h4>
+                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq4Q">Can I remove background
+                            from an image for free?</h3>
                         <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq4A">Yes. MiaoCut is a free AI
                             background remover. You can upload images and download transparent PNG results without
                             watermark.</p>
                     </div>
                     <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq5Q">Does MiaoCut add a
-                            watermark?</h4>
+                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq5Q">Does MiaoCut add a
+                            watermark?</h3>
                         <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq5A">No. MiaoCut provides clean
                             background-removed images without watermark.</p>
                     </div>
                     <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq6Q">Do I need to sign up?</h4>
+                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq6Q">Do I need to sign up?</h3>
                         <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq6A">No. You can remove image
                             backgrounds online without creating an account.</p>
                     </div>
                     <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq7Q">Can I use it for product
-                            photos?</h4>
+                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq7Q">Can I use it for product
+                            photos?</h3>
                         <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq7A">Yes. MiaoCut works well for
                             product images, e-commerce photos, portraits, logos, pets, and more.</p>
                     </div>
                     <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq8Q">What is the output format?
-                        </h4>
+                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq8Q">What is the output format?
+                        </h3>
                         <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq8A">The output is a high-quality
                             PNG image with a transparent background.</p>
                     </div>
@@ -514,11 +549,11 @@
             class="absolute bottom-14 right-0 w-72 bg-white rounded-xl shadow-2xl border border-gray-100 p-5">
             <h3 class="text-sm font-semibold text-gray-900 mb-3" data-i18n="fbTitle">&#9749; Feedback</h3>
             <form id="feedback-form">
-                <textarea id="feedback-msg"
-                    class="w-full h-20 text-sm border border-gray-200 rounded-lg p-2.5 resize-none focus:outline-none focus:ring-2 focus:ring-gray-300 placeholder-gray-400"
+                <textarea id="feedback-msg" aria-label="Feedback message"
+                    class="w-full h-20 text-sm border border-gray-200 rounded-lg p-2.5 resize-none focus:outline-none focus:ring-2 focus:ring-gray-300 placeholder-gray-500"
                     placeholder="What's on your mind?" data-i18n-ph="fbPlaceholder"></textarea>
-                <input id="feedback-email" type="email"
-                    class="w-full mt-2 text-sm border border-gray-200 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-gray-300 placeholder-gray-400"
+                <input id="feedback-email" type="email" aria-label="Email (optional)"
+                    class="w-full mt-2 text-sm border border-gray-200 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-gray-300 placeholder-gray-500"
                     placeholder="Email (Optional)" data-i18n-ph="fbEmail">
                 <button type="submit"
                     class="w-full mt-3 bg-gray-900 text-white text-sm font-medium py-2 rounded-lg hover:bg-gray-800 transition-colors"

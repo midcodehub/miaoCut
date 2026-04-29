@@ -23,14 +23,13 @@ MiaoCut 后端：1 秒纯净抠图。
 """
 
 import asyncio
-import ctypes
-import gc
 import hashlib
 import hmac
 import io
 import ipaddress
 import json
 import logging
+import math
 import os
 import re
 import threading
@@ -48,6 +47,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from PIL import Image
+from pydantic import BaseModel, Field
 from rembg import remove
 from rembg.sessions import sessions_class
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -102,6 +102,35 @@ BACKEND_SPACE = os.getenv("BACKEND_SPACE", os.getenv("SPACE_ID", "")).strip()
 FEEDBACK_TIMEOUT_SECONDS = float(os.getenv("FEEDBACK_TIMEOUT_SECONDS", "2.0"))
 
 ALLOWED_MIME_TYPES = {"image/jpeg", "image/png", "image/webp"}
+ID_PHOTO_PRESETS = {
+    "one_inch": (295, 413),
+    "two_inch": (413, 579),
+    "small_one_inch": (260, 378),
+    "large_one_inch": (390, 567),
+    "small_two_inch": (413, 531),
+    "china_passport": (390, 567),
+    "us_passport": (600, 600),
+    "visa_square": (600, 600),
+    "resume": (480, 640),
+    "social_profile": (512, 512),
+    "custom": None,
+}
+ID_PHOTO_COLORS = {
+    "white": "ffffff",
+    "blue": "438edb",
+    "red": "d5332e",
+    "gray": "f3f4f6",
+    "light_blue": "dbeafe",
+    "dark_blue": "1d4ed8",
+    "pink": "fce7f3",
+    "black": "111827",
+}
+ID_PHOTO_PAPERS = {
+    "6inch": (1800, 1200),
+    "5inch": (1500, 1050),
+    "7inch": (2100, 1500),
+    "a4": (2480, 3508),
+}
 
 # PIL 全局像素上限：超过会抛 DecompressionBombWarning，2 倍以上直接抛 Error。
 # 我们自己也会校验一次 w*h，这里作为保底（给 PIL 留 2 倍空间，避免误杀我们主动检查能放行的图）。
@@ -127,28 +156,32 @@ logger = logging.getLogger("miaocut")
 #   - 细节保留：小物件、镂空区域不会被误删
 #   - 泛化能力：人物、商品、动物、建筑等场景通吃
 #
-# birefnet-general 模型权重约 230MB，首次运行时自动下载到 U2NET_HOME 目录。
+# birefnet-general-lite（swin_v1_tiny backbone）约 224MB，首次运行时 rembg 自动下载到 U2NET_HOME。
+# 之前用 birefnet-general（swin_v1_large，~480MB），M1 上 ~17s/张、Linux x86 4核 ~25s+/张，
+# 太慢；切到 lite 后 M1 ~9s、Linux 估 ~12~17s（按 HF Space 套餐档位变动），
+# 边缘质量肉眼几乎察觉不到差异。还原历史用 isnet-general-use（~1.2s/张）但发丝边缘会回到粗糙。
 #
 # providers=["CPUExecutionProvider"]：强制 CPU 推理。
 # Apple Silicon 上 onnxruntime 默认尝试 CoreML EP，但部分算子不支持会报错。
 # 纯 CPU 在 M1/M2 上单张图 1~3 秒，完全够用。
 def _create_birefnet_session():
-    """加载 BiRefNet 并禁用 onnxruntime 的两个内存大坑。
+    """加载 BiRefNet-lite 模型，使用 onnxruntime 默认的 arena/mem_pattern（速度优先）。
 
     rembg 自带的 new_session() 内部硬写 ort.SessionOptions()，没法外部覆盖；
-    所以这里直接构造 session 类，复刻 new_session 中需要保留的 OMP 线程配置。
+    这里直接构造 session 类，是为了把 MIAOCUT_OMP_NUM_THREADS 注入 sess_opts
+    （Hugging Face Space 不允许使用 OMP_NUM_THREADS 这个保留变量名，所以加了一个别名）。
 
-    enable_cpu_mem_arena=False
-      ort 默认 CPU 内存池会"缓存推理峰值"——第一次跑大图后，arena 永久持有那个峰值的内存量，
-      即使后续都是小图也不释放。实测 RSS 从 ~5.5GB → ~3GB（macOS）/ 预计 ~9GB → ~5GB（Linux），
-      推理时间无回归（甚至略快，arena 的池化收益没起作用）。
-    enable_mem_pattern=False
-      mem_pattern 是针对"固定 shape 反复推理"做的分配模式缓存；我们每张图大小都不同，
-      它反而会按最大见过的 shape 预留缓冲，纯负担。
+    ⚠️ 模型选型踩坑：项目历史用过三种模型，速度差异巨大（M1 实测同一张 1024² 图）：
+        isnet-general-use     ~1.2s/张  发丝边缘粗糙，需要换底色时毛边明显
+        birefnet-general-lite ~9s/张    边缘细腻，与 general 视觉差异极小（当前选择）
+        birefnet-general      ~17.8s/张 SOTA 质量，但 CPU 推理太慢
+    HF Space 是 CPU 推理，速度优先 → lite 是最佳折中。换成 general 之前先想清楚 14× 慢。
+
+    ⚠️ 内存设置踩坑：曾设过 enable_cpu_mem_arena=False + enable_mem_pattern=False 来压 RSS，
+    Linux 上每次推理耗时翻倍（arena 关 → 大块反复 malloc/free；mem_pattern 关 → 每次重算
+    分配模式）。线上速度优先 → 保持默认开启，用 RSS 换响应时间。
     """
     sess_opts = ort.SessionOptions()
-    sess_opts.enable_cpu_mem_arena = False
-    sess_opts.enable_mem_pattern = False
     # Hugging Face Space 不允许用户配置 OMP_NUM_THREADS 这类保留变量；
     # 用自己的变量名控制 onnxruntime 线程数，同时兼容本地开发里的 OMP_NUM_THREADS。
     threads = os.getenv("MIAOCUT_OMP_NUM_THREADS") or os.getenv("OMP_NUM_THREADS")
@@ -157,10 +190,10 @@ def _create_birefnet_session():
         sess_opts.inter_op_num_threads = n
         sess_opts.intra_op_num_threads = n
 
-    cls = next((sc for sc in sessions_class if sc.name() == "birefnet-general"), None)
+    cls = next((sc for sc in sessions_class if sc.name() == "birefnet-general-lite"), None)
     if cls is None:
-        raise RuntimeError("birefnet-general session class not found in rembg")
-    return cls("birefnet-general", sess_opts, ["CPUExecutionProvider"])
+        raise RuntimeError("birefnet-general-lite session class not found in rembg")
+    return cls("birefnet-general-lite", sess_opts, ["CPUExecutionProvider"])
 
 
 _high_quality_session = None
@@ -173,7 +206,7 @@ def get_high_quality_session():
     if _high_quality_session is None:
         with _high_quality_session_lock:
             if _high_quality_session is None:
-                logger.info("Loading BiRefNet (SOTA) AI model for background removal... (cutout_profile=%s)", CUTOUT_PROFILE)
+                logger.info("Loading birefnet-general-lite AI model for background removal... (cutout_profile=%s)", CUTOUT_PROFILE)
                 _high_quality_session = _create_birefnet_session()
     return _high_quality_session
 
@@ -237,33 +270,6 @@ rembg_semaphore = asyncio.Semaphore(MAX_CONCURRENCY)
 
 
 # ============================================================
-# 主动内存回收
-# ============================================================
-# Linux glibc 默认要等"堆顶有 8MB 连续 free 块"才把页归还内核（M_TRIM_THRESHOLD=128KB×64）。
-# 抠图任务的临时缓冲多是几百 MB 大块，free 之后散落在堆中间，RSS 长时间不下降。
-# 显式跑 malloc_trim(0) 立即触发 trim，配合 Docker 端 MALLOC_ARENA_MAX=2 效果最佳。
-#
-# macOS/Windows/musl libc 上 dlopen 会失败，置 None → _release_memory 退化为只跑 gc.collect。
-try:
-    _libc_malloc_trim = ctypes.CDLL("libc.so.6").malloc_trim
-    _libc_malloc_trim.argtypes = [ctypes.c_size_t]
-    logger.info("malloc_trim hook ready (glibc detected)")
-except (OSError, AttributeError):
-    _libc_malloc_trim = None
-
-
-def _release_memory() -> None:
-    """每次推理结束后主动归还内存：gc 收循环引用，malloc_trim 把 free 页还给 OS。
-
-    单次开销 ~5ms（gc 主导），相对 1~5s 的推理可忽略。
-    在信号量内调用，确保下一个排队请求拿到的是已 trim 过的状态，不是峰值后的胖进程。
-    """
-    gc.collect()
-    if _libc_malloc_trim is not None:
-        _libc_malloc_trim(0)
-
-
-# ============================================================
 # FastAPI 应用
 # ============================================================
 app = FastAPI(
@@ -276,7 +282,15 @@ app = FastAPI(
 )
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-app.mount("/examples", StaticFiles(directory="examples"), name="examples")
+
+SERVE_STATIC_FRONTEND = os.getenv("SERVE_STATIC_FRONTEND", "auto").lower()
+STATIC_FRONTEND_AVAILABLE = Path("index.html").exists()
+SERVE_STATIC = (
+    SERVE_STATIC_FRONTEND == "1"
+    or (SERVE_STATIC_FRONTEND == "auto" and STATIC_FRONTEND_AVAILABLE)
+)
+if SERVE_STATIC and Path("examples").exists():
+    app.mount("/examples", StaticFiles(directory="examples"), name="examples")
 
 # ============================================================
 # CORS（前后端分离部署时必须）
@@ -486,6 +500,396 @@ def _run_fur_pipeline(data: bytes) -> bytes:
     return output_png.tobytes()
 
 
+def _image_to_base64(img: Image.Image, fmt: str = "PNG", quality: int = 95, dpi: int = 300) -> str:
+    buf = io.BytesIO()
+    save_kwargs = {}
+    if fmt.upper() in ("JPEG", "JPG"):
+        save_kwargs["quality"] = quality
+        save_kwargs["optimize"] = True
+    if dpi:
+        save_kwargs["dpi"] = (dpi, dpi)
+    img.save(buf, format=fmt, **save_kwargs)
+    import base64
+
+    return base64.b64encode(buf.getvalue()).decode("ascii")
+
+
+def _base64_to_image(value: str) -> Image.Image:
+    import base64
+
+    if "," in value and value.lstrip().startswith("data:"):
+        value = value.split(",", 1)[1]
+    return Image.open(io.BytesIO(base64.b64decode(value))).convert("RGBA")
+
+
+def _parse_hex_color(value: str) -> tuple[int, int, int]:
+    color = (value or "ffffff").strip().lower().lstrip("#")
+    color = ID_PHOTO_COLORS.get(color, color)
+    if not re.fullmatch(r"[0-9a-f]{6}", color):
+        raise HTTPException(status_code=400, detail="Invalid background color")
+    return int(color[0:2], 16), int(color[2:4], 16), int(color[4:6], 16)
+
+
+def _get_alpha_bbox(img: Image.Image) -> tuple[int, int, int, int]:
+    alpha = img.getchannel("A")
+    bbox = alpha.getbbox()
+    if not bbox:
+        raise HTTPException(status_code=422, detail="No foreground detected")
+    return bbox
+
+
+def _detect_mediapipe_anchors(original: Image.Image, cutout: Image.Image) -> Optional[dict]:
+    """用 MediaPipe Face Mesh 检测脸部关键点。
+
+    关键点映射：
+      - 33 / 263：左右眼外眼角，估算眼睛水平线和旋转角度。
+      - 152：下巴。
+      - 10：额头上方；头顶仍优先用 alpha bbox 顶部，以保留真实头发高度。
+    """
+    try:
+        import mediapipe as mp
+        import numpy as np
+
+        rgb = np.array(original.convert("RGB"))
+        h, w = rgb.shape[:2]
+        with mp.solutions.face_mesh.FaceMesh(
+            static_image_mode=True,
+            max_num_faces=1,
+            refine_landmarks=True,
+            min_detection_confidence=0.55,
+        ) as face_mesh:
+            result = face_mesh.process(rgb)
+
+        if not result.multi_face_landmarks:
+            return None
+
+        lm = result.multi_face_landmarks[0].landmark
+
+        def pt(index: int) -> tuple[float, float]:
+            return lm[index].x * w, lm[index].y * h
+
+        left_eye = pt(33)
+        right_eye = pt(263)
+        chin = pt(152)
+        forehead = pt(10)
+        alpha_bbox = _get_alpha_bbox(cutout)
+
+        eye_y = (left_eye[1] + right_eye[1]) / 2
+        face_center_x = (left_eye[0] + right_eye[0] + chin[0] + forehead[0]) / 4
+        eye_angle_deg = math.degrees(math.atan2(right_eye[1] - left_eye[1], right_eye[0] - left_eye[0]))
+        head_top_y = min(float(alpha_bbox[1]), forehead[1])
+        chin_y = min(float(alpha_bbox[3]), chin[1])
+
+        if chin_y <= head_top_y:
+            return None
+
+        return {
+            "source": "mediapipe",
+            "face_center_x": float(face_center_x),
+            "eye_y": float(eye_y),
+            "head_top_y": float(head_top_y),
+            "chin_y": float(chin_y),
+            "left_eye": (float(left_eye[0]), float(left_eye[1])),
+            "right_eye": (float(right_eye[0]), float(right_eye[1])),
+            "eye_angle_deg": float(eye_angle_deg),
+        }
+    except ImportError:
+        logger.info("MediaPipe not installed; using fallback face alignment")
+        return None
+    except Exception as exc:
+        logger.info("MediaPipe face alignment skipped: %s", exc)
+        return None
+
+
+def _detect_haar_anchors(original: Image.Image, cutout: Image.Image) -> Optional[dict]:
+    """轻量检测脸框和眼睛线，用于证件照构图。
+
+    这里使用 OpenCV 自带 Haar cascade，不新增大模型依赖。检测失败时返回 None，
+    上层会退回透明主体居中方案。
+    """
+    try:
+        import cv2
+        import numpy as np
+
+        rgb = np.array(original.convert("RGB"))
+        gray = cv2.cvtColor(rgb, cv2.COLOR_RGB2GRAY)
+        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+        eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_eye.xml")
+        if face_cascade.empty() or eye_cascade.empty():
+            return None
+
+        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.08, minNeighbors=5, minSize=(60, 60))
+        if len(faces) == 0:
+            return None
+
+        x, y, w, h = max(faces, key=lambda rect: rect[2] * rect[3])
+        face_center_x = x + w / 2
+
+        upper = gray[y : y + int(h * 0.62), x : x + w]
+        eyes = eye_cascade.detectMultiScale(upper, scaleFactor=1.08, minNeighbors=5, minSize=(18, 18))
+        eye_y = y + h * 0.42
+        if len(eyes) >= 2:
+            eyes = sorted(eyes, key=lambda rect: rect[2] * rect[3], reverse=True)[:2]
+            eye_y = sum(y + ey + eh / 2 for _, ey, _, eh in eyes) / len(eyes)
+
+        alpha_bbox = _get_alpha_bbox(cutout)
+        # 头顶优先用透明主体顶部；下巴用脸框下沿略向下估算，并限制在主体区域内。
+        head_top_y = min(alpha_bbox[1], y)
+        chin_y = min(alpha_bbox[3], y + h * 1.08)
+        if chin_y - head_top_y < h * 0.65:
+            chin_y = min(alpha_bbox[3], y + h * 1.18)
+
+        return {
+            "source": "haar",
+            "face_center_x": float(face_center_x),
+            "eye_y": float(eye_y),
+            "head_top_y": float(head_top_y),
+            "chin_y": float(chin_y),
+        }
+    except Exception as exc:
+        logger.info("Face alignment detection skipped: %s", exc)
+        return None
+
+
+def _detect_face_anchors(original: Image.Image, cutout: Image.Image) -> Optional[dict]:
+    return _detect_mediapipe_anchors(original, cutout) or _detect_haar_anchors(original, cutout)
+
+
+def _transform_rotated_point(
+    x: float,
+    y: float,
+    cx: float,
+    cy: float,
+    angle_rad: float,
+    min_x: float,
+    min_y: float,
+) -> tuple[float, float]:
+    dx = x - cx
+    dy = y - cy
+    rx = cx + math.cos(angle_rad) * dx + math.sin(angle_rad) * dy
+    ry = cy - math.sin(angle_rad) * dx + math.cos(angle_rad) * dy
+    return rx - min_x, ry - min_y
+
+
+def _rotate_cutout_and_anchors(cutout: Image.Image, anchors: dict) -> tuple[Image.Image, dict]:
+    angle = float(anchors.get("eye_angle_deg") or 0.0)
+    if abs(angle) < 1.0 or abs(angle) > 18.0:
+        return cutout, anchors
+
+    cx = cutout.width / 2
+    cy = cutout.height / 2
+    angle_rad = math.radians(angle)
+    corners = [
+        _transform_rotated_point(0, 0, cx, cy, angle_rad, 0, 0),
+        _transform_rotated_point(cutout.width, 0, cx, cy, angle_rad, 0, 0),
+        _transform_rotated_point(0, cutout.height, cx, cy, angle_rad, 0, 0),
+        _transform_rotated_point(cutout.width, cutout.height, cx, cy, angle_rad, 0, 0),
+    ]
+    min_x = min(p[0] for p in corners)
+    min_y = min(p[1] for p in corners)
+    rotated = cutout.rotate(angle, resample=Image.Resampling.BICUBIC, expand=True)
+
+    updated = dict(anchors)
+    for x_key, y_key in (
+        ("face_center_x", None),
+        ("eye_y", None),
+        ("head_top_y", None),
+        ("chin_y", None),
+    ):
+        # These scalar anchors are recomputed from transformed points below.
+        updated.pop(x_key, None)
+        if y_key:
+            updated.pop(y_key, None)
+
+    left_eye = _transform_rotated_point(*anchors["left_eye"], cx, cy, angle_rad, min_x, min_y)
+    right_eye = _transform_rotated_point(*anchors["right_eye"], cx, cy, angle_rad, min_x, min_y)
+    face_center = _transform_rotated_point(anchors["face_center_x"], anchors["eye_y"], cx, cy, angle_rad, min_x, min_y)
+    head_top = _transform_rotated_point(anchors["face_center_x"], anchors["head_top_y"], cx, cy, angle_rad, min_x, min_y)
+    chin = _transform_rotated_point(anchors["face_center_x"], anchors["chin_y"], cx, cy, angle_rad, min_x, min_y)
+    updated.update(
+        {
+            "face_center_x": float(face_center[0]),
+            "eye_y": float((left_eye[1] + right_eye[1]) / 2),
+            "head_top_y": float(head_top[1]),
+            "chin_y": float(chin[1]),
+            "left_eye": left_eye,
+            "right_eye": right_eye,
+            "eye_angle_deg": 0.0,
+            "rotation_applied_deg": angle,
+        }
+    )
+    return rotated, updated
+
+
+def _alpha_composite_clipped(canvas: Image.Image, src: Image.Image, x: int, y: int) -> None:
+    left = max(0, -x)
+    top = max(0, -y)
+    right = min(src.width, canvas.width - x)
+    bottom = min(src.height, canvas.height - y)
+    if right <= left or bottom <= top:
+        return
+    cropped = src.crop((left, top, right, bottom))
+    canvas.alpha_composite(cropped, (max(0, x), max(0, y)))
+
+
+def _fit_subject_to_canvas(
+    cutout: Image.Image,
+    width: int,
+    height: int,
+    head_height_ratio: float = 0.72,
+    top_margin_ratio: float = 0.08,
+    anchors: Optional[dict] = None,
+) -> Image.Image:
+    """把透明底主体缩放到证件照画布。
+
+    有人脸锚点时：按头顶-下巴高度缩放，并让双眼线/脸中心更接近证件照构图；
+    无锚点时：退回 alpha bbox 主体居中。
+    """
+    bbox = _get_alpha_bbox(cutout)
+    if anchors:
+        if "left_eye" in anchors and "right_eye" in anchors:
+            cutout, anchors = _rotate_cutout_and_anchors(cutout, anchors)
+            bbox = _get_alpha_bbox(cutout)
+        head_top_y = anchors["head_top_y"]
+        chin_y = anchors["chin_y"]
+        head_h = max(1.0, chin_y - head_top_y)
+        target_head_h = max(1, height * min(max(head_height_ratio, 0.5), 0.86))
+        scale = target_head_h / head_h
+        max_scale_by_width = (width * 0.96) / max(1, bbox[2] - bbox[0])
+        scale = min(scale, max_scale_by_width)
+
+        scaled_w = max(1, int(cutout.width * scale))
+        scaled_h = max(1, int(cutout.height * scale))
+        scaled = cutout.resize((scaled_w, scaled_h), Image.Resampling.LANCZOS)
+
+        target_top = height * min(max(top_margin_ratio, 0.03), 0.2)
+        target_eye_y = height * 0.43
+        y_by_top = target_top - head_top_y * scale
+        y_by_eye = target_eye_y - anchors["eye_y"] * scale
+        y = int(y_by_top * 0.72 + y_by_eye * 0.28)
+        x = int(width / 2 - anchors["face_center_x"] * scale)
+
+        canvas = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+        _alpha_composite_clipped(canvas, scaled, x, y)
+        return canvas
+
+    subject = cutout.crop(bbox)
+    subject_w, subject_h = subject.size
+    if subject_w <= 0 or subject_h <= 0:
+        raise HTTPException(status_code=422, detail="Invalid foreground")
+
+    target_h = max(1, int(height * min(max(head_height_ratio, 0.45), 0.9)))
+    target_w_limit = max(1, int(width * 0.92))
+    scale = min(target_h / subject_h, target_w_limit / subject_w)
+    new_w = max(1, int(subject_w * scale))
+    new_h = max(1, int(subject_h * scale))
+
+    subject = subject.resize((new_w, new_h), Image.Resampling.LANCZOS)
+    canvas = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+    x = (width - new_w) // 2
+    y = int(height * min(max(top_margin_ratio, 0.02), 0.22))
+    y = min(max(0, y), max(0, height - new_h))
+    _alpha_composite_clipped(canvas, subject, x, y)
+    return canvas
+
+
+def _compose_background(img: Image.Image, color: str) -> Image.Image:
+    rgb = _parse_hex_color(color)
+    bg = Image.new("RGBA", img.size, (*rgb, 255))
+    bg.alpha_composite(img.convert("RGBA"))
+    return bg.convert("RGB")
+
+
+def _encode_jpeg_to_target_kb(img: Image.Image, dpi: int = 300, kb: Optional[int] = None) -> str:
+    if not kb:
+        return _image_to_base64(img, fmt="JPEG", quality=94, dpi=dpi)
+
+    target = max(8, min(int(kb), 1024)) * 1024
+    low, high = 35, 95
+    best = None
+    for _ in range(8):
+        q = (low + high) // 2
+        buf = io.BytesIO()
+        img.save(buf, format="JPEG", quality=q, optimize=True, dpi=(dpi, dpi))
+        data = buf.getvalue()
+        if len(data) <= target:
+            best = data
+            low = q + 1
+        else:
+            high = q - 1
+
+    if best is None:
+        buf = io.BytesIO()
+        img.save(buf, format="JPEG", quality=35, optimize=True, dpi=(dpi, dpi))
+        best = buf.getvalue()
+
+    import base64
+
+    return base64.b64encode(best).decode("ascii")
+
+
+def _generate_id_photo_sync(
+    input_data: bytes,
+    width: int,
+    height: int,
+    dpi: int,
+    profile: str,
+    head_height_ratio: float,
+    top_margin_ratio: float,
+    face_alignment: bool,
+) -> dict:
+    cutout_bytes = _run_rembg_sync(input_data, profile=profile)
+    cutout = Image.open(io.BytesIO(cutout_bytes)).convert("RGBA")
+    original = Image.open(io.BytesIO(input_data)).convert("RGB")
+    anchors = _detect_face_anchors(original, cutout) if face_alignment else None
+    standard = _fit_subject_to_canvas(cutout, width, height, head_height_ratio, top_margin_ratio, anchors)
+    hd = _fit_subject_to_canvas(cutout, width * 2, height * 2, head_height_ratio, top_margin_ratio, anchors)
+    return {
+        "image_base64_standard": _image_to_base64(standard, "PNG", dpi=dpi),
+        "image_base64_hd": _image_to_base64(hd, "PNG", dpi=dpi),
+        "face_alignment": bool(anchors),
+    }
+
+
+async def run_id_photo(
+    input_data: bytes,
+    width: int,
+    height: int,
+    dpi: int,
+    profile: str,
+    head_height_ratio: float,
+    top_margin_ratio: float,
+    face_alignment: bool,
+) -> dict:
+    async with rembg_semaphore:
+        return await asyncio.to_thread(
+            _generate_id_photo_sync,
+            input_data,
+            width,
+            height,
+            dpi,
+            profile,
+            head_height_ratio,
+            top_margin_ratio,
+            face_alignment,
+        )
+
+
+class AddBackgroundRequest(BaseModel):
+    image_base64: str
+    color: str = "438edb"
+    dpi: int = Field(default=300, ge=72, le=600)
+    kb: Optional[int] = Field(default=None, ge=8, le=1024)
+
+
+class LayoutRequest(BaseModel):
+    image_base64: str
+    color: str = "ffffff"
+    dpi: int = Field(default=300, ge=72, le=600)
+    kb: Optional[int] = Field(default=None, ge=8, le=2048)
+    paper: str = "6inch"
+
+
 async def run_rembg(data: bytes, profile: Optional[str] = None) -> bytes:
     """
     在线程池里跑 rembg，同时用信号量限并发。
@@ -497,16 +901,9 @@ async def run_rembg(data: bytes, profile: Optional[str] = None) -> bytes:
     为什么先抢信号量再进线程池：
       信号量排队是 await 级别的，成本极低；线程池资源有限（默认 40 线程），
       先抢令牌能让超额请求在 await 这里排队，不占线程。
-
-    为什么 finally 里跑 _release_memory：
-      推理产生的 numpy/pymatting 临时大块在 Python 层 free 之后，glibc 不会立刻归还内核。
-      在信号量内做 trim，下一个排队的请求拿到的就是瘦身后的进程，避免 RSS 持续累积。
     """
     async with rembg_semaphore:
-        try:
-            return await asyncio.to_thread(_run_rembg_sync, data, profile)
-        finally:
-            _release_memory()
+        return await asyncio.to_thread(_run_rembg_sync, data, profile)
 
 
 # ============================================================
@@ -514,29 +911,42 @@ async def run_rembg(data: bytes, profile: Optional[str] = None) -> bytes:
 # ============================================================
 @app.get("/")
 async def root():
+    if not SERVE_STATIC:
+        return {"ok": True, "service": "miaocut-api"}
     return FileResponse("index.html")
 
 
-@app.get("/output.css")
-async def output_css():
-    """本地 dev 时 index.html 通过后端 / 返回，样式同源加载需要这个端点；
-    生产由 Cloudflare Pages 直接服务静态文件，此路径无人访问。"""
-    return FileResponse("output.css", media_type="text/css")
+if SERVE_STATIC:
+    @app.get("/output.css")
+    async def output_css():
+        """本地 dev 时 index.html 通过后端 / 返回，样式同源加载需要这个端点；
+        生产由 Cloudflare Pages 直接服务静态文件，此路径无人访问。"""
+        return FileResponse("output.css", media_type="text/css")
 
 
-@app.get("/app.js")
-async def app_js():
-    return FileResponse("app.js", media_type="application/javascript")
+    @app.get("/app.js")
+    async def app_js():
+        return FileResponse("app.js", media_type="application/javascript")
 
 
-@app.get("/product-photo-background-remover/")
-async def product_photo_background_remover():
-    return FileResponse("product-photo-background-remover/index.html")
+    @app.get("/product-photo-background-remover/")
+    async def product_photo_background_remover():
+        return FileResponse("product-photo-background-remover/index.html")
 
 
-@app.get("/portrait-background-remover/")
-async def portrait_background_remover():
-    return FileResponse("portrait-background-remover/index.html")
+    @app.get("/portrait-background-remover/")
+    async def portrait_background_remover():
+        return FileResponse("portrait-background-remover/index.html")
+
+
+    @app.get("/id-photo-maker/")
+    async def id_photo_maker():
+        return FileResponse("id-photo-maker/index.html")
+
+
+    @app.get("/id-photo-maker/id-photo.js")
+    async def id_photo_js():
+        return FileResponse("id-photo-maker/id-photo.js", media_type="application/javascript")
 
 
 @app.post("/api/remove-background", dependencies=[Depends(verify_origin)])
@@ -608,6 +1018,155 @@ async def remove_background(request: Request, file: UploadFile = File(...)):
             "Referrer-Policy": "no-referrer",
         },
     )
+
+
+@app.post("/api/id-photo/create", dependencies=[Depends(verify_origin)])
+@limiter.limit("3/minute;30/day")
+async def create_id_photo(
+    request: Request,
+    file: UploadFile = File(...),
+):
+    if file.content_type not in ALLOWED_MIME_TYPES:
+        raise HTTPException(status_code=400, detail="Unsupported image format")
+
+    input_data = await file.read(MAX_UPLOAD_BYTES + 1)
+    if len(input_data) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="File too large")
+    if not input_data:
+        raise HTTPException(status_code=400, detail="Empty file")
+
+    try:
+        with Image.open(io.BytesIO(input_data)) as img:
+            img.verify()
+        with Image.open(io.BytesIO(input_data)) as img2:
+            w, h = img2.size
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid image file")
+
+    if w * h > MAX_IMAGE_PIXELS:
+        raise HTTPException(status_code=413, detail=f"Image too large ({w}x{h})")
+
+    form = await request.form()
+    preset = str(form.get("preset") or "one_inch")
+    if preset != "custom" and preset not in ID_PHOTO_PRESETS:
+        raise HTTPException(status_code=400, detail="Unsupported ID photo preset")
+
+    if preset == "custom":
+        width = int(form.get("width") or 295)
+        height = int(form.get("height") or 413)
+    else:
+        width, height = ID_PHOTO_PRESETS[preset]
+
+    width = max(120, min(width, 1600))
+    height = max(120, min(height, 2200))
+    dpi = max(72, min(int(form.get("dpi") or 300), 600))
+    profile = str(form.get("profile") or "sharp")
+    if profile not in ("sharp", "fur"):
+        profile = "sharp"
+
+    head_height_ratio = float(form.get("head_height_ratio") or 0.72)
+    top_margin_ratio = float(form.get("top_margin_ratio") or 0.08)
+    face_alignment = str(form.get("face_alignment") or "1") == "1"
+
+    try:
+        result = await run_id_photo(
+            input_data,
+            width,
+            height,
+            dpi,
+            profile,
+            head_height_ratio,
+            top_margin_ratio,
+            face_alignment,
+        )
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logger.exception("id photo failed: %s", exc)
+        raise HTTPException(status_code=500, detail="ID photo processing failed")
+
+    return {
+        "ok": True,
+        "width": width,
+        "height": height,
+        "dpi": dpi,
+        "preset": preset,
+        **result,
+    }
+
+
+@app.post("/api/id-photo/add-background", dependencies=[Depends(verify_origin)])
+@limiter.limit("10/minute;100/day")
+async def add_id_photo_background(request: Request, body: AddBackgroundRequest):
+    try:
+        transparent = _base64_to_image(body.image_base64)
+        colored = _compose_background(transparent, body.color)
+        image_base64 = await asyncio.to_thread(_encode_jpeg_to_target_kb, colored, body.dpi, body.kb)
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logger.exception("id photo background failed: %s", exc)
+        raise HTTPException(status_code=400, detail="Invalid ID photo image")
+
+    return {"ok": True, "image_base64": image_base64, "format": "jpeg"}
+
+
+@app.post("/api/id-photo/layout", dependencies=[Depends(verify_origin)])
+@limiter.limit("10/minute;100/day")
+async def create_id_photo_layout(request: Request, body: LayoutRequest):
+    try:
+        src = _base64_to_image(body.image_base64)
+        photo = _compose_background(src, body.color)
+        paper_w, paper_h = ID_PHOTO_PAPERS.get(body.paper, ID_PHOTO_PAPERS["6inch"])
+        margin = 36
+        gap = 24
+        cols = max(1, (paper_w - margin * 2 + gap) // (photo.width + gap))
+        rows = max(1, (paper_h - margin * 2 + gap) // (photo.height + gap))
+        layout = Image.new("RGB", (paper_w, paper_h), (255, 255, 255))
+        used_w = cols * photo.width + (cols - 1) * gap
+        used_h = rows * photo.height + (rows - 1) * gap
+        start_x = (paper_w - used_w) // 2
+        start_y = (paper_h - used_h) // 2
+        for row in range(rows):
+            for col in range(cols):
+                x = start_x + col * (photo.width + gap)
+                y = start_y + row * (photo.height + gap)
+                layout.paste(photo, (x, y))
+        image_base64 = await asyncio.to_thread(_encode_jpeg_to_target_kb, layout, body.dpi, body.kb)
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logger.exception("id photo layout failed: %s", exc)
+        raise HTTPException(status_code=400, detail="Invalid ID photo image")
+
+    return {
+        "ok": True,
+        "image_base64": image_base64,
+        "format": "jpeg",
+        "paper_width": paper_w,
+        "paper_height": paper_h,
+        "copies": rows * cols,
+    }
+
+
+@app.post("/api/id-photo/human-matting", dependencies=[Depends(verify_origin)])
+@limiter.limit("5/minute;50/day")
+async def id_photo_human_matting(request: Request, file: UploadFile = File(...)):
+    if file.content_type not in ALLOWED_MIME_TYPES:
+        raise HTTPException(status_code=400, detail="Unsupported image format")
+    input_data = await file.read(MAX_UPLOAD_BYTES + 1)
+    if len(input_data) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="File too large")
+    profile = request.query_params.get("profile")
+    if profile not in ("sharp", "fur"):
+        profile = "sharp"
+    try:
+        output = await run_rembg(input_data, profile=profile)
+        img = Image.open(io.BytesIO(output)).convert("RGBA")
+        return {"ok": True, "image_base64": _image_to_base64(img, "PNG")}
+    except Exception as exc:
+        logger.exception("id photo matting failed: %s", exc)
+        raise HTTPException(status_code=500, detail="Human matting failed")
 
 
 # ============================================================

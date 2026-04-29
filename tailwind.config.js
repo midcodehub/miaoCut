@@ -6,6 +6,7 @@ module.exports = {
     './index.html',
     './product-photo-background-remover/index.html',
     './portrait-background-remover/index.html',
+    './id-photo-maker/index.html',
   ],
   theme: {
     extend: {},
