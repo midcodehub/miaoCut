@@ -83,6 +83,7 @@ MAX_IMAGE_PIXELS = int(os.getenv("MAX_IMAGE_PIXELS", str(4096 * 4096)))
 # 上线后 `htop` 看下 RSS 稳态 + 压测时峰值，按实际值再调。
 MAX_CONCURRENCY = int(os.getenv("MAX_CONCURRENCY", "4"))
 ENABLE_DOCS = os.getenv("ENABLE_DOCS", "0") == "1"
+WARMUP_BIREFNET_ON_STARTUP = os.getenv("WARMUP_BIREFNET_ON_STARTUP", "1") == "1"
 
 # 抠图 profile：决定 _run_rembg_sync 走哪条流水线。
 #   sharp（默认）：BiRefNet 直出 + 温和 gamma 校正 + 1px 抗锯齿。
@@ -246,6 +247,15 @@ def get_high_quality_session():
     return _high_quality_session
 
 
+async def warmup_high_quality_session() -> None:
+    """启动完成后后台预热 BiRefNet，避免首个真实用户请求承担模型加载时间。"""
+    try:
+        await asyncio.to_thread(get_high_quality_session)
+        logger.info("BiRefNet model warmup complete")
+    except Exception as exc:
+        logger.warning("BiRefNet model warmup failed; first request will retry lazy loading: %s", exc)
+
+
 # ============================================================
 # 真实客户端 IP 提取（限流 key）
 # ============================================================
@@ -349,6 +359,13 @@ else:
         allow_methods=["GET", "POST", "OPTIONS"],
         allow_headers=["*"],
     )
+
+
+@app.on_event("startup")
+async def schedule_model_warmup() -> None:
+    if WARMUP_BIREFNET_ON_STARTUP:
+        logger.info("Scheduling BiRefNet warmup after startup")
+        asyncio.create_task(warmup_high_quality_session())
 
 
 # ============================================================
