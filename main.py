@@ -183,6 +183,66 @@ def _ensure_writable_model_cache() -> None:
 _ensure_writable_model_cache()
 
 
+def _log_cpu_info() -> None:
+    """启动时打印一次 CPU 硬件能力 + onnxruntime build 信息。
+
+    用途：验证 HF Space 跑在哪一代至强、能用哪些 SIMD 指令集（AVX-512 / VNNI / AMX）。
+    决定后续是否值得做 INT8 量化、切 OpenVINO EP、或启用 AMX 加速。
+
+    关注的几个 flag：
+      avx2          —— 第二代 SIMD，几乎所有现代 Intel 都有
+      avx512f       —— AVX-512 基础集，3 代至强（Ice Lake）起标配
+      avx512_vnni   —— INT8 加速指令，3 代至强起，量化模型必看这个
+      amx_tile      —— AMX 矩阵乘单元，仅 4 代至强（Sapphire Rapids）+ 才有
+      amx_int8/bf16 —— AMX 在 INT8 / BF16 模式下的支持，量化后能吃满 amx_int8
+
+    零性能影响：仅在 import 时跑一次，纯 IO + 字符串处理。
+    """
+    import platform
+
+    cpu_model = platform.processor() or "unknown"
+    cpu_count = os.cpu_count() or 0
+
+    flags_of_interest = ("avx2", "avx512f", "avx512_vnni", "amx_tile", "amx_int8", "amx_bf16")
+    cpu_flags: dict = {}
+    try:
+        with open("/proc/cpuinfo") as f:
+            content = f.read()
+        # 同一物理 CPU 的所有逻辑核 flags 一致，第一段就够
+        for line in content.splitlines():
+            if line.startswith("flags") and not cpu_flags:
+                actual = set(line.split(":", 1)[1].strip().split())
+                cpu_flags = {flag: flag in actual for flag in flags_of_interest}
+            elif line.startswith("model name"):
+                cpu_model = line.split(":", 1)[1].strip()
+            if cpu_flags and cpu_model != "unknown" and not cpu_model.startswith("arm"):
+                break
+    except (FileNotFoundError, OSError):
+        # 非 Linux（如本地 macOS dev）没有 /proc/cpuinfo，跳过 flag 探测
+        pass
+
+    logger.info("=" * 64)
+    logger.info("CPU model     : %s", cpu_model)
+    logger.info("CPU count     : %d vCPU", cpu_count)
+    if cpu_flags:
+        on = [k for k, v in cpu_flags.items() if v]
+        off = [k for k, v in cpu_flags.items() if not v]
+        logger.info("CPU SIMD ON   : %s", ", ".join(on) or "(none)")
+        logger.info("CPU SIMD OFF  : %s", ", ".join(off) or "(none)")
+    else:
+        logger.info("CPU SIMD      : (skipped - /proc/cpuinfo unavailable, likely macOS)")
+    logger.info("ort version   : %s", ort.__version__)
+    logger.info("ort providers : %s", ort.get_available_providers())
+    try:
+        logger.info("ort build_info: %s", ort.get_build_info())
+    except Exception as exc:
+        logger.info("ort build_info: (unavailable: %s)", exc)
+    logger.info("=" * 64)
+
+
+_log_cpu_info()
+
+
 # ============================================================
 # AI 模型初始化
 # ============================================================
