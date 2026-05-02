@@ -12,7 +12,7 @@
 #         miaocut-api
 # ============================================================
 
-FROM python:3.12-slim AS builder
+FROM python:3.11-slim AS builder
 
 WORKDIR /build
 
@@ -30,11 +30,11 @@ RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 # pip --prefix 安装的包不在 builder 默认 sys.path 中，所以显式设置 PYTHONPATH。
 RUN mkdir -p /model-cache && \
     U2NET_HOME=/model-cache \
-    PYTHONPATH=/install/lib/python3.12/site-packages \
+    PYTHONPATH=/install/lib/python3.11/site-packages \
     python -c "from rembg.sessions import sessions_class; cls = next(sc for sc in sessions_class if sc.name() == 'birefnet-general-lite'); print(cls.download_models())"
 
 # ============================================================
-FROM python:3.12-slim
+FROM python:3.11-slim
 
 # 系统依赖：MediaPipe/OpenCV 运行时需要 libGL/libglib。
 RUN apt-get update && \
