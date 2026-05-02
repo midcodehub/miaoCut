@@ -38,6 +38,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 from urllib.parse import quote
+from concurrent.futures import ProcessPoolExecutor
+import multiprocessing
 
 import httpx
 import onnxruntime as ort
@@ -421,7 +423,23 @@ rembg_semaphore = asyncio.Semaphore(MAX_CONCURRENCY)
 restore_semaphore = asyncio.Semaphore(RESTORE_MAX_CONCURRENCY)
 watermark_semaphore = asyncio.Semaphore(int(os.getenv("WATERMARK_MAX_CONCURRENCY", "1")))
 
-simple_lama_model = None
+lama_executor = None
+_lama_model = None
+
+def _init_lama_worker():
+    global _lama_model
+    import torch
+    # 独立进程中限制线程，防止打满 CPU
+    torch.set_num_threads(2)
+    from simple_lama_inpainting import SimpleLama
+    _lama_model = SimpleLama()
+
+def _run_lama_worker(source_image, mask_image):
+    global _lama_model
+    result = _lama_model(source_image, mask_image)
+    if result.size != source_image.size:
+        result = result.crop((0, 0, source_image.width, source_image.height))
+    return result
 
 
 # ============================================================
@@ -472,20 +490,13 @@ else:
 
 @app.on_event("startup")
 async def schedule_model_warmup() -> None:
-    global simple_lama_model
-    logger.info("Loading SimpleLama model for watermark removal...")
+    global lama_executor
+    logger.info("Starting isolated ProcessPool for SimpleLama to prevent PyTorch thread contention...")
     
-    def _load_lama():
-        import torch
-        # 【关键性能修复】PyTorch 默认会占用所有 CPU 核心的 OpenMP 线程，
-        # 这会导致和 ONNX Runtime (rembg) 发生严重的线程争抢，让抠图耗时从 11s 暴增到 20s+。
-        # 这里强制把 PyTorch 的线程数限制在 2，把算力留给主要业务（抠图）。
-        torch.set_num_threads(2)
-        from simple_lama_inpainting import SimpleLama
-        return SimpleLama()
-        
-    simple_lama_model = await asyncio.to_thread(_load_lama)
-    logger.info("SimpleLama model loaded")
+    # 必须使用 spawn，否则 fork 会带上主进程已经被初始化的各种线程锁和状态，容易死锁
+    ctx = multiprocessing.get_context("spawn")
+    lama_executor = ProcessPoolExecutor(max_workers=1, mp_context=ctx, initializer=_init_lama_worker)
+    logger.info("SimpleLama worker process initialized")
 
     if WARMUP_BIREFNET_ON_STARTUP:
         logger.info("Scheduling BiRefNet warmup after startup")
@@ -1358,13 +1369,8 @@ def _read_lama_image(file_bytes: bytes, mode: str) -> Image.Image:
 
 
 def _run_watermark_removal_sync(source_image: Image.Image, mask_image: Image.Image) -> Image.Image:
-    if simple_lama_model is None:
-        raise RuntimeError("SimpleLama model is not loaded")
-
-    result = simple_lama_model(source_image, mask_image)
-    if result.size != source_image.size:
-        result = result.crop((0, 0, source_image.width, source_image.height))
-    return result
+    # 实际上我们不再直接调这个 sync 函数了，而是让 executor 跑 _run_lama_worker
+    pass
 
 
 @app.post("/api/remove-watermark", dependencies=[Depends(verify_origin)])
@@ -1387,7 +1393,8 @@ async def remove_watermark(request: Request, image: UploadFile = File(...), mask
 
     try:
         async with watermark_semaphore:
-            result = await asyncio.to_thread(_run_watermark_removal_sync, source_image, mask_image)
+            loop = asyncio.get_running_loop()
+            result = await loop.run_in_executor(lama_executor, _run_lama_worker, source_image, mask_image)
     except Exception as exc:
         logger.exception("watermark removal failed: %s", exc)
         raise HTTPException(status_code=500, detail="去水印处理失败，请重试。")
