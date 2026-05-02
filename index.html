@@ -147,36 +147,37 @@
 
 <body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-gray-200">
 
-    <!-- 顶部导航 -->
-    <!-- relative z-10：<main> 用了 -mt-16 会盖住 header，必须把 header 提到上层，
-         否则右上角语言切换/GitHub 链接的点击都会落到 main 上。 -->
-    <header class="relative z-10 w-full flex items-center justify-between px-8 py-6">
-        <div class="text-2xl font-black tracking-tight text-gray-900">
-            MiaoCut
-        </div>
-        <div class="flex items-center gap-4">
-            <a href="/old-photo-restoration/"
-                class="hidden sm:inline text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-                data-i18n="navRestore">Old Photo</a>
-            <a href="/id-photo-maker/"
-                class="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">ID Photo Maker</a>
-            <select id="lang-switch" aria-label="Language"
-                class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
-                <option value="en">English</option>
-                <option value="zh">简体中文</option>
-            </select>
-            <a href="#" class="text-gray-500 hover:text-gray-900 transition-colors" title="GitHub" aria-label="GitHub">
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path fill-rule="evenodd"
-                        d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                        clip-rule="evenodd" />
-                </svg>
-            </a>
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur">
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
+            <a href="/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
+            <div class="flex items-center gap-4">
+                <nav class="hidden items-center gap-4 text-sm font-medium text-gray-600 md:flex">
+                    <a href="/" class="text-gray-900" data-i18n="navBg">Background Remover</a>
+                    <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors" data-i18n="navId">ID Photo</a>
+                    <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors" data-i18n="navRestore">Old Photo</a>
+                    <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navWatermark">Watermark</a>
+                    <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navPortrait">Portrait</a>
+                    <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navProduct">Product</a>
+                </nav>
+                <select id="lang-switch" aria-label="Language"
+                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
+                    <option value="en">English</option>
+                    <option value="zh">简体中文</option>
+                </select>
+            </div>
         </div>
     </header>
+    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600">
+        <a href="/" class="shrink-0 text-gray-900" data-i18n="navBg">Background Remover</a>
+        <a href="/id-photo-maker/" class="shrink-0" data-i18n="navId">ID Photo</a>
+        <a href="/old-photo-restoration/" class="shrink-0" data-i18n="navRestore">Old Photo</a>
+        <a href="/watermark-remover/" class="shrink-0" data-i18n="navWatermark">Watermark</a>
+        <a href="/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">Portrait</a>
+        <a href="/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">Product</a>
+    </nav>
 
     <!-- 核心区域 -->
-    <main class="flex-grow flex flex-col items-center justify-center px-4 -mt-16">
+    <main class="mx-auto flex w-full max-w-6xl flex-grow flex-col items-center justify-center px-5 py-10">
 
         <!-- 标语 -->
         <div class="text-center mb-12">
@@ -236,6 +237,25 @@
                 </div>
                 <p data-i18n="trustSub">Processed in-memory, destroyed automatically. Never used for AI training.</p>
             </div>
+
+            <section class="mt-8 grid grid-cols-1 gap-3 md:grid-cols-4" aria-label="MiaoCut tools">
+                <a href="/" class="rounded-lg border border-gray-900 bg-white p-4 text-left shadow-sm">
+                    <p class="text-sm font-bold text-gray-900" data-i18n="toolBgTitle">Remove Background</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolBgBody">HD transparent PNG in seconds.</p>
+                </a>
+                <a href="/id-photo-maker/" class="rounded-lg border border-gray-200 bg-white p-4 text-left hover:border-gray-400 transition-colors">
+                    <p class="text-sm font-bold text-gray-900" data-i18n="toolIdTitle">ID Photo</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolIdBody">Passport, visa, and print sheets.</p>
+                </a>
+                <a href="/old-photo-restoration/" class="rounded-lg border border-gray-200 bg-white p-4 text-left hover:border-gray-400 transition-colors">
+                    <p class="text-sm font-bold text-gray-900" data-i18n="toolOldTitle">Old Photo</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolOldBody">Restore faded family photos.</p>
+                </a>
+                <a href="/watermark-remover/" class="rounded-lg border border-gray-200 bg-white p-4 text-left hover:border-gray-400 transition-colors">
+                    <p class="text-sm font-bold text-gray-900" data-i18n="toolWatermarkTitle">Watermark</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolWatermarkBody">Paint the mark and repair it.</p>
+                </a>
+            </section>
 
             <!-- 首屏关键词说明区：紧贴上传区下方，给搜索引擎抓主题词，给用户做一行价值锚定 -->
             <div class="mt-8 text-center text-sm text-gray-500 leading-relaxed max-w-2xl mx-auto">
@@ -587,6 +607,14 @@
                 ogLocale: "zh_CN",
                 title: "免费 AI 抠图工具",
                 subtitle: "1 秒在线去除图片背景，输出高清透明 PNG，无水印、无需注册、纯内存处理。",
+                toolBgTitle: "去除背景",
+                toolBgBody: "几秒生成高清透明 PNG。",
+                toolIdTitle: "证件照",
+                toolIdBody: "护照、签证、排版打印照。",
+                toolOldTitle: "老照片修复",
+                toolOldBody: "修复褪色的家庭照片。",
+                toolWatermarkTitle: "去水印",
+                toolWatermarkBody: "涂抹水印区域并智能修复。",
                 seoIntro: "MiaoCut 是一款免费的 AI 抠图工具，可以自动去除图片背景。上传 JPG、PNG 或 WebP 照片，立即下载干净的高清透明 PNG。",
                 howItWorks: "如何在线去除图片背景",
                 uploadImg: "1. 上传你的图片",
@@ -649,6 +677,14 @@
                 ogLocale: "en_US",
                 title: "Free AI Background Remover",
                 subtitle: "Remove background from images online in 1 second. Get HD transparent PNG cutouts with no watermark, no signup, and privacy-first processing.",
+                toolBgTitle: "Remove Background",
+                toolBgBody: "HD transparent PNG in seconds.",
+                toolIdTitle: "ID Photo",
+                toolIdBody: "Passport, visa, and print sheets.",
+                toolOldTitle: "Old Photo",
+                toolOldBody: "Restore faded family photos.",
+                toolWatermarkTitle: "Watermark",
+                toolWatermarkBody: "Paint the mark and repair it.",
                 seoIntro: "MiaoCut is a free AI background remover that helps you remove background from images automatically. Upload JPG, PNG, or WebP photos and download clean transparent PNG cutouts instantly.",
                 howItWorks: "How to Remove Background from an Image",
                 uploadImg: "1. Upload Your Image",

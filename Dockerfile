@@ -53,6 +53,12 @@ COPY --from=builder --chown=user:user /model-cache /opt/miaocut-models
 # 拷贝后端运行必需文件。前端由 Cloudflare Pages 托管，不放进 Space 镜像。
 COPY --chown=user:user main.py .
 
+# INT8 量化的 BiRefNet-lite 模型（~155 MB，由 scripts/quantize_birefnet_dynamic.py 离线生成）。
+# main.py 检测到 .u2net/ 下有 birefnet-general-lite-int8.onnx 时会自动启用，
+# 在 AVX-512 VNNI CPU（HF Space 的 Xeon 8375C 已确认有）上预期比 FP32 快 1.5~2.5×。
+# 找不到该文件时静默回退到 FP32，本地 dev / 没跑量化的 build 都能正常运行。
+COPY --chown=user:user models/birefnet-general-lite-int8.onnx /opt/miaocut-models/
+
 # Hugging Face Spaces 默认公开 7860 端口；反馈数据写 /data 以便挂载持久化存储。
 # 模型已内置到镜像；如果将来缺失，main.py 会自动退到可写缓存目录。
 ENV PORT=7860 \

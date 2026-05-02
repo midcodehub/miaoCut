@@ -14,3 +14,8 @@ package.json
 package-lock.json
 tailwind.config.js
 src
+# 量化的离线工具/输入/输出不进镜像；镜像只需要 models/*.onnx 量化产物
+scripts
+calib_images
+examples
+bench_out

@@ -5,8 +5,9 @@
     const i18n = {
         en: {
             navBg: 'Background Remover',
-            navId: 'ID Photo Maker',
+            navId: 'ID Photo',
             navRestore: 'Old Photo',
+            navWatermark: 'Watermark',
             navPortrait: 'Portrait',
             navProduct: 'Product',
             eyebrow: 'Vintage photos, family albums, scanned prints',
@@ -45,6 +46,7 @@
             navBg: 'AI 抠图',
             navId: '证件照',
             navRestore: '老照片修复',
+            navWatermark: '去水印',
             navPortrait: '人像',
             navProduct: '商品图',
             eyebrow: '老照片、家庭相册、扫描照片',

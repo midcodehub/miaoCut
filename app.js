@@ -31,7 +31,12 @@
             dropzoneSub: "（支持 JPG / PNG / WebP）",
             trustTitle: "你的图片绝对安全。",
             trustSub: "纯内存处理，15分钟后自动销毁，绝不用于 AI 训练。",
+            navBg: "AI 抠图",
+            navId: "证件照",
             navRestore: "老照片修复",
+            navWatermark: "去水印",
+            navPortrait: "人像",
+            navProduct: "商品图",
             profileLabel: "质量：",
             profileSharp: "快速",
             profileFur: "细腻（毛发/发丝）",
@@ -60,7 +65,12 @@
             dropzoneSub: "(Supports JPG / PNG / WebP)",
             trustTitle: "Your images are 100% safe.",
             trustSub: "Processed in-memory, destroyed automatically. Never used for AI training.",
+            navBg: "Background Remover",
+            navId: "ID Photo",
             navRestore: "Old Photo",
+            navWatermark: "Watermark",
+            navPortrait: "Portrait",
+            navProduct: "Product",
             profileLabel: "Quality:",
             profileSharp: "Fast",
             profileFur: "Fine (hair / fur)",
@@ -263,7 +273,8 @@
     // ============================================================
     // API 配置
     // ============================================================
-    const API_BASE = 'https://api2.miaocut.app';
+    const _isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const API_BASE = _isLocal ? 'http://localhost:8000' : 'https://api2.miaocut.app';
 
     // ============================================================
     // 拖拽 / 点击交互

@@ -46,10 +46,11 @@ from fastapi import BackgroundTasks, Depends, FastAPI, File, HTTPException, Requ
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from PIL import Image
+from PIL import Image, ImageOps
 from pydantic import BaseModel, Field
 from rembg import remove
 from rembg.sessions import sessions_class
+from simple_lama_inpainting import SimpleLama
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
@@ -289,7 +290,30 @@ def _create_birefnet_session():
     cls = next((sc for sc in sessions_class if sc.name() == "birefnet-general-lite"), None)
     if cls is None:
         raise RuntimeError("birefnet-general-lite session class not found in rembg")
-    return cls("birefnet-general-lite", sess_opts, ["CPUExecutionProvider"])
+    sess = cls("birefnet-general-lite", sess_opts, ["CPUExecutionProvider"])
+
+    # ---- 自动切换到 INT8 量化模型（如果存在）----
+    # INT8 量化产物（MatMul/Gemm 权重 → INT8）由 scripts/quantize_birefnet_dynamic.py
+    # 离线生成，存到与 FP32 同目录。HF Space 的 Xeon 8375C 有 AVX-512 VNNI，预期
+    # 1.5~2.5× 提速；本机 macOS（无 VNNI）也能拿到 ~1.3× 来自内存带宽减半。
+    # 只替换 inner_session，rembg 的预/后处理（resize、归一化、mask 解码）完全保留。
+    # 找不到 INT8 文件时静默回退到 FP32：本地 dev / 没跑量化的 build 都能正常运行。
+    int8_path = Path(os.environ["U2NET_HOME"]) / "birefnet-general-lite-int8.onnx"
+    if int8_path.is_file():
+        try:
+            int8_session = ort.InferenceSession(
+                str(int8_path),
+                sess_options=sess_opts,
+                providers=["CPUExecutionProvider"],
+            )
+            sess.inner_session = int8_session
+            logger.info("Loaded INT8 quantized model: %s (%.0f MB)",
+                        int8_path, int8_path.stat().st_size / 1024 / 1024)
+        except Exception as exc:
+            logger.warning("INT8 model found but failed to load (%s); falling back to FP32", exc)
+    else:
+        logger.info("INT8 model not found at %s; using FP32", int8_path)
+    return sess
 
 
 _high_quality_session = None
@@ -373,6 +397,9 @@ logger.info("RateLimiter storage: memory (single-process), trust_proxy=%s", TRUS
 # 若想直接拒绝，可以改成 wait_for(acquire, timeout) + 429。
 rembg_semaphore = asyncio.Semaphore(MAX_CONCURRENCY)
 restore_semaphore = asyncio.Semaphore(RESTORE_MAX_CONCURRENCY)
+watermark_semaphore = asyncio.Semaphore(int(os.getenv("WATERMARK_MAX_CONCURRENCY", "1")))
+
+simple_lama_model: Optional[SimpleLama] = None
 
 
 # ============================================================
@@ -423,6 +450,11 @@ else:
 
 @app.on_event("startup")
 async def schedule_model_warmup() -> None:
+    global simple_lama_model
+    logger.info("Loading SimpleLama model for watermark removal...")
+    simple_lama_model = await asyncio.to_thread(SimpleLama)
+    logger.info("SimpleLama model loaded")
+
     if WARMUP_BIREFNET_ON_STARTUP:
         logger.info("Scheduling BiRefNet warmup after startup")
         asyncio.create_task(warmup_high_quality_session())
@@ -1179,6 +1211,11 @@ if SERVE_STATIC:
         return FileResponse("old-photo-restoration/old-photo.js", media_type="application/javascript")
 
 
+    @app.get("/watermark-remover/")
+    async def watermark_remover():
+        return FileResponse("watermark-remover/index.html")
+
+
 @app.post("/api/remove-background", dependencies=[Depends(verify_origin)])
 @limiter.limit("5/minute;50/day")  # 按真实 IP 限流：每分钟 5 次，每天 50 次
 async def remove_background(request: Request, file: UploadFile = File(...)):
@@ -1247,6 +1284,59 @@ async def remove_background(request: Request, file: UploadFile = File(...)):
             "X-Content-Type-Options": "nosniff",
             "Referrer-Policy": "no-referrer",
         },
+    )
+
+
+def _read_lama_image(file_bytes: bytes, mode: str) -> Image.Image:
+    try:
+        image = Image.open(io.BytesIO(file_bytes))
+        image = ImageOps.exif_transpose(image)
+        return image.convert(mode)
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail="无效的图片文件。") from exc
+
+
+def _run_watermark_removal_sync(source_image: Image.Image, mask_image: Image.Image) -> Image.Image:
+    if simple_lama_model is None:
+        raise RuntimeError("SimpleLama model is not loaded")
+
+    result = simple_lama_model(source_image, mask_image)
+    if result.size != source_image.size:
+        result = result.crop((0, 0, source_image.width, source_image.height))
+    return result
+
+
+@app.post("/api/remove-watermark", dependencies=[Depends(verify_origin)])
+@limiter.limit("3/minute;30/day")
+async def remove_watermark(request: Request, image: UploadFile = File(...), mask: UploadFile = File(...)):
+    image_bytes = await image.read(MAX_UPLOAD_BYTES + 1)
+    mask_bytes = await mask.read(MAX_UPLOAD_BYTES + 1)
+    if len(image_bytes) > MAX_UPLOAD_BYTES or len(mask_bytes) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="文件过大，请压缩后再上传。")
+    if not image_bytes or not mask_bytes:
+        raise HTTPException(status_code=400, detail="图片和遮罩不能为空。")
+
+    source_image = _read_lama_image(image_bytes, "RGB")
+    mask_image = _read_lama_image(mask_bytes, "L")
+
+    if source_image.width * source_image.height > MAX_IMAGE_PIXELS:
+        raise HTTPException(status_code=413, detail="图片尺寸过大，请压缩后再试。")
+    if mask_image.size != source_image.size:
+        mask_image = mask_image.resize(source_image.size, Image.Resampling.NEAREST)
+
+    try:
+        async with watermark_semaphore:
+            result = await asyncio.to_thread(_run_watermark_removal_sync, source_image, mask_image)
+    except Exception as exc:
+        logger.exception("watermark removal failed: %s", exc)
+        raise HTTPException(status_code=500, detail="去水印处理失败，请重试。")
+
+    output = io.BytesIO()
+    result.save(output, format="PNG")
+    return Response(
+        content=output.getvalue(),
+        media_type="image/png",
+        headers={"X-Content-Type-Options": "nosniff"},
     )
 
 

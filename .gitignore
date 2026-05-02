@@ -6,6 +6,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.venv-py39-backup
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -38,3 +39,9 @@ examples/raw/
 # Node / Tailwind
 node_modules/
 # 注意：output.css 必须提交（CF Pages 直接当静态文件 serve）
+calib_images/
+bench_out/
+# models/ 下只提交 INT8 量化产物（_int8.onnx）；FP32 模型 rembg 自动从 GitHub 下载，不进 git
+models/birefnet-general-lite.onnx
+models/*.preprocessed.onnx
+

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://api2.miaocut.app">
+    <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
+    <title>Watermark Remover - Free AI Image Cleanup Tool | MiaoCut</title>
+    <meta name="description"
+        content="Remove watermarks, logos, text, stamps, and unwanted marks from images online with MiaoCut. Paint the area and let AI repair the image.">
+    <meta name="keywords"
+        content="watermark remover, remove watermark from image, ai watermark remover, remove logo from image, image inpainting, object remover">
+    <meta property="og:title" content="Watermark Remover - Free AI Image Cleanup Tool | MiaoCut">
+    <meta property="og:description"
+        content="Paint over watermarks, logos, text, or unwanted marks and let MiaoCut repair the image online.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://miaocut.app/watermark-remover/">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="canonical" href="https://miaocut.app/watermark-remover/">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "MiaoCut Watermark Remover",
+      "url": "https://miaocut.app/watermark-remover/",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Web",
+      "description": "Online AI watermark remover and image cleanup tool.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I remove a watermark from an image?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Upload an image, paint over the watermark area with the brush, then process the image. MiaoCut creates a mask and repairs the selected area."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can it remove text, logos, or stamps?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The tool works for many small unwanted marks such as text overlays, logos, stamps, and date labels."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What images work best?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It works best when the marked area is not too large and the surrounding background has enough visual context for repair."
+          }
+        }
+      ]
+    }
+    </script>
+    <link rel="stylesheet" href="/output.css">
+    <script defer src="https://cloud.umami.is/script.js"
+        data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
+</head>
+
+<body class="bg-gray-50 min-h-screen font-sans text-gray-900 selection:bg-gray-200">
+    <header class="relative z-10 w-full bg-white border-b border-gray-200">
+        <div class="mx-auto max-w-6xl px-5 py-4 flex items-center justify-between gap-4">
+            <a href="/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
+            <div class="flex items-center gap-4">
+                <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600">
+                    <a href="/" class="hover:text-gray-900 transition-colors" data-i18n="navBg">Background Remover</a>
+                    <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors" data-i18n="navId">ID Photo</a>
+                    <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors" data-i18n="navRestore">Old Photo</a>
+                    <a href="/watermark-remover/" class="text-gray-900" data-i18n="navWatermark">Watermark</a>
+                    <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navPortrait">Portrait</a>
+                    <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navProduct">Product</a>
+                </nav>
+                <select id="lang-switch" aria-label="Language"
+                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
+                    <option value="en">English</option>
+                    <option value="zh">简体中文</option>
+                </select>
+            </div>
+        </div>
+    </header>
+    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600">
+        <a href="/" class="shrink-0" data-i18n="navBg">Background Remover</a>
+        <a href="/id-photo-maker/" class="shrink-0" data-i18n="navId">ID Photo</a>
+        <a href="/old-photo-restoration/" class="shrink-0" data-i18n="navRestore">Old Photo</a>
+        <a href="/watermark-remover/" class="shrink-0 text-gray-900" data-i18n="navWatermark">Watermark</a>
+        <a href="/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">Portrait</a>
+        <a href="/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">Product</a>
+    </nav>
+
+    <main class="mx-auto max-w-6xl px-5 py-8">
+        <section class="mb-7 flex flex-col gap-2">
+            <p class="text-sm font-semibold text-gray-500" data-i18n="eyebrow">Watermarks, text overlays, logos, stamps</p>
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" data-i18n="heroTitle">AI Watermark Remover</h1>
+            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed" data-i18n="heroSub">Upload an image, paint over the unwanted mark, and let AI repair the selected area.</p>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-6 items-start">
+            <aside class="bg-white border border-gray-200 rounded-lg p-5">
+                <label id="upload-card"
+                    class="flex min-h-[190px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center hover:border-gray-400 hover:bg-white transition-colors"
+                    for="imageInput">
+                    <svg id="upload-icon" class="mb-3 h-10 w-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                    </svg>
+                    <span id="file-name" class="text-sm font-medium text-gray-700" data-i18n="uploadText">Click to upload JPG, PNG, or WebP</span>
+                    <span id="upload-hint" class="mt-1 text-xs text-gray-400" data-i18n="uploadHint">High-resolution images with small marks work best</span>
+                    <input id="imageInput" type="file" class="hidden" accept="image/jpeg,image/png,image/webp">
+                </label>
+
+                <div class="mt-5 space-y-4">
+                    <div>
+                        <div class="mb-1 flex items-center justify-between text-sm">
+                            <label class="font-semibold text-gray-700" for="brushSize" data-i18n="brushLabel">Brush size</label>
+                            <span class="text-xs font-medium text-gray-500"><span id="brushValue">32</span>px</span>
+                        </div>
+                        <input id="brushSize" type="range" min="4" max="120" value="32" class="w-full accent-gray-900">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <button id="clearButton" type="button"
+                            class="h-11 rounded-lg border border-gray-200 px-4 text-sm font-semibold text-gray-700 hover:border-gray-400 hover:text-gray-900 disabled:cursor-not-allowed disabled:text-gray-300 transition-colors"
+                            disabled data-i18n="clearBtn">Clear mask</button>
+                        <button id="processButton" type="button"
+                            class="h-11 rounded-lg bg-gray-900 px-4 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-300 transition-colors"
+                            disabled data-i18n="processBtn">Remove</button>
+                    </div>
+
+                    <button id="downloadButton" type="button"
+                        class="hidden h-11 w-full rounded-lg border border-gray-200 px-4 text-sm font-semibold text-gray-700 hover:border-gray-400 hover:text-gray-900 transition-colors"
+                        data-i18n="downloadBtn">Download result</button>
+
+                    <p id="loading" class="hidden rounded-lg bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700" data-i18n="loading">AI is repairing the image...</p>
+                    <p id="status" class="min-h-[20px] text-sm text-red-600"></p>
+                </div>
+
+                <div class="mt-6 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
+                    <h2 class="font-bold text-gray-900" data-i18n="tipsTitle">Best results</h2>
+                    <p class="mt-2 leading-relaxed" data-i18n="tipsBody">Paint slightly beyond the watermark edges. Use a smaller brush near detailed areas.</p>
+                </div>
+            </aside>
+
+            <section class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                <div class="bg-white border border-gray-200 rounded-lg p-5">
+                    <div class="mb-4">
+                        <h2 class="text-lg font-bold" data-i18n="sourceTitle">Paint mask</h2>
+                        <p class="text-sm text-gray-500" data-i18n="sourceSub">Cover only the watermark or unwanted object.</p>
+                    </div>
+                    <div class="flex min-h-[460px] items-center justify-center overflow-hidden rounded-lg border border-dashed border-gray-300 bg-gray-50">
+                        <div id="emptyState" class="px-8 text-center text-sm text-gray-400" data-i18n="emptySource">Upload an image to start painting</div>
+                        <div id="imageWrap" class="relative max-w-full leading-none" hidden>
+                            <img id="sourceImage" alt="Source image for watermark removal" class="block max-h-[560px] max-w-full select-none">
+                            <canvas id="drawCanvas" class="absolute inset-0 cursor-crosshair touch-none"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg p-5">
+                    <div class="mb-4">
+                        <h2 class="text-lg font-bold" data-i18n="resultTitle">Result</h2>
+                        <p class="text-sm text-gray-500" data-i18n="resultSub">The repaired image will appear here.</p>
+                    </div>
+                    <div id="resultBox" class="flex min-h-[460px] items-center justify-center overflow-hidden rounded-lg border border-gray-200 bg-gray-50">
+                        <div class="px-8 text-center text-sm text-gray-400" data-i18n="emptyResult">No result yet</div>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
+            <h2 class="text-xl font-bold" data-i18n="seoTitle">Remove watermarks and unwanted marks from images</h2>
+            <p class="mt-3 max-w-3xl text-sm leading-relaxed text-gray-600" data-i18n="seoBody">MiaoCut's watermark remover lets you mark the exact area to repair. It is useful for small text overlays, date stamps, logos, and distracting objects when you have permission to edit the image.</p>
+            <div class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
+                <div class="rounded-lg border border-gray-200 p-4">
+                    <h3 class="font-bold text-gray-900" data-i18n="seoCard1">Manual precision</h3>
+                    <p class="mt-1" data-i18n="seoCard1Body">Paint exactly where the mark appears instead of guessing with auto detection.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-4">
+                    <h3 class="font-bold text-gray-900" data-i18n="seoCard2">AI repair</h3>
+                    <p class="mt-1" data-i18n="seoCard2Body">The selected area is repaired using image inpainting.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-4">
+                    <h3 class="font-bold text-gray-900" data-i18n="seoCard3">Private workflow</h3>
+                    <p class="mt-1" data-i18n="seoCard3Body">Images follow the same MiaoCut upload and processing policy.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Feedback Widget -->
+    <div id="feedback-widget" class="fixed bottom-6 right-6 z-40">
+        <div id="feedback-panel"
+            class="absolute bottom-14 right-0 w-72 bg-white rounded-xl shadow-2xl border border-gray-100 p-5">
+            <h3 class="text-sm font-semibold text-gray-900 mb-3">&#9749; Feedback</h3>
+            <form id="feedback-form">
+                <textarea id="feedback-msg" aria-label="Feedback message"
+                    class="w-full h-20 text-sm border border-gray-200 rounded-lg p-2.5 resize-none focus:outline-none focus:ring-2 focus:ring-gray-300 placeholder-gray-500"
+                    placeholder="What's on your mind?"></textarea>
+                <input id="feedback-email" type="email" aria-label="Email (optional)"
+                    class="w-full mt-2 text-sm border border-gray-200 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-gray-300 placeholder-gray-500"
+                    placeholder="Email (Optional)">
+                <button type="submit"
+                    class="w-full mt-3 bg-gray-900 text-white text-sm font-medium py-2 rounded-lg hover:bg-gray-800 transition-colors">Send</button>
+            </form>
+            <div id="feedback-thanks" class="hidden text-center py-6">
+                <p class="text-2xl mb-2">&#127881;</p>
+                <p class="text-sm font-medium text-gray-800">Thanks for your feedback!</p>
+                <p class="text-xs text-gray-500 mt-1">We read every single message.</p>
+            </div>
+        </div>
+        <button id="feedback-trigger"
+            class="w-11 h-11 bg-white border border-gray-200 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl hover:scale-110 transition-all text-lg"
+            title="feedback">&#9749;</button>
+    </div>
+
+    <script src="/watermark-remover/watermark.js"></script>
+    <script src="/app.js"></script>
+</body>
+
+</html>

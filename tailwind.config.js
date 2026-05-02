@@ -8,6 +8,7 @@ module.exports = {
     './portrait-background-remover/index.html',
     './id-photo-maker/index.html',
     './old-photo-restoration/index.html',
+    './watermark-remover/index.html',
   ],
   theme: {
     extend: {},
