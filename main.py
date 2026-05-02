@@ -85,6 +85,14 @@ MAX_IMAGE_PIXELS = int(os.getenv("MAX_IMAGE_PIXELS", str(4096 * 4096)))
 MAX_CONCURRENCY = int(os.getenv("MAX_CONCURRENCY", "4"))
 ENABLE_DOCS = os.getenv("ENABLE_DOCS", "0") == "1"
 WARMUP_BIREFNET_ON_STARTUP = os.getenv("WARMUP_BIREFNET_ON_STARTUP", "1") == "1"
+# INT8 动态量化开关：默认关闭。
+# 实测在 HF Space Xeon 8375C（有 AVX-512 VNNI）上，动态 INT8 反而比 FP32 慢 ~2x（19s vs ~10s）：
+# Swin Transformer 层数多，每层 activation 动态量化的 scale 计算开销叠加后
+# 大于 VNNI 加速收益。M1 上快 4-5s 是因为模型体积减半节省了统一内存带宽，与量化本身无关。
+# 如需在特定硬件上测试 INT8，设 ENABLE_INT8_MODEL=1 显式开启。
+ENABLE_INT8_MODEL = os.getenv("ENABLE_INT8_MODEL", "0") == "1"
+
+
 
 # 抠图 profile：决定 _run_rembg_sync 走哪条流水线。
 #   sharp（默认）：BiRefNet 直出 + 温和 gamma 校正 + 1px 抗锯齿。
@@ -292,14 +300,25 @@ def _create_birefnet_session():
         raise RuntimeError("birefnet-general-lite session class not found in rembg")
     sess = cls("birefnet-general-lite", sess_opts, ["CPUExecutionProvider"])
 
-    # ---- 自动切换到 INT8 量化模型（如果存在）----
-    # INT8 量化产物（MatMul/Gemm 权重 → INT8）由 scripts/quantize_birefnet_dynamic.py
-    # 离线生成，存到与 FP32 同目录。HF Space 的 Xeon 8375C 有 AVX-512 VNNI，预期
-    # 1.5~2.5× 提速；本机 macOS（无 VNNI）也能拿到 ~1.3× 来自内存带宽减半。
-    # 只替换 inner_session，rembg 的预/后处理（resize、归一化、mask 解码）完全保留。
-    # 找不到 INT8 文件时静默回退到 FP32：本地 dev / 没跑量化的 build 都能正常运行。
-    int8_path = Path(os.environ["U2NET_HOME"]) / "birefnet-general-lite-int8.onnx"
-    if int8_path.is_file():
+    # ---- INT8 量化模型（需显式设 ENABLE_INT8_MODEL=1 才加载）----
+    # 实测在 HF Space Xeon 8375C（有 AVX-512 VNNI）上，动态 INT8 比 FP32 慢 ~2x（19s vs ~10s）：
+    # Swin Transformer 层数多，每层 activation 动态量化的 scale 计算开销叠加后大于 VNNI 收益。
+    # M1 上快 4-5s 是因为模型体积减半节省了统一内存带宽，与量化算法本身无关。
+    # 默认保持 FP32；只在确认目标硬件有收益时才设 ENABLE_INT8_MODEL=1。
+    if not ENABLE_INT8_MODEL:
+        logger.info("INT8 model disabled (ENABLE_INT8_MODEL=0); using FP32")
+        return sess
+
+    # 候选路径：U2NET_HOME 优先，其次工作目录下的 models/ 子目录
+    # （upload_model_to_hf.py 上传到 HF Space 仓库的 models/ 路径，
+    #  运行时落盘为 <WORKDIR>/models/；.gitignore 排除了 *.onnx，
+    #  Dockerfile COPY 构建上下文拿不到，需额外检查工作目录）
+    _int8_candidates = [
+        Path(os.environ["U2NET_HOME"]) / "birefnet-general-lite-int8.onnx",
+        Path(__file__).parent / "models" / "birefnet-general-lite-int8.onnx",
+    ]
+    int8_path = next((p for p in _int8_candidates if p.is_file()), None)
+    if int8_path is not None:
         try:
             int8_session = ort.InferenceSession(
                 str(int8_path),
@@ -312,8 +331,10 @@ def _create_birefnet_session():
         except Exception as exc:
             logger.warning("INT8 model found but failed to load (%s); falling back to FP32", exc)
     else:
-        logger.info("INT8 model not found at %s; using FP32", int8_path)
+        logger.info("INT8 model not found (checked: %s); using FP32",
+                    ", ".join(str(p) for p in _int8_candidates))
     return sess
+
 
 
 _high_quality_session = None
@@ -619,9 +640,13 @@ def _run_fur_pipeline(data: bytes) -> bytes:
       erode_size=8            ：trimap 未知带 8px，刚够覆盖一般毛发宽度
                               （再大 pymatting 会慢且产生光晕）
     """
+    import time
     import cv2
     import numpy as np
     from pymatting import estimate_foreground_ml
+
+    img_size_kb = len(data) / 1024
+    t0 = time.perf_counter()
 
     output_data = remove(
         data,
@@ -631,14 +656,17 @@ def _run_fur_pipeline(data: bytes) -> bytes:
         alpha_matting_background_threshold=15,
         alpha_matting_erode_size=8,
     )
+    t1 = time.perf_counter()
 
     result_img = np.frombuffer(output_data, np.uint8)
     result_img = cv2.imdecode(result_img, cv2.IMREAD_UNCHANGED)
     if result_img is None or result_img.ndim < 3 or result_img.shape[2] < 4:
+        logger.info("fur pipeline: rembg+matting=%.2fs (input=%.0fKB) [early return]", t1 - t0, img_size_kb)
         return output_data
 
     alpha_norm = result_img[:, :, 3].astype(np.float32) / 255.0
 
+    t2 = time.perf_counter()
     # 仅当存在真正的半透明区域时才跑前景估算（纯硬边图省 0.5~1.5s）
     if np.any((alpha_norm > 0.02) & (alpha_norm < 0.98)):
         # pymatting 期望 RGB 顺序、范围 [0, 1]
@@ -649,6 +677,7 @@ def _run_fur_pipeline(data: bytes) -> bytes:
             cv2.COLOR_RGB2BGR,
         )
         result_img[:, :, :3] = fg_bgr
+    t3 = time.perf_counter()
 
     # 清理 trimap 求解后零星的浮点 noise（< ~1% 透明度直接归零，避免暗色像素散点）
     alpha_u8 = result_img[:, :, 3]
@@ -656,6 +685,13 @@ def _run_fur_pipeline(data: bytes) -> bytes:
     result_img[:, :, 3] = alpha_u8
 
     _, output_png = cv2.imencode(".png", result_img)
+    t4 = time.perf_counter()
+
+    logger.info(
+        "fur pipeline: rembg+matting=%.2fs fg_est=%.2fs post=%.2fs total=%.2fs (input=%.0fKB output_px=%dx%d)",
+        t1 - t0, t3 - t2, t4 - t3, t4 - t0,
+        img_size_kb, result_img.shape[1], result_img.shape[0],
+    )
     return output_png.tobytes()
 
 
