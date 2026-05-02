@@ -552,6 +552,7 @@ def _run_sharp_pipeline(data: bytes) -> bytes:
 
     img_size_kb = len(data) / 1024
     t0 = time.perf_counter()
+    logger.info(">>> sharp pipeline BEGIN (input=%.0fKB)", img_size_kb)
 
     output_data = remove(
         data,
