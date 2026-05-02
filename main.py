@@ -353,10 +353,22 @@ def get_high_quality_session():
 
 
 async def warmup_high_quality_session() -> None:
-    """启动完成后后台预热 BiRefNet，避免首个真实用户请求承担模型加载时间。"""
+    """启动完成后后台预热 BiRefNet，避免首个真实用户请求承担模型加载及首次推理的编译时间。"""
     try:
-        await asyncio.to_thread(get_high_quality_session)
-        logger.info("BiRefNet model warmup complete")
+        session = await asyncio.to_thread(get_high_quality_session)
+        
+        # ONNX Runtime 在首次 session.run() 时才会进行 Graph Optimization 和内存分配（耗时 5~10 秒）。
+        # 这里用一张极小的 dummy 图片跑一次完整流水线，提前吃掉这部分开销。
+        def _dummy_run():
+            from PIL import Image
+            import io
+            img = Image.new("RGB", (32, 32), color="white")
+            buf = io.BytesIO()
+            img.save(buf, format="PNG")
+            remove(buf.getvalue(), session=session, alpha_matting=False)
+            
+        await asyncio.to_thread(_dummy_run)
+        logger.info("BiRefNet model warmup complete (including first-inference JIT)")
     except Exception as exc:
         logger.warning("BiRefNet model warmup failed; first request will retry lazy loading: %s", exc)
 
