@@ -35,43 +35,50 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          fetch-depth: 0
+          python-version: "3.11"
 
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Install huggingface_hub
+        run: pip install --quiet "huggingface_hub>=0.24"
 
-      - name: Push current snapshot to Spaces
+      - name: Upload code files to Hugging Face Spaces
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GITHUB_SHA: ${{ github.sha }}
+        # 用 HF API 的 upload_folder + allow_patterns，只上传白名单里的代码文件。
+        # 模型文件（models/*.onnx 等大文件）由 owner 在 HF Space 上手动维护，每次 workflow
+        # 完全不碰，自然就跳过 git-lfs / 100MB 上限 / 反复推大文件这些坑。
+        # 上传是真增量：HF API 内部按文件 sha256 dedupe，未变化的文件不会真正传输也不会触发 rebuild。
         run: |
           set -euo pipefail
-
           if [ -z "$HF_TOKEN" ]; then
             echo "HF_TOKEN secret is not configured."
             exit 1
           fi
+          python - <<'PY'
+          import os
+          from huggingface_hub import HfApi
 
-          spaces=(
-            "miao_cut"
-            "miao_cut2"
-            "miao_cut3"
-          )
+          api = HfApi(token=os.environ["HF_TOKEN"])
+          sha_short = os.environ.get("GITHUB_SHA", "manual")[:8]
+          spaces = ["miao_cut", "miao_cut2", "miao_cut3"]
 
-          deploy_dir="$(mktemp -d)"
-          cp Dockerfile README.md main.py requirements.txt "$deploy_dir"/
+          # 这些是部署到 HF Space 必须的代码文件；改这些任一文件都会触发 HF Space 重新 build。
+          # 模型文件（*.onnx）不在列表里 → 由 owner 手动通过 HF Web UI / huggingface-cli 维护。
+          allow = ["main.py", "Dockerfile", "requirements.txt", "README.md"]
 
-          deploy_branch="hf-space-deploy"
-          git checkout --orphan "$deploy_branch"
-          git rm -rf . >/dev/null 2>&1 || true
-          cp -R "$deploy_dir"/. .
-          git add -A
-          git commit -m "Deploy ${GITHUB_SHA} to Hugging Face Spaces"
-
-          for space in "${spaces[@]}"; do
-            repo="huggingface.co/spaces/midcodex/${space}"
-            echo "==> Pushing to https://${repo}"
-            git push "https://midcodex:${HF_TOKEN}@${repo}" "$deploy_branch:main" --force
-          done
+          for space in spaces:
+              repo_id = f"midcodex/{space}"
+              print(f"==> Uploading {len(allow)} files to https://huggingface.co/spaces/{repo_id}")
+              api.upload_folder(
+                  folder_path=".",
+                  repo_id=repo_id,
+                  repo_type="space",
+                  allow_patterns=allow,
+                  commit_message=f"Deploy {sha_short} from GitHub Actions",
+              )
+              print(f"    done: {repo_id}")
+          PY

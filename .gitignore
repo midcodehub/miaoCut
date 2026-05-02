@@ -41,7 +41,8 @@ node_modules/
 # 注意：output.css 必须提交（CF Pages 直接当静态文件 serve）
 calib_images/
 bench_out/
-# models/ 下只提交 INT8 量化产物（_int8.onnx）；FP32 模型 rembg 自动从 GitHub 下载，不进 git
-models/birefnet-general-lite.onnx
-models/*.preprocessed.onnx
+# models/ 下的所有 ONNX 模型都不进 git —— HF Space 上由 owner 手动维护（HF Web UI 或
+# huggingface-cli upload）。GitHub workflow 推代码时不碰模型文件，避免 git-lfs / 100MB 上限。
+models/*.onnx
+models/*.bak
 

@@ -5,7 +5,8 @@
       "Bash(kill -0 79230)",
       "Bash(.venv/bin/python -u -c ' *)",
       "Bash(.venv/bin/python -c \"import PIL; print\\('Pillow', PIL.__version__\\)\")",
-      "Bash(.venv/bin/pip index *)"
+      "Bash(.venv/bin/pip index *)",
+      "Bash(git lfs *)"
     ]
   }
 }

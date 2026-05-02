@@ -546,18 +546,24 @@ def _run_sharp_pipeline(data: bytes) -> bytes:
     速度同前（~1s/张 on M1，~2s/张 on VPS），适合人物、商品、Logo 等"硬边"主体。
     对毛发场景请改用 CUTOUT_PROFILE=fur。
     """
+    import time
     import cv2
     import numpy as np
+
+    img_size_kb = len(data) / 1024
+    t0 = time.perf_counter()
 
     output_data = remove(
         data,
         session=get_high_quality_session(),
         alpha_matting=False,
     )
+    t1 = time.perf_counter()
 
     result_img = np.frombuffer(output_data, np.uint8)
     result_img = cv2.imdecode(result_img, cv2.IMREAD_UNCHANGED)
     if result_img is None or result_img.ndim < 3 or result_img.shape[2] < 4:
+        logger.info("sharp pipeline: rembg=%.2fs (input=%.0fKB) [early return]", t1 - t0, img_size_kb)
         return output_data
 
     alpha = result_img[:, :, 3].astype(np.float32) / 255.0
@@ -577,6 +583,13 @@ def _run_sharp_pipeline(data: bytes) -> bytes:
     # （libwebp 要单独编 alpha plane）。WebP 文件小 70% 但用户感知不到下载差异，
     # 反而 encode 多出来的 100ms 直接叠加在"AI 处理中"进度末尾，体感变慢。
     _, output_png = cv2.imencode(".png", result_img)
+    t2 = time.perf_counter()
+
+    logger.info(
+        "sharp pipeline: rembg=%.2fs post=%.2fs total=%.2fs (input=%.0fKB output_px=%dx%d)",
+        t1 - t0, t2 - t1, t2 - t0,
+        img_size_kb, result_img.shape[1], result_img.shape[0],
+    )
     return output_png.tobytes()
 
 
