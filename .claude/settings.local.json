@@ -3,7 +3,8 @@
     "allow": [
       "Bash(CALIB_MAX=2 .venv/bin/python -u scripts/quantize_birefnet.py)",
       "Bash(kill -0 79230)",
-      "Bash(.venv/bin/python -u -c ' *)"
+      "Bash(.venv/bin/python -u -c ' *)",
+      "Bash(.venv/bin/python -c \"import PIL; print\\('Pillow', PIL.__version__\\)\")"
     ]
   }
 }

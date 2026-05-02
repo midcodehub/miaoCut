@@ -93,7 +93,7 @@ def collect_calibration_paths():
 def preprocess(image_path: Path) -> np.ndarray:
     """把图片预处理成 BiRefNet 期望的 1×3×1024×1024 float32 张量。"""
     img = Image.open(image_path).convert("RGB")
-    img = img.resize((INPUT_SIZE, INPUT_SIZE), Image.LANCZOS)
+    img = img.resize((INPUT_SIZE, INPUT_SIZE), Image.Resampling.LANCZOS)
     arr = np.asarray(img, dtype=np.float32) / 255.0
     arr = arr.transpose(2, 0, 1)[np.newaxis, :]  # 1×3×H×W
     arr = (arr - MEAN) / STD
