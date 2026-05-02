@@ -50,7 +50,8 @@ from PIL import Image, ImageOps
 from pydantic import BaseModel, Field
 from rembg import remove
 from rembg.sessions import sessions_class
-from simple_lama_inpainting import SimpleLama
+# 注意：不要在顶层导入 PyTorch (SimpleLama)，否则会导致底层 OpenMP 线程池被 PyTorch 接管，
+# 严重拖慢 ONNX Runtime (rembg) 的执行速度！我们在 startup 时再懒加载它。
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
@@ -355,20 +356,8 @@ def get_high_quality_session():
 async def warmup_high_quality_session() -> None:
     """启动完成后后台预热 BiRefNet，避免首个真实用户请求承担模型加载及首次推理的编译时间。"""
     try:
-        session = await asyncio.to_thread(get_high_quality_session)
-        
-        # ONNX Runtime 在首次 session.run() 时才会进行 Graph Optimization 和内存分配（耗时 5~10 秒）。
-        # 这里用一张极小的 dummy 图片跑一次完整流水线，提前吃掉这部分开销。
-        def _dummy_run():
-            from PIL import Image
-            import io
-            img = Image.new("RGB", (32, 32), color="white")
-            buf = io.BytesIO()
-            img.save(buf, format="PNG")
-            remove(buf.getvalue(), session=session, alpha_matting=False)
-            
-        await asyncio.to_thread(_dummy_run)
-        logger.info("BiRefNet model warmup complete (including first-inference JIT)")
+        await asyncio.to_thread(get_high_quality_session)
+        logger.info("BiRefNet model warmup complete")
     except Exception as exc:
         logger.warning("BiRefNet model warmup failed; first request will retry lazy loading: %s", exc)
 
@@ -432,7 +421,7 @@ rembg_semaphore = asyncio.Semaphore(MAX_CONCURRENCY)
 restore_semaphore = asyncio.Semaphore(RESTORE_MAX_CONCURRENCY)
 watermark_semaphore = asyncio.Semaphore(int(os.getenv("WATERMARK_MAX_CONCURRENCY", "1")))
 
-simple_lama_model: Optional[SimpleLama] = None
+simple_lama_model = None
 
 
 # ============================================================
@@ -485,7 +474,17 @@ else:
 async def schedule_model_warmup() -> None:
     global simple_lama_model
     logger.info("Loading SimpleLama model for watermark removal...")
-    simple_lama_model = await asyncio.to_thread(SimpleLama)
+    
+    def _load_lama():
+        import torch
+        # 【关键性能修复】PyTorch 默认会占用所有 CPU 核心的 OpenMP 线程，
+        # 这会导致和 ONNX Runtime (rembg) 发生严重的线程争抢，让抠图耗时从 11s 暴增到 20s+。
+        # 这里强制把 PyTorch 的线程数限制在 2，把算力留给主要业务（抠图）。
+        torch.set_num_threads(2)
+        from simple_lama_inpainting import SimpleLama
+        return SimpleLama()
+        
+    simple_lama_model = await asyncio.to_thread(_load_lama)
     logger.info("SimpleLama model loaded")
 
     if WARMUP_BIREFNET_ON_STARTUP:
