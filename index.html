@@ -3,7 +3,6 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html;charset=gb2312" />
     <meta name="sogou_site_verification" content="lLMMvkZKud" />
     <meta name="baidu-site-verification" content="codeva-bJiTOFPj58" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,22 +12,31 @@
     <link rel="preconnect" href="https://api2.miaocut.app">
     <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
 
-    <title>MiaoCut - Free AI Background Remover Online | Remove Background from Image</title>
+    <title>Free AI Background Remover Online — MiaoCut</title>
     <meta name="description"
         content="Remove background from images instantly with MiaoCut AI. Free online background remover with HD cutouts, no watermark, no signup, and privacy-first processing.">
     <!-- 关键词 meta：Google 已忽略，但 Bing/Yandex/百度 仍会参考；切语言时 updateLanguage() 会同步中文版本 -->
     <meta name="keywords"
         content="ai background remover, remove background, remove background from image, free background remover, background remover no watermark, remove bg, transparent background">
     <!-- OpenGraph SEO Tags -->
-    <meta property="og:title" content="MiaoCut - Free AI Background Remover Online | Remove Background from Image">
+    <meta property="og:title" content="Free AI Background Remover Online — MiaoCut">
     <meta property="og:description"
         content="Remove background from images instantly with MiaoCut AI. Free online background remover with HD cutouts, no watermark, no signup, and privacy-first processing.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://miaocut.app/">
     <!-- 默认英文 locale；切换语言时 JS 会改成 zh_CN -->
     <meta property="og:locale" content="en_US">
+    <!-- Social card image：先复用 examples 里的人像抠图（512×512）作为临时 OG 图，避免引用 404。
+         待设计师补 1200×630 的正式 OG 设计稿后，把 og:image / twitter:image 路径换成 /og/home.png 即可。 -->
+    <meta property="og:image" content="https://miaocut.app/examples/portrait-cutout.webp">
+    <meta property="og:image:type" content="image/webp">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:image:alt" content="Portrait with background removed by MiaoCut AI">
     <!-- Twitter Card：未单独设置时，X/Twitter 会回退到 OpenGraph，但显式声明 summary_large_image 可拿到大图卡片 -->
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://miaocut.app/examples/portrait-cutout.webp">
+    <meta name="twitter:image:alt" content="Portrait with background removed by MiaoCut AI">
     <link rel="canonical" href="https://miaocut.app/">
 
     <!-- 结构化数据（JSON-LD）：让 Google 把首页识别为应用 + 拿到 FAQ Rich Result。
@@ -315,7 +323,7 @@
                         <img src="/examples/product-cutout.webp"
                             srcset="/examples/product-cutout-256.webp 256w, /examples/product-cutout.webp 512w"
                             sizes="(max-width: 768px) 50vw, 200px"
-                            alt="remove background from product image"
+                            alt="Sneaker product photo with transparent background after AI cutout"
                             width="512" height="512" loading="lazy" decoding="async"
                             class="w-full h-auto block">
                         <figcaption class="text-xs text-gray-600 text-center py-2" data-i18n="exampleProduct">Product
@@ -325,7 +333,7 @@
                         <img src="/examples/portrait-cutout.webp"
                             srcset="/examples/portrait-cutout-256.webp 256w, /examples/portrait-cutout.webp 512w"
                             sizes="(max-width: 768px) 50vw, 200px"
-                            alt="transparent background cutout example"
+                            alt="Portrait of curly-haired woman with background removed and hair edges preserved"
                             width="512" height="512" loading="lazy" decoding="async"
                             class="w-full h-auto block">
                         <figcaption class="text-xs text-gray-600 text-center py-2" data-i18n="examplePortrait">Portrait
@@ -335,7 +343,7 @@
                         <img src="/examples/logo-cutout.webp"
                             srcset="/examples/logo-cutout-256.webp 256w, /examples/logo-cutout.webp 512w"
                             sizes="(max-width: 768px) 50vw, 200px"
-                            alt="free background remover no watermark"
+                            alt="MiaoCut brand logo extracted to transparent PNG with clean edges"
                             width="512" height="512" loading="lazy" decoding="async"
                             class="w-full h-auto block">
                         <figcaption class="text-xs text-gray-600 text-center py-2" data-i18n="exampleLogo">Logo
@@ -345,7 +353,7 @@
                         <img src="/examples/pet-cutout.webp"
                             srcset="/examples/pet-cutout-256.webp 256w, /examples/pet-cutout.webp 512w"
                             sizes="(max-width: 768px) 50vw, 200px"
-                            alt="ai background remover example"
+                            alt="White Persian cat with fluffy fur edges cleanly cut out by AI"
                             width="512" height="512" loading="lazy" decoding="async"
                             class="w-full h-auto block">
                         <figcaption class="text-xs text-gray-600 text-center py-2" data-i18n="examplePet">Pet
@@ -571,8 +579,8 @@
     <script>
         window.MIAOCUT_PAGE_KEY = 'home';
         window.MIAOCUT_PAGE_TITLES = {
-            zh: "MiaoCut — 免费 AI 抠图工具 | 在线一键去除图片背景",
-            en: "MiaoCut - Free AI Background Remover Online | Remove Background from Image"
+            zh: "免费在线 AI 抠图工具 — MiaoCut",
+            en: "Free AI Background Remover Online — MiaoCut"
         };
         window.MIAOCUT_PAGE_I18N = {
             zh: {
