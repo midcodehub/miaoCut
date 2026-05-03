@@ -22,7 +22,7 @@
         }
     };
 
-    let currentLang = localStorage.getItem('lang') || (navigator.language.startsWith('zh') ? 'zh' : 'en');
+    let currentLang = localStorage.getItem('lang') || ((navigator.language && navigator.language.startsWith('zh')) ? 'zh' : 'en');
     function t(key) {
         return I18N[currentLang][key] || key;
     }
@@ -64,11 +64,17 @@
         if (opening) {
             feedbackPanel.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-2', 'scale-95');
             feedbackPanel.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0', 'scale-100');
+            feedbackPanel.style.opacity = '1';
+            feedbackPanel.style.pointerEvents = 'auto';
+            feedbackPanel.style.transform = 'translateY(0) scale(1)';
             if (typeof umami !== 'undefined') umami.track('feedback-opened');
             msgEl.focus();
         } else {
             feedbackPanel.classList.add('opacity-0', 'pointer-events-none', 'translate-y-2', 'scale-95');
             feedbackPanel.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0', 'scale-100');
+            feedbackPanel.style.opacity = '0';
+            feedbackPanel.style.pointerEvents = 'none';
+            feedbackPanel.style.transform = 'translateY(0.5rem) scale(0.95)';
         }
     }
 
@@ -81,6 +87,9 @@
         if (!widgetEl.contains(e.target)) {
             feedbackPanel.classList.add('opacity-0', 'pointer-events-none', 'translate-y-2', 'scale-95');
             feedbackPanel.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0', 'scale-100');
+            feedbackPanel.style.opacity = '0';
+            feedbackPanel.style.pointerEvents = 'none';
+            feedbackPanel.style.transform = 'translateY(0.5rem) scale(0.95)';
         }
     });
 
@@ -99,7 +108,7 @@
         let currentProfile = localStorage.getItem('cutoutProfile') || 'sharp';
 
         try {
-            await fetch(API_BASE + '/api/feedback', {
+            const resp = await fetch(API_BASE + '/api/feedback', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -109,6 +118,11 @@
                     profile: currentProfile
                 })
             });
+            if (resp.status === 501) {
+                console.warn('[MiaoCut] Local dev mode: Backend not running (501). Feedback simulated.');
+            } else if (!resp.ok) {
+                console.warn('[MiaoCut] Feedback API returned error:', resp.status);
+            }
         } catch (err) {
             console.warn('[MiaoCut] Feedback send failed:', err);
         }
