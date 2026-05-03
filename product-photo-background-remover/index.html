@@ -408,32 +408,7 @@
         </div>
     </div>
 
-    <!-- Feedback Widget -->
-    <div id="feedback-widget" class="fixed bottom-6 right-6 z-40">
-        <div id="feedback-panel"
-            class="absolute bottom-14 right-0 w-72 bg-white rounded-xl shadow-2xl border border-gray-100 p-5">
-            <h3 class="text-sm font-semibold text-gray-900 mb-3" data-i18n="fbTitle">&#9749; Feedback</h3>
-            <form id="feedback-form">
-                <textarea id="feedback-msg"
-                    class="w-full h-20 text-sm border border-gray-200 rounded-lg p-2.5 resize-none focus:outline-none focus:ring-2 focus:ring-gray-300 placeholder-gray-400"
-                    placeholder="What's on your mind?" data-i18n-ph="fbPlaceholder"></textarea>
-                <input id="feedback-email" type="email"
-                    class="w-full mt-2 text-sm border border-gray-200 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-gray-300 placeholder-gray-400"
-                    placeholder="Email (Optional)" data-i18n-ph="fbEmail">
-                <button type="submit"
-                    class="w-full mt-3 bg-gray-900 text-white text-sm font-medium py-2 rounded-lg hover:bg-gray-800 transition-colors"
-                    data-i18n="fbSend">Send</button>
-            </form>
-            <div id="feedback-thanks" class="hidden text-center py-6">
-                <p class="text-2xl mb-2">&#127881;</p>
-                <p class="text-sm font-medium text-gray-800" data-i18n="fbThanks">Thanks for your feedback!</p>
-                <p class="text-xs text-gray-500 mt-1" data-i18n="fbThanksSub">We read every single message.</p>
-            </div>
-        </div>
-        <button id="feedback-trigger"
-            class="w-11 h-11 bg-white border border-gray-200 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl hover:scale-110 transition-all text-lg"
-            title="feedback">&#9749;</button>
-    </div>
+    
 
     <!-- 页面专属 i18n + 标题，必须在 /app.js 之前执行 -->
     <script>
@@ -543,6 +518,7 @@
     </script>
     <script src="/app.js"></script>
 
+    <script src="/feedback.js"></script>
 </body>
 
 </html>
