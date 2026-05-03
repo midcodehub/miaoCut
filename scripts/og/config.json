@@ -1,0 +1,44 @@
+[
+  {
+    "slug": "home",
+    "title": "Free AI Background Remover",
+    "subtitle": "Remove image backgrounds in 1 second. HD transparent PNG output.",
+    "bullets": ["HD PNG", "No watermark", "No signup"],
+    "hero": "examples/portrait-cutout.webp"
+  },
+  {
+    "slug": "portrait",
+    "title": "Portrait Background Remover",
+    "subtitle": "Perfect for headshots, LinkedIn photos, and selfies.",
+    "bullets": ["Hair-perfect edges", "Free", "No watermark"],
+    "hero": "examples/portrait-cutout.webp"
+  },
+  {
+    "slug": "product",
+    "title": "Product Photo Background Remover",
+    "subtitle": "Built for Amazon, Shopify, Etsy, and eBay sellers.",
+    "bullets": ["HD transparent PNG", "Free", "No signup"],
+    "hero": "examples/product-cutout.webp"
+  },
+  {
+    "slug": "id-photo",
+    "title": "AI ID Photo Maker",
+    "subtitle": "Passport, visa, and printable photo sheets in seconds.",
+    "bullets": ["Custom KB size", "Any background color", "Print sheet"],
+    "hero": "examples/portrait-cutout.webp"
+  },
+  {
+    "slug": "old-photo",
+    "title": "AI Old Photo Restoration",
+    "subtitle": "Restore and upscale faded vintage family photos.",
+    "bullets": ["Reduce noise", "Sharpen details", "Free"],
+    "hero": "examples/portrait-cutout.webp"
+  },
+  {
+    "slug": "watermark",
+    "title": "AI Watermark Remover",
+    "subtitle": "Paint over watermarks, logos, and text. AI repairs the rest.",
+    "bullets": ["Logo & text removal", "Free", "No signup"],
+    "hero": "examples/product-cutout.webp"
+  }
+]

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MiaoCut OG Card Template</title>
+<style>
+  /* 1200×630 是 Facebook / X / LinkedIn 都接受的 OG 卡片尺寸（1.91:1）。
+     固定 body 尺寸，方便 Playwright 直接整页截图。 */
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 1200px;
+    height: 630px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: #111827;
+  }
+
+  /* 背景：右下方放一个青色径向渐变作为视觉锚点，跟 logo 主色（#21C9C0 系）呼应。 */
+  .card {
+    position: relative;
+    width: 1200px;
+    height: 630px;
+    box-sizing: border-box;
+    padding: 72px 80px;
+    background:
+      radial-gradient(circle at 90% 90%, rgba(45, 212, 191, 0.18) 0%, rgba(45, 212, 191, 0) 55%),
+      linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  /* 左半区：品牌 + 标题 + 副标题 + 信任锚点 */
+  .left {
+    flex: 1;
+    min-width: 0;
+    padding-right: 40px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    margin: -8px 0 28px -8px; /* 负 margin 让 logo 视觉对齐到 padding 边线，原 logo 自带留白 */
+  }
+  /* logo-cutout.webp 自带 "miaocut" 文字，无需再额外写品牌名，放大到 80px 当作品牌签名即可 */
+  .brand-logo {
+    width: 88px;
+    height: 88px;
+    object-fit: contain;
+  }
+
+  .title {
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0 0 20px 0;
+    /* font-size 由 generate.mjs 根据标题字符数动态注入，避免长标题被截 */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .subtitle {
+    font-size: 26px;
+    font-weight: 400;
+    line-height: 1.35;
+    color: #4b5563;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .bullets {
+    margin-top: auto;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .bullet {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+  }
+  .check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 9999px;
+    background: #14b8a6;
+    color: white;
+    font-size: 14px;
+    font-weight: 900;
+  }
+
+  .url {
+    margin-top: 16px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #6b7280;
+    letter-spacing: 0.01em;
+  }
+
+  /* 右半区：产品 demo 图，透明 PNG/WebP 在棋盘格底上展示，体现"抠图"的产品价值 */
+  .right {
+    flex: 0 0 440px;
+    height: 440px;
+    background-color: #f3f4f6;
+    /* 棋盘格背景：暗示透明通道，跟产品定位（输出透明 PNG）强相关 */
+    background-image:
+      linear-gradient(45deg, #e5e7eb 25%, transparent 25%),
+      linear-gradient(-45deg, #e5e7eb 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #e5e7eb 75%),
+      linear-gradient(-45deg, transparent 75%, #e5e7eb 75%);
+    background-size: 24px 24px;
+    background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.04),
+      0 8px 24px rgba(15, 23, 42, 0.08);
+  }
+  .hero {
+    max-width: 86%;
+    max-height: 86%;
+    object-fit: contain;
+    /* 给透明产品图加一点投影，避免在棋盘格上显得平面 */
+    filter: drop-shadow(0 8px 24px rgba(15, 23, 42, 0.18));
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="left">
+      <div class="brand">
+        <img id="brand-logo" class="brand-logo" alt="MiaoCut">
+      </div>
+      <h1 id="title" class="title"></h1>
+      <p id="subtitle" class="subtitle"></p>
+      <div id="bullets" class="bullets"></div>
+      <div class="url">miaocut.app</div>
+    </div>
+    <div class="right">
+      <img id="hero" class="hero" alt="">
+    </div>
+  </div>
+</body>
+</html>
