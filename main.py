@@ -31,6 +31,15 @@ import json
 import logging
 import math
 import os
+
+# 【极度关键】解决 pip 安装 torch 后污染环境，导致 ONNX Runtime 性能下降 2-3 秒的问题！
+# 哪怕我们用 ProcessPoolExecutor 把 PyTorch 隔离在了子进程，只要 `pip install torch` 跑过，
+# 它带来的 Intel OpenMP (libiomp5.so) 就会被 ONNX Runtime 默认加载，取代原先的 libgomp.so。
+# Intel OpenMP 默认策略是让空闲线程死循环空转（Active Spin），严重浪费 CPU 并拖慢并行效率！
+# 这里必须强制所有 OpenMP 线程在闲置时立刻休眠（PASSIVE / 0），找回那丢失的 2 秒！
+os.environ["OMP_WAIT_POLICY"] = "PASSIVE"
+os.environ["KMP_BLOCKTIME"] = "0"
+
 import re
 import threading
 import uuid
