@@ -57,7 +57,7 @@ from fastapi import BackgroundTasks, Depends, FastAPI, File, HTTPException, Requ
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from PIL import Image, ImageOps
+from PIL import Image, ImageFilter, ImageOps
 from pydantic import BaseModel, Field
 from rembg import remove
 from rembg.sessions import sessions_class
@@ -443,12 +443,46 @@ def _init_lama_worker():
     from simple_lama_inpainting import SimpleLama
     _lama_model = SimpleLama()
 
+def _prepare_lama_mask(mask_image: Image.Image, source_size: tuple[int, int]) -> Image.Image:
+    """清理并适度扩张用户涂抹的遮罩，减少水印边缘残留。"""
+    import cv2
+    import numpy as np
+
+    if mask_image.size != source_size:
+        mask_image = mask_image.resize(source_size, Image.Resampling.NEAREST)
+
+    mask = np.array(mask_image.convert("L"), dtype=np.uint8)
+    mask = np.where(mask > 8, 255, 0).astype(np.uint8)
+    if not np.any(mask):
+        return Image.fromarray(mask, mode="L")
+
+    long_edge = max(source_size)
+    radius = max(2, min(14, round(long_edge * 0.003)))
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (radius * 2 + 1, radius * 2 + 1))
+    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+    mask = cv2.dilate(mask, kernel, iterations=1)
+    return Image.fromarray(mask, mode="L")
+
+
+def _composite_lama_result(
+    source_image: Image.Image,
+    inpainted_image: Image.Image,
+    mask_image: Image.Image,
+) -> Image.Image:
+    """只把修复区域羽化合回原图，避免 LaMa 全图输出污染未涂抹区域。"""
+    long_edge = max(source_image.size)
+    feather_radius = max(2, min(10, round(long_edge * 0.0015)))
+    blend_mask = mask_image.filter(ImageFilter.GaussianBlur(radius=feather_radius))
+    return Image.composite(inpainted_image.convert("RGB"), source_image.convert("RGB"), blend_mask)
+
+
 def _run_lama_worker(source_image, mask_image):
     global _lama_model
+    mask_image = _prepare_lama_mask(mask_image, source_image.size)
     result = _lama_model(source_image, mask_image)
     if result.size != source_image.size:
         result = result.crop((0, 0, source_image.width, source_image.height))
-    return result
+    return _composite_lama_result(source_image, result, mask_image)
 
 
 # ============================================================
