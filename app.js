@@ -70,6 +70,11 @@
             subjectPaddingLabel: "主体边距",
             shadowLabel: "阴影",
             shapeLabel: "形状",
+            portraitScaleLabel: "头肩占比",
+            bgImage: "图片",
+            uploadBgImage: "上传背景图",
+            replaceBgImage: "更换背景图",
+            amazonPreset: "Amazon-safe 白底预设",
             bgTransparent: "透明",
             bgWhite: "白色",
             bgBlack: "黑色",
@@ -92,6 +97,8 @@
             shapeCircle: "圆形",
             downloadTransparent: "下载透明 PNG",
             downloadEdited: "下载当前效果",
+            downloadSquare: "下载方形 PNG",
+            downloadCircle: "下载圆形 PNG",
             startOver: "换一张图"
         },
         en: {
@@ -138,6 +145,11 @@
             subjectPaddingLabel: "Subject padding",
             shadowLabel: "Shadow",
             shapeLabel: "Shape",
+            portraitScaleLabel: "Head / shoulder size",
+            bgImage: "Image",
+            uploadBgImage: "Upload background",
+            replaceBgImage: "Replace background",
+            amazonPreset: "Amazon-safe white preset",
             bgTransparent: "Transparent",
             bgWhite: "White",
             bgBlack: "Black",
@@ -160,6 +172,8 @@
             shapeCircle: "Circle",
             downloadTransparent: "Download transparent PNG",
             downloadEdited: "Download current version",
+            downloadSquare: "Download square PNG",
+            downloadCircle: "Download circular PNG",
             startOver: "Choose another image"
         }
     };
@@ -211,7 +225,7 @@
         'product-photo': {
             titleKey: 'editorProductTitle',
             subKey: 'editorProductSub',
-            backgrounds: ['white', 'transparent', 'lightGray', 'custom'],
+            backgrounds: ['white', 'transparent', 'lightGray', 'image', 'custom'],
             sizes: ['square2000', 'square2048', 'square1080', 'original'],
             defaultBg: 'white',
             defaultSize: 'square2000',
@@ -220,8 +234,11 @@
             showMargin: true,
             showShadow: true,
             showShape: false,
+            showAmazonPreset: true,
+            showBackgroundUpload: true,
             fitSubject: true,
             downloadSuffix: 'product',
+            marginLabelKey: 'subjectPaddingLabel',
         },
         portrait: {
             titleKey: 'editorPortraitTitle',
@@ -235,8 +252,11 @@
             showMargin: true,
             showShadow: false,
             showShape: true,
+            showPortraitDownloads: true,
             fitSubject: true,
             downloadSuffix: 'portrait',
+            marginLabelKey: 'portraitScaleLabel',
+            defaultShape: 'circle',
         },
     };
 
@@ -330,6 +350,8 @@
         // dropzone 处于初始状态时，刷新里面的提示文案
         if (!dropzone.classList.contains('pointer-events-none') && !resultState) {
             resetDropzone();
+        } else if (resultState) {
+            syncEditorControls();
         }
     }
 
@@ -599,6 +621,7 @@
         if (!resultState) return;
         if (resultState.cutoutUrl) URL.revokeObjectURL(resultState.cutoutUrl);
         if (resultState.sourceUrl) URL.revokeObjectURL(resultState.sourceUrl);
+        if (resultState.bgImageUrl) URL.revokeObjectURL(resultState.bgImageUrl);
         resultState = null;
     }
 
@@ -632,6 +655,7 @@
             black: 'bgBlack',
             lightGray: 'bgLightGray',
             blue: 'bgBlue',
+            image: 'bgImage',
             gradient: 'bgGradient',
             blur: 'bgBlur',
             custom: 'bgCustom',
@@ -656,6 +680,7 @@
         }
         if (bg === 'gradient') return 'background:linear-gradient(135deg,#e0f2fe,#f8fafc 55%,#fce7f3);';
         if (bg === 'blur') return 'background:linear-gradient(135deg,#dbeafe,#f3f4f6);';
+        if (bg === 'image') return 'background:linear-gradient(135deg,#f3f4f6,#dbeafe);';
         return `background:${BACKGROUND_VALUES[bg] || '#ffffff'};`;
     }
 
@@ -749,6 +774,10 @@
             ctx.fillRect(0, 0, width, height);
             return;
         }
+        if (state.bg === 'image' && state.bgImage) {
+            drawCover(ctx, state.bgImage, width, height);
+            return;
+        }
         ctx.fillStyle = state.bg === 'custom' ? state.customColor : (BACKGROUND_VALUES[state.bg] || '#ffffff');
         ctx.fillRect(0, 0, width, height);
     }
@@ -829,21 +858,58 @@
         });
         const customWrap = document.getElementById('editor-custom-wrap');
         if (customWrap) customWrap.hidden = resultState.bg !== 'custom';
+        const bgUploadWrap = document.getElementById('editor-bg-upload-wrap');
+        if (bgUploadWrap) bgUploadWrap.hidden = resultState.bg !== 'image';
+        const bgUploadButton = document.getElementById('editor-bg-upload');
+        if (bgUploadButton) bgUploadButton.textContent = resultState.bgImage ? t('replaceBgImage') : t('uploadBgImage');
         const marginValue = document.getElementById('editor-margin-value');
-        if (marginValue) marginValue.textContent = `${resultState.margin}%`;
+        if (marginValue) {
+            marginValue.textContent = resultState.config.marginLabelKey === 'portraitScaleLabel'
+                ? `${Math.round((1 - Math.min(35, Math.max(0, resultState.margin)) / 100 * 2) * 100)}%`
+                : `${resultState.margin}%`;
+        }
     }
 
-    function downloadCurrentVersion() {
+    function downloadCurrentVersion(shapeOverride) {
         if (!resultState) return;
         const canvas = document.createElement('canvas');
-        drawComposition(canvas, resultState, outputDimensions(resultState));
+        let dimensions = outputDimensions(resultState);
+        if ((shapeOverride === 'square' || shapeOverride === 'circle') && dimensions.width !== dimensions.height) {
+            const side = Math.max(dimensions.width, dimensions.height);
+            dimensions = { width: side, height: side };
+        }
+        const drawState = shapeOverride ? Object.assign({}, resultState, { shape: shapeOverride }) : resultState;
+        drawComposition(canvas, drawState, dimensions);
         canvas.toBlob((blob) => {
             if (!blob) return;
             const url = URL.createObjectURL(blob);
-            downloadUrl(url, `${resultState.basename}_${resultState.config.downloadSuffix}.png`);
+            const suffix = shapeOverride || resultState.config.downloadSuffix;
+            downloadUrl(url, `${resultState.basename}_${suffix}.png`);
             setTimeout(() => URL.revokeObjectURL(url), 1000);
-            track('edited-download', { page: resultState.mode, bg: resultState.bg, size: resultState.size });
+            track('edited-download', { page: resultState.mode, bg: resultState.bg, size: resultState.size, shape: shapeOverride || resultState.shape });
         }, 'image/png');
+    }
+
+    async function setBackgroundImage(file) {
+        if (!resultState || !file) return;
+        if (!ALLOWED_TYPES.includes(file.type)) {
+            alert(t('alertSize'));
+            return;
+        }
+        const nextUrl = URL.createObjectURL(file);
+        let nextImage;
+        try {
+            nextImage = await loadImage(nextUrl);
+        } catch (error) {
+            URL.revokeObjectURL(nextUrl);
+            throw error;
+        }
+        if (resultState.bgImageUrl) URL.revokeObjectURL(resultState.bgImageUrl);
+        resultState.bgImageUrl = nextUrl;
+        resultState.bgImage = nextImage;
+        resultState.bg = 'image';
+        renderPreview();
+        track('background-image-uploaded', { page: resultState.mode, type: file.type.replace('image/', '') });
     }
 
     function renderResultEditor() {
@@ -872,15 +938,42 @@
                 </div>
             </div>
         ` : '';
+        const marginLabelKey = cfg.marginLabelKey || 'subjectPaddingLabel';
+        const marginInputValue = marginLabelKey === 'portraitScaleLabel'
+            ? 30 - resultState.margin
+            : resultState.margin;
         const marginControl = cfg.showMargin ? `
             <label class="block">
                 <span class="mb-1.5 flex items-center justify-between text-xs font-semibold text-gray-500">
-                    <span data-i18n="subjectPaddingLabel">${t('subjectPaddingLabel')}</span>
+                    <span data-i18n="${marginLabelKey}">${t(marginLabelKey)}</span>
                     <span id="editor-margin-value">${resultState.margin}%</span>
                 </span>
-                <input id="editor-margin" type="range" min="0" max="30" value="${resultState.margin}" class="w-full accent-gray-900">
+                <input id="editor-margin" type="range" min="0" max="30" value="${marginInputValue}" class="w-full accent-gray-900">
             </label>
         ` : '';
+        const amazonControl = cfg.showAmazonPreset ? `
+            <button type="button" id="amazon-preset" class="w-full rounded-lg border border-gray-900 bg-white px-3 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-50" data-i18n="amazonPreset">${t('amazonPreset')}</button>
+        ` : '';
+        const backgroundUploadControl = cfg.showBackgroundUpload ? `
+            <div id="editor-bg-upload-wrap" class="mt-3" hidden>
+                <input id="editor-bg-file" type="file" accept="image/jpeg, image/png, image/webp" class="hidden">
+                <button type="button" id="editor-bg-upload" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-800 transition-colors hover:border-gray-500" data-i18n="uploadBgImage">${resultState.bgImage ? t('replaceBgImage') : t('uploadBgImage')}</button>
+            </div>
+        ` : '';
+        const downloadButtons = cfg.showPortraitDownloads ? `
+            <div class="space-y-2 pt-1">
+                <button type="button" id="download-square" class="w-full rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700" data-i18n="downloadSquare">${t('downloadSquare')}</button>
+                <button type="button" id="download-circle" class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-800 transition-colors hover:border-gray-500" data-i18n="downloadCircle">${t('downloadCircle')}</button>
+                <button type="button" id="download-transparent" class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-800 transition-colors hover:border-gray-500" data-i18n="downloadTransparent">${t('downloadTransparent')}</button>
+                <button type="button" id="editor-start-over" class="w-full rounded-lg px-4 py-2 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900" data-i18n="startOver">${t('startOver')}</button>
+            </div>
+        ` : `
+            <div class="space-y-2 pt-1">
+                <button type="button" id="download-edited" class="w-full rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700" data-i18n="downloadEdited">${t('downloadEdited')}</button>
+                <button type="button" id="download-transparent" class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-800 transition-colors hover:border-gray-500" data-i18n="downloadTransparent">${t('downloadTransparent')}</button>
+                <button type="button" id="editor-start-over" class="w-full rounded-lg px-4 py-2 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900" data-i18n="startOver">${t('startOver')}</button>
+            </div>
+        `;
 
         dropzoneContent.classList.remove('pointer-events-none');
         dropzoneContent.classList.add('w-full');
@@ -902,11 +995,13 @@
                         <div>
                             <span class="mb-1.5 block text-xs font-semibold text-gray-500" data-i18n="backgroundLabel">${t('backgroundLabel')}</span>
                             <div class="grid grid-cols-2 gap-2">${cfg.backgrounds.map(backgroundOptionHtml).join('')}</div>
+                            ${backgroundUploadControl}
                             <div id="editor-custom-wrap" class="mt-3 flex items-center gap-2" hidden>
                                 <input id="editor-custom-color" type="color" value="${resultState.customColor}" class="h-10 w-14 cursor-pointer rounded border border-gray-300 bg-white p-1">
                                 <input id="editor-custom-text" type="text" value="${resultState.customColor}" class="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-800" maxlength="7">
                             </div>
                         </div>
+                        ${amazonControl}
                         <label class="block">
                             <span class="mb-1.5 block text-xs font-semibold text-gray-500" data-i18n="outputSizeLabel">${t('outputSizeLabel')}</span>
                             <select id="editor-size" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800">${sizeOptions}</select>
@@ -914,11 +1009,7 @@
                         ${marginControl}
                         ${shadowControl}
                         ${shapeControl}
-                        <div class="space-y-2 pt-1">
-                            <button type="button" id="download-edited" class="w-full rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700" data-i18n="downloadEdited">${t('downloadEdited')}</button>
-                            <button type="button" id="download-transparent" class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-800 transition-colors hover:border-gray-500" data-i18n="downloadTransparent">${t('downloadTransparent')}</button>
-                            <button type="button" id="editor-start-over" class="w-full rounded-lg px-4 py-2 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900" data-i18n="startOver">${t('startOver')}</button>
-                        </div>
+                        ${downloadButtons}
                     </div>
                 </div>
             </div>
@@ -932,8 +1023,44 @@
             btn.addEventListener('click', () => {
                 resultState.bg = btn.dataset.bg;
                 renderPreview();
+                if (resultState.bg === 'image' && !resultState.bgImage) {
+                    const bgFile = document.getElementById('editor-bg-file');
+                    if (bgFile) bgFile.click();
+                }
             });
         });
+        const bgUploadButton = document.getElementById('editor-bg-upload');
+        const bgFileInput = document.getElementById('editor-bg-file');
+        if (bgUploadButton && bgFileInput) {
+            bgUploadButton.addEventListener('click', () => bgFileInput.click());
+            bgFileInput.addEventListener('change', async () => {
+                const bgFile = bgFileInput.files && bgFileInput.files[0];
+                try {
+                    await setBackgroundImage(bgFile);
+                } catch (error) {
+                    console.error('Background image load failed:', error);
+                } finally {
+                    bgFileInput.value = '';
+                }
+            });
+        }
+        const amazonPreset = document.getElementById('amazon-preset');
+        if (amazonPreset) {
+            amazonPreset.addEventListener('click', () => {
+                resultState.bg = 'white';
+                resultState.size = 'square2000';
+                resultState.margin = 6;
+                resultState.shadow = 'none';
+                const size = document.getElementById('editor-size');
+                if (size) size.value = resultState.size;
+                const margin = document.getElementById('editor-margin');
+                if (margin) margin.value = resultState.margin;
+                const shadowSelect = document.getElementById('editor-shadow');
+                if (shadowSelect) shadowSelect.value = resultState.shadow;
+                renderPreview();
+                track('amazon-preset-applied', { page: resultState.mode });
+            });
+        }
         const customColor = document.getElementById('editor-custom-color');
         const customText = document.getElementById('editor-custom-text');
         const updateCustom = (value) => {
@@ -952,7 +1079,10 @@
         const margin = document.getElementById('editor-margin');
         if (margin) {
             margin.addEventListener('input', () => {
-                resultState.margin = Number(margin.value || 0);
+                const rawValue = Number(margin.value || 0);
+                resultState.margin = resultState.config.marginLabelKey === 'portraitScaleLabel'
+                    ? 30 - rawValue
+                    : rawValue;
                 renderPreview();
             });
         }
@@ -977,7 +1107,12 @@
             downloadUrl(resultState.cutoutUrl, `${resultState.basename}_transparent.png`);
             track('transparent-download', { page: resultState.mode });
         });
-        document.getElementById('download-edited').addEventListener('click', downloadCurrentVersion);
+        const downloadEdited = document.getElementById('download-edited');
+        if (downloadEdited) downloadEdited.addEventListener('click', () => downloadCurrentVersion());
+        const downloadSquare = document.getElementById('download-square');
+        if (downloadSquare) downloadSquare.addEventListener('click', () => downloadCurrentVersion('square'));
+        const downloadCircle = document.getElementById('download-circle');
+        if (downloadCircle) downloadCircle.addEventListener('click', () => downloadCurrentVersion('circle'));
         document.getElementById('editor-start-over').addEventListener('click', () => {
             cleanupResultState();
             resetDropzone();
@@ -1018,6 +1153,8 @@
             sourceUrl,
             cutoutImage,
             sourceImage,
+            bgImageUrl: null,
+            bgImage: null,
             alphaBBox,
             basename: basenameFromFile(originalFile),
             bg: config.defaultBg,
@@ -1025,7 +1162,7 @@
             size: config.defaultSize,
             margin: config.defaultMargin,
             shadow: config.defaultShadow,
-            shape: 'square',
+            shape: config.defaultShape || 'square',
         };
         renderResultEditor();
     }
