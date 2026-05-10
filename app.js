@@ -74,6 +74,8 @@
             bgImage: "图片",
             uploadBgImage: "上传背景图",
             replaceBgImage: "更换背景图",
+            bgScaleLabel: "背景缩放",
+            dragBgHint: "拖动画布可移动背景",
             amazonPreset: "Amazon-safe 白底预设",
             bgTransparent: "透明",
             bgWhite: "白色",
@@ -149,6 +151,8 @@
             bgImage: "Image",
             uploadBgImage: "Upload background",
             replaceBgImage: "Replace background",
+            bgScaleLabel: "Background scale",
+            dragBgHint: "Drag the canvas to move the background",
             amazonPreset: "Amazon-safe white preset",
             bgTransparent: "Transparent",
             bgWhite: "White",
@@ -752,6 +756,20 @@
         ctx.drawImage(img, (width - dw) / 2, (height - dh) / 2, dw, dh);
     }
 
+    function drawTransformedCover(ctx, img, width, height, scaleMultiplier = 1, offsetX = 0, offsetY = 0) {
+        const iw = img.naturalWidth || img.width;
+        const ih = img.naturalHeight || img.height;
+        const baseScale = Math.max(width / iw, height / ih);
+        const scale = baseScale * Math.max(1, scaleMultiplier || 1);
+        const dw = iw * scale;
+        const dh = ih * scale;
+        const maxX = Math.max(0, (dw - width) / 2);
+        const maxY = Math.max(0, (dh - height) / 2);
+        const x = Math.max(-maxX, Math.min(maxX, offsetX || 0));
+        const y = Math.max(-maxY, Math.min(maxY, offsetY || 0));
+        ctx.drawImage(img, (width - dw) / 2 + x, (height - dh) / 2 + y, dw, dh);
+    }
+
     function drawBackground(ctx, state, width, height) {
         if (state.bg === 'transparent') return;
         if (state.bg === 'gradient') {
@@ -775,7 +793,7 @@
             return;
         }
         if (state.bg === 'image' && state.bgImage) {
-            drawCover(ctx, state.bgImage, width, height);
+            drawTransformedCover(ctx, state.bgImage, width, height, state.bgScale, (state.bgOffsetX || 0) * width, (state.bgOffsetY || 0) * height);
             return;
         }
         ctx.fillStyle = state.bg === 'custom' ? state.customColor : (BACKGROUND_VALUES[state.bg] || '#ffffff');
@@ -870,6 +888,25 @@
         }
         const bgUploadButton = document.getElementById('editor-bg-upload');
         if (bgUploadButton) bgUploadButton.textContent = resultState.bgImage ? t('replaceBgImage') : t('uploadBgImage');
+        const bgScaleWrap = document.getElementById('editor-bg-scale-wrap');
+        if (bgScaleWrap) {
+            const visible = resultState.bg === 'image' && !!resultState.bgImage;
+            bgScaleWrap.hidden = !visible;
+            bgScaleWrap.classList.toggle('hidden', !visible);
+        }
+        const bgDragHint = document.getElementById('editor-bg-drag-hint');
+        if (bgDragHint) {
+            const visible = resultState.bg === 'image' && !!resultState.bgImage;
+            bgDragHint.hidden = !visible;
+            bgDragHint.classList.toggle('hidden', !visible);
+        }
+        const bgScaleValue = document.getElementById('editor-bg-scale-value');
+        if (bgScaleValue) bgScaleValue.textContent = `${Math.round((resultState.bgScale || 1) * 100)}%`;
+        const previewCanvas = document.getElementById('result-canvas');
+        if (previewCanvas) {
+            const draggable = resultState.bg === 'image' && !!resultState.bgImage;
+            previewCanvas.classList.toggle('cursor-grab', draggable);
+        }
         const marginValue = document.getElementById('editor-margin-value');
         if (marginValue) {
             marginValue.textContent = resultState.config.marginLabelKey === 'portraitScaleLabel'
@@ -916,6 +953,11 @@
         resultState.bgImageUrl = nextUrl;
         resultState.bgImage = nextImage;
         resultState.bg = 'image';
+        resultState.bgScale = 1;
+        resultState.bgOffsetX = 0;
+        resultState.bgOffsetY = 0;
+        const scaleInput = document.getElementById('editor-bg-scale');
+        if (scaleInput) scaleInput.value = '100';
         renderPreview();
         track('background-image-uploaded', { page: resultState.mode, type: file.type.replace('image/', '') });
     }
@@ -966,6 +1008,14 @@
             <div id="editor-bg-upload-wrap" class="mt-3">
                 <input id="editor-bg-file" type="file" accept="image/jpeg, image/png, image/webp" class="hidden">
                 <button type="button" id="editor-bg-upload" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-800 transition-colors hover:border-gray-500" data-i18n="uploadBgImage">${resultState.bgImage ? t('replaceBgImage') : t('uploadBgImage')}</button>
+                <p id="editor-bg-drag-hint" class="mt-1.5 hidden text-xs text-gray-400" hidden data-i18n="dragBgHint">${t('dragBgHint')}</p>
+                <label id="editor-bg-scale-wrap" class="mt-3 block hidden" hidden>
+                    <span class="mb-1.5 flex items-center justify-between text-xs font-semibold text-gray-500">
+                        <span data-i18n="bgScaleLabel">${t('bgScaleLabel')}</span>
+                        <span id="editor-bg-scale-value">${Math.round((resultState.bgScale || 1) * 100)}%</span>
+                    </span>
+                    <input id="editor-bg-scale" type="range" min="100" max="300" value="${Math.round((resultState.bgScale || 1) * 100)}" class="w-full accent-gray-900">
+                </label>
             </div>
         ` : '';
         const downloadButtons = cfg.showPortraitDownloads ? `
@@ -1054,6 +1104,47 @@
                 } finally {
                     bgFileInput.value = '';
                 }
+            });
+        }
+        const bgScale = document.getElementById('editor-bg-scale');
+        if (bgScale) {
+            bgScale.addEventListener('input', () => {
+                resultState.bgScale = Math.max(1, Number(bgScale.value || 100) / 100);
+                renderPreview();
+            });
+        }
+        const previewCanvas = document.getElementById('result-canvas');
+        if (previewCanvas && cfg.showBackgroundUpload) {
+            let draggingBg = false;
+            let lastX = 0;
+            let lastY = 0;
+            const pointerMove = (event) => {
+                if (!draggingBg || !resultState || resultState.bg !== 'image' || !resultState.bgImage) return;
+                const canvas = document.getElementById('result-canvas');
+                if (!canvas) return;
+                const rect = canvas.getBoundingClientRect();
+                resultState.bgOffsetX += (event.clientX - lastX) / rect.width;
+                resultState.bgOffsetY += (event.clientY - lastY) / rect.height;
+                lastX = event.clientX;
+                lastY = event.clientY;
+                renderPreview();
+            };
+            const stopDrag = () => {
+                if (!draggingBg) return;
+                draggingBg = false;
+                previewCanvas.classList.remove('cursor-grabbing');
+                window.removeEventListener('pointermove', pointerMove);
+                window.removeEventListener('pointerup', stopDrag);
+            };
+            previewCanvas.addEventListener('pointerdown', (event) => {
+                if (!resultState || resultState.bg !== 'image' || !resultState.bgImage) return;
+                draggingBg = true;
+                lastX = event.clientX;
+                lastY = event.clientY;
+                previewCanvas.classList.add('cursor-grabbing');
+                previewCanvas.setPointerCapture(event.pointerId);
+                window.addEventListener('pointermove', pointerMove);
+                window.addEventListener('pointerup', stopDrag);
             });
         }
         const amazonPreset = document.getElementById('amazon-preset');
