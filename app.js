@@ -56,9 +56,43 @@
             done: "完成!",
             formatErr: "仅支持 JPG / PNG / WebP 格式的图片",
             successTitle: "处理成功！",
-            successSub: "正在为您自动下载...",
+            successSub: "可以继续编辑或下载。",
             failTitle: "抱歉，处理失败",
-            alertSize: "仅支持 JPG / PNG / WebP 格式的图片"
+            alertSize: "仅支持 JPG / PNG / WebP 格式的图片",
+            editorHomeTitle: "结果已生成",
+            editorHomeSub: "下载透明 PNG，或先换一个简单背景再保存。",
+            editorProductTitle: "商品图已准备好",
+            editorProductSub: "快速生成白底、方形画布和阴影版商品图。",
+            editorPortraitTitle: "人像抠图已准备好",
+            editorPortraitSub: "切换职业头像背景、尺寸和圆形头像预览。",
+            backgroundLabel: "背景",
+            outputSizeLabel: "输出尺寸",
+            subjectPaddingLabel: "主体边距",
+            shadowLabel: "阴影",
+            shapeLabel: "形状",
+            bgTransparent: "透明",
+            bgWhite: "白色",
+            bgBlack: "黑色",
+            bgLightGray: "浅灰",
+            bgBlue: "蓝色",
+            bgGradient: "渐变",
+            bgBlur: "虚化原图",
+            bgCustom: "自定义",
+            sizeOriginal: "原始尺寸",
+            sizeSquare1080: "1:1 · 1080",
+            sizeSquare2000: "1:1 · 2000",
+            sizeSquare2048: "1:1 · 2048",
+            sizeAvatar512: "头像 · 512",
+            sizeAvatar1024: "头像 · 1024",
+            sizeResume: "简历 · 480×640",
+            shadowNone: "无",
+            shadowSoft: "柔和",
+            shadowFloat: "悬浮",
+            shapeSquare: "方形",
+            shapeCircle: "圆形",
+            downloadTransparent: "下载透明 PNG",
+            downloadEdited: "下载当前效果",
+            startOver: "换一张图"
         },
         en: {
             dropzoneTitle: "Drag & drop image here, or click to upload",
@@ -90,9 +124,43 @@
             done: "Done!",
             formatErr: "Only JPG / PNG / WebP formats are supported",
             successTitle: "Success!",
-            successSub: "Downloading automatically...",
+            successSub: "Ready to edit or download.",
             failTitle: "Sorry, processing failed",
-            alertSize: "Only JPG / PNG / WebP formats are supported"
+            alertSize: "Only JPG / PNG / WebP formats are supported",
+            editorHomeTitle: "Your cutout is ready",
+            editorHomeSub: "Download the transparent PNG, or add a simple background first.",
+            editorProductTitle: "Product photo ready",
+            editorProductSub: "Create a white-background, square-canvas, or shadowed product image.",
+            editorPortraitTitle: "Portrait cutout ready",
+            editorPortraitSub: "Switch profile backgrounds, output sizes, and circular avatar previews.",
+            backgroundLabel: "Background",
+            outputSizeLabel: "Output size",
+            subjectPaddingLabel: "Subject padding",
+            shadowLabel: "Shadow",
+            shapeLabel: "Shape",
+            bgTransparent: "Transparent",
+            bgWhite: "White",
+            bgBlack: "Black",
+            bgLightGray: "Light gray",
+            bgBlue: "Blue",
+            bgGradient: "Gradient",
+            bgBlur: "Blur original",
+            bgCustom: "Custom",
+            sizeOriginal: "Original size",
+            sizeSquare1080: "1:1 · 1080",
+            sizeSquare2000: "1:1 · 2000",
+            sizeSquare2048: "1:1 · 2048",
+            sizeAvatar512: "Avatar · 512",
+            sizeAvatar1024: "Avatar · 1024",
+            sizeResume: "Resume · 480×640",
+            shadowNone: "None",
+            shadowSoft: "Soft",
+            shadowFloat: "Floating",
+            shapeSquare: "Square",
+            shapeCircle: "Circle",
+            downloadTransparent: "Download transparent PNG",
+            downloadEdited: "Download current version",
+            startOver: "Choose another image"
         }
     };
 
@@ -122,6 +190,63 @@
     const dropzone = document.getElementById('dropzone');
     const fileInput = document.getElementById('fileInput');
     const dropzoneContent = document.getElementById('dropzone-content');
+    let resultState = null;
+
+    const EDITOR_CONFIGS = {
+        home: {
+            titleKey: 'editorHomeTitle',
+            subKey: 'editorHomeSub',
+            backgrounds: ['transparent', 'white', 'black', 'custom'],
+            sizes: ['original'],
+            defaultBg: 'transparent',
+            defaultSize: 'original',
+            defaultMargin: 0,
+            defaultShadow: 'none',
+            showMargin: false,
+            showShadow: false,
+            showShape: false,
+            fitSubject: false,
+            downloadSuffix: 'edited',
+        },
+        'product-photo': {
+            titleKey: 'editorProductTitle',
+            subKey: 'editorProductSub',
+            backgrounds: ['white', 'transparent', 'lightGray', 'custom'],
+            sizes: ['square2000', 'square2048', 'square1080', 'original'],
+            defaultBg: 'white',
+            defaultSize: 'square2000',
+            defaultMargin: 12,
+            defaultShadow: 'soft',
+            showMargin: true,
+            showShadow: true,
+            showShape: false,
+            fitSubject: true,
+            downloadSuffix: 'product',
+        },
+        portrait: {
+            titleKey: 'editorPortraitTitle',
+            subKey: 'editorPortraitSub',
+            backgrounds: ['lightGray', 'white', 'blue', 'gradient', 'blur', 'transparent', 'custom'],
+            sizes: ['avatar1024', 'avatar512', 'resume', 'original'],
+            defaultBg: 'lightGray',
+            defaultSize: 'avatar1024',
+            defaultMargin: 10,
+            defaultShadow: 'none',
+            showMargin: true,
+            showShadow: false,
+            showShape: true,
+            fitSubject: true,
+            downloadSuffix: 'portrait',
+        },
+    };
+
+    const BACKGROUND_VALUES = {
+        transparent: null,
+        white: '#ffffff',
+        black: '#111827',
+        lightGray: '#f3f4f6',
+        blue: '#dbeafe',
+    };
 
     // dropzone 是核心，缺失就直接放弃后续初始化（子页可能是纯内容页）
     if (!dropzone || !fileInput || !dropzoneContent) {
@@ -203,12 +328,16 @@
         });
 
         // dropzone 处于初始状态时，刷新里面的提示文案
-        if (!dropzone.classList.contains('pointer-events-none')) {
+        if (!dropzone.classList.contains('pointer-events-none') && !resultState) {
             resetDropzone();
         }
     }
 
     function resetDropzone() {
+        dropzone.classList.add('cursor-pointer', 'border-dashed', 'hover:border-gray-400', 'hover:bg-gray-50');
+        dropzone.classList.remove('cursor-default', 'border-solid');
+        dropzoneContent.classList.add('pointer-events-none');
+        dropzoneContent.classList.remove('w-full');
         dropzoneContent.innerHTML = `
             <svg class="w-12 h-12 text-gray-400 mb-4 group-hover:text-gray-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
@@ -305,6 +434,7 @@
 
     dropzone.addEventListener('click', () => {
         if (dropzone.classList.contains('pointer-events-none')) return;
+        if (resultState) return;
         fileInput.click();
     });
 
@@ -460,6 +590,446 @@
         });
     }
 
+    function getEditorMode() {
+        const page = window.MIAOCUT_PAGE_KEY || 'home';
+        return EDITOR_CONFIGS[page] ? page : 'home';
+    }
+
+    function cleanupResultState() {
+        if (!resultState) return;
+        if (resultState.cutoutUrl) URL.revokeObjectURL(resultState.cutoutUrl);
+        if (resultState.sourceUrl) URL.revokeObjectURL(resultState.sourceUrl);
+        resultState = null;
+    }
+
+    function loadImage(url) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.onerror = () => reject(new Error('Image preview failed'));
+            img.src = url;
+        });
+    }
+
+    function basenameFromFile(file) {
+        const name = file && file.name ? file.name : 'image';
+        return name.replace(/\.[^.]+$/, '') || 'image';
+    }
+
+    function downloadUrl(url, filename) {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    function bgLabelKey(bg) {
+        return {
+            transparent: 'bgTransparent',
+            white: 'bgWhite',
+            black: 'bgBlack',
+            lightGray: 'bgLightGray',
+            blue: 'bgBlue',
+            gradient: 'bgGradient',
+            blur: 'bgBlur',
+            custom: 'bgCustom',
+        }[bg] || 'bgWhite';
+    }
+
+    function sizeLabelKey(size) {
+        return {
+            original: 'sizeOriginal',
+            square1080: 'sizeSquare1080',
+            square2000: 'sizeSquare2000',
+            square2048: 'sizeSquare2048',
+            avatar512: 'sizeAvatar512',
+            avatar1024: 'sizeAvatar1024',
+            resume: 'sizeResume',
+        }[size] || 'sizeOriginal';
+    }
+
+    function swatchStyle(bg) {
+        if (bg === 'transparent') {
+            return 'background-color:#fff;background-image:linear-gradient(45deg,#d1d5db 25%,transparent 25%),linear-gradient(-45deg,#d1d5db 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#d1d5db 75%),linear-gradient(-45deg,transparent 75%,#d1d5db 75%);background-size:8px 8px;background-position:0 0,0 4px,4px -4px,-4px 0;';
+        }
+        if (bg === 'gradient') return 'background:linear-gradient(135deg,#e0f2fe,#f8fafc 55%,#fce7f3);';
+        if (bg === 'blur') return 'background:linear-gradient(135deg,#dbeafe,#f3f4f6);';
+        return `background:${BACKGROUND_VALUES[bg] || '#ffffff'};`;
+    }
+
+    function backgroundOptionHtml(bg) {
+        const key = bgLabelKey(bg);
+        return `
+            <button type="button" data-bg="${bg}" class="bg-option flex items-center gap-2 rounded-lg border border-gray-200 px-2.5 py-2 text-left text-xs font-medium text-gray-700 transition-colors hover:border-gray-400">
+                <span class="h-4 w-4 shrink-0 rounded border border-gray-300" style="${swatchStyle(bg)}"></span>
+                <span data-i18n="${key}">${t(key)}</span>
+            </button>
+        `;
+    }
+
+    function computeAlphaBBox(img) {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth || img.width;
+        canvas.height = img.naturalHeight || img.height;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        ctx.drawImage(img, 0, 0);
+        const { data, width, height } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        let minX = width;
+        let minY = height;
+        let maxX = -1;
+        let maxY = -1;
+        for (let y = 0; y < height; y += 1) {
+            for (let x = 0; x < width; x += 1) {
+                if (data[(y * width + x) * 4 + 3] > 8) {
+                    if (x < minX) minX = x;
+                    if (y < minY) minY = y;
+                    if (x > maxX) maxX = x;
+                    if (y > maxY) maxY = y;
+                }
+            }
+        }
+        canvas.width = 0;
+        canvas.height = 0;
+        if (maxX < minX || maxY < minY) {
+            return { x: 0, y: 0, width: img.naturalWidth || img.width, height: img.naturalHeight || img.height };
+        }
+        return { x: minX, y: minY, width: maxX - minX + 1, height: maxY - minY + 1 };
+    }
+
+    function outputDimensions(state) {
+        const img = state.cutoutImage;
+        if (state.size === 'square1080') return { width: 1080, height: 1080 };
+        if (state.size === 'square2000') return { width: 2000, height: 2000 };
+        if (state.size === 'square2048') return { width: 2048, height: 2048 };
+        if (state.size === 'avatar512') return { width: 512, height: 512 };
+        if (state.size === 'avatar1024') return { width: 1024, height: 1024 };
+        if (state.size === 'resume') return { width: 480, height: 640 };
+        return { width: img.naturalWidth || img.width, height: img.naturalHeight || img.height };
+    }
+
+    function previewDimensions(dimensions) {
+        const maxSide = 900;
+        const scale = Math.min(1, maxSide / Math.max(dimensions.width, dimensions.height));
+        return {
+            width: Math.max(1, Math.round(dimensions.width * scale)),
+            height: Math.max(1, Math.round(dimensions.height * scale)),
+        };
+    }
+
+    function drawCover(ctx, img, width, height, overscan = 1) {
+        const iw = img.naturalWidth || img.width;
+        const ih = img.naturalHeight || img.height;
+        const scale = Math.max(width / iw, height / ih) * overscan;
+        const dw = iw * scale;
+        const dh = ih * scale;
+        ctx.drawImage(img, (width - dw) / 2, (height - dh) / 2, dw, dh);
+    }
+
+    function drawBackground(ctx, state, width, height) {
+        if (state.bg === 'transparent') return;
+        if (state.bg === 'gradient') {
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, '#e0f2fe');
+            gradient.addColorStop(0.55, '#f8fafc');
+            gradient.addColorStop(1, '#fce7f3');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            return;
+        }
+        if (state.bg === 'blur' && state.sourceImage) {
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 0, width, height);
+            ctx.save();
+            ctx.filter = `blur(${Math.max(14, Math.round(Math.max(width, height) * 0.025))}px)`;
+            drawCover(ctx, state.sourceImage, width, height, 1.08);
+            ctx.restore();
+            ctx.fillStyle = 'rgba(255,255,255,0.35)';
+            ctx.fillRect(0, 0, width, height);
+            return;
+        }
+        ctx.fillStyle = state.bg === 'custom' ? state.customColor : (BACKGROUND_VALUES[state.bg] || '#ffffff');
+        ctx.fillRect(0, 0, width, height);
+    }
+
+    function drawSubject(ctx, state, width, height) {
+        const img = state.cutoutImage;
+        const iw = img.naturalWidth || img.width;
+        const ih = img.naturalHeight || img.height;
+        const cfg = state.config;
+
+        if (!cfg.fitSubject && state.size === 'original') {
+            ctx.drawImage(img, 0, 0, width, height);
+            return;
+        }
+
+        const bbox = cfg.fitSubject ? state.alphaBBox : { x: 0, y: 0, width: iw, height: ih };
+        const padding = cfg.fitSubject ? Math.min(35, Math.max(0, state.margin)) / 100 : 0;
+        const maxW = width * (1 - padding * 2);
+        const maxH = height * (1 - padding * 2);
+        const scale = Math.min(maxW / bbox.width, maxH / bbox.height);
+        const dw = bbox.width * scale;
+        const dh = bbox.height * scale;
+        const dx = (width - dw) / 2;
+        const dy = (height - dh) / 2;
+
+        ctx.save();
+        if (state.shadow === 'soft') {
+            ctx.shadowColor = 'rgba(17,24,39,0.18)';
+            ctx.shadowBlur = Math.max(18, width * 0.025);
+            ctx.shadowOffsetY = Math.max(10, height * 0.018);
+        } else if (state.shadow === 'float') {
+            ctx.shadowColor = 'rgba(17,24,39,0.24)';
+            ctx.shadowBlur = Math.max(28, width * 0.04);
+            ctx.shadowOffsetY = Math.max(24, height * 0.035);
+        }
+        ctx.drawImage(img, bbox.x, bbox.y, bbox.width, bbox.height, dx, dy, dw, dh);
+        ctx.restore();
+    }
+
+    function drawComposition(canvas, state, dimensions) {
+        canvas.width = dimensions.width;
+        canvas.height = dimensions.height;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, dimensions.width, dimensions.height);
+
+        const draw = () => {
+            drawBackground(ctx, state, dimensions.width, dimensions.height);
+            drawSubject(ctx, state, dimensions.width, dimensions.height);
+        };
+
+        if (state.shape === 'circle') {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(dimensions.width / 2, dimensions.height / 2, Math.min(dimensions.width, dimensions.height) / 2, 0, Math.PI * 2);
+            ctx.clip();
+            draw();
+            ctx.restore();
+        } else {
+            draw();
+        }
+    }
+
+    function renderPreview() {
+        if (!resultState) return;
+        const canvas = document.getElementById('result-canvas');
+        if (!canvas) return;
+        drawComposition(canvas, resultState, previewDimensions(outputDimensions(resultState)));
+        syncEditorControls();
+    }
+
+    function syncEditorControls() {
+        if (!resultState) return;
+        document.querySelectorAll('.bg-option').forEach(btn => {
+            const active = btn.dataset.bg === resultState.bg;
+            btn.classList.toggle('border-gray-900', active);
+            btn.classList.toggle('bg-gray-50', active);
+            btn.classList.toggle('border-gray-200', !active);
+        });
+        const customWrap = document.getElementById('editor-custom-wrap');
+        if (customWrap) customWrap.hidden = resultState.bg !== 'custom';
+        const marginValue = document.getElementById('editor-margin-value');
+        if (marginValue) marginValue.textContent = `${resultState.margin}%`;
+    }
+
+    function downloadCurrentVersion() {
+        if (!resultState) return;
+        const canvas = document.createElement('canvas');
+        drawComposition(canvas, resultState, outputDimensions(resultState));
+        canvas.toBlob((blob) => {
+            if (!blob) return;
+            const url = URL.createObjectURL(blob);
+            downloadUrl(url, `${resultState.basename}_${resultState.config.downloadSuffix}.png`);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+            track('edited-download', { page: resultState.mode, bg: resultState.bg, size: resultState.size });
+        }, 'image/png');
+    }
+
+    function renderResultEditor() {
+        if (!resultState) return;
+        const cfg = resultState.config;
+        const sizeOptions = cfg.sizes.map(size => {
+            const key = sizeLabelKey(size);
+            return `<option value="${size}" data-i18n="${key}">${t(key)}</option>`;
+        }).join('');
+        const shadowControl = cfg.showShadow ? `
+            <label class="block">
+                <span class="mb-1.5 block text-xs font-semibold text-gray-500" data-i18n="shadowLabel">${t('shadowLabel')}</span>
+                <select id="editor-shadow" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800">
+                    <option value="none" data-i18n="shadowNone">${t('shadowNone')}</option>
+                    <option value="soft" data-i18n="shadowSoft">${t('shadowSoft')}</option>
+                    <option value="float" data-i18n="shadowFloat">${t('shadowFloat')}</option>
+                </select>
+            </label>
+        ` : '';
+        const shapeControl = cfg.showShape ? `
+            <div>
+                <span class="mb-1.5 block text-xs font-semibold text-gray-500" data-i18n="shapeLabel">${t('shapeLabel')}</span>
+                <div class="grid grid-cols-2 gap-2">
+                    <button type="button" data-shape="square" class="shape-option rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700" data-i18n="shapeSquare">${t('shapeSquare')}</button>
+                    <button type="button" data-shape="circle" class="shape-option rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700" data-i18n="shapeCircle">${t('shapeCircle')}</button>
+                </div>
+            </div>
+        ` : '';
+        const marginControl = cfg.showMargin ? `
+            <label class="block">
+                <span class="mb-1.5 flex items-center justify-between text-xs font-semibold text-gray-500">
+                    <span data-i18n="subjectPaddingLabel">${t('subjectPaddingLabel')}</span>
+                    <span id="editor-margin-value">${resultState.margin}%</span>
+                </span>
+                <input id="editor-margin" type="range" min="0" max="30" value="${resultState.margin}" class="w-full accent-gray-900">
+            </label>
+        ` : '';
+
+        dropzoneContent.classList.remove('pointer-events-none');
+        dropzoneContent.classList.add('w-full');
+        dropzone.classList.add('cursor-default', 'border-solid');
+        dropzone.classList.remove('cursor-pointer', 'border-dashed', 'hover:border-gray-400', 'hover:bg-gray-50');
+        dropzoneContent.innerHTML = `
+            <div id="result-editor" class="w-full text-left">
+                <div class="mb-5 text-center">
+                    <p class="text-xl font-bold text-gray-900" data-i18n="${cfg.titleKey}">${t(cfg.titleKey)}</p>
+                    <p class="mt-1 text-sm text-gray-500" data-i18n="${cfg.subKey}">${t(cfg.subKey)}</p>
+                </div>
+                <div class="grid gap-5 md:grid-cols-3">
+                    <div class="md:col-span-2">
+                        <div class="flex min-h-[300px] items-center justify-center rounded-xl border border-gray-200 p-3" style="background-color:#f9fafb;background-image:linear-gradient(45deg,#e5e7eb 25%,transparent 25%),linear-gradient(-45deg,#e5e7eb 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e5e7eb 75%),linear-gradient(-45deg,transparent 75%,#e5e7eb 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0;">
+                            <canvas id="result-canvas" class="max-h-[520px] max-w-full rounded-lg shadow-sm"></canvas>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <span class="mb-1.5 block text-xs font-semibold text-gray-500" data-i18n="backgroundLabel">${t('backgroundLabel')}</span>
+                            <div class="grid grid-cols-2 gap-2">${cfg.backgrounds.map(backgroundOptionHtml).join('')}</div>
+                            <div id="editor-custom-wrap" class="mt-3 flex items-center gap-2" hidden>
+                                <input id="editor-custom-color" type="color" value="${resultState.customColor}" class="h-10 w-14 cursor-pointer rounded border border-gray-300 bg-white p-1">
+                                <input id="editor-custom-text" type="text" value="${resultState.customColor}" class="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-800" maxlength="7">
+                            </div>
+                        </div>
+                        <label class="block">
+                            <span class="mb-1.5 block text-xs font-semibold text-gray-500" data-i18n="outputSizeLabel">${t('outputSizeLabel')}</span>
+                            <select id="editor-size" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800">${sizeOptions}</select>
+                        </label>
+                        ${marginControl}
+                        ${shadowControl}
+                        ${shapeControl}
+                        <div class="space-y-2 pt-1">
+                            <button type="button" id="download-edited" class="w-full rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700" data-i18n="downloadEdited">${t('downloadEdited')}</button>
+                            <button type="button" id="download-transparent" class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-800 transition-colors hover:border-gray-500" data-i18n="downloadTransparent">${t('downloadTransparent')}</button>
+                            <button type="button" id="editor-start-over" class="w-full rounded-lg px-4 py-2 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900" data-i18n="startOver">${t('startOver')}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('editor-size').value = resultState.size;
+        const shadow = document.getElementById('editor-shadow');
+        if (shadow) shadow.value = resultState.shadow;
+
+        document.querySelectorAll('.bg-option').forEach(btn => {
+            btn.addEventListener('click', () => {
+                resultState.bg = btn.dataset.bg;
+                renderPreview();
+            });
+        });
+        const customColor = document.getElementById('editor-custom-color');
+        const customText = document.getElementById('editor-custom-text');
+        const updateCustom = (value) => {
+            if (!/^#[0-9a-fA-F]{6}$/.test(value)) return;
+            resultState.customColor = value;
+            if (customColor) customColor.value = value;
+            if (customText) customText.value = value;
+            renderPreview();
+        };
+        if (customColor) customColor.addEventListener('input', () => updateCustom(customColor.value));
+        if (customText) customText.addEventListener('input', () => updateCustom(customText.value));
+        document.getElementById('editor-size').addEventListener('change', (event) => {
+            resultState.size = event.target.value;
+            renderPreview();
+        });
+        const margin = document.getElementById('editor-margin');
+        if (margin) {
+            margin.addEventListener('input', () => {
+                resultState.margin = Number(margin.value || 0);
+                renderPreview();
+            });
+        }
+        if (shadow) {
+            shadow.addEventListener('change', () => {
+                resultState.shadow = shadow.value;
+                renderPreview();
+            });
+        }
+        document.querySelectorAll('.shape-option').forEach(btn => {
+            btn.addEventListener('click', () => {
+                resultState.shape = btn.dataset.shape;
+                document.querySelectorAll('.shape-option').forEach(shapeBtn => {
+                    const active = shapeBtn.dataset.shape === resultState.shape;
+                    shapeBtn.classList.toggle('border-gray-900', active);
+                    shapeBtn.classList.toggle('bg-gray-50', active);
+                });
+                renderPreview();
+            });
+        });
+        document.getElementById('download-transparent').addEventListener('click', () => {
+            downloadUrl(resultState.cutoutUrl, `${resultState.basename}_transparent.png`);
+            track('transparent-download', { page: resultState.mode });
+        });
+        document.getElementById('download-edited').addEventListener('click', downloadCurrentVersion);
+        document.getElementById('editor-start-over').addEventListener('click', () => {
+            cleanupResultState();
+            resetDropzone();
+            fileInput.click();
+        });
+
+        document.querySelectorAll('.shape-option').forEach(shapeBtn => {
+            const active = shapeBtn.dataset.shape === resultState.shape;
+            shapeBtn.classList.toggle('border-gray-900', active);
+            shapeBtn.classList.toggle('bg-gray-50', active);
+        });
+        renderPreview();
+    }
+
+    async function showResultEditor(originalFile, sourceFile, blob) {
+        cleanupResultState();
+        const mode = getEditorMode();
+        const config = EDITOR_CONFIGS[mode];
+        const cutoutUrl = URL.createObjectURL(blob);
+        const sourceUrl = URL.createObjectURL(sourceFile || originalFile);
+        let cutoutImage;
+        let sourceImage;
+        try {
+            [cutoutImage, sourceImage] = await Promise.all([
+                loadImage(cutoutUrl),
+                loadImage(sourceUrl),
+            ]);
+        } catch (error) {
+            URL.revokeObjectURL(cutoutUrl);
+            URL.revokeObjectURL(sourceUrl);
+            throw error;
+        }
+        const alphaBBox = computeAlphaBBox(cutoutImage);
+        resultState = {
+            mode,
+            config,
+            cutoutUrl,
+            sourceUrl,
+            cutoutImage,
+            sourceImage,
+            alphaBBox,
+            basename: basenameFromFile(originalFile),
+            bg: config.defaultBg,
+            customColor: '#f3f4f6',
+            size: config.defaultSize,
+            margin: config.defaultMargin,
+            shadow: config.defaultShadow,
+            shape: 'square',
+        };
+        renderResultEditor();
+    }
+
     async function handleFiles(files) {
         const file = files[0];
 
@@ -476,7 +1046,11 @@
         track('upload-started', { type: fileExt, size: sizeBucket(file.size), profile: currentProfile, page });
         const startedAt = performance.now();
 
+        cleanupResultState();
+        dropzoneContent.classList.add('pointer-events-none');
+        dropzoneContent.classList.remove('w-full');
         dropzone.classList.add('pointer-events-none');
+        let shouldResetDropzone = false;
 
         try {
             showProgress(5, t('compressing'));
@@ -489,16 +1063,6 @@
             formData.append('file', uploadFile);
             const blob = await uploadWithProgress(formData);
 
-            const resultUrl = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = resultUrl;
-            const originalName = file.name.split('.')[0];
-            a.download = `${originalName}_nobg.png`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            setTimeout(() => URL.revokeObjectURL(resultUrl), 1000);
-
             track('cutout-success', {
                 type: fileExt,
                 size: sizeBucket(file.size),
@@ -506,16 +1070,11 @@
                 page,
             });
 
-            dropzoneContent.innerHTML = `
-                <svg class="w-12 h-12 text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <p class="text-lg font-medium text-gray-800 mb-1">${t('successTitle')}</p>
-                <p class="text-sm text-gray-500">${t('successSub')}</p>
-            `;
+            await showResultEditor(file, uploadFile, blob);
             showBookmarkBanner();
 
         } catch (error) {
+            shouldResetDropzone = true;
             console.error("API Error:", error);
             const reason = error.status ? `http-${error.status}`
                 : (error.kind || (error.message && /压缩|WebP/.test(error.message) ? 'compress' : 'unknown'));
@@ -536,11 +1095,13 @@
             detail.textContent = error.message;
             dropzoneContent.append(icon, title, detail);
         } finally {
-            setTimeout(() => {
-                resetDropzone();
-                dropzone.classList.remove('pointer-events-none');
-                fileInput.value = '';
-            }, 2000);
+            dropzone.classList.remove('pointer-events-none');
+            fileInput.value = '';
+            if (shouldResetDropzone) {
+                setTimeout(() => {
+                    if (!resultState) resetDropzone();
+                }, 2000);
+            }
         }
     }
 

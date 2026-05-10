@@ -5,6 +5,7 @@ module.exports = {
   safelist: ['open', 'show'],
   content: [
     './index.html',
+    './app.js',
     './product-photo-background-remover/index.html',
     './portrait-background-remover/index.html',
     './id-photo-maker/index.html',
