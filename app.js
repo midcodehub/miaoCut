@@ -652,6 +652,13 @@
         document.body.removeChild(a);
     }
 
+    function autoDownloadTransparentResult(file, blob, page) {
+        const url = URL.createObjectURL(blob);
+        downloadUrl(url, `${basenameFromFile(file)}_transparent.png`);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        track('transparent-download', { page, mode: 'auto' });
+    }
+
     function bgLabelKey(bg) {
         return {
             transparent: 'bgTransparent',
@@ -1310,7 +1317,12 @@
                 page,
             });
 
-            await showResultEditor(file, uploadFile, blob);
+            if (page === 'home') {
+                autoDownloadTransparentResult(file, blob, page);
+                shouldResetDropzone = true;
+            } else {
+                await showResultEditor(file, uploadFile, blob);
+            }
             showBookmarkBanner();
 
         } catch (error) {
