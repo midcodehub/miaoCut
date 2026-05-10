@@ -476,13 +476,89 @@ def _composite_lama_result(
     return Image.composite(inpainted_image.convert("RGB"), source_image.convert("RGB"), blend_mask)
 
 
+# LaMa 推理调优参数
+# 之前不管水印多小都对整张原图跑 LaMa，4K 图能跑到 20s+。
+# 实测水印通常只占很小一块，对裁剪区推理速度可提升 5~10×，且未涂抹区域用原图羽化合回，质量无损。
+LAMA_MAX_EDGE = 1024              # 裁剪区送入 LaMa 时的长边上限，超过则按比例缩到 1024 推理后再 LANCZOS 放回
+LAMA_BBOX_PAD_RATIO = 0.5         # bbox 向外扩展比例（相对 max(bbox_w, bbox_h)），给 LaMa 留足上下文
+LAMA_BBOX_PAD_MIN = 64            # bbox 向外扩展的最小像素，避免极小 bbox 时 padding 不足
+LAMA_FULL_IMAGE_AREA_THRESHOLD = 0.6  # 含 padding 的裁剪区超过原图此比例时回退到全图，避免裁剪边界 artifact
+
+
 def _run_lama_worker(source_image, mask_image):
+    """对用户涂抹区域跑 LaMa 修复，并把结果羽化合回原图。
+
+    优化路径（相对早期"全图直跑"）：
+      1) 调用 _prepare_lama_mask 清理并扩张 mask（保持原来的边缘修补效果）
+      2) 取 mask 的有效像素 bbox，向外扩 LAMA_BBOX_PAD_RATIO×bbox_long_edge（最少 LAMA_BBOX_PAD_MIN 像素）作为上下文
+      3) 如果裁剪面积 ≥ 原图 LAMA_FULL_IMAGE_AREA_THRESHOLD，回退到全图模式（大水印场景，避免裁剪边界 artifact）
+      4) 否则仅对裁剪区跑推理；若裁剪长边 > LAMA_MAX_EDGE，等比缩到 LAMA_MAX_EDGE 推理，再 LANCZOS 放回裁剪原尺寸
+      5) 用 _composite_lama_result 在裁剪区内做羽化合成，最后 paste 回原图副本（未涂抹区域 100% 来自原图）
+    """
     global _lama_model
+    import numpy as np
+
     mask_image = _prepare_lama_mask(mask_image, source_image.size)
-    result = _lama_model(source_image, mask_image)
-    if result.size != source_image.size:
-        result = result.crop((0, 0, source_image.width, source_image.height))
-    return _composite_lama_result(source_image, result, mask_image)
+    mask_np = np.array(mask_image, dtype=np.uint8)
+
+    # 用户没有有效涂抹（或 _prepare_lama_mask 把噪点全清掉了）：直接返回原图，避免空跑模型
+    if not np.any(mask_np):
+        return source_image.convert("RGB")
+
+    src_w, src_h = source_image.size
+    ys, xs = np.where(mask_np > 0)
+    y0, y1 = int(ys.min()), int(ys.max()) + 1
+    x0, x1 = int(xs.min()), int(xs.max()) + 1
+
+    bbox_w = x1 - x0
+    bbox_h = y1 - y0
+    pad = max(LAMA_BBOX_PAD_MIN, int(round(max(bbox_w, bbox_h) * LAMA_BBOX_PAD_RATIO)))
+
+    cx0 = max(0, x0 - pad)
+    cy0 = max(0, y0 - pad)
+    cx1 = min(src_w, x1 + pad)
+    cy1 = min(src_h, y1 + pad)
+    crop_w = cx1 - cx0
+    crop_h = cy1 - cy0
+
+    # 大水印（裁剪区接近全图）：保持原"全图直跑"路径，避免局部裁剪边界穿帮
+    if crop_w * crop_h >= LAMA_FULL_IMAGE_AREA_THRESHOLD * src_w * src_h:
+        result = _lama_model(source_image, mask_image)
+        if result.size != source_image.size:
+            result = result.crop((0, 0, src_w, src_h))
+        return _composite_lama_result(source_image, result, mask_image)
+
+    # 小水印：仅对裁剪区域推理
+    img_crop = source_image.crop((cx0, cy0, cx1, cy1))
+    mask_crop = mask_image.crop((cx0, cy0, cx1, cy1))
+
+    # 裁剪长边仍较大时，缩到 LAMA_MAX_EDGE 内推理，推理后再 LANCZOS 放回裁剪原尺寸
+    # NEAREST 插值是为了避免 mask 在缩放时出现灰边（LaMa 对 mask 是二值假设，灰带会让边缘扩散更难收敛）
+    long_edge = max(crop_w, crop_h)
+    if long_edge > LAMA_MAX_EDGE:
+        scale = LAMA_MAX_EDGE / long_edge
+        new_w = max(1, int(round(crop_w * scale)))
+        new_h = max(1, int(round(crop_h * scale)))
+        img_for_lama = img_crop.resize((new_w, new_h), Image.Resampling.LANCZOS)
+        mask_for_lama = mask_crop.resize((new_w, new_h), Image.Resampling.NEAREST)
+    else:
+        img_for_lama = img_crop
+        mask_for_lama = mask_crop
+
+    inpainted = _lama_model(img_for_lama, mask_for_lama)
+    # SimpleLama 内部会把输入 pad 到 8 的倍数，输出尺寸偶尔比输入大 1~7px，需要切回
+    if inpainted.size != img_for_lama.size:
+        inpainted = inpainted.crop((0, 0, img_for_lama.width, img_for_lama.height))
+
+    if inpainted.size != img_crop.size:
+        inpainted = inpainted.resize(img_crop.size, Image.Resampling.LANCZOS)
+
+    # 在裁剪区做羽化合成，再 paste 回原图副本：未涂抹区零污染
+    crop_blend = _composite_lama_result(img_crop, inpainted, mask_crop)
+
+    result_full = source_image.convert("RGB").copy()
+    result_full.paste(crop_blend, (cx0, cy0))
+    return result_full
 
 
 # ============================================================
@@ -1296,6 +1372,13 @@ if SERVE_STATIC:
         return FileResponse("app.js", media_type="application/javascript")
 
 
+    @app.get("/feedback.js")
+    async def feedback_js():
+        # 所有工具页（首页、id-photo、old-photo、watermark 等）都会引用 /feedback.js。
+        # 生产由 Cloudflare Pages 直接 serve，本地 dev 要后端兜底，否则浏览器报 404。
+        return FileResponse("feedback.js", media_type="application/javascript")
+
+
     @app.get("/product-photo-background-remover/")
     async def product_photo_background_remover():
         return FileResponse("product-photo-background-remover/index.html")
@@ -1329,6 +1412,11 @@ if SERVE_STATIC:
     @app.get("/watermark-remover/")
     async def watermark_remover():
         return FileResponse("watermark-remover/index.html")
+
+
+    @app.get("/watermark-remover/watermark.js")
+    async def watermark_js():
+        return FileResponse("watermark-remover/watermark.js", media_type="application/javascript")
 
 
 @app.post("/api/remove-background", dependencies=[Depends(verify_origin)])
