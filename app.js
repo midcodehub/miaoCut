@@ -857,9 +857,17 @@
             btn.classList.toggle('border-gray-200', !active);
         });
         const customWrap = document.getElementById('editor-custom-wrap');
-        if (customWrap) customWrap.hidden = resultState.bg !== 'custom';
+        if (customWrap) {
+            const visible = resultState.bg === 'custom';
+            customWrap.hidden = !visible;
+            customWrap.classList.toggle('hidden', !visible);
+            customWrap.classList.toggle('flex', visible);
+        }
         const bgUploadWrap = document.getElementById('editor-bg-upload-wrap');
-        if (bgUploadWrap) bgUploadWrap.hidden = resultState.bg !== 'image';
+        if (bgUploadWrap) {
+            bgUploadWrap.hidden = false;
+            bgUploadWrap.classList.remove('hidden');
+        }
         const bgUploadButton = document.getElementById('editor-bg-upload');
         if (bgUploadButton) bgUploadButton.textContent = resultState.bgImage ? t('replaceBgImage') : t('uploadBgImage');
         const marginValue = document.getElementById('editor-margin-value');
@@ -955,7 +963,7 @@
             <button type="button" id="amazon-preset" class="w-full rounded-lg border border-gray-900 bg-white px-3 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-50" data-i18n="amazonPreset">${t('amazonPreset')}</button>
         ` : '';
         const backgroundUploadControl = cfg.showBackgroundUpload ? `
-            <div id="editor-bg-upload-wrap" class="mt-3" hidden>
+            <div id="editor-bg-upload-wrap" class="mt-3">
                 <input id="editor-bg-file" type="file" accept="image/jpeg, image/png, image/webp" class="hidden">
                 <button type="button" id="editor-bg-upload" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-800 transition-colors hover:border-gray-500" data-i18n="uploadBgImage">${resultState.bgImage ? t('replaceBgImage') : t('uploadBgImage')}</button>
             </div>
@@ -996,7 +1004,7 @@
                             <span class="mb-1.5 block text-xs font-semibold text-gray-500" data-i18n="backgroundLabel">${t('backgroundLabel')}</span>
                             <div class="grid grid-cols-2 gap-2">${cfg.backgrounds.map(backgroundOptionHtml).join('')}</div>
                             ${backgroundUploadControl}
-                            <div id="editor-custom-wrap" class="mt-3 flex items-center gap-2" hidden>
+                            <div id="editor-custom-wrap" class="mt-3 hidden items-center gap-2" hidden>
                                 <input id="editor-custom-color" type="color" value="${resultState.customColor}" class="h-10 w-14 cursor-pointer rounded border border-gray-300 bg-white p-1">
                                 <input id="editor-custom-text" type="text" value="${resultState.customColor}" class="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-800" maxlength="7">
                             </div>
@@ -1032,7 +1040,11 @@
         const bgUploadButton = document.getElementById('editor-bg-upload');
         const bgFileInput = document.getElementById('editor-bg-file');
         if (bgUploadButton && bgFileInput) {
-            bgUploadButton.addEventListener('click', () => bgFileInput.click());
+            bgUploadButton.addEventListener('click', () => {
+                resultState.bg = 'image';
+                renderPreview();
+                bgFileInput.click();
+            });
             bgFileInput.addEventListener('change', async () => {
                 const bgFile = bgFileInput.files && bgFileInput.files[0];
                 try {
