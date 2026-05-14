@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
 <head>
     <meta charset="UTF-8">
@@ -12,20 +12,20 @@
     <link rel="preconnect" href="https://api2.miaocut.app">
     <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
 
-    <title>Free AI Background Remover Online — MiaoCut</title>
+    <title>免费在线 AI 抠图工具 — MiaoCut</title>
     <meta name="description"
-        content="Remove background from images instantly with MiaoCut AI. Free online background remover with HD cutouts, no watermark, no signup, and privacy-first processing.">
+        content="MiaoCut 是免费的在线 AI 抠图工具，1 秒去除图片背景，输出高清透明 PNG，无水印、无需注册、纯内存处理。">
     <!-- 关键词 meta：Google 已忽略，但 Bing/Yandex/百度 仍会参考；切语言时 updateLanguage() 会同步中文版本 -->
     <meta name="keywords"
-        content="ai background remover, remove background, remove background from image, free background remover, background remover no watermark, remove bg, transparent background">
+        content="AI 抠图,在线抠图,免费抠图,去除图片背景,透明背景,免水印抠图,PNG 抠图,商品图抠图">
     <!-- OpenGraph SEO Tags -->
-    <meta property="og:title" content="Free AI Background Remover Online — MiaoCut">
+    <meta property="og:title" content="MiaoCut — 免费 AI 抠图工具 | 在线一键去除图片背景">
     <meta property="og:description"
-        content="Remove background from images instantly with MiaoCut AI. Free online background remover with HD cutouts, no watermark, no signup, and privacy-first processing.">
+        content="MiaoCut 是免费的在线 AI 抠图工具，1 秒去除图片背景，输出高清透明 PNG，无水印、无需注册、纯内存处理。">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://miaocut.app/">
+    <meta property="og:url" content="https://miaocut.app/zh/">
     <!-- 默认英文 locale；切换语言时 JS 会改成 zh_CN -->
-    <meta property="og:locale" content="en_US">
+    <meta property="og:locale" content="zh_CN">
     <!-- Social card image：1200×630 PNG，由 scripts/og/generate.mjs 用 Playwright 渲染生成。
          改文案后跑 `npm run og` 重新生成；模板见 scripts/og/template.html，文案见 scripts/og/config.json。 -->
     <meta property="og:image" content="https://miaocut.app/og/home.png">
@@ -37,7 +37,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://miaocut.app/og/home.png">
     <meta name="twitter:image:alt" content="MiaoCut — Free AI Background Remover Online">
-    <link rel="canonical" href="https://miaocut.app/">
+    <link rel="canonical" href="https://miaocut.app/zh/">
 
     <!-- 结构化数据（JSON-LD）：让 Google 把首页识别为应用 + 拿到 FAQ Rich Result。
          注意：单页站，FAQ 内容跟 HTML 里 i18nData.en 的 faqXX 字段必须一致；
@@ -47,7 +47,7 @@
       "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "MiaoCut",
-      "url": "https://miaocut.app/",
+      "url": "https://miaocut.app/zh/",
       "applicationCategory": "MultimediaApplication",
       "operatingSystem": "Web",
       "browserRequirements": "Requires JavaScript. Requires HTML5.",
@@ -160,15 +160,15 @@
 
     <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
-            <a href="/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
+            <a href="/zh/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
             <div class="flex items-center gap-4">
                 <nav class="hidden items-center gap-4 text-sm font-medium text-gray-600 md:flex">
-                    <a href="/" class="text-gray-900" data-i18n="navBg">Background Remover</a>
-                    <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navProduct">Product</a>
-                    <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navPortrait">Portrait</a>
-                    <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navWatermark">Watermark</a>
-                    <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors" data-i18n="navId">ID Photo</a>
-                    <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors" data-i18n="navRestore">Old Photo</a>
+                    <a href="/zh/" class="text-gray-900" data-i18n="navBg">AI 抠图</a>
+                    <a href="/zh/product-photo-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navProduct">商品图</a>
+                    <a href="/zh/portrait-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navPortrait">人像</a>
+                    <a href="/zh/watermark-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navWatermark">去水印</a>
+                    <a href="/zh/id-photo-maker/" class="hover:text-gray-900 transition-colors" data-i18n="navId">证件照</a>
+                    <a href="/zh/old-photo-restoration/" class="hover:text-gray-900 transition-colors" data-i18n="navRestore">老照片修复</a>
                 </nav>
                 <select id="lang-switch" aria-label="Language"
                     class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
@@ -179,12 +179,12 @@
         </div>
     </header>
     <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600">
-        <a href="/" class="shrink-0 text-gray-900" data-i18n="navBg">Background Remover</a>
-        <a href="/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">Product</a>
-        <a href="/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">Portrait</a>
-        <a href="/watermark-remover/" class="shrink-0" data-i18n="navWatermark">Watermark</a>
-        <a href="/id-photo-maker/" class="shrink-0" data-i18n="navId">ID Photo</a>
-        <a href="/old-photo-restoration/" class="shrink-0" data-i18n="navRestore">Old Photo</a>
+        <a href="/zh/" class="shrink-0 text-gray-900" data-i18n="navBg">AI 抠图</a>
+        <a href="/zh/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">商品图</a>
+        <a href="/zh/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">人像</a>
+        <a href="/zh/watermark-remover/" class="shrink-0" data-i18n="navWatermark">去水印</a>
+        <a href="/zh/id-photo-maker/" class="shrink-0" data-i18n="navId">证件照</a>
+        <a href="/zh/old-photo-restoration/" class="shrink-0" data-i18n="navRestore">老照片修复</a>
     </nav>
 
     <!-- 核心区域 -->
@@ -192,11 +192,8 @@
 
         <!-- 标语 -->
         <div class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4" data-i18n="title">Free
-                AI Background Remover</h1>
-            <p class="text-lg text-gray-500 max-w-2xl mx-auto" data-i18n="subtitle">Remove background from images
-                online in 1 second. Get HD transparent PNG cutouts with no watermark, no signup, and privacy-first
-                processing.</p>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4" data-i18n="title">免费 AI 抠图工具</h1>
+            <p class="text-lg text-gray-500 max-w-2xl mx-auto" data-i18n="subtitle">1 秒在线去除图片背景，输出高清透明 PNG，无水印、无需注册、纯内存处理。</p>
         </div>
 
         <!-- Dropzone -->
@@ -205,17 +202,16 @@
             <!-- 质量模式切换：sharp 走默认快速通道，fur 触发 alpha matting + 前景色去污染（细腻但慢 ~3s）。
                  选中态由 JS 切类，不依赖 CSS :checked 选择器（input type=button 没 :checked）。 -->
             <div id="profile-toggle" class="mb-4 flex items-center justify-center gap-2 text-sm flex-wrap">
-                <span class="text-gray-500" data-i18n="profileLabel">Quality:</span>
+                <span class="text-gray-500" data-i18n="profileLabel">质量：</span>
                 <button type="button" data-profile="sharp"
                     class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors">
-                    <span data-i18n="profileSharp">Fast</span>
+                    <span data-i18n="profileSharp">快速</span>
                 </button>
                 <button type="button" data-profile="fur"
                     class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors">
-                    <span data-i18n="profileFur">Fine (hair / fur)</span>
+                    <span data-i18n="profileFur">细腻（毛发/发丝）</span>
                 </button>
-                <span id="profile-hint" class="text-xs text-gray-500 ml-1" data-i18n="profileHintSharp">~1s · everyday
-                    photos</span>
+                <span id="profile-hint" class="text-xs text-gray-500 ml-1" data-i18n="profileHintSharp">约 1 秒 · 适合日常照片</span>
             </div>
 
             <div id="dropzone"
@@ -229,9 +225,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                     </svg>
-                    <p class="text-lg font-medium text-gray-700 mb-1" data-i18n="dropzoneTitle">Drag & drop image here,
-                        or click to upload</p>
-                    <p class="text-sm text-gray-500" data-i18n="dropzoneSub">(Supports JPG / PNG / WebP)</p>
+                    <p class="text-lg font-medium text-gray-700 mb-1" data-i18n="dropzoneTitle">将图片拖拽至此，或点击上传</p>
+                    <p class="text-sm text-gray-500" data-i18n="dropzoneSub">（支持 JPG / PNG / WebP）</p>
                 </div>
             </div>
 
@@ -244,35 +239,33 @@
                             d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
                         </path>
                     </svg>
-                    <span class="font-medium" data-i18n="trustTitle">Your images are 100% safe.</span>
+                    <span class="font-medium" data-i18n="trustTitle">你的图片绝对安全。</span>
                 </div>
-                <p data-i18n="trustSub">Processed in-memory, destroyed automatically. Never used for AI training.</p>
+                <p data-i18n="trustSub">纯内存处理，15分钟后自动销毁，绝不用于 AI 训练。</p>
             </div>
 
             <section class="mt-8 grid grid-cols-1 gap-3 md:grid-cols-4" aria-label="MiaoCut tools">
-                <a href="/" class="rounded-lg border border-gray-900 bg-white p-4 text-left shadow-sm">
-                    <p class="text-sm font-bold text-gray-900" data-i18n="toolBgTitle">Remove Background</p>
-                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolBgBody">HD transparent PNG in seconds.</p>
+                <a href="/zh/" class="rounded-lg border border-gray-900 bg-white p-4 text-left shadow-sm">
+                    <p class="text-sm font-bold text-gray-900" data-i18n="toolBgTitle">去除背景</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolBgBody">几秒生成高清透明 PNG。</p>
                 </a>
-                <a href="/product-photo-background-remover/" class="rounded-lg border border-gray-200 bg-white p-4 text-left hover:border-gray-400 transition-colors">
-                    <p class="text-sm font-bold text-gray-900" data-i18n="toolProductTitle">Product</p>
-                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolProductBody">White backgrounds, square crops, and shadows.</p>
+                <a href="/zh/product-photo-background-remover/" class="rounded-lg border border-gray-200 bg-white p-4 text-left hover:border-gray-400 transition-colors">
+                    <p class="text-sm font-bold text-gray-900" data-i18n="toolProductTitle">商品图</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolProductBody">白底图、方图和商品阴影。</p>
                 </a>
-                <a href="/portrait-background-remover/" class="rounded-lg border border-gray-200 bg-white p-4 text-left hover:border-gray-400 transition-colors">
-                    <p class="text-sm font-bold text-gray-900" data-i18n="toolPortraitTitle">Portrait</p>
-                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolPortraitBody">Profile photos, resumes, and social cutouts.</p>
+                <a href="/zh/portrait-background-remover/" class="rounded-lg border border-gray-200 bg-white p-4 text-left hover:border-gray-400 transition-colors">
+                    <p class="text-sm font-bold text-gray-900" data-i18n="toolPortraitTitle">人像</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolPortraitBody">头像、简历和社媒人像抠图。</p>
                 </a>
-                <a href="/watermark-remover/" class="rounded-lg border border-gray-200 bg-white p-4 text-left hover:border-gray-400 transition-colors">
-                    <p class="text-sm font-bold text-gray-900" data-i18n="toolWatermarkTitle">Watermark</p>
-                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolWatermarkBody">Paint the mark and repair it.</p>
+                <a href="/zh/watermark-remover/" class="rounded-lg border border-gray-200 bg-white p-4 text-left hover:border-gray-400 transition-colors">
+                    <p class="text-sm font-bold text-gray-900" data-i18n="toolWatermarkTitle">去水印</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolWatermarkBody">涂抹水印区域并智能修复。</p>
                 </a>
             </section>
 
             <!-- 首屏关键词说明区：紧贴上传区下方，给搜索引擎抓主题词，给用户做一行价值锚定 -->
             <div class="mt-8 text-center text-sm text-gray-500 leading-relaxed max-w-2xl mx-auto">
-                <p data-i18n="seoIntro">MiaoCut is a free AI background remover that helps you remove background from
-                    images automatically. Upload JPG, PNG, or WebP photos and download clean transparent PNG cutouts
-                    instantly.</p>
+                <p data-i18n="seoIntro">MiaoCut 是一款免费的 AI 抠图工具，可以自动去除图片背景。上传 JPG、PNG 或 WebP 照片，立即下载干净的高清透明 PNG。</p>
             </div>
         </div>
 
@@ -284,32 +277,25 @@
 
             <!-- How it works -->
             <section class="mb-16">
-                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="howItWorks">How to Remove
-                    Background from an Image</h2>
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="howItWorks">如何在线去除图片背景</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-gray-600">
                     <div
                         class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
                         <div class="text-4xl mb-4">📤</div>
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="uploadImg">1. Upload Your Image</h3>
-                        <p class="text-sm leading-relaxed" data-i18n="uploadDesc">Upload a JPG, PNG, or WebP image. No
-                            signup or credit card required.</p>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="uploadImg">1. 上传你的图片</h3>
+                        <p class="text-sm leading-relaxed" data-i18n="uploadDesc">上传 JPG、PNG 或 WebP 图片，无需注册，无需信用卡。</p>
                     </div>
                     <div
                         class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
                         <div class="text-4xl mb-4">🤖</div>
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="aiProc">2. AI Removes the Background
-                        </h3>
-                        <p class="text-sm leading-relaxed" data-i18n="aiDesc">MiaoCut's AI background remover detects
-                            the subject and removes the background automatically, including hair, fur, and complex
-                            edges.</p>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="aiProc">2. AI 自动抠除背景</h3>
+                        <p class="text-sm leading-relaxed" data-i18n="aiDesc">MiaoCut 的 AI 抠图模型会自动识别主体并去除背景，对头发、毛发和复杂边缘也能轻松处理。</p>
                     </div>
                     <div
                         class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
                         <div class="text-4xl mb-4">✨</div>
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="dlFree">3. Download Transparent PNG
-                        </h3>
-                        <p class="text-sm leading-relaxed" data-i18n="dlDesc">Download your HD cutout as a transparent
-                            PNG with no watermark.</p>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="dlFree">3. 下载透明 PNG</h3>
+                        <p class="text-sm leading-relaxed" data-i18n="dlDesc">下载无水印的高清透明 PNG 抠图。</p>
                     </div>
                 </div>
             </section>
@@ -319,8 +305,7 @@
                  alt 文案是 SEO 关键词锚点，4 个 alt 各占一类长尾词，不要本地化成中文（目标是英文搜索流量）。
                  文件未补全时浏览器会显示破图占位，所以最好和图片一起 commit。 -->
             <section class="mb-16">
-                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="examplesTitle">See MiaoCut
-                    in Action</h2>
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="examplesTitle">AI 抠图样例</h2>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200">
                         <img src="/examples/product-cutout.webp"
@@ -329,8 +314,7 @@
                             alt="Sneaker product photo with transparent background after AI cutout"
                             width="512" height="512" loading="lazy" decoding="async"
                             class="w-full h-auto block">
-                        <figcaption class="text-xs text-gray-600 text-center py-2" data-i18n="exampleProduct">Product
-                            photo</figcaption>
+                        <figcaption class="text-xs text-gray-600 text-center py-2" data-i18n="exampleProduct">商品图</figcaption>
                     </figure>
                     <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200">
                         <img src="/examples/portrait-cutout.webp"
@@ -339,8 +323,7 @@
                             alt="Portrait of curly-haired woman with background removed and hair edges preserved"
                             width="512" height="512" loading="lazy" decoding="async"
                             class="w-full h-auto block">
-                        <figcaption class="text-xs text-gray-600 text-center py-2" data-i18n="examplePortrait">Portrait
-                        </figcaption>
+                        <figcaption class="text-xs text-gray-600 text-center py-2" data-i18n="examplePortrait">人像</figcaption>
                     </figure>
                     <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200">
                         <img src="/examples/logo-cutout.webp"
@@ -349,8 +332,7 @@
                             alt="MiaoCut brand logo extracted to transparent PNG with clean edges"
                             width="512" height="512" loading="lazy" decoding="async"
                             class="w-full h-auto block">
-                        <figcaption class="text-xs text-gray-600 text-center py-2" data-i18n="exampleLogo">Logo
-                        </figcaption>
+                        <figcaption class="text-xs text-gray-600 text-center py-2" data-i18n="exampleLogo">Logo</figcaption>
                     </figure>
                     <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200">
                         <img src="/examples/pet-cutout.webp"
@@ -359,16 +341,14 @@
                             alt="White Persian cat with fluffy fur edges cleanly cut out by AI"
                             width="512" height="512" loading="lazy" decoding="async"
                             class="w-full h-auto block">
-                        <figcaption class="text-xs text-gray-600 text-center py-2" data-i18n="examplePet">Pet
-                        </figcaption>
+                        <figcaption class="text-xs text-gray-600 text-center py-2" data-i18n="examplePet">宠物</figcaption>
                     </figure>
                 </div>
             </section>
 
             <!-- Why Choose Us -->
             <section class="mb-16">
-                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="whyChoose">Why Choose
-                    MiaoCut AI Background Remover?</h2>
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="whyChoose">为什么选择 MiaoCut AI 抠图？</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="flex items-start bg-gray-50 p-5 rounded-xl">
                         <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor"
@@ -377,10 +357,8 @@
                             </path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="freeLimit">Free Background
-                                Remover</strong>
-                            <span class="text-sm text-gray-600" data-i18n="freeDesc">100% free with no hidden costs, no
-                                subscription traps, and unlimited image processing.</span>
+                            <strong class="block text-gray-900 mb-1" data-i18n="freeLimit">免费抠图工具</strong>
+                            <span class="text-sm text-gray-600" data-i18n="freeDesc">100% 免费，没有隐藏收费、没有订阅陷阱，想抠多少张就抠多少张。</span>
                         </div>
                     </div>
                     <div class="flex items-start bg-gray-50 p-5 rounded-xl">
@@ -390,9 +368,8 @@
                             </path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="hdQuality">HD Transparent PNG</strong>
-                            <span class="text-sm text-gray-600" data-i18n="hdDesc">Download high-definition transparent
-                                PNG cutouts at original resolution — never compressed.</span>
+                            <strong class="block text-gray-900 mb-1" data-i18n="hdQuality">高清透明 PNG</strong>
+                            <span class="text-sm text-gray-600" data-i18n="hdDesc">保留原图分辨率，输出高清透明 PNG 抠图，绝不压缩画质。</span>
                         </div>
                     </div>
                     <div class="flex items-start bg-gray-50 p-5 rounded-xl">
@@ -402,9 +379,8 @@
                             </path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="noWatermark">No Watermark</strong>
-                            <span class="text-sm text-gray-600" data-i18n="noWDesc">Get clean background-removed images
-                                with no watermark, ready for e-commerce, design, or personal use.</span>
+                            <strong class="block text-gray-900 mb-1" data-i18n="noWatermark">无水印</strong>
+                            <span class="text-sm text-gray-600" data-i18n="noWDesc">无水印的抠图结果，可直接用于电商、设计或个人项目。</span>
                         </div>
                     </div>
                     <div class="flex items-start bg-gray-50 p-5 rounded-xl">
@@ -414,9 +390,8 @@
                             </path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="noSignup">No Signup Required</strong>
-                            <span class="text-sm text-gray-600" data-i18n="noSignupDesc">Remove backgrounds online
-                                instantly — no account, no login, no email needed.</span>
+                            <strong class="block text-gray-900 mb-1" data-i18n="noSignup">无需注册</strong>
+                            <span class="text-sm text-gray-600" data-i18n="noSignupDesc">直接在线抠图，无需账号、无需登录、无需邮箱。</span>
                         </div>
                     </div>
                     <div class="flex items-start bg-gray-50 p-5 rounded-xl">
@@ -426,10 +401,8 @@
                             </path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="privacyFirst">Privacy-First Image
-                                Processing</strong>
-                            <span class="text-sm text-gray-600" data-i18n="privacyDesc">Images are processed in-memory
-                                and destroyed automatically. We never use your data for AI training.</span>
+                            <strong class="block text-gray-900 mb-1" data-i18n="privacyFirst">隐私优先处理</strong>
+                            <span class="text-sm text-gray-600" data-i18n="privacyDesc">图片纯内存处理并自动销毁，我们绝不使用你的数据进行 AI 训练。</span>
                         </div>
                     </div>
                     <div class="flex items-start bg-gray-50 p-5 rounded-xl">
@@ -439,9 +412,8 @@
                             </path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="sotaModel">Powered by BiRefNet</strong>
-                            <span class="text-sm text-gray-600" data-i18n="sotaDesc">SOTA AI model handles JPG, PNG, and
-                                WebP with precise edges on hair, fur, and semi-transparent objects.</span>
+                            <strong class="block text-gray-900 mb-1" data-i18n="sotaModel">由 BiRefNet 驱动</strong>
+                            <span class="text-sm text-gray-600" data-i18n="sotaDesc">SOTA AI 模型支持 JPG、PNG、WebP，对头发、毛发、半透明物体的边缘也能精准还原。</span>
                         </div>
                     </div>
                 </div>
@@ -451,101 +423,69 @@
             <!-- 前两张卡片是独立 landing page 的内链入口（指向 use case 子页，吃精准长尾流量）；
                  后两张暂留为静态 div，新增子页时再换成 <a>。 -->
             <section class="mb-16">
-                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="useCasesTitle">Popular
-                    Use Cases</h2>
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="useCasesTitle">热门使用场景</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <a href="/product-photo-background-remover/"
+                    <a href="/zh/product-photo-background-remover/"
                         class="block bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCaseProductTitle">Product Photos
-                        </h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCaseProductDesc">Remove
-                            backgrounds from product images for e-commerce, Amazon, Shopify, Etsy, and online stores.
-                        </p>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCaseProductTitle">商品图</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCaseProductDesc">为电商、亚马逊、Shopify、Etsy 等在线商店去除商品图背景。</p>
                     </a>
-                    <a href="/portrait-background-remover/"
+                    <a href="/zh/portrait-background-remover/"
                         class="block bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCasePortraitTitle">Portraits &
-                            Profile Pictures</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCasePortraitDesc">Create clean
-                            transparent cutouts for avatars, social media, resumes, and profile photos.</p>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCasePortraitTitle">人像与头像</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCasePortraitDesc">为头像、社交媒体、简历、个人照片生成干净的透明抠图。</p>
                     </a>
                     <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow">
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCaseLogoTitle">Logos & Design
-                            Assets</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCaseLogoDesc">Remove white or
-                            messy backgrounds from logos, icons, and graphics.</p>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCaseLogoTitle">Logo 与设计素材</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCaseLogoDesc">去除 Logo、图标、图形上的白底或杂乱背景。</p>
                     </div>
                     <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow">
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCasePetsTitle">Pets, Hair & Fur
-                        </h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCasePetsDesc">Use AI to handle
-                            complex edges like hair, fur, and semi-transparent objects.</p>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCasePetsTitle">宠物、毛发与发丝</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCasePetsDesc">AI 智能处理头发、毛发、半透明等复杂边缘。</p>
                     </div>
-                    <a href="/old-photo-restoration/"
+                    <a href="/zh/old-photo-restoration/"
                         class="block bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCaseOldPhotoTitle">Old Photo
-                            Restoration</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCaseOldPhotoDesc">Restore faded
-                            family photos, reduce noise, sharpen details, and export a cleaner high-resolution image.</p>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCaseOldPhotoTitle">老照片修复高清</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCaseOldPhotoDesc">修复褪色家庭照片，降低噪点、增强细节，并导出更清晰的高分辨率图片。</p>
                     </a>
                 </div>
             </section>
 
             <!-- FAQ -->
             <section>
-                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="faqTitle">Frequently Asked
-                    Questions</h2>
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="faqTitle">常见问题解答</h2>
                 <div class="space-y-4">
                     <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">Is this AI background
-                            remover really free?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq1A">Yes! MiaoCut is built by an
-                            independent developer to provide a genuinely free alternative to expensive subscription
-                            tools like remove.bg. There are no watermarks and no strict resolution limits.</p>
+                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">这个 AI 抠图真的是免费的吗？</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq1A">是的！MiaoCut 由独立开发者构建，旨在提供昂贵订阅工具的真正免费替代方案。无水印，无严格的分辨率限制。</p>
                     </div>
                     <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq2Q">What image formats are
-                            supported?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq2A">You can upload JPG, PNG, and
-                            WebP images. The output will be a high-quality PNG image with a transparent background,
-                            ready for your designs.</p>
+                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq2Q">支持哪些图片格式？</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq2A">您可以上传 JPG、PNG 和 WebP 图片。输出将是具有透明背景的高质量 PNG 图片。</p>
                     </div>
                     <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq3Q">How good is the edge
-                            detection for hair or fur?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq3A">MiaoCut utilizes the latest
-                            SOTA AI models (BiRefNet) which excel at complex edges. It perfectly handles human hair,
-                            animal fur, and even semi-transparent objects like glass or wedding dresses.</p>
+                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq3Q">对头发或毛发的边缘处理效果如何？</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq3A">MiaoCut 使用了最新的 SOTA AI 模型（BiRefNet），非常擅长处理复杂的边缘。它能完美处理头发、动物毛发，甚至玻璃或婚纱等半透明物体。</p>
                     </div>
                     <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq4Q">Can I remove background
-                            from an image for free?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq4A">Yes. MiaoCut is a free AI
-                            background remover. You can upload images and download transparent PNG results without
-                            watermark.</p>
+                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq4Q">可以免费在线去除图片背景吗？</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq4A">可以。MiaoCut 是一款免费的 AI 抠图工具，您可以上传图片并下载无水印的透明 PNG 结果。</p>
                     </div>
                     <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq5Q">Does MiaoCut add a
-                            watermark?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq5A">No. MiaoCut provides clean
-                            background-removed images without watermark.</p>
+                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq5Q">MiaoCut 会添加水印吗？</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq5A">不会。MiaoCut 输出的抠图结果完全没有水印。</p>
                     </div>
                     <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq6Q">Do I need to sign up?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq6A">No. You can remove image
-                            backgrounds online without creating an account.</p>
+                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq6Q">需要注册账号吗？</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq6A">不需要。您可以直接在线去除图片背景，无需创建账号。</p>
                     </div>
                     <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq7Q">Can I use it for product
-                            photos?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq7A">Yes. MiaoCut works well for
-                            product images, e-commerce photos, portraits, logos, pets, and more.</p>
+                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq7Q">可以用于商品图吗？</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq7A">可以。MiaoCut 适用于商品图、电商照片、人像、Logo、宠物等多种场景。</p>
                     </div>
                     <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq8Q">What is the output format?
-                        </h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq8A">The output is a high-quality
-                            PNG image with a transparent background.</p>
+                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq8Q">输出格式是什么？</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq8A">输出为高质量的透明背景 PNG 图片。</p>
                     </div>
                 </div>
             </section>
@@ -557,9 +497,9 @@
         <div class="max-w-3xl mx-auto flex items-center justify-between px-6 py-3">
             <div class="flex items-center gap-3">
                 <span class="text-lg">&#11088;</span>
-                <p class="text-sm"><span data-i18n="bookmarkText">Like MiaoCut? Press</span> <kbd id="shortcut-key"
+                <p class="text-sm"><span data-i18n="bookmarkText">喜欢 MiaoCut 吗？按</span> <kbd id="shortcut-key"
                         class="px-1.5 py-0.5 bg-gray-700 rounded text-xs font-mono">Ctrl + D</kbd> <span
-                        data-i18n="bookmarkSuffix">to bookmark, next cutout is just 1 sec away!</span></p>
+                        data-i18n="bookmarkSuffix">加入书签，下次抠图只需 1 秒！</span></p>
             </div>
             <button id="dismiss-banner" class="text-gray-400 hover:text-white transition-colors ml-4 shrink-0"
                 aria-label="close">

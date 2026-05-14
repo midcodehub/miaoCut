@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://api2.miaocut.app">
     <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
-    <title>Watermark Remover - Free AI Image Cleanup Tool | MiaoCut</title>
+    <title>AI 图片去水印 - 免费在线水印修复工具 | MiaoCut</title>
     <meta name="description"
-        content="Remove watermarks, logos, text, stamps, and unwanted marks from images online with MiaoCut. Paint the area and let AI repair the image.">
+        content="在线去除你自己照片上的水印、Logo、文字、印章和日期戳。涂抹要修复的区域，AI 自动补全，无需注册、无水印。">
     <meta name="keywords"
-        content="watermark remover, remove watermark from image, ai watermark remover, remove logo from image, image inpainting, object remover">
-    <meta property="og:title" content="Watermark Remover - Free AI Image Cleanup Tool | MiaoCut">
+        content="去水印,图片去水印,在线去水印,免费去水印工具,水印修复,LaMa 修复,AI 图像修复,自家照片去水印">
+    <meta property="og:title" content="免费 AI 图片去水印工具 | MiaoCut">
     <meta property="og:description"
-        content="Paint over watermarks, logos, text, or unwanted marks and let MiaoCut repair the image online.">
+        content="涂抹水印区域，AI 自动修复你自己的照片，免费、无需注册。">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://miaocut.app/watermark-remover/">
-    <meta property="og:locale" content="en_US">
+    <meta property="og:url" content="https://miaocut.app/zh/watermark-remover/">
+    <meta property="og:locale" content="zh_CN">
     <meta property="og:image" content="https://miaocut.app/og/watermark.png">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1200">
@@ -25,13 +25,13 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://miaocut.app/og/watermark.png">
     <meta name="twitter:image:alt" content="AI Watermark Remover by MiaoCut">
-    <link rel="canonical" href="https://miaocut.app/watermark-remover/">
+    <link rel="canonical" href="https://miaocut.app/zh/watermark-remover/">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "MiaoCut Watermark Remover",
-      "url": "https://miaocut.app/watermark-remover/",
+      "url": "https://miaocut.app/zh/watermark-remover/",
       "applicationCategory": "MultimediaApplication",
       "operatingSystem": "Web",
       "description": "Online AI watermark remover and image cleanup tool.",
@@ -108,15 +108,15 @@
 <body class="bg-gray-50 min-h-screen font-sans text-gray-900 selection:bg-gray-200">
     <header class="relative z-10 w-full bg-white border-b border-gray-200">
         <div class="mx-auto max-w-6xl px-5 py-4 flex items-center justify-between gap-4">
-            <a href="/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
+            <a href="/zh/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
             <div class="flex items-center gap-4">
                 <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600">
-                    <a href="/" class="hover:text-gray-900 transition-colors" data-i18n="navBg">Background Remover</a>
-                    <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navProduct">Product</a>
-                    <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navPortrait">Portrait</a>
-                    <a href="/watermark-remover/" class="text-gray-900" data-i18n="navWatermark">Watermark</a>
-                    <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors" data-i18n="navId">ID Photo</a>
-                    <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors" data-i18n="navRestore">Old Photo</a>
+                    <a href="/zh/" class="hover:text-gray-900 transition-colors" data-i18n="navBg">AI 抠图</a>
+                    <a href="/zh/product-photo-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navProduct">商品图</a>
+                    <a href="/zh/portrait-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navPortrait">人像</a>
+                    <a href="/zh/watermark-remover/" class="text-gray-900" data-i18n="navWatermark">去水印</a>
+                    <a href="/zh/id-photo-maker/" class="hover:text-gray-900 transition-colors" data-i18n="navId">证件照</a>
+                    <a href="/zh/old-photo-restoration/" class="hover:text-gray-900 transition-colors" data-i18n="navRestore">老照片修复</a>
                 </nav>
                 <select id="lang-switch" aria-label="Language"
                     class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
@@ -127,19 +127,19 @@
         </div>
     </header>
     <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600">
-        <a href="/" class="shrink-0" data-i18n="navBg">Background Remover</a>
-        <a href="/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">Product</a>
-        <a href="/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">Portrait</a>
-        <a href="/watermark-remover/" class="shrink-0 text-gray-900" data-i18n="navWatermark">Watermark</a>
-        <a href="/id-photo-maker/" class="shrink-0" data-i18n="navId">ID Photo</a>
-        <a href="/old-photo-restoration/" class="shrink-0" data-i18n="navRestore">Old Photo</a>
+        <a href="/zh/" class="shrink-0" data-i18n="navBg">AI 抠图</a>
+        <a href="/zh/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">商品图</a>
+        <a href="/zh/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">人像</a>
+        <a href="/zh/watermark-remover/" class="shrink-0 text-gray-900" data-i18n="navWatermark">去水印</a>
+        <a href="/zh/id-photo-maker/" class="shrink-0" data-i18n="navId">证件照</a>
+        <a href="/zh/old-photo-restoration/" class="shrink-0" data-i18n="navRestore">老照片修复</a>
     </nav>
 
     <main class="mx-auto max-w-6xl px-5 py-8">
         <section class="mb-7 flex flex-col gap-2">
-            <p class="text-sm font-semibold text-gray-500" data-i18n="eyebrow">Watermarks, text overlays, logos, stamps</p>
-            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" data-i18n="heroTitle">AI Watermark Remover</h1>
-            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed" data-i18n="heroSub">Upload an image, paint over the unwanted mark, and let AI repair the selected area.</p>
+            <p class="text-sm font-semibold text-gray-500" data-i18n="eyebrow">水印、文字、Logo、印章、日期</p>
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" data-i18n="heroTitle">AI 图片去水印</h1>
+            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed" data-i18n="heroSub">上传图片，涂抹需要去除的水印或杂物区域，交给 AI 智能修复。</p>
         </section>
 
         <section class="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-6 items-start">
@@ -150,15 +150,15 @@
                     <svg id="upload-icon" class="mb-3 h-10 w-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                     </svg>
-                    <span id="file-name" class="text-sm font-medium text-gray-700" data-i18n="uploadText">Click to upload JPG, PNG, or WebP</span>
-                    <span id="upload-hint" class="mt-1 text-xs text-gray-400" data-i18n="uploadHint">High-resolution images with small marks work best</span>
+                    <span id="file-name" class="text-sm font-medium text-gray-700" data-i18n="uploadText">点击上传 JPG、PNG 或 WebP</span>
+                    <span id="upload-hint" class="mt-1 text-xs text-gray-400" data-i18n="uploadHint">水印较小、背景纹理连续的图片效果更好</span>
                     <input id="imageInput" type="file" class="hidden" accept="image/jpeg,image/png,image/webp">
                 </label>
 
                 <div class="mt-5 space-y-4">
                     <div>
                         <div class="mb-1 flex items-center justify-between text-sm">
-                            <label class="font-semibold text-gray-700" for="brushSize" data-i18n="brushLabel">Brush size</label>
+                            <label class="font-semibold text-gray-700" for="brushSize" data-i18n="brushLabel">画笔大小</label>
                             <span class="text-xs font-medium text-gray-500"><span id="brushValue">32</span>px</span>
                         </div>
                         <input id="brushSize" type="range" min="4" max="120" value="32" class="w-full accent-gray-900">
@@ -167,34 +167,34 @@
                     <div class="grid grid-cols-2 gap-3">
                         <button id="clearButton" type="button"
                             class="h-11 rounded-lg border border-gray-200 px-4 text-sm font-semibold text-gray-700 hover:border-gray-400 hover:text-gray-900 disabled:cursor-not-allowed disabled:text-gray-300 transition-colors"
-                            disabled data-i18n="clearBtn">Clear mask</button>
+                            disabled data-i18n="clearBtn">清除遮罩</button>
                         <button id="processButton" type="button"
                             class="h-11 rounded-lg bg-gray-900 px-4 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-300 transition-colors"
-                            disabled data-i18n="processBtn">Remove</button>
+                            disabled data-i18n="processBtn">去除水印</button>
                     </div>
 
                     <button id="downloadButton" type="button"
                         class="hidden h-11 w-full rounded-lg border border-gray-200 px-4 text-sm font-semibold text-gray-700 hover:border-gray-400 hover:text-gray-900 transition-colors"
-                        data-i18n="downloadBtn">Download result</button>
+                        data-i18n="downloadBtn">下载结果</button>
 
-                    <p id="loading" class="hidden rounded-lg bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700" data-i18n="loading">AI is repairing the image...</p>
+                    <p id="loading" class="hidden rounded-lg bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700" data-i18n="loading">AI 正在修复图片...</p>
                     <p id="status" class="min-h-[20px] text-sm text-red-600"></p>
                 </div>
 
                 <div class="mt-6 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
-                    <h2 class="font-bold text-gray-900" data-i18n="tipsTitle">Best results</h2>
-                    <p class="mt-2 leading-relaxed" data-i18n="tipsBody">Paint slightly beyond the watermark edges. Use a smaller brush near detailed areas.</p>
+                    <h2 class="font-bold text-gray-900" data-i18n="tipsTitle">效果建议</h2>
+                    <p class="mt-2 leading-relaxed" data-i18n="tipsBody">涂抹时略微覆盖水印边缘；细节区域建议调小画笔。</p>
                 </div>
             </aside>
 
             <section class="grid grid-cols-1 xl:grid-cols-2 gap-4">
                 <div class="bg-white border border-gray-200 rounded-lg p-5">
                     <div class="mb-4">
-                        <h2 class="text-lg font-bold" data-i18n="sourceTitle">Paint mask</h2>
-                        <p class="text-sm text-gray-500" data-i18n="sourceSub">Cover only the watermark or unwanted object.</p>
+                        <h2 class="text-lg font-bold" data-i18n="sourceTitle">涂抹遮罩</h2>
+                        <p class="text-sm text-gray-500" data-i18n="sourceSub">只覆盖水印或需要去除的物体。</p>
                     </div>
                     <div class="flex min-h-[460px] items-center justify-center overflow-hidden rounded-lg border border-dashed border-gray-300 bg-gray-50">
-                        <div id="emptyState" class="px-8 text-center text-sm text-gray-400" data-i18n="emptySource">Upload an image to start painting</div>
+                        <div id="emptyState" class="px-8 text-center text-sm text-gray-400" data-i18n="emptySource">上传图片后开始涂抹</div>
                         <div id="imageWrap" class="relative max-w-full leading-none" hidden>
                             <img id="sourceImage" alt="Source image for watermark removal" class="block max-h-[560px] max-w-full select-none">
                             <canvas id="drawCanvas" class="absolute inset-0 cursor-crosshair touch-none"></canvas>
@@ -204,62 +204,62 @@
 
                 <div class="bg-white border border-gray-200 rounded-lg p-5">
                     <div class="mb-4">
-                        <h2 class="text-lg font-bold" data-i18n="resultTitle">Result</h2>
-                        <p class="text-sm text-gray-500" data-i18n="resultSub">The repaired image will appear here.</p>
+                        <h2 class="text-lg font-bold" data-i18n="resultTitle">处理结果</h2>
+                        <p class="text-sm text-gray-500" data-i18n="resultSub">修复后的图片会显示在这里。</p>
                     </div>
                     <div id="resultBox" class="flex min-h-[460px] items-center justify-center overflow-hidden rounded-lg border border-gray-200 bg-gray-50">
-                        <div class="px-8 text-center text-sm text-gray-400" data-i18n="emptyResult">No result yet</div>
+                        <div class="px-8 text-center text-sm text-gray-400" data-i18n="emptyResult">暂无处理结果</div>
                     </div>
                 </div>
             </section>
         </section>
 
         <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
-            <h2 class="text-xl font-bold" data-i18n="seoTitle">Remove watermarks and unwanted marks from images</h2>
-            <p class="mt-3 max-w-3xl text-sm leading-relaxed text-gray-600" data-i18n="seoBody">MiaoCut's watermark remover lets you mark the exact area to repair. It is useful for small text overlays, date stamps, logos, and distracting objects when you have permission to edit the image.</p>
+            <h2 class="text-xl font-bold" data-i18n="seoTitle">在线去除图片水印和多余标记</h2>
+            <p class="mt-3 max-w-3xl text-sm leading-relaxed text-gray-600" data-i18n="seoBody">MiaoCut 去水印工具支持手动标记需要修复的精确区域，适合处理小范围文字水印、日期印章、Logo 和干扰物。请确保你拥有编辑该图片的权利。</p>
             <div class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
                 <div class="rounded-lg border border-gray-200 p-4">
-                    <h3 class="font-bold text-gray-900" data-i18n="seoCard1">Manual precision</h3>
-                    <p class="mt-1" data-i18n="seoCard1Body">Paint exactly where the mark appears instead of guessing with auto detection.</p>
+                    <h3 class="font-bold text-gray-900" data-i18n="seoCard1">手动精确标记</h3>
+                    <p class="mt-1" data-i18n="seoCard1Body">哪里有水印就涂哪里，不依赖不稳定的自动识别。</p>
                 </div>
                 <div class="rounded-lg border border-gray-200 p-4">
-                    <h3 class="font-bold text-gray-900" data-i18n="seoCard2">AI repair</h3>
-                    <p class="mt-1" data-i18n="seoCard2Body">The selected area is repaired using image inpainting.</p>
+                    <h3 class="font-bold text-gray-900" data-i18n="seoCard2">AI 智能修复</h3>
+                    <p class="mt-1" data-i18n="seoCard2Body">根据遮罩区域进行图像修复和内容补全。</p>
                 </div>
                 <div class="rounded-lg border border-gray-200 p-4">
-                    <h3 class="font-bold text-gray-900" data-i18n="seoCard3">Private workflow</h3>
-                    <p class="mt-1" data-i18n="seoCard3Body">Images follow the same MiaoCut upload and processing policy.</p>
+                    <h3 class="font-bold text-gray-900" data-i18n="seoCard3">隐私工作流</h3>
+                    <p class="mt-1" data-i18n="seoCard3Body">沿用 MiaoCut 的图片上传与处理策略。</p>
                 </div>
             </div>
         </section>
 
         <!-- 可见 FAQ：与 head 中的 FAQPage JSON-LD 保持一致；改一处必须同步另一处 + watermark.js i18n。 -->
         <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
-            <h2 class="text-xl font-bold mb-6" data-i18n="faqTitle">Frequently Asked Questions</h2>
+            <h2 class="text-xl font-bold mb-6" data-i18n="faqTitle">常见问题</h2>
             <div class="space-y-4">
                 <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">What kinds of marks can I remove with this tool?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq1A">MiaoCut works on small unwanted marks: watermarks on your own photos, date stamps, screenshot artifacts, burned-in subtitles, logos on your own product shots, and small distracting objects.</p>
+                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">这个工具能去除哪些类型的标记？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq1A">MiaoCut 适合处理小范围的多余标记：你自己照片上的水印、日期戳、截图残留、烧录字幕、自家商品图上的 Logo，以及画面里小的干扰物。</p>
                 </div>
                 <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq2Q">Can I remove watermarks from photos I don’t own?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq2A">No. MiaoCut is for editing photos you own or have explicit permission to edit. Do not use it to remove copyright watermarks from stock photos, social media content, or any image you do not have the rights to — that may violate copyright law.</p>
+                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq2Q">可以去除我没有版权的图片上的水印吗？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq2A">不可以。MiaoCut 仅用于编辑你拥有或明确获得授权的照片。请不要用它去除图库素材、社交媒体内容或任何你没有版权的图片上的水印 —— 这可能侵犯版权法。</p>
                 </div>
                 <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq3Q">How does the AI repair the painted area?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq3A">MiaoCut uses LaMa (Large Mask Inpainting), an open-source AI model. It analyzes the surrounding pixels and fills in the painted area to match the rest of the image.</p>
+                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq3Q">AI 是怎么修复涂抹区域的？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq3A">MiaoCut 使用 LaMa（Large Mask Inpainting）开源 AI 模型，根据周围像素分析并填补涂抹区域，让它与画面其余部分自然衔接。</p>
                 </div>
                 <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq4Q">What kinds of images work best?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq4A">High-resolution photos where the mark covers a small portion of the image, and the surrounding background has enough visual context (sky, plain wall, even texture). Marks across complex content like faces or detailed patterns are harder to repair cleanly.</p>
+                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq4Q">什么样的图片处理效果最好？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq4A">高分辨率照片、水印只占画面一小块、周围背景有足够视觉信息（天空、纯色墙面、均匀纹理）。如果水印横跨人脸或复杂图案，修复效果会受限。</p>
                 </div>
                 <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq5Q">Are my images uploaded or stored anywhere?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq5A">Images are processed in-memory on the server and discarded immediately after the result is returned. We never store your image, never use it for AI training, and there is no signup required.</p>
+                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq5Q">我的图片会被上传或保存吗？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq5A">图片在服务器内存里处理，结果返回后立即销毁。我们绝不存储你的图片、绝不用于 AI 训练，也无需注册账号。</p>
                 </div>
                 <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq6Q">Why does my result look blurry or unclean?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq6A">Try painting slightly beyond the watermark edge with a smaller brush. For very large marks or marks across detailed content, results may be limited — this tool works best on small, well-bounded marks with simple surroundings.</p>
+                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq6Q">处理结果看起来模糊或不干净怎么办？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq6A">试试画笔调小一点、涂抹时略微超出水印边缘。对于范围特别大或穿过复杂细节的水印，效果会有限 —— 本工具最适合背景简单、边界清晰的小范围标记。</p>
                 </div>
             </div>
         </section>

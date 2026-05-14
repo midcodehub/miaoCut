@@ -44,8 +44,30 @@
             paintFirst: 'Paint the area you want to remove first.',
             formatErr: 'Only JPG / PNG / WebP formats are supported',
             failed: 'Processing failed',
+            faqTitle: 'Frequently Asked Questions',
+            faq1Q: 'What kinds of marks can I remove with this tool?',
+            faq1A: 'MiaoCut works on small unwanted marks: watermarks on your own photos, date stamps, screenshot artifacts, burned-in subtitles, logos on your own product shots, and small distracting objects.',
+            faq2Q: 'Can I remove watermarks from photos I don’t own?',
+            faq2A: 'No. MiaoCut is for editing photos you own or have explicit permission to edit. Do not use it to remove copyright watermarks from stock photos, social media content, or any image you do not have the rights to — that may violate copyright law.',
+            faq3Q: 'How does the AI repair the painted area?',
+            faq3A: 'MiaoCut uses LaMa (Large Mask Inpainting), an open-source AI model. It analyzes the surrounding pixels and fills in the painted area to match the rest of the image.',
+            faq4Q: 'What kinds of images work best?',
+            faq4A: 'High-resolution photos where the mark covers a small portion of the image, and the surrounding background has enough visual context (sky, plain wall, even texture). Marks across complex content like faces or detailed patterns are harder to repair cleanly.',
+            faq5Q: 'Are my images uploaded or stored anywhere?',
+            faq5A: 'Images are processed in-memory on the server and discarded immediately after the result is returned. We never store your image, never use it for AI training, and there is no signup required.',
+            faq6Q: 'Why does my result look blurry or unclean?',
+            faq6A: 'Try painting slightly beyond the watermark edge with a smaller brush. For very large marks or marks across detailed content, results may be limited — this tool works best on small, well-bounded marks with simple surroundings.',
         },
         zh: {
+            // SEO meta（被 scripts/build-i18n.mjs 用来生成 zh/<page>/index.html 的
+            // <title>、<meta description/keywords>、og:title/description/locale。
+            // 改这些 key 后跑 npm run build:i18n 同步 zh 静态页。）
+            pageTitle: 'AI 图片去水印 - 免费在线水印修复工具 | MiaoCut',
+            metaDescription: '在线去除你自己照片上的水印、Logo、文字、印章和日期戳。涂抹要修复的区域，AI 自动补全，无需注册、无水印。',
+            metaKeywords: '去水印,图片去水印,在线去水印,免费去水印工具,水印修复,LaMa 修复,AI 图像修复,自家照片去水印',
+            ogTitle: '免费 AI 图片去水印工具 | MiaoCut',
+            ogDescription: '涂抹水印区域，AI 自动修复你自己的照片，免费、无需注册。',
+            ogLocale: 'zh_CN',
             navBg: 'AI 抠图',
             navId: '证件照',
             navRestore: '老照片修复',
@@ -83,11 +105,28 @@
             paintFirst: '请先涂抹需要去除的区域。',
             formatErr: '仅支持 JPG / PNG / WebP 格式的图片',
             failed: '处理失败',
+            faqTitle: '常见问题',
+            faq1Q: '这个工具能去除哪些类型的标记？',
+            faq1A: 'MiaoCut 适合处理小范围的多余标记：你自己照片上的水印、日期戳、截图残留、烧录字幕、自家商品图上的 Logo，以及画面里小的干扰物。',
+            faq2Q: '可以去除我没有版权的图片上的水印吗？',
+            faq2A: '不可以。MiaoCut 仅用于编辑你拥有或明确获得授权的照片。请不要用它去除图库素材、社交媒体内容或任何你没有版权的图片上的水印 —— 这可能侵犯版权法。',
+            faq3Q: 'AI 是怎么修复涂抹区域的？',
+            faq3A: 'MiaoCut 使用 LaMa（Large Mask Inpainting）开源 AI 模型，根据周围像素分析并填补涂抹区域，让它与画面其余部分自然衔接。',
+            faq4Q: '什么样的图片处理效果最好？',
+            faq4A: '高分辨率照片、水印只占画面一小块、周围背景有足够视觉信息（天空、纯色墙面、均匀纹理）。如果水印横跨人脸或复杂图案，修复效果会受限。',
+            faq5Q: '我的图片会被上传或保存吗？',
+            faq5A: '图片在服务器内存里处理，结果返回后立即销毁。我们绝不存储你的图片、绝不用于 AI 训练，也无需注册账号。',
+            faq6Q: '处理结果看起来模糊或不干净怎么办？',
+            faq6A: '试试画笔调小一点、涂抹时略微超出水印边缘。对于范围特别大或穿过复杂细节的水印，效果会有限 —— 本工具最适合背景简单、边界清晰的小范围标记。',
         },
     };
 
+    // 当前语言从静态 HTML 的 <html lang> 推断（构建时由 scripts/build-i18n.mjs 写死）。
+    // 不再用 localStorage 决定语言：每个 URL（/watermark-remover/ vs /zh/watermark-remover/）已经
+    // 是预渲染好的对应语种，让 Google 能分别索引，JS 只负责动态文案。
+    const _htmlLang = (document.documentElement.lang || 'en').toLowerCase();
     const state = {
-        lang: localStorage.getItem('lang') || (navigator.language.startsWith('zh') ? 'zh' : 'en'),
+        lang: _htmlLang.startsWith('zh') ? 'zh' : 'en',
         file: null,
         sourceObjectUrl: null,
         resultObjectUrl: null,
@@ -394,7 +433,22 @@
     }
 
     if (langSwitch) {
-        langSwitch.addEventListener('change', (e) => applyLanguage(e.target.value));
+        // 切语言 = 跳到另一语种的 URL（不要在原 URL 里 JS 替换文案）。
+        // 这样 / 和 /zh/* 才能各自被 Google 索引为独立语种页。
+        langSwitch.addEventListener('change', (e) => {
+            const target = e.target.value;
+            if (target === state.lang) return;
+            const path = window.location.pathname;
+            const isZhPath = path === '/zh' || path === '/zh/' || path.startsWith('/zh/');
+            let nextPath;
+            if (target === 'zh') {
+                nextPath = isZhPath ? path : '/zh' + (path === '/' ? '/' : path);
+            } else {
+                nextPath = isZhPath ? (path === '/zh' || path === '/zh/' ? '/' : path.slice(3)) : path;
+            }
+            localStorage.setItem('lang', target);
+            window.location.assign(nextPath + window.location.search + window.location.hash);
+        });
     }
     applyLanguage(state.lang);
 })();

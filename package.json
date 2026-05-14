@@ -6,6 +6,8 @@
   "scripts": {
     "build:css": "tailwindcss -i ./src/input.css -o ./output.css --minify",
     "watch:css": "tailwindcss -i ./src/input.css -o ./output.css --watch",
+    "build:i18n": "node scripts/build-i18n.mjs",
+    "build": "npm run build:css && npm run build:i18n",
     "og": "node scripts/og/generate.mjs"
   },
   "devDependencies": {

@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID Photo Maker - Free AI Passport Photo & Headshot Tool | MiaoCut</title>
+    <title>AI 证件照制作 - 免费护照照、签证照、一寸二寸 | MiaoCut</title>
     <meta name="description"
-        content="Create ID photos, passport photos, visa photos, and printable photo sheets online with MiaoCut. Choose size, background color, output KB, and print paper.">
+        content="免费在线制作证件照、护照照、签证照、一寸照、二寸照和打印排版照。可选尺寸、背景色、KB 大小，AI 自动抠图换底，无需注册。">
     <meta name="keywords"
-        content="id photo maker, passport photo maker, visa photo maker, one inch photo, two inch photo, ai id photo, change photo background, printable id photo sheet">
-    <meta property="og:title" content="ID Photo Maker - Free AI Passport Photo & Headshot Tool | MiaoCut">
+        content="证件照制作,护照照片,签证照片,一寸照,二寸照,AI 证件照,在线证件照,换证件照背景,证件照排版打印">
+    <meta property="og:title" content="免费 AI 证件照制作工具 | MiaoCut">
     <meta property="og:description"
-        content="Create ID photos, passport photos, visa photos, and printable photo sheets online with MiaoCut.">
+        content="在线制作护照照、签证照、一寸二寸照和排版打印照，可选尺寸和背景色。">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://miaocut.app/id-photo-maker/">
-    <meta property="og:locale" content="en_US">
+    <meta property="og:url" content="https://miaocut.app/zh/id-photo-maker/">
+    <meta property="og:locale" content="zh_CN">
     <meta property="og:image" content="https://miaocut.app/og/id-photo.png">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1200">
@@ -23,13 +23,13 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://miaocut.app/og/id-photo.png">
     <meta name="twitter:image:alt" content="AI ID Photo Maker by MiaoCut">
-    <link rel="canonical" href="https://miaocut.app/id-photo-maker/">
+    <link rel="canonical" href="https://miaocut.app/zh/id-photo-maker/">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "MiaoCut ID Photo Maker",
-      "url": "https://miaocut.app/id-photo-maker/",
+      "url": "https://miaocut.app/zh/id-photo-maker/",
       "applicationCategory": "MultimediaApplication",
       "operatingSystem": "Web",
       "description": "Create passport photos, visa photos, one-inch photos, two-inch photos, and printable ID photo sheets online.",
@@ -65,15 +65,15 @@
 <body class="bg-gray-50 min-h-screen font-sans text-gray-900 selection:bg-gray-200">
     <header class="relative z-10 w-full bg-white border-b border-gray-200">
         <div class="mx-auto max-w-6xl px-5 py-4 flex items-center justify-between gap-4">
-            <a href="/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
+            <a href="/zh/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
             <div class="flex items-center gap-4">
                 <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600">
-                    <a href="/" class="hover:text-gray-900 transition-colors" data-i18n="navBg">Background Remover</a>
-                    <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navProduct">Product</a>
-                    <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navPortrait">Portrait</a>
-                    <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navWatermark">Watermark</a>
-                    <a href="/id-photo-maker/" class="text-gray-900" data-i18n="navId">ID Photo</a>
-                    <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors" data-i18n="navRestore">Old Photo</a>
+                    <a href="/zh/" class="hover:text-gray-900 transition-colors" data-i18n="navBg">AI 抠图</a>
+                    <a href="/zh/product-photo-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navProduct">商品图</a>
+                    <a href="/zh/portrait-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navPortrait">人像</a>
+                    <a href="/zh/watermark-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navWatermark">去水印</a>
+                    <a href="/zh/id-photo-maker/" class="text-gray-900" data-i18n="navId">证件照</a>
+                    <a href="/zh/old-photo-restoration/" class="hover:text-gray-900 transition-colors" data-i18n="navRestore">老照片修复</a>
                 </nav>
                 <select id="lang-switch"
                     class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
@@ -84,26 +84,26 @@
         </div>
     </header>
     <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600">
-        <a href="/" class="shrink-0" data-i18n="navBg">Background Remover</a>
-        <a href="/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">Product</a>
-        <a href="/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">Portrait</a>
-        <a href="/watermark-remover/" class="shrink-0" data-i18n="navWatermark">Watermark</a>
-        <a href="/id-photo-maker/" class="shrink-0 text-gray-900" data-i18n="navId">ID Photo</a>
-        <a href="/old-photo-restoration/" class="shrink-0" data-i18n="navRestore">Old Photo</a>
+        <a href="/zh/" class="shrink-0" data-i18n="navBg">AI 抠图</a>
+        <a href="/zh/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">商品图</a>
+        <a href="/zh/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">人像</a>
+        <a href="/zh/watermark-remover/" class="shrink-0" data-i18n="navWatermark">去水印</a>
+        <a href="/zh/id-photo-maker/" class="shrink-0 text-gray-900" data-i18n="navId">证件照</a>
+        <a href="/zh/old-photo-restoration/" class="shrink-0" data-i18n="navRestore">老照片修复</a>
     </nav>
 
     <main class="mx-auto max-w-6xl px-5 py-8">
         <section class="mb-7 flex flex-col gap-2">
-            <p class="text-sm font-semibold text-gray-500" data-i18n="eyebrow">Passport photos, visa photos, one-inch photos</p>
-            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" data-i18n="heroTitle">AI ID Photo Maker</h1>
-            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed" data-i18n="heroSub">Upload a portrait, choose a document photo size, set the background color, and download standard, HD, or printable layout photos.</p>
+            <p class="text-sm font-semibold text-gray-500" data-i18n="eyebrow">护照照、签证照、一寸照、二寸照</p>
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" data-i18n="heroTitle">AI 证件照制作工具</h1>
+            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed" data-i18n="heroSub">上传人像，选择证件照尺寸、背景颜色和打印相纸，一次生成标准照、高清照和排版照。</p>
         </section>
 
         <div class="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start">
             <section class="bg-white border border-gray-200 rounded-lg p-5">
                 <div class="space-y-5">
                     <div>
-                        <label class="block text-sm font-semibold mb-2" for="id-file" data-i18n="portraitLabel">Portrait</label>
+                        <label class="block text-sm font-semibold mb-2" for="id-file" data-i18n="portraitLabel">人像照片</label>
                         <label id="upload-card"
                             class="flex min-h-40 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center hover:bg-gray-100"
                             for="id-file">
@@ -111,14 +111,14 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M8 8l4-4m0 0l4 4m-4-4v12" />
                             </svg>
                             <img id="upload-preview" alt="Selected portrait preview" class="mb-3 hidden max-h-56 w-full rounded border border-gray-200 bg-white object-contain">
-                            <span id="file-name" class="text-sm font-medium text-gray-700" data-i18n="uploadText">Click to upload JPG, PNG, or WebP</span>
-                            <span id="upload-hint" class="mt-1 text-xs text-gray-400" data-i18n="uploadHint">Front-facing portrait works best</span>
+                            <span id="file-name" class="text-sm font-medium text-gray-700" data-i18n="uploadText">点击上传 JPG、PNG 或 WebP</span>
+                            <span id="upload-hint" class="mt-1 text-xs text-gray-400" data-i18n="uploadHint">正面半身照效果最好</span>
                         </label>
                         <input id="id-file" type="file" class="hidden" accept="image/jpeg,image/png,image/webp">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-semibold mb-2" for="preset" data-i18n="sizeLabel">Photo size</label>
+                        <label class="block text-sm font-semibold mb-2" for="preset" data-i18n="sizeLabel">证件照尺寸</label>
                         <select id="preset" class="h-11 w-full rounded border border-gray-300 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-gray-300">
                             <option value="one_inch">1 inch - 295 x 413 px</option>
                             <option value="small_one_inch">Small 1 inch - 260 x 378 px</option>
@@ -134,11 +134,11 @@
                         </select>
                         <div id="custom-size" class="mt-3 grid grid-cols-2 gap-3 hidden">
                             <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1" for="width" data-i18n="widthLabel">Width</label>
+                                <label class="block text-xs font-medium text-gray-500 mb-1" for="width" data-i18n="widthLabel">宽度</label>
                                 <input id="width" type="number" min="120" max="1600" value="295" class="h-10 w-full rounded border border-gray-300 px-3 text-sm">
                             </div>
                             <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1" for="height" data-i18n="heightLabel">Height</label>
+                                <label class="block text-xs font-medium text-gray-500 mb-1" for="height" data-i18n="heightLabel">高度</label>
                                 <input id="height" type="number" min="120" max="2200" value="413" class="h-10 w-full rounded border border-gray-300 px-3 text-sm">
                             </div>
                         </div>
@@ -146,7 +146,7 @@
 
                     <div>
                         <div class="mb-2 flex items-center justify-between">
-                            <label class="text-sm font-semibold" data-i18n="bgLabel">Background</label>
+                            <label class="text-sm font-semibold" data-i18n="bgLabel">背景色</label>
                             <input id="custom-color" type="text" value="438edb" maxlength="7" class="h-8 w-24 rounded border border-gray-300 px-2 text-xs font-mono">
                         </div>
                         <div id="color-swatches" class="grid grid-cols-4 gap-2">
@@ -163,22 +163,22 @@
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1" for="head-ratio" data-i18n="subjectLabel">Subject</label>
+                            <label class="block text-xs font-medium text-gray-500 mb-1" for="head-ratio" data-i18n="subjectLabel">主体大小</label>
                             <input id="head-ratio" type="range" min="55" max="85" value="72" class="w-full">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1" for="top-margin" data-i18n="topLabel">Top margin</label>
+                            <label class="block text-xs font-medium text-gray-500 mb-1" for="top-margin" data-i18n="topLabel">顶部留白</label>
                             <input id="top-margin" type="range" min="3" max="18" value="8" class="w-full">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1" for="target-kb" data-i18n="kbLabel">Target KB</label>
+                            <label class="block text-xs font-medium text-gray-500 mb-1" for="target-kb" data-i18n="kbLabel">目标 KB</label>
                             <input id="target-kb" type="number" min="8" max="1024" placeholder="Optional" class="h-10 w-full rounded border border-gray-300 px-3 text-sm">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1" for="profile" data-i18n="qualityLabel">Quality</label>
+                            <label class="block text-xs font-medium text-gray-500 mb-1" for="profile" data-i18n="qualityLabel">质量</label>
                             <select id="profile" class="h-10 w-full rounded border border-gray-300 px-3 text-sm">
                                 <option value="sharp">Fast</option>
                                 <option value="fur">Fine edges</option>
@@ -187,12 +187,12 @@
                     </div>
 
                     <label class="flex items-center justify-between rounded border border-gray-200 px-3 py-2 text-sm">
-                        <span class="font-medium text-gray-700" data-i18n="alignLabel">Face alignment</span>
+                        <span class="font-medium text-gray-700" data-i18n="alignLabel">人脸对齐</span>
                         <input id="face-alignment" type="checkbox" checked class="h-4 w-4">
                     </label>
 
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1" for="paper" data-i18n="paperLabel">Print paper</label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1" for="paper" data-i18n="paperLabel">打印相纸</label>
                         <select id="paper" class="h-10 w-full rounded border border-gray-300 px-3 text-sm">
                             <option value="6inch">6 inch - 1800 x 1200 px</option>
                             <option value="5inch">5 inch - 1500 x 1050 px</option>
@@ -201,7 +201,7 @@
                         </select>
                     </div>
 
-                    <button id="generate" class="flex h-11 w-full items-center justify-center rounded bg-gray-900 px-4 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400" data-i18n="generateBtn">Generate ID Photo</button>
+                    <button id="generate" class="flex h-11 w-full items-center justify-center rounded bg-gray-900 px-4 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400" data-i18n="generateBtn">生成证件照</button>
                     <p id="status" class="min-h-5 text-sm text-gray-500"></p>
                 </div>
             </section>
@@ -210,46 +210,46 @@
                 <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
                     <div class="bg-white border border-gray-200 rounded-lg p-5">
                         <div class="mb-4 flex items-center justify-between gap-3">
-                            <h2 class="text-base font-bold" data-i18n="standardTitle">Standard</h2>
-                            <button id="download-standard" class="hidden h-9 rounded border border-gray-300 px-3 text-sm font-medium hover:bg-gray-50" data-i18n="downloadJpg">Download JPG</button>
+                            <h2 class="text-base font-bold" data-i18n="standardTitle">标准照</h2>
+                            <button id="download-standard" class="hidden h-9 rounded border border-gray-300 px-3 text-sm font-medium hover:bg-gray-50" data-i18n="downloadJpg">下载 JPG</button>
                         </div>
                         <div class="flex min-h-[360px] items-center justify-center rounded bg-gray-100 p-4">
                             <img id="standard-preview" alt="Generated standard ID photo preview" class="max-h-[320px] max-w-full rounded border border-gray-200 bg-white object-contain hidden">
-                            <p id="standard-empty" class="text-sm text-gray-400" data-i18n="standardEmpty">Standard photo will appear here</p>
+                            <p id="standard-empty" class="text-sm text-gray-400" data-i18n="standardEmpty">标准照会显示在这里</p>
                         </div>
                     </div>
 
                     <div class="bg-white border border-gray-200 rounded-lg p-5">
                         <div class="mb-4 flex items-center justify-between gap-3">
-                            <h2 class="text-base font-bold" data-i18n="hdTitle">HD</h2>
-                            <button id="download-hd" class="hidden h-9 rounded border border-gray-300 px-3 text-sm font-medium hover:bg-gray-50" data-i18n="downloadPng">Download PNG</button>
+                            <h2 class="text-base font-bold" data-i18n="hdTitle">高清照</h2>
+                            <button id="download-hd" class="hidden h-9 rounded border border-gray-300 px-3 text-sm font-medium hover:bg-gray-50" data-i18n="downloadPng">下载 PNG</button>
                         </div>
                         <div class="flex min-h-[360px] items-center justify-center rounded bg-gray-100 p-4">
                             <img id="hd-preview" alt="Generated HD ID photo preview" class="max-h-[320px] max-w-full rounded border border-gray-200 bg-white object-contain hidden">
-                            <p id="hd-empty" class="text-sm text-gray-400" data-i18n="hdEmpty">HD transparent photo will appear here</p>
+                            <p id="hd-empty" class="text-sm text-gray-400" data-i18n="hdEmpty">高清透明底照片会显示在这里</p>
                         </div>
                     </div>
 
                     <div class="bg-white border border-gray-200 rounded-lg p-5">
                         <div class="mb-4 flex items-center justify-between gap-3">
-                            <h2 class="text-base font-bold" data-i18n="layoutTitle">Layout</h2>
-                            <button id="download-layout" class="hidden h-9 rounded border border-gray-300 px-3 text-sm font-medium hover:bg-gray-50" data-i18n="downloadLayout">Download Layout</button>
+                            <h2 class="text-base font-bold" data-i18n="layoutTitle">排版照</h2>
+                            <button id="download-layout" class="hidden h-9 rounded border border-gray-300 px-3 text-sm font-medium hover:bg-gray-50" data-i18n="downloadLayout">下载排版照</button>
                         </div>
                         <div class="flex min-h-[360px] items-center justify-center rounded bg-gray-100 p-4">
                             <img id="layout-preview" alt="Printable ID photo sheet preview" class="max-h-[320px] max-w-full rounded border border-gray-200 bg-white object-contain hidden">
-                            <p id="layout-empty" class="text-sm text-gray-400" data-i18n="layoutEmpty">Printable layout will appear here</p>
+                            <p id="layout-empty" class="text-sm text-gray-400" data-i18n="layoutEmpty">可打印排版照会显示在这里</p>
                         </div>
                         <p id="layout-meta" class="mt-3 text-xs text-gray-500"></p>
                     </div>
                 </div>
 
                 <div class="bg-white border border-gray-200 rounded-lg p-5">
-                    <h2 class="text-xl font-bold mb-3" data-i18n="seoTitle">Make ID photos for documents, resumes, and online forms</h2>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="seoBody">MiaoCut's ID photo maker helps you create passport photos, visa photos, one-inch photos, two-inch photos, resume photos, and printable photo sheets. Choose a preset size, adjust the portrait placement, switch background colors, and download both standard and high-resolution outputs.</p>
+                    <h2 class="text-xl font-bold mb-3" data-i18n="seoTitle">制作证件、简历和线上表单所需的证件照</h2>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="seoBody">MiaoCut 证件照工具支持护照照、签证照、一寸照、二寸照、简历照和打印排版照。你可以选择预设尺寸，调整人物位置，切换背景颜色，并下载标准照与高清照。</p>
                     <div class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
-                        <div class="rounded border border-gray-200 p-4"><h3 class="font-bold text-gray-900 mb-1" data-i18n="seoCard1">Common sizes</h3><p data-i18n="seoCard1Body">One inch, two inch, passport, visa, resume, and custom pixel sizes.</p></div>
-                        <div class="rounded border border-gray-200 p-4"><h3 class="font-bold text-gray-900 mb-1" data-i18n="seoCard2">Background colors</h3><p data-i18n="seoCard2Body">White, blue, red, gray, light blue, dark blue, pink, black, and custom HEX colors.</p></div>
-                        <div class="rounded border border-gray-200 p-4"><h3 class="font-bold text-gray-900 mb-1" data-i18n="seoCard3">Print sheets</h3><p data-i18n="seoCard3Body">Generate 5-inch, 6-inch, 7-inch, or A4 printable layouts.</p></div>
+                        <div class="rounded border border-gray-200 p-4"><h3 class="font-bold text-gray-900 mb-1" data-i18n="seoCard1">常用尺寸</h3><p data-i18n="seoCard1Body">一寸、二寸、护照、签证、简历、自定义像素尺寸。</p></div>
+                        <div class="rounded border border-gray-200 p-4"><h3 class="font-bold text-gray-900 mb-1" data-i18n="seoCard2">背景颜色</h3><p data-i18n="seoCard2Body">白、蓝、红、灰、浅蓝、深蓝、粉、黑，也支持自定义 HEX。</p></div>
+                        <div class="rounded border border-gray-200 p-4"><h3 class="font-bold text-gray-900 mb-1" data-i18n="seoCard3">打印排版</h3><p data-i18n="seoCard3Body">支持 5 寸、6 寸、7 寸和 A4 排版照。</p></div>
                     </div>
                 </div>
             </section>
@@ -257,35 +257,35 @@
 
         <!-- 可见 FAQ：与 head 中的 FAQPage JSON-LD 保持一致；改一处必须同步另一处 + id-photo.js i18n。 -->
         <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
-            <h2 class="text-xl font-bold mb-6" data-i18n="faqTitle">Frequently Asked Questions</h2>
+            <h2 class="text-xl font-bold mb-6" data-i18n="faqTitle">常见问题</h2>
             <div class="space-y-4">
                 <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">What ID photo sizes does MiaoCut support?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq1A">China 1-inch (295×413), 2-inch (413×579), small/large 1-inch and 2-inch variants, China passport (390×567), US passport (600×600), Schengen visa (600×600), resume photo (480×640), social profile (512×512), plus any custom pixel size.</p>
+                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">MiaoCut 支持哪些证件照尺寸？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq1A">一寸（295×413）、二寸（413×579）、小一寸、大一寸、小二寸、中国护照（390×567）、美国护照（600×600）、申根签证（600×600）、简历照（480×640）、社交头像（512×512），以及任意自定义像素尺寸。</p>
                 </div>
                 <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq2Q">What background colors are supported?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq2A">White, blue, red, gray, light blue, dark blue, pink, black, and any custom HEX color.</p>
+                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq2Q">支持哪些背景颜色？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq2A">白、蓝、红、灰、浅蓝、深蓝、粉、黑，也支持自定义任意 HEX 颜色。</p>
                 </div>
                 <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq3Q">Can I print multiple ID photos on one sheet?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq3A">Yes. Choose 5-inch, 6-inch, 7-inch, or A4 paper to generate a printable layout sheet with multiple copies arranged for cutting.</p>
+                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq3Q">可以把多张证件照排在一张相纸上打印吗？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq3A">可以。选择 5 寸、6 寸、7 寸或 A4 相纸即可生成包含多张证件照的可打印排版照，方便冲印后裁切。</p>
                 </div>
                 <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq4Q">Will my photo meet official document requirements?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq4A">MiaoCut produces correctly sized photos with neutral backgrounds, but always check your specific document or visa office’s latest requirements (head size, expression, glasses rules, file format) before submitting.</p>
+                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq4Q">生成的照片符合官方证件要求吗？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq4A">MiaoCut 生成尺寸准确、背景纯净的证件照，但提交前请务必核对你具体证件或签证机构的最新要求（头部比例、表情、眼镜规定、文件格式）。</p>
                 </div>
                 <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq5Q">Does MiaoCut detect my face automatically?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq5A">Yes. MediaPipe Face Mesh detects your eye line and head position, then the photo is auto-cropped and aligned to fit the chosen size preset. You can fine-tune subject size and top margin with the sliders.</p>
+                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq5Q">MiaoCut 会自动识别人脸吗？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq5A">会。MediaPipe Face Mesh 自动识别双眼连线和头部位置，并按选定尺寸预设自动裁切对齐。你也可以用滑杆微调主体大小和顶部留白。</p>
                 </div>
                 <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq6Q">Is my photo private?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq6A">Photos are processed in-memory on the server and discarded immediately after the result is returned. We don’t store your image, don’t use it for AI training, and there is no signup required.</p>
+                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq6Q">我的照片安全吗？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq6A">照片在服务器内存里处理，结果返回后立即销毁。我们绝不存储你的图片、绝不用于 AI 训练，也无需注册账号。</p>
                 </div>
                 <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq7Q">Can I set a max file size in KB for online forms?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq7A">Yes. The "Target KB" input lets you cap the output file size — useful for visa or job application forms with strict file size limits.</p>
+                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq7Q">可以设置文件大小（KB）以满足线上表单要求吗？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq7A">可以。"目标 KB" 输入框允许你限制输出文件大小 —— 对于有严格文件大小限制的签证或求职申请表单非常实用。</p>
                 </div>
             </div>
         </section>

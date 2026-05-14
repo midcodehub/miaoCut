@@ -34,17 +34,24 @@ docker run --rm -p 7860:7860 -e PORT=7860 -e MAX_CONCURRENCY=1 -v miaocut-data:/
 - 不要加 `--reload` —— onnxruntime 的线程池在 fork 后会死锁。需要热重载就重启进程。
 - 不要加 `--workers 2+` —— 限流和并发控制都在进程内存里，多 worker 会让额度被乘上 worker 数。
 
-### 前端（Tailwind）
+### 前端（Tailwind + i18n）
 
 ```bash
-# 一次性构建（CI / 上线前必跑）
-npm run build:css
+# 一站式：CSS + 中文静态页（CI / 上线前必跑）
+npm run build
+
+# 单独构建
+npm run build:css      # Tailwind CSS
+npm run build:i18n     # 从 EN HTML + i18n 字典生成 zh/*/index.html + sitemap.xml
 
 # 改 index.html 时开 watch
 npm run watch:css
 ```
 
-**重要**：改 [index.html](index.html)、SEO 子页或 [id-photo-maker/index.html](id-photo-maker/index.html) 的任何 class 之后，必须重新跑 `npm run build:css` 并把新生成的 [output.css](output.css) 一起提交。生产环境由 Cloudflare Pages 直接 serve `output.css`，不会在线上构建。Tailwind 扫描范围见 [tailwind.config.js](tailwind.config.js)，后端 Python 字符串里的 class 不会被识别。
+**重要**：
+- 改 [index.html](index.html)、SEO 子页或 [id-photo-maker/index.html](id-photo-maker/index.html) 的任何 class 之后，必须重新跑 `npm run build:css` 并把新生成的 [output.css](output.css) 一起提交。生产环境由 Cloudflare Pages 直接 serve `output.css`，不会在线上构建。Tailwind 扫描范围见 [tailwind.config.js](tailwind.config.js)，后端 Python 字符串里的 class 不会被识别。
+- 改任何 EN HTML（首页 + 5 个子工具）或 zh i18n 字典（HTML 内联的 `window.MIAOCUT_PAGE_I18N.zh` 或 `watermark.js / id-photo.js / old-photo.js` 里的 `i18n.zh`）之后，必须跑 `npm run build:i18n` 重新生成 `zh/*/index.html` 和 `sitemap.xml`，并把生成结果一起提交。否则中文静态页会和英文版漂移、Google 索引到的中文版会落后。脚本是幂等的，原理见 [scripts/build-i18n.mjs](scripts/build-i18n.mjs) 顶部注释。
+- 不要手动编辑 `zh/*/index.html` 和 `sitemap.xml` —— 它们都是 build:i18n 的产物，下次 build 会被覆盖。改翻译要改源 i18n 字典。
 
 ### 部署
 

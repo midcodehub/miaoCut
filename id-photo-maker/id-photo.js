@@ -63,8 +63,31 @@
             applying: 'Applying background...',
             layouting: 'Creating print layout...',
             ready: 'Ready',
+            faqTitle: 'Frequently Asked Questions',
+            faq1Q: 'What ID photo sizes does MiaoCut support?',
+            faq1A: 'China 1-inch (295×413), 2-inch (413×579), small/large 1-inch and 2-inch variants, China passport (390×567), US passport (600×600), Schengen visa (600×600), resume photo (480×640), social profile (512×512), plus any custom pixel size.',
+            faq2Q: 'What background colors are supported?',
+            faq2A: 'White, blue, red, gray, light blue, dark blue, pink, black, and any custom HEX color.',
+            faq3Q: 'Can I print multiple ID photos on one sheet?',
+            faq3A: 'Yes. Choose 5-inch, 6-inch, 7-inch, or A4 paper to generate a printable layout sheet with multiple copies arranged for cutting.',
+            faq4Q: 'Will my photo meet official document requirements?',
+            faq4A: 'MiaoCut produces correctly sized photos with neutral backgrounds, but always check your specific document or visa office\'s latest requirements (head size, expression, glasses rules, file format) before submitting.',
+            faq5Q: 'Does MiaoCut detect my face automatically?',
+            faq5A: 'Yes. MediaPipe Face Mesh detects your eye line and head position, then the photo is auto-cropped and aligned to fit the chosen size preset. You can fine-tune subject size and top margin with the sliders.',
+            faq6Q: 'Is my photo private?',
+            faq6A: 'Photos are processed in-memory on the server and discarded immediately after the result is returned. We don\'t store your image, don\'t use it for AI training, and there is no signup required.',
+            faq7Q: 'Can I set a max file size in KB for online forms?',
+            faq7A: 'Yes. The "Target KB" input lets you cap the output file size — useful for visa or job application forms with strict file size limits.',
         },
         zh: {
+            // SEO meta（被 scripts/build-i18n.mjs 用来生成 zh/id-photo-maker/index.html。
+            // 改这些 key 后跑 npm run build:i18n 同步 zh 静态页。）
+            pageTitle: 'AI 证件照制作 - 免费护照照、签证照、一寸二寸 | MiaoCut',
+            metaDescription: '免费在线制作证件照、护照照、签证照、一寸照、二寸照和打印排版照。可选尺寸、背景色、KB 大小，AI 自动抠图换底，无需注册。',
+            metaKeywords: '证件照制作,护照照片,签证照片,一寸照,二寸照,AI 证件照,在线证件照,换证件照背景,证件照排版打印',
+            ogTitle: '免费 AI 证件照制作工具 | MiaoCut',
+            ogDescription: '在线制作护照照、签证照、一寸二寸照和排版打印照，可选尺寸和背景色。',
+            ogLocale: 'zh_CN',
             navBg: 'AI 抠图',
             navId: '证件照',
             navRestore: '老照片修复',
@@ -111,9 +134,28 @@
             applying: '正在合成背景...',
             layouting: '正在生成排版照...',
             ready: '已完成',
+            faqTitle: '常见问题',
+            faq1Q: 'MiaoCut 支持哪些证件照尺寸？',
+            faq1A: '一寸（295×413）、二寸（413×579）、小一寸、大一寸、小二寸、中国护照（390×567）、美国护照（600×600）、申根签证（600×600）、简历照（480×640）、社交头像（512×512），以及任意自定义像素尺寸。',
+            faq2Q: '支持哪些背景颜色？',
+            faq2A: '白、蓝、红、灰、浅蓝、深蓝、粉、黑，也支持自定义任意 HEX 颜色。',
+            faq3Q: '可以把多张证件照排在一张相纸上打印吗？',
+            faq3A: '可以。选择 5 寸、6 寸、7 寸或 A4 相纸即可生成包含多张证件照的可打印排版照，方便冲印后裁切。',
+            faq4Q: '生成的照片符合官方证件要求吗？',
+            faq4A: 'MiaoCut 生成尺寸准确、背景纯净的证件照，但提交前请务必核对你具体证件或签证机构的最新要求（头部比例、表情、眼镜规定、文件格式）。',
+            faq5Q: 'MiaoCut 会自动识别人脸吗？',
+            faq5A: '会。MediaPipe Face Mesh 自动识别双眼连线和头部位置，并按选定尺寸预设自动裁切对齐。你也可以用滑杆微调主体大小和顶部留白。',
+            faq6Q: '我的照片安全吗？',
+            faq6A: '照片在服务器内存里处理，结果返回后立即销毁。我们绝不存储你的图片、绝不用于 AI 训练，也无需注册账号。',
+            faq7Q: '可以设置文件大小（KB）以满足线上表单要求吗？',
+            faq7A: '可以。"目标 KB" 输入框允许你限制输出文件大小 —— 对于有严格文件大小限制的签证或求职申请表单非常实用。',
         },
     };
 
+    // 当前语言从静态 HTML 的 <html lang> 推断（构建时由 scripts/build-i18n.mjs 写死）。
+    // 不再用 localStorage 决定语言：每个 URL（/id-photo-maker/ vs /zh/id-photo-maker/）已经
+    // 是预渲染好的对应语种，让 Google 能分别索引，JS 只负责动态文案。
+    const _htmlLang = (document.documentElement.lang || 'en').toLowerCase();
     const state = {
         file: null,
         transparentStandard: null,
@@ -122,7 +164,7 @@
         layout: null,
         color: '438edb',
         previewUrl: null,
-        lang: localStorage.getItem('lang') || (navigator.language.startsWith('zh') ? 'zh' : 'en'),
+        lang: _htmlLang.startsWith('zh') ? 'zh' : 'en',
     };
 
     const $ = (id) => document.getElementById(id);
@@ -351,7 +393,22 @@
         if (state.layout) downloadBase64(state.layout, 'miaocut-id-photo-layout.jpg', 'image/jpeg');
     });
     if (langSwitch) {
-        langSwitch.addEventListener('change', (e) => applyLanguage(e.target.value));
+        // 切语言 = 跳到另一语种的 URL（不要在原 URL 里 JS 替换文案）。
+        // 这样 / 和 /zh/* 才能各自被 Google 索引为独立语种页。
+        langSwitch.addEventListener('change', (e) => {
+            const target = e.target.value;
+            if (target === state.lang) return;
+            const path = window.location.pathname;
+            const isZhPath = path === '/zh' || path === '/zh/' || path.startsWith('/zh/');
+            let nextPath;
+            if (target === 'zh') {
+                nextPath = isZhPath ? path : '/zh' + (path === '/' ? '/' : path);
+            } else {
+                nextPath = isZhPath ? (path === '/zh' || path === '/zh/' ? '/' : path.slice(3)) : path;
+            }
+            localStorage.setItem('lang', target);
+            window.location.assign(nextPath + window.location.search + window.location.hash);
+        });
     }
     applyLanguage(state.lang);
 })();

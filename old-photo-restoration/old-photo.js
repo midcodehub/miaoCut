@@ -43,6 +43,14 @@
             failed: 'Restore failed. Please try another photo.',
         },
         zh: {
+            // SEO meta（被 scripts/build-i18n.mjs 用来生成 zh/old-photo-restoration/index.html。
+            // 改这些 key 后跑 npm run build:i18n 同步 zh 静态页。）
+            pageTitle: '老照片修复 - 在线 AI 高清修复与放大 | MiaoCut',
+            metaDescription: '在线修复老照片：降噪、还原褪色对比度、增强细节、放大褪色或破损的家庭老照片，免费、无需注册，导出高分辨率图片。',
+            metaKeywords: '老照片修复,照片修复,老照片高清,照片增强,照片放大,AI 修复老照片,免费修复老照片,旧照片修复',
+            ogTitle: '免费 AI 老照片修复 | MiaoCut',
+            ogDescription: '降噪、还原褪色、增强细节，把老家庭照片重新变清晰。免费、无需注册。',
+            ogLocale: 'zh_CN',
             navBg: 'AI 抠图',
             navId: '证件照',
             navRestore: '老照片修复',
@@ -83,12 +91,16 @@
         },
     };
 
+    // 当前语言从静态 HTML 的 <html lang> 推断（构建时由 scripts/build-i18n.mjs 写死）。
+    // 不再用 localStorage 决定语言：每个 URL（/old-photo-restoration/ vs /zh/old-photo-restoration/）
+    // 已经是预渲染好的对应语种，让 Google 能分别索引，JS 只负责动态文案。
+    const _htmlLang = (document.documentElement.lang || 'en').toLowerCase();
     const state = {
         file: null,
         inputUrl: null,
         outputUrl: null,
         outputBlob: null,
-        lang: localStorage.getItem('lang') || (navigator.language.startsWith('zh') ? 'zh' : 'en'),
+        lang: _htmlLang.startsWith('zh') ? 'zh' : 'en',
     };
 
     const $ = (id) => document.getElementById(id);
@@ -268,7 +280,22 @@
     });
 
     if (langSwitch) {
-        langSwitch.addEventListener('change', (e) => applyLanguage(e.target.value));
+        // 切语言 = 跳到另一语种的 URL（不要在原 URL 里 JS 替换文案）。
+        // 这样 / 和 /zh/* 才能各自被 Google 索引为独立语种页。
+        langSwitch.addEventListener('change', (e) => {
+            const target = e.target.value;
+            if (target === state.lang) return;
+            const path = window.location.pathname;
+            const isZhPath = path === '/zh' || path === '/zh/' || path.startsWith('/zh/');
+            let nextPath;
+            if (target === 'zh') {
+                nextPath = isZhPath ? path : '/zh' + (path === '/' ? '/' : path);
+            } else {
+                nextPath = isZhPath ? (path === '/zh' || path === '/zh/' ? '/' : path.slice(3)) : path;
+            }
+            localStorage.setItem('lang', target);
+            window.location.assign(nextPath + window.location.search + window.location.hash);
+        });
     }
     applyLanguage(state.lang);
 })();

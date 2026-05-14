@@ -305,16 +305,34 @@
     // ============================================================
     // i18n 切换
     // ============================================================
-    let currentLang = localStorage.getItem('lang') || (navigator.language.startsWith('zh') ? 'zh' : 'en');
+    // 当前语言来自静态 HTML 的 <html lang>（构建时由 scripts/build-i18n.mjs 写死）。
+    // 不再用 localStorage 决定语言 —— 每个 URL（/ 是英文，/zh/* 是中文）已经预渲染好了对应语种的
+    // 完整 HTML，让 Google 能分别索引两个语种；JS 只负责动态文案（编辑器 UI、状态提示）。
+    const htmlLang = (document.documentElement.lang || 'en').toLowerCase();
+    let currentLang = htmlLang.startsWith('zh') ? 'zh' : 'en';
 
     function t(key) {
         return i18nData[currentLang][key] || key;
     }
 
+    // 把当前 URL 转成另一语种的对应 URL，给 lang switcher 用。
+    // 例：'/' ↔ '/zh/'、'/watermark-remover/' ↔ '/zh/watermark-remover/'
+    function alternateUrlFor(targetLang) {
+        const path = window.location.pathname;
+        const isZhPath = path === '/zh' || path === '/zh/' || path.startsWith('/zh/');
+        if (targetLang === 'zh') {
+            if (isZhPath) return path;
+            return '/zh' + (path === '/' ? '/' : path);
+        }
+        // targetLang === 'en'
+        if (!isZhPath) return path;
+        if (path === '/zh' || path === '/zh/') return '/';
+        return path.slice(3); // 砍掉前缀 "/zh"
+    }
+
     function updateLanguage(lang) {
         currentLang = lang;
         localStorage.setItem('lang', lang);
-        document.documentElement.lang = lang;
 
         // 页面 title 来自 PAGE_TITLES；缺失时 fallback 到 ogTitle，再 fallback 到原 <title>
         if (PAGE_TITLES[lang]) {
@@ -376,11 +394,17 @@
     updateLanguage(currentLang);
     const langSwitch = document.getElementById('lang-switch');
     if (langSwitch) {
+        // 切语言 = 跳到另一语种 URL（不要在原 URL 里 JS 替换文案）。
+        // 这样 Google 才能把 / 和 /zh/* 当作两个独立语种页面分别索引。
         langSwitch.addEventListener('change', (e) => {
             const from = currentLang;
             const to = e.target.value;
-            updateLanguage(to);
+            if (to === currentLang) return;
             track('lang-switched', { from, to });
+            const target = alternateUrlFor(to) + window.location.search + window.location.hash;
+            // 用 localStorage 记住偏好，下次直接打开根域名时可以让用户感知（虽然不再用作语言判定的源）
+            localStorage.setItem('lang', to);
+            window.location.assign(target);
         });
     }
 
