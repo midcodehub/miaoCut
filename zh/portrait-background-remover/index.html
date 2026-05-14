@@ -6,6 +6,9 @@
     <meta name="sogou_site_verification" content="lLMMvkZKud" />
     <meta name="baidu-site-verification" content="codeva-bJiTOFPj58" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Resource hints：见 index.html 同段注释 -->
+    <link rel="preconnect" href="https://api2.miaocut.app">
+    <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
     <title>人像抠图与头像背景工具 — 免费 AI 头像制作 | MiaoCut</title>
     <meta name="description"
         content="免费去除或替换人像背景，生成 LinkedIn 头像、简历照、方形头像和圆形社交头像。高清 PNG 输出，无水印、无需注册。">
@@ -50,6 +53,57 @@
       ]
     }
     </script>
+    <!-- FAQPage schema 必须与下方可见 FAQ section（data-i18n=faqTitle 那一段）保持一致。
+         Google 政策要求 schema 内的 Q&A 在页面上对用户可见，否则可能被判结构化数据违规。
+         改 FAQ 时请同步修改下方 HTML + index.html 内联的 PAGE_I18N.en.faqXX / PAGE_I18N.zh.faqXX。 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Will it handle long hair, curly hair, or flyaways properly?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Switch the quality toggle to \"Fine (hair / fur)\" mode. MiaoCut uses BiRefNet plus alpha matting to preserve individual hair strands and minimize the green/grey halo that simpler tools leave behind."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I make a LinkedIn or profile picture directly?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Choose a neutral or branded background, select a 512px or 1024px avatar size, and download either a square or circular profile picture."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I create a resume photo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Use the resume portrait preset, choose a simple white or light gray background, and export a clean portrait for CVs and professional profiles."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my photo private and safe?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Photos are processed in-memory on the server and discarded immediately after the cutout is returned. We never store your image, never use it for AI training, and there is no signup required."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it work on group photos with multiple people?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, but works best with a clear primary subject. For tight group shots where everyone is the foreground, all people are kept and the background is removed together."
+          }
+        }
+      ]
+    }
+    </script>
     <!-- HowTo schema：对应下方 "How to Make a Profile Picture from a Portrait" 三步段落 -->
     <script type="application/ld+json">
     {
@@ -91,24 +145,25 @@
 
 <body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-gray-200">
 
-    <header class="relative z-10 w-full flex items-center justify-between px-8 py-6">
-        <a href="/zh/" class="text-2xl font-black tracking-tight text-gray-900 hover:text-gray-600 transition-colors">
-            MiaoCut
-        </a>
-        <div class="flex items-center gap-4">
-            <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600">
-                <a href="/zh/" class="hover:text-gray-900 transition-colors" data-i18n="navBg">AI 抠图</a>
-                <a href="/zh/product-photo-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navProduct">商品图</a>
-                <a href="/zh/portrait-background-remover/" class="text-gray-900" data-i18n="navPortrait">人像</a>
-                <a href="/zh/watermark-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navWatermark">去水印</a>
-                <a href="/zh/id-photo-maker/" class="hover:text-gray-900 transition-colors" data-i18n="navId">证件照</a>
-                <a href="/zh/old-photo-restoration/" class="hover:text-gray-900 transition-colors" data-i18n="navRestore">老照片修复</a>
-            </nav>
-            <select id="lang-switch"
-                class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
-                <option value="en">English</option>
-                <option value="zh">简体中文</option>
-            </select>
+    <!-- Sticky header：与首页统一为同一种实现（M5） -->
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur">
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
+            <a href="/zh/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
+            <div class="flex items-center gap-4">
+                <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600">
+                    <a href="/zh/" class="hover:text-gray-900 transition-colors" data-i18n="navBg">AI 抠图</a>
+                    <a href="/zh/product-photo-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navProduct">商品图</a>
+                    <a href="/zh/portrait-background-remover/" class="text-gray-900" data-i18n="navPortrait">人像</a>
+                    <a href="/zh/watermark-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navWatermark">去水印</a>
+                    <a href="/zh/id-photo-maker/" class="hover:text-gray-900 transition-colors" data-i18n="navId">证件照</a>
+                    <a href="/zh/old-photo-restoration/" class="hover:text-gray-900 transition-colors" data-i18n="navRestore">老照片修复</a>
+                </nav>
+                <select id="lang-switch" aria-label="Language"
+                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
+                    <option value="en">English</option>
+                    <option value="zh">简体中文</option>
+                </select>
+            </div>
         </div>
     </header>
     <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600">

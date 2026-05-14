@@ -177,7 +177,9 @@
 
     <!-- Organization schema：声明发布者身份，给 AI 搜索引擎（ChatGPT/Perplexity）一个可引用的实体。
          独立开发者 + 透明技术栈是 MiaoCut 的核心信任卖点；这里把它机器可读化。
-         sameAs 加了 3 个 HF Space 实例的 URL 作为后端身份证明。 -->
+         founder 链接到 Hugging Face profile 作为 indie developer 的可验证身份；
+         sameAs 加了 3 个 HF Space 实例的 URL 作为后端身份证明。
+         如果以后开 GitHub repo / Twitter / Product Hunt，把对应 URL 也加进 sameAs。 -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -186,7 +188,15 @@
       "url": "https://miaocut.app/",
       "logo": "https://miaocut.app/og/home.png",
       "description": "Free, no-signup AI photo toolkit — background remover, watermark eraser, old photo restoration, product photo enhancer, and ID photo maker. Built by an independent developer as a free alternative to subscription tools like remove.bg and PhotoRoom.",
+      "founder": {
+        "@type": "Person",
+        "name": "midcodex",
+        "url": "https://huggingface.co/midcodex",
+        "jobTitle": "Independent Developer",
+        "description": "Independent developer of MiaoCut, a privacy-first AI photo toolkit."
+      },
       "sameAs": [
+        "https://huggingface.co/midcodex",
         "https://huggingface.co/spaces/midcodex/miao_cut",
         "https://huggingface.co/spaces/midcodex/miao_cut2",
         "https://huggingface.co/spaces/midcodex/miao_cut3"

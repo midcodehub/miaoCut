@@ -6,6 +6,10 @@
     <meta name="sogou_site_verification" content="lLMMvkZKud" />
     <meta name="baidu-site-verification" content="codeva-bJiTOFPj58" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Resource hints：在解析 HTML 时就提前对后端 API 和 Umami 做 TLS 握手，
+         用户点上传时直接复用已有连接，省 100~300ms。crossorigin 是因为 Umami 脚本是跨源 CORS 资源。 -->
+    <link rel="preconnect" href="https://api2.miaocut.app">
+    <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
     <title>Product Photo Background Remover + White Background | MiaoCut</title>
     <meta name="description"
         content="Remove or replace product photo backgrounds free. Make white-background, square-canvas, and shadowed product images for Amazon, Shopify, Etsy, and eBay.">
@@ -52,6 +56,57 @@
       ]
     }
     </script>
+    <!-- FAQPage schema 必须与下方可见 FAQ section（data-i18n=faqTitle 那一段）保持一致。
+         Google 政策要求 schema 内的 Q&A 在页面上对用户可见，否则可能被判结构化数据违规。
+         改 FAQ 时请同步修改下方 HTML + index.html 内联的 PAGE_I18N.en.faqXX / PAGE_I18N.zh.faqXX。 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can I create Amazon-ready white background product photos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. After the cutout is generated, choose the white background option and export a square product image. Always check the latest marketplace image rules before publishing."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I export square product images for Shopify and Etsy?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The Product page includes 1080px, 2000px, and 2048px square presets, plus subject padding controls for consistent storefront thumbnails."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I add a shadow under the product?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Use the shadow control to export either a clean no-shadow cutout, a soft grounded shadow, or a stronger floating product shadow."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it handle reflective items, jewelry, glass, or plastic?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Switch the quality toggle to \"Fine (hair / fur)\" mode for products with soft, reflective, or semi-transparent edges. It uses alpha matting for cleaner results on tricky materials."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I process product photos in bulk?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "This first version processes one image at a time. It is free for normal individual use, with fair-use limits to keep the service stable."
+          }
+        }
+      ]
+    }
+    </script>
     <!-- HowTo schema：对应下方 "How to Make Product Photos with a White Background" 三步段落 -->
     <script type="application/ld+json">
     {
@@ -94,24 +149,27 @@
 <body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-gray-200">
 
     <!-- 顶部导航 -->
-    <header class="relative z-10 w-full flex items-center justify-between px-8 py-6">
-        <a href="/" class="text-2xl font-black tracking-tight text-gray-900 hover:text-gray-600 transition-colors">
-            MiaoCut
-        </a>
-        <div class="flex items-center gap-4">
-            <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600">
-                <a href="/" class="hover:text-gray-900 transition-colors" data-i18n="navBg">Background Remover</a>
-                <a href="/product-photo-background-remover/" class="text-gray-900" data-i18n="navProduct">Product</a>
-                <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navPortrait">Portrait</a>
-                <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navWatermark">Watermark</a>
-                <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors" data-i18n="navId">ID Photo</a>
-                <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors" data-i18n="navRestore">Old Photo</a>
-            </nav>
-            <select id="lang-switch"
-                class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
-                <option value="en">English</option>
-                <option value="zh">简体中文</option>
-            </select>
+    <!-- Sticky header：与首页统一为同一种实现（M5）。
+         sticky top-0 + bg-white/95 + backdrop-blur 让用户长页面下滚时导航持续可见，
+         z-30 比 bookmark-banner 的 z-50 低，确保横幅可以覆盖在 header 之上。 -->
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur">
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
+            <a href="/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
+            <div class="flex items-center gap-4">
+                <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600">
+                    <a href="/" class="hover:text-gray-900 transition-colors" data-i18n="navBg">Background Remover</a>
+                    <a href="/product-photo-background-remover/" class="text-gray-900" data-i18n="navProduct">Product</a>
+                    <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navPortrait">Portrait</a>
+                    <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navWatermark">Watermark</a>
+                    <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors" data-i18n="navId">ID Photo</a>
+                    <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors" data-i18n="navRestore">Old Photo</a>
+                </nav>
+                <select id="lang-switch" aria-label="Language"
+                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
+                    <option value="en">English</option>
+                    <option value="zh">简体中文</option>
+                </select>
+            </div>
         </div>
     </header>
     <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600">

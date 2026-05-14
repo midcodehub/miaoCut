@@ -20,13 +20,19 @@ This is **audit-only** — no code changes have been made. Each finding includes
 > - ✅ **H6** — Cross-link sections added to watermark, old-photo, id-photo (resolves internal link dead-ends).
 > - ✅ **H8** — Title length fixes on old-photo (67→52 chars) and id-photo (65→48 chars).
 >
-> **Still pending (lower-priority):**
-> - ⏳ **M1** — Add FAQPage schema to product-photo and portrait (visible FAQ exists; just need JSON-LD).
-> - ⏳ **M5** — Header markup inconsistency across 6 pages.
-> - ⏳ **M6** — `preconnect` inconsistency (product-photo, portrait, id-photo missing).
-> - ⏳ **M7** — Add example images (before/after) to watermark, old-photo, id-photo content sections.
-> - ⏳ **M8** — `aggregateRating` schema (gated until reviews exist).
-> - ⏳ **All P3 items** — bookmark banner overlap, image:image sitemap, Person author schema, robots.txt cleanup, explicit meta robots.
+> **Pass 3 — Medium + nice-to-have cleanup (this pass):**
+> - ✅ **M1** — FAQPage schema added to product-photo (5 entries) and portrait (5 entries), synced with existing visible FAQ.
+> - ✅ **M5** — All 6 pages now use the same sticky header pattern (`sticky top-0 z-30 bg-white/95 backdrop-blur`). Two prior styles (product/portrait flex header without sticky; watermark/old/id non-sticky bordered header) consolidated into one.
+> - ✅ **M6** — `preconnect` to api2.miaocut.app + cloud.umami.is added to product-photo, portrait, id-photo. All 6 pages now have 2 preconnects each — saves 100–300ms on first interaction.
+> - ✅ **N2** — sitemap.xml now includes `image:image` for each URL (12 URLs × 1 OG image = 12 image blocks). Added `xmlns:image` namespace to `<urlset>`.
+> - ✅ **N3** — Organization schema on home extended with `founder` (Person, name=midcodex, linked to HF profile + jobTitle=Independent Developer). HF profile URL also added to `sameAs`.
+> - ✅ **N4** — Removed empty `Disallow:` line from robots.txt (was a no-op).
+>
+> **Intentionally skipped:**
+> - ⏭ **M7** — Example images for watermark/old-photo/id-photo content sections: needs actual sample assets (before/after `.webp` pairs at 256+512 sizes following the home page convention). Skipped because no source images exist; flagged for the next pass once samples are available. The HTML structure on each page is already content-rich without images.
+> - ⏭ **M8** — `aggregateRating` schema: gated on real user reviews. The feedback endpoint exists ([main.py](../main.py) `POST /api/feedback`), but reviews need to be harvested and surfaced as testimonials first. Picking a fake rating would violate Google policy.
+> - ⏭ **N1** — Bookmark banner z-index: investigated — banner is `fixed top-0 z-50` and intentionally overlays the sticky header for ~8 seconds after a successful upload (it's a "you might want to bookmark this" prompt that auto-dismisses). Behavior is by design; leaving as-is.
+> - ⏭ **N5** — Explicit `<meta name="robots" content="index,follow">`: default behavior is already index+follow, so this would be purely cosmetic. Skipped.
 
 ---
 
