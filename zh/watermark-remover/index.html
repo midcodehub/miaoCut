@@ -6,14 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://api2.miaocut.app">
     <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
-    <title>AI 图片去水印 - 免费在线水印修复工具 | MiaoCut</title>
+    <title>AI 物体擦除 &amp; 去水印 - 免费图片瑕疵清理工具 | MiaoCut</title>
     <meta name="description"
-        content="在线去除你自己照片上的水印、Logo、文字、印章和日期戳。涂抹要修复的区域，AI 自动补全，无需注册、无水印。">
+        content="免费 AI 物体擦除与瑕疵修复工具。涂抹日期戳、干扰物或自有水印，AI 智能填补 —— 仅用于你自己拥有版权的照片。无需注册、无水印。">
     <meta name="keywords"
-        content="去水印,图片去水印,在线去水印,免费去水印工具,水印修复,LaMa 修复,AI 图像修复,自家照片去水印">
-    <meta property="og:title" content="免费 AI 图片去水印工具 | MiaoCut">
+        content="物体擦除,去水印,瑕疵修复,图片清理,AI 修图,LaMa 修复,日期戳擦除,画面修复,自有水印清理,AI 照片擦除">
+    <meta property="og:title" content="免费 AI 物体擦除 &amp; 去水印工具 | MiaoCut">
     <meta property="og:description"
-        content="涂抹水印区域，AI 自动修复你自己的照片，免费、无需注册。">
+        content="涂抹日期戳、干扰物或自有水印，AI 智能填补 —— 只用于你自己的照片，免费、无需注册。">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://miaocut.app/zh/watermark-remover/">
     <meta property="og:locale" content="zh_CN">
@@ -21,21 +21,63 @@
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="AI Watermark Remover by MiaoCut">
+    <meta property="og:image:alt" content="AI Object Eraser and Watermark Remover by MiaoCut">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://miaocut.app/og/watermark.png">
-    <meta name="twitter:image:alt" content="AI Watermark Remover by MiaoCut">
+    <meta name="twitter:image:alt" content="AI Object Eraser and Watermark Remover by MiaoCut">
     <link rel="canonical" href="https://miaocut.app/zh/watermark-remover/">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "MiaoCut Watermark Remover",
+      "name": "MiaoCut AI Object Eraser & Watermark Remover",
       "url": "https://miaocut.app/zh/watermark-remover/",
       "applicationCategory": "MultimediaApplication",
       "operatingSystem": "Web",
-      "description": "Online AI watermark remover and image cleanup tool.",
+      "description": "Free AI object eraser, blemish remover, and watermark remover. Paint over date stamps, distracting objects, or your own watermarks — AI fills the area in cleanly using LaMa inpainting.",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+    </script>
+    <!-- BreadcrumbList：让搜索结果出 breadcrumb rich snippet -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "MiaoCut", "item": "https://miaocut.app/zh/" },
+        { "@type": "ListItem", "position": 2, "name": "AI Object Eraser & Watermark Remover", "item": "https://miaocut.app/zh/watermark-remover/" }
+      ]
+    }
+    </script>
+    <!-- HowTo schema：对应下方 "How to Erase Objects, Watermarks, and Blemishes" 段落 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Erase Objects, Watermarks, and Blemishes from Your Own Photos",
+      "description": "Use MiaoCut's AI object eraser to clean up date stamps, distracting objects, blemishes, and your own watermarks from photos you own.",
+      "totalTime": "PT15S",
+      "tool": [{ "@type": "HowToTool", "name": "MiaoCut AI Object Eraser" }],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Upload your image",
+          "text": "Upload a JPG, PNG, or WebP from your own collection. No signup or credit card required."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Paint over the area",
+          "text": "Use the brush to cover the object, blemish, or your own watermark. Paint slightly beyond the edges for cleaner results."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Download the cleaned image",
+          "text": "AI uses LaMa inpainting to fill the painted area based on the surrounding context. Preview the result and download."
+        }
+      ]
     }
     </script>
     <!-- FAQPage schema 必须与下方可见 FAQ section（data-i18n=faqTitle 那一段）保持一致。
@@ -48,10 +90,10 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "What kinds of marks can I remove with this tool?",
+          "name": "What kinds of content can I erase with this tool?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "MiaoCut works on small unwanted marks: watermarks on your own photos, date stamps, screenshot artifacts, burned-in subtitles, logos on your own product shots, and small distracting objects."
+            "text": "MiaoCut works on small unwanted content in your photos: distracting objects, date stamps from your phone camera, screenshot artifacts, burned-in subtitles, your own logos on product shots, and watermarks on photos you own or have explicit permission to edit."
           }
         },
         {
@@ -59,7 +101,7 @@
           "name": "Can I remove watermarks from photos I don't own?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. MiaoCut is for editing photos you own or have explicit permission to edit. Do not use it to remove copyright watermarks from stock photos, social media content, or any image you do not have the rights to — that may violate copyright law."
+            "text": "No. MiaoCut is for editing photos you own or have explicit permission to edit. Do not use it to remove copyright watermarks from stock photos, social media content, AI-generated imagery, or any image you do not have the rights to — that may violate copyright law (for example, DMCA §1202 in the US) and equivalent statutes in other jurisdictions."
           }
         },
         {
@@ -91,7 +133,7 @@
           "name": "Why does my result look blurry or unclean?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Try painting slightly beyond the watermark edge with a smaller brush. For very large marks or marks across detailed content, results may be limited — this tool works best on small, well-bounded marks with simple surroundings."
+            "text": "Try painting slightly beyond the edge with a smaller brush. For very large marks or marks across detailed content, results may be limited — this tool works best on small, well-bounded areas with simple surroundings."
           }
         }
       ]
@@ -137,10 +179,23 @@
 
     <main class="mx-auto max-w-6xl px-5 py-8">
         <section class="mb-7 flex flex-col gap-2">
-            <p class="text-sm font-semibold text-gray-500" data-i18n="eyebrow">水印、文字、Logo、印章、日期</p>
-            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" data-i18n="heroTitle">AI 图片去水印</h1>
-            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed" data-i18n="heroSub">上传图片，涂抹需要去除的水印或杂物区域，交给 AI 智能修复。</p>
+            <p class="text-sm font-semibold text-gray-500" data-i18n="eyebrow">物体擦除 · 瑕疵修复 · 日期戳 · 干扰物清理</p>
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" data-i18n="heroTitle">AI 物体擦除与去水印工具</h1>
+            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed" data-i18n="heroSub">上传你自己拥有的照片，涂抹想要清除的物体、瑕疵或水印，AI 自动智能填补该区域。</p>
         </section>
+
+        <!-- 合规 callout：紧贴 hero 显示，明确"自有素材专用"立场。
+             SEO + 法律双重作用：让 Google 看到我们对 use case 有边界声明，遭 DMCA 投诉时可作为
+             "平台尽到合理告知义务"的辩护材料。文案与 footer legal 保持一致。 -->
+        <aside role="note" aria-label="Acceptable use" class="mb-7 flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3">
+            <svg class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M5.07 19h13.86c1.54 0 2.5-1.67 1.73-3L13.73 4a2 2 0 00-3.46 0L3.34 16c-.77 1.33.19 3 1.73 3z"></path>
+            </svg>
+            <p class="text-sm leading-relaxed text-amber-900">
+                <strong class="font-semibold" data-i18n="ownershipNotice">仅限你自己拥有的照片。</strong>
+                <span data-i18n="ownershipBody">本工具适合处理你拥有版权的图片：日期戳、截图残留、自家 Logo、干扰物等。请勿用于去除第三方版权水印。</span>
+            </p>
+        </aside>
 
         <section class="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-6 items-start">
             <aside class="bg-white border border-gray-200 rounded-lg p-5">
@@ -183,7 +238,7 @@
 
                 <div class="mt-6 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
                     <h2 class="font-bold text-gray-900" data-i18n="tipsTitle">效果建议</h2>
-                    <p class="mt-2 leading-relaxed" data-i18n="tipsBody">涂抹时略微覆盖水印边缘；细节区域建议调小画笔。</p>
+                    <p class="mt-2 leading-relaxed" data-i18n="tipsBody">涂抹时略微覆盖目标边缘；细节区域建议调小画笔。</p>
                 </div>
             </aside>
 
@@ -191,7 +246,7 @@
                 <div class="bg-white border border-gray-200 rounded-lg p-5">
                     <div class="mb-4">
                         <h2 class="text-lg font-bold" data-i18n="sourceTitle">涂抹遮罩</h2>
-                        <p class="text-sm text-gray-500" data-i18n="sourceSub">只覆盖水印或需要去除的物体。</p>
+                        <p class="text-sm text-gray-500" data-i18n="sourceSub">只覆盖你想去除的物体、瑕疵或水印。</p>
                     </div>
                     <div class="flex min-h-[460px] items-center justify-center overflow-hidden rounded-lg border border-dashed border-gray-300 bg-gray-50">
                         <div id="emptyState" class="px-8 text-center text-sm text-gray-400" data-i18n="emptySource">上传图片后开始涂抹</div>
@@ -215,20 +270,43 @@
         </section>
 
         <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
-            <h2 class="text-xl font-bold" data-i18n="seoTitle">在线去除图片水印和多余标记</h2>
-            <p class="mt-3 max-w-3xl text-sm leading-relaxed text-gray-600" data-i18n="seoBody">MiaoCut 去水印工具支持手动标记需要修复的精确区域，适合处理小范围文字水印、日期印章、Logo 和干扰物。请确保你拥有编辑该图片的权利。</p>
+            <h2 class="text-xl font-bold" data-i18n="seoTitle">从你自己的照片中擦除物体、水印和瑕疵</h2>
+            <p class="mt-3 max-w-3xl text-sm leading-relaxed text-gray-600" data-i18n="seoBody">MiaoCut 的 AI 物体擦除工具支持手动标记需要修复的精确区域，适合处理日期戳、截图残留、干扰物、自家 Logo，以及你拥有版权或获得授权的照片上的水印。</p>
             <div class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
                 <div class="rounded-lg border border-gray-200 p-4">
                     <h3 class="font-bold text-gray-900" data-i18n="seoCard1">手动精确标记</h3>
-                    <p class="mt-1" data-i18n="seoCard1Body">哪里有水印就涂哪里，不依赖不稳定的自动识别。</p>
+                    <p class="mt-1" data-i18n="seoCard1Body">哪里有瑕疵就涂哪里，不依赖不稳定的自动识别。</p>
                 </div>
                 <div class="rounded-lg border border-gray-200 p-4">
-                    <h3 class="font-bold text-gray-900" data-i18n="seoCard2">AI 智能修复</h3>
-                    <p class="mt-1" data-i18n="seoCard2Body">根据遮罩区域进行图像修复和内容补全。</p>
+                    <h3 class="font-bold text-gray-900" data-i18n="seoCard2">LaMa 智能修复</h3>
+                    <p class="mt-1" data-i18n="seoCard2Body">使用开源 LaMa 大遮罩图像修复 AI 模型，根据涂抹区域和上下文自动补全。</p>
                 </div>
                 <div class="rounded-lg border border-gray-200 p-4">
-                    <h3 class="font-bold text-gray-900" data-i18n="seoCard3">隐私工作流</h3>
-                    <p class="mt-1" data-i18n="seoCard3Body">沿用 MiaoCut 的图片上传与处理策略。</p>
+                    <h3 class="font-bold text-gray-900" data-i18n="seoCard3">隐私优先</h3>
+                    <p class="mt-1" data-i18n="seoCard3Body">图片纯内存处理，结果返回后立即销毁，绝不用于 AI 训练。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How-to section：对应 head 中的 HowTo JSON-LD；改这 3 步必须同步 schema 和 watermark.js i18n。
+             用户的 SEO 长尾意图 ("how to remove date stamp from photo" / "如何擦除画面里的物体") 主要靠这里命中。 -->
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
+            <h2 class="text-xl font-bold mb-6" data-i18n="howToTitle">如何擦除物体、水印和瑕疵</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700">
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <div class="text-2xl mb-2">📤</div>
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep1Title">1. 上传你的照片</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="howStep1Body">上传你拥有版权的 JPG、PNG 或 WebP 照片，无需注册、无需信用卡。</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <div class="text-2xl mb-2">🖌️</div>
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep2Title">2. 涂抹要清除的区域</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="howStep2Body">用画笔覆盖物体、瑕疵或自有水印；涂抹时略微超出边缘，效果更干净。</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <div class="text-2xl mb-2">✨</div>
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep3Title">3. 下载清理后的图片</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="howStep3Body">AI 用 LaMa 图像修复算法根据周围像素自动填补涂抹区域。预览结果后即可下载。</p>
                 </div>
             </div>
         </section>
@@ -238,12 +316,12 @@
             <h2 class="text-xl font-bold mb-6" data-i18n="faqTitle">常见问题</h2>
             <div class="space-y-4">
                 <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">这个工具能去除哪些类型的标记？</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq1A">MiaoCut 适合处理小范围的多余标记：你自己照片上的水印、日期戳、截图残留、烧录字幕、自家商品图上的 Logo，以及画面里小的干扰物。</p>
+                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">这个工具能擦除哪些类型的内容？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq1A">MiaoCut 适合处理你照片里小范围的多余内容：干扰物、手机相机的日期戳、截图残留、烧录字幕、自家商品图上的 Logo，以及你拥有版权或获得授权的照片上的水印。</p>
                 </div>
                 <div class="rounded-lg border border-gray-200 p-5">
                     <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq2Q">可以去除我没有版权的图片上的水印吗？</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq2A">不可以。MiaoCut 仅用于编辑你拥有或明确获得授权的照片。请不要用它去除图库素材、社交媒体内容或任何你没有版权的图片上的水印 —— 这可能侵犯版权法。</p>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq2A">不可以。MiaoCut 仅用于编辑你拥有或明确获得授权的照片。请勿用它去除图库素材、社交媒体内容、AI 生成图像或任何你没有版权的图片上的水印 —— 这可能违反版权法（例如美国 DMCA §1202）以及其他司法辖区的相应法规。</p>
                 </div>
                 <div class="rounded-lg border border-gray-200 p-5">
                     <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq3Q">AI 是怎么修复涂抹区域的？</h3>
@@ -259,13 +337,36 @@
                 </div>
                 <div class="rounded-lg border border-gray-200 p-5">
                     <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq6Q">处理结果看起来模糊或不干净怎么办？</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq6A">试试画笔调小一点、涂抹时略微超出水印边缘。对于范围特别大或穿过复杂细节的水印，效果会有限 —— 本工具最适合背景简单、边界清晰的小范围标记。</p>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq6A">试试画笔调小一点、涂抹时略微超出边缘。对于范围特别大或穿过复杂细节的水印，效果会有限 —— 本工具最适合背景简单、边界清晰的小范围区域。</p>
                 </div>
+            </div>
+        </section>
+        <!-- Cross-link section（H6）：把链接权重传给同主题工具，给用户下一步动作 -->
+        <section class="mt-12">
+            <h2 class="text-xl font-bold mb-6 text-gray-900" data-i18n="moreTitle">更多 MiaoCut 工具</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <a href="/zh/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all">
+                    <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkBgTitle">AI 抠图 →</h3>
+                    <p class="text-sm text-gray-600" data-i18n="moreLinkBgDesc">一键生成透明 PNG 抠图。</p>
+                </a>
+                <a href="/zh/old-photo-restoration/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all">
+                    <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkOldPhotoTitle">老照片修复 →</h3>
+                    <p class="text-sm text-gray-600" data-i18n="moreLinkOldPhotoDesc">修复褪色家庭照片，降噪并增强细节。</p>
+                </a>
             </div>
         </section>
     </main>
 
-    
+    <!-- Footer 法律声明：DMCA 避风港姿态。提供"使用边界 + 用户责任 + 我们的处理"三段式声明，
+         同时让 Google 看到我们对工具用途有边界声明。文案与 hero 合规 callout 一致，但更详细。 -->
+    <footer class="mt-12 border-t border-gray-200 bg-gray-50">
+        <div class="mx-auto max-w-6xl px-5 py-8 text-sm text-gray-600 leading-relaxed">
+            <h2 class="text-base font-semibold text-gray-900 mb-3" data-i18n="footerLegalTitle">使用规范与法律声明</h2>
+            <p class="mb-3" data-i18n="footerLegalBody1">MiaoCut 物体擦除工具仅用于清理你拥有版权或已获得编辑授权的图片。常见的合规用途包括：去除手机照片的日期戳、清除你自家 Logo 以便重新设计、清理截图残留、整理自己拍摄的商品图等。</p>
+            <p class="mb-3" data-i18n="footerLegalBody2">请勿使用本工具去除图库素材、社交媒体内容、AI 生成图像，以及任何你不拥有版权或未获授权图片上的版权水印。去除版权标识可能违反版权法律（例如美国 DMCA §1202）以及其他司法辖区的相应法规。</p>
+            <p data-i18n="footerLegalBody3">MiaoCut 在服务器内存中处理上传的图片，处理完成后立即销毁。我们不存储用户上传的图片，也不用其训练模型。使用本工具即表示你确认拥有所上传图片的编辑权利。我们遵守 DMCA 下架程序 —— 如认为内容处理侵犯了你的权益，请联系我们。</p>
+        </div>
+    </footer>
 
     <script src="/watermark-remover/watermark.js"></script>
     <script src="/app.js"></script>

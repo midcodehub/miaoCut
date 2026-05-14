@@ -4,6 +4,14 @@
     const API_BASE = 'https://api2.miaocut.app';
     const i18n = {
         en: {
+            // SEO meta（applyLanguage 从这里读 <title>/<meta>，覆盖静态 HTML；
+            // build-i18n.mjs 不读 EN 这部分，但保留作为单一来源）
+            pageTitle: 'Free AI Old Photo Restoration & Upscaler | MiaoCut',
+            metaDescription: 'Free AI old photo restoration online. Reduce noise, recover faded contrast, sharpen soft details, and upscale vintage family photos to print-ready resolution. No signup, in-memory processing.',
+            metaKeywords: 'old photo restoration, restore old photos, photo enhancer, photo upscale, repair old photo, vintage photo restoration, ai photo repair, fix faded photos, family photo restore',
+            ogTitle: 'Free AI Old Photo Restoration & Upscaler | MiaoCut',
+            ogDescription: 'Reduce noise, recover faded contrast, sharpen details, and upscale vintage family photos. Free, no signup.',
+            ogLocale: 'en_US',
             navBg: 'Background Remover',
             navId: 'ID Photo',
             navRestore: 'Old Photo',
@@ -11,8 +19,13 @@
             navPortrait: 'Portrait',
             navProduct: 'Product',
             eyebrow: 'Vintage photos, family albums, scanned prints',
-            heroTitle: 'Old Photo Restoration',
-            heroSub: 'Recover faded contrast, reduce noise, sharpen soft details, and export a cleaner high-resolution photo.',
+            heroTitle: 'AI Old Photo Restoration & Upscaler',
+            heroSub: 'Recover faded contrast, reduce noise, sharpen soft details, and upscale vintage family photos to print-ready resolution.',
+            // 隐私 callout：老照片人群对家庭回忆的隐私敏感度最高，hero 旁边显眼放一个安心条
+            privacyNotice: 'Your family memories stay private.',
+            privacyBody: 'Photos are processed in-memory on the server and discarded immediately after the result is returned. No storage, no AI training, no signup required.',
+            breadcrumbHome: 'MiaoCut',
+            breadcrumbCurrent: 'Old Photo Restoration',
             uploadText: 'Click to upload JPG, PNG, or WebP',
             uploadHint: 'Scanned photos and phone captures both work',
             replaceHint: 'Click the preview to replace this photo',
@@ -41,11 +54,38 @@
             processing: 'Restoring...',
             ready: 'Ready',
             failed: 'Restore failed. Please try another photo.',
+            // How-to 三步：对应 head 中的 HowTo schema
+            howToTitle: 'How to Restore an Old Photo',
+            howStep1Title: '1. Upload your old photo',
+            howStep1Body: 'Upload a scanned print or phone capture in JPG, PNG, or WebP. Both work — though scanned originals usually give the best result.',
+            howStep2Title: '2. Choose repair strength and scale',
+            howStep2Body: 'Pick a repair strength (gentle / balanced / strong) based on how damaged the photo is, plus an output scale (1x / 2x / 4x) for prints or screen display.',
+            howStep3Title: '3. Compare before/after and download',
+            howStep3Body: 'Side-by-side preview shows the original and restored result. If you like it, download the restored image.',
+            faqTitle: 'Frequently Asked Questions',
+            faq1Q: 'How does AI old photo restoration work?',
+            faq1A: 'Upload your old photo, choose a repair strength (gentle, balanced, or strong), and select an output scale. MiaoCut applies AI denoising, contrast recovery, and detail sharpening to bring faded or noisy photos back to a cleaner state.',
+            faq2Q: 'Will it modify or damage my original photo?',
+            faq2A: 'No. Your original is never modified. MiaoCut processes a copy on the server, shows you a before/after preview, and you decide whether to download the restored version.',
+            faq3Q: 'Is my photo private and safe?',
+            faq3A: 'Yes. Photos are processed in-memory on the server and discarded immediately after the restored result is returned. We never store your image, never use it for AI training, and there is no signup required. Your family memories never leave your control.',
+            faq4Q: 'Can it restore heavily damaged or torn photos?',
+            faq4A: 'MiaoCut works best on faded, noisy, or low-contrast photos. For very heavy damage (large tears or missing areas), results are limited — for filling small damaged areas you can try the watermark remover (paint-and-fill).',
+            faq5Q: 'Can I print the restored photo?',
+            faq5A: 'Yes. The restored output is exported at your chosen scale (1x, 2x, or 4x). Use 2x or 4x if you plan to print at larger sizes or display on high-resolution screens.',
+            faq6Q: 'Does it colorize black-and-white photos?',
+            faq6A: 'Not yet. The current MiaoCut focus is denoising, sharpening, and contrast recovery. If colorization would be useful for you, let us know via the feedback widget.',
+            // Cross-link section（H6）
+            moreTitle: 'More MiaoCut Tools',
+            moreLinkPortraitTitle: 'Portrait Background Remover →',
+            moreLinkPortraitDesc: 'Make clean headshots, profile pictures, and resume photos.',
+            moreLinkBgTitle: 'AI Background Remover →',
+            moreLinkBgDesc: 'One-click transparent PNG cutout for any photo.',
         },
         zh: {
             // SEO meta（被 scripts/build-i18n.mjs 用来生成 zh/old-photo-restoration/index.html。
             // 改这些 key 后跑 npm run build:i18n 同步 zh 静态页。）
-            pageTitle: '老照片修复 - 在线 AI 高清修复与放大 | MiaoCut',
+            pageTitle: '免费 AI 老照片修复与高清放大 | MiaoCut',
             metaDescription: '在线修复老照片：降噪、还原褪色对比度、增强细节、放大褪色或破损的家庭老照片，免费、无需注册，导出高分辨率图片。',
             metaKeywords: '老照片修复,照片修复,老照片高清,照片增强,照片放大,AI 修复老照片,免费修复老照片,旧照片修复',
             ogTitle: '免费 AI 老照片修复 | MiaoCut',
@@ -58,8 +98,12 @@
             navPortrait: '人像',
             navProduct: '商品图',
             eyebrow: '老照片、家庭相册、扫描照片',
-            heroTitle: '老照片修复高清',
-            heroSub: '修复褪色对比度、降低噪点、增强模糊细节，并导出更清晰的高分辨率照片。',
+            heroTitle: 'AI 老照片修复与高清放大',
+            heroSub: '还原褪色对比度、降低扫描噪点、增强模糊细节，并放大老家庭照片到适合打印的高分辨率。',
+            privacyNotice: '你的家庭记忆完全私密。',
+            privacyBody: '照片在服务器内存中处理，结果返回后立即销毁。绝不存储、绝不用于 AI 训练、无需注册账号。',
+            breadcrumbHome: 'MiaoCut',
+            breadcrumbCurrent: '老照片修复',
             uploadText: '点击上传 JPG、PNG 或 WebP',
             uploadHint: '扫描件和手机翻拍照片都可以',
             replaceHint: '点击预览可替换照片',
@@ -88,6 +132,31 @@
             processing: '修复中...',
             ready: '已完成',
             failed: '修复失败，请换一张照片再试。',
+            howToTitle: '如何修复一张老照片',
+            howStep1Title: '1. 上传你的老照片',
+            howStep1Body: '扫描件或手机翻拍照片均可，支持 JPG、PNG、WebP。一般来说扫描原件效果更好。',
+            howStep2Title: '2. 选择修复强度和倍率',
+            howStep2Body: '根据照片损伤程度选择修复强度（轻柔 / 均衡 / 强力），并选择输出倍率（1x / 2x / 4x），打印或大屏显示推荐高倍率。',
+            howStep3Title: '3. 对比效果并下载',
+            howStep3Body: '左右对比预览原图与修复后效果，满意后下载修复版本。',
+            faqTitle: '常见问题',
+            faq1Q: 'AI 老照片修复是怎么工作的？',
+            faq1A: '上传你的老照片，选择修复强度（轻柔 / 均衡 / 强力）和输出倍率，MiaoCut 会用 AI 自动降噪、还原对比度、增强细节，让褪色或噪点严重的老照片更清晰。',
+            faq2Q: '会修改或损坏我的原图吗？',
+            faq2A: '不会。原图永远不会被修改。MiaoCut 在服务器上处理一份副本，给你看修复前后对比，由你决定是否下载修复版本。',
+            faq3Q: '我的照片安全吗？',
+            faq3A: '安全。照片纯内存处理，修复结果返回后立即销毁。我们绝不存储你的图片、绝不用于 AI 训练，也无需注册账号。你的家庭回忆始终在你掌控之中。',
+            faq4Q: '能修复严重破损或撕裂的老照片吗？',
+            faq4A: 'MiaoCut 最适合处理褪色、噪点、低对比度的老照片。如果损伤特别严重（大面积撕裂或缺失），效果会受限 —— 小范围破损可以试试去水印工具的"涂抹修复"。',
+            faq5Q: '修复后的照片可以打印吗？',
+            faq5A: '可以。修复结果按你选择的倍率（1x / 2x / 4x）导出。打印大尺寸照片或在高分辨率屏幕显示时建议用 2x 或 4x。',
+            faq6Q: '可以给黑白老照片上色吗？',
+            faq6A: '暂时不支持。当前老照片修复聚焦在降噪、增强、还原对比度。如果需要照片上色，欢迎通过反馈组件告诉我们。',
+            moreTitle: '更多 MiaoCut 工具',
+            moreLinkPortraitTitle: '人像抠图 →',
+            moreLinkPortraitDesc: '制作干净的头像、简历照、社媒头像。',
+            moreLinkBgTitle: 'AI 抠图 →',
+            moreLinkBgDesc: '一键生成透明 PNG 抠图。',
         },
     };
 
@@ -133,7 +202,6 @@
     function applyLanguage(lang) {
         state.lang = lang;
         localStorage.setItem('lang', lang);
-        document.documentElement.lang = lang;
         if (langSwitch) langSwitch.value = lang;
         document.querySelectorAll('[data-i18n]').forEach((el) => {
             const key = el.getAttribute('data-i18n');
@@ -143,20 +211,17 @@
             fileName.textContent = t('uploadText');
             uploadHint.textContent = t('uploadHint');
         }
-        document.title = lang === 'zh'
-            ? '老照片修复高清 - 在线修复并放大旧照片 | MiaoCut'
-            : 'Old Photo Restoration - Restore and Upscale Photos Online | MiaoCut';
-        const description = lang === 'zh'
-            ? 'MiaoCut 在线老照片修复工具，降低噪点、恢复对比度、增强细节并放大旧照片，无需注册。'
-            : 'Restore old photos online with MiaoCut. Reduce noise, recover contrast, sharpen details, and upscale vintage family photos with no signup.';
+        // 从字典读 <title>、meta —— 单一来源；<html lang> 由静态 HTML 在构建时写死，不再 JS 覆盖
+        document.title = t('pageTitle');
         const setMeta = (selector, value) => {
             const el = document.querySelector(selector);
-            if (el) el.setAttribute('content', value);
+            if (el && value) el.setAttribute('content', value);
         };
-        setMeta('meta[name="description"]', description);
-        setMeta('meta[property="og:description"]', description);
-        setMeta('meta[property="og:title"]', document.title);
-        setMeta('meta[property="og:locale"]', lang === 'zh' ? 'zh_CN' : 'en_US');
+        setMeta('meta[name="description"]', t('metaDescription'));
+        setMeta('meta[name="keywords"]', t('metaKeywords'));
+        setMeta('meta[property="og:title"]', t('ogTitle'));
+        setMeta('meta[property="og:description"]', t('ogDescription'));
+        setMeta('meta[property="og:locale"]', t('ogLocale'));
     }
 
     function setStatus(text) {

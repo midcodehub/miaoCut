@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 证件照制作 - 免费护照照、签证照、一寸二寸 | MiaoCut</title>
+    <title>免费护照照 / 签证照 / 一寸二寸证件照制作 | MiaoCut</title>
     <meta name="description"
         content="免费在线制作证件照、护照照、签证照、一寸照、二寸照和打印排版照。可选尺寸、背景色、KB 大小，AI 自动抠图换底，无需注册。">
     <meta name="keywords"
@@ -19,21 +19,63 @@
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="AI ID Photo Maker by MiaoCut">
+    <meta property="og:image:alt" content="AI Passport & ID Photo Maker by MiaoCut">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://miaocut.app/og/id-photo.png">
-    <meta name="twitter:image:alt" content="AI ID Photo Maker by MiaoCut">
+    <meta name="twitter:image:alt" content="AI Passport & ID Photo Maker by MiaoCut">
     <link rel="canonical" href="https://miaocut.app/zh/id-photo-maker/">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "MiaoCut ID Photo Maker",
+      "name": "MiaoCut AI Passport & ID Photo Maker",
       "url": "https://miaocut.app/zh/id-photo-maker/",
       "applicationCategory": "MultimediaApplication",
       "operatingSystem": "Web",
-      "description": "Create passport photos, visa photos, one-inch photos, two-inch photos, and printable ID photo sheets online.",
+      "description": "Free AI passport, visa, and ID photo maker. Country-specific size presets, custom background colors, target KB control, printable layout sheets.",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+    </script>
+    <!-- BreadcrumbList：让搜索结果出 breadcrumb rich snippet -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "MiaoCut", "item": "https://miaocut.app/zh/" },
+        { "@type": "ListItem", "position": 2, "name": "ID Photo Maker", "item": "https://miaocut.app/zh/id-photo-maker/" }
+      ]
+    }
+    </script>
+    <!-- HowTo schema：对应下方 "How to Make a Passport or ID Photo" 段落 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Make a Passport or ID Photo Online",
+      "description": "Create a country-compliant passport, visa, or ID photo in three steps with MiaoCut's free AI ID photo maker.",
+      "totalTime": "PT20S",
+      "tool": [{ "@type": "HowToTool", "name": "MiaoCut AI ID Photo Maker" }],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Upload your portrait",
+          "text": "Upload a front-facing portrait in JPG, PNG, or WebP. Even, neutral lighting works best."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Pick size and background",
+          "text": "Choose a country preset (or enter custom dimensions), pick a background color, and adjust subject size or top margin if needed."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Generate, fit KB, download",
+          "text": "MiaoCut auto-detects your face and produces a standard photo, an HD transparent version, and a printable layout. Set Target KB if your form requires a specific file size."
+        }
+      ]
     }
     </script>
     <!-- FAQPage schema 必须与下方可见 FAQ section（data-i18n=faqTitle 那一段）保持一致。
@@ -93,10 +135,19 @@
     </nav>
 
     <main class="mx-auto max-w-6xl px-5 py-8">
+        <!-- 面包屑 -->
+        <nav class="mb-5 text-sm text-gray-500" aria-label="Breadcrumb">
+            <ol class="flex items-center gap-2">
+                <li><a href="/zh/" class="hover:text-gray-900" data-i18n="breadcrumbHome">MiaoCut</a></li>
+                <li class="text-gray-300">/</li>
+                <li class="text-gray-700" data-i18n="breadcrumbCurrent">证件照制作</li>
+            </ol>
+        </nav>
+
         <section class="mb-7 flex flex-col gap-2">
-            <p class="text-sm font-semibold text-gray-500" data-i18n="eyebrow">护照照、签证照、一寸照、二寸照</p>
-            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" data-i18n="heroTitle">AI 证件照制作工具</h1>
-            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed" data-i18n="heroSub">上传人像，选择证件照尺寸、背景颜色和打印相纸，一次生成标准照、高清照和排版照。</p>
+            <p class="text-sm font-semibold text-gray-500" data-i18n="eyebrow">护照照 · 签证照 · 一寸 · 二寸 · 排版打印</p>
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" data-i18n="heroTitle">AI 护照 / 签证 / 证件照制作工具</h1>
+            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed" data-i18n="heroSub">上传人像，选择各国证件照预设、背景颜色和文件 KB，一次生成标准照、高清照和排版打印照。</p>
         </section>
 
         <div class="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start">
@@ -287,6 +338,78 @@
                     <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq7Q">可以设置文件大小（KB）以满足线上表单要求吗？</h3>
                     <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq7A">可以。"目标 KB" 输入框允许你限制输出文件大小 —— 对于有严格文件大小限制的签证或求职申请表单非常实用。</p>
                 </div>
+            </div>
+        </section>
+
+        <!-- How-to section：对应 head 中的 HowTo JSON-LD -->
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
+            <h2 class="text-xl font-bold mb-6" data-i18n="howToTitle">如何制作护照照或证件照</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700">
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <div class="text-2xl mb-2">📤</div>
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep1Title">1. 上传你的人像</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="howStep1Body">上传 JPG / PNG / WebP 正面人像，光线均匀、表情自然效果最好。</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <div class="text-2xl mb-2">⚙️</div>
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep2Title">2. 选择尺寸和背景</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="howStep2Body">从国家预设里选（或自定义像素尺寸），挑选背景色，必要时微调主体大小和顶部留白。</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <div class="text-2xl mb-2">🖼️</div>
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep3Title">3. 生成、控制 KB、下载</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="howStep3Body">MiaoCut 自动识别人脸，生成标准照、HD 透明底版本和打印排版照。需要严格文件大小时设置"目标 KB"。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Per-country sub-section（H3 重点）：分国家长尾流量入口。
+             这里列出常见证件规格，未来可拆成独立 landing pages（programmatic SEO）：
+             /id-photo-maker/us-passport/、/id-photo-maker/schengen-visa/ 等。
+             ⚠️ 各国官方规格随政策更新，文案里务必保留"以官方为准"声明。 -->
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
+            <h2 class="text-xl font-bold mb-2" data-i18n="countryTitle">各国证件照规格速查</h2>
+            <p class="text-sm text-gray-600 mb-6 max-w-3xl" data-i18n="countrySubtitle">常见证件尺寸与背景规则。提交前务必核对你具体证件、签证或办公室的最新要求 —— 规则可能更新。</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-gray-700">
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="cnOneInchTitle">中国一寸</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="cnOneInchBody">295 × 413 px · 白 / 蓝 / 红底 · 适合身份证、学生证、普通申请表。</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="cnTwoInchTitle">中国二寸</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="cnTwoInchBody">413 × 579 px · 白 / 蓝 / 红底 · 适合简历、毕业证、入职表、体检表。</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="cnPassportTitle">中国护照</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="cnPassportBody">390 × 567 px · 白底，表情自然，建议不戴眼镜 · 适合在国内办理护照、签证申请。</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="usPassportTitle">美国护照</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="usPassportBody">600 × 600 px（2 × 2 英寸）· 纯白或米白背景 · 不戴眼镜（2016 年后规定），表情自然，露出整张脸。</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="schengenVisaTitle">申根签证（欧盟）</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="schengenVisaBody">413 × 531 px（35 × 45 mm）· 浅灰或米白背景 · 面部占 70~80%，表情自然。</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="japanVisaTitle">日本签证</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="japanVisaBody">600 × 600 px（45 × 45 mm）· 白色或米白背景 · 正面，无头饰，6 个月内拍摄。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cross-link section（H6） -->
+        <section class="mt-12">
+            <h2 class="text-xl font-bold mb-6 text-gray-900" data-i18n="moreTitle">更多 MiaoCut 工具</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <a href="/zh/portrait-background-remover/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all">
+                    <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkPortraitTitle">人像抠图 →</h3>
+                    <p class="text-sm text-gray-600" data-i18n="moreLinkPortraitDesc">制作干净的 LinkedIn 或社交头像。</p>
+                </a>
+                <a href="/zh/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all">
+                    <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkBgTitle">AI 抠图 →</h3>
+                    <p class="text-sm text-gray-600" data-i18n="moreLinkBgDesc">一键生成透明 PNG 抠图。</p>
+                </a>
             </div>
         </section>
     </main>

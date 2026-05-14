@@ -17,15 +17,24 @@
 
     const i18n = {
         en: {
+            // SEO meta（applyLanguage 从这里读 <title>/<meta>，覆盖静态 HTML）
+            pageTitle: 'Free Passport & ID Photo Maker Online | MiaoCut',
+            metaDescription: 'Free AI passport, visa, and ID photo maker online. Country-specific size presets (China 1-inch/2-inch, US passport, Schengen visa, Japan visa). Choose background color, target KB, print layouts. No signup.',
+            metaKeywords: 'id photo maker, passport photo maker, visa photo maker, one inch photo, two inch photo, ai id photo, china passport photo, us passport photo, schengen visa photo, japan visa photo, change photo background, printable id photo sheet',
+            ogTitle: 'Free AI Passport & ID Photo Maker | MiaoCut',
+            ogDescription: 'Country-specific ID photo presets: China 1-inch / 2-inch, US passport, Schengen visa, Japan visa. Free, no signup.',
+            ogLocale: 'en_US',
             navBg: 'Background Remover',
             navId: 'ID Photo',
             navRestore: 'Old Photo',
             navWatermark: 'Watermark',
             navPortrait: 'Portrait',
             navProduct: 'Product',
-            eyebrow: 'Passport photos, visa photos, one-inch photos',
-            heroTitle: 'AI ID Photo Maker',
-            heroSub: 'Upload a portrait, choose a document photo size, set the background color, and download standard, HD, or printable layout photos.',
+            eyebrow: 'Passport photos · Visa photos · One-inch · Two-inch · Print layouts',
+            heroTitle: 'AI Passport & ID Photo Maker',
+            heroSub: 'Upload a portrait, pick a country-specific size preset, set the background color and target KB, and download standard, HD, or printable layout photos.',
+            breadcrumbHome: 'MiaoCut',
+            breadcrumbCurrent: 'ID Photo Maker',
             portraitLabel: 'Portrait',
             uploadText: 'Click to upload JPG, PNG, or WebP',
             uploadHint: 'Front-facing portrait works best',
@@ -78,11 +87,42 @@
             faq6A: 'Photos are processed in-memory on the server and discarded immediately after the result is returned. We don\'t store your image, don\'t use it for AI training, and there is no signup required.',
             faq7Q: 'Can I set a max file size in KB for online forms?',
             faq7A: 'Yes. The "Target KB" input lets you cap the output file size — useful for visa or job application forms with strict file size limits.',
+            // How-to 三步：对应 head 中的 HowTo schema
+            howToTitle: 'How to Make a Passport or ID Photo',
+            howStep1Title: '1. Upload your portrait',
+            howStep1Body: 'Upload a front-facing portrait in JPG, PNG, or WebP. Even, neutral lighting works best.',
+            howStep2Title: '2. Pick size and background',
+            howStep2Body: 'Choose a country preset (or enter custom dimensions), pick a background color, and adjust subject size or top margin if needed.',
+            howStep3Title: '3. Generate, fit KB, download',
+            howStep3Body: 'MiaoCut auto-detects your face and produces a standard photo, an HD transparent version, and a printable layout. Set Target KB if your form requires a specific file size.',
+            // Per-country presets（H3 重点：分国家长尾流量入口）
+            // 每条 6 个字段保持精简：title + 尺寸 + 背景规则 + 适用场景。
+            // ⚠️ 各国官方规格随政策更新，文案里务必保留"以官方为准"声明。
+            countryTitle: 'ID Photo Specs by Country & Document',
+            countrySubtitle: 'Common document sizes and background rules. Always check your specific consulate, embassy, or office\'s latest requirements before submitting — rules change.',
+            cnOneInchTitle: 'China 1-inch (一寸)',
+            cnOneInchBody: '295 × 413 px · White / blue / red background · For ID cards, school documents, simple application forms.',
+            cnTwoInchTitle: 'China 2-inch (二寸)',
+            cnTwoInchBody: '413 × 579 px · White / blue / red background · For resumes, diplomas, employment forms, medical reports.',
+            cnPassportTitle: 'China Passport (中国护照)',
+            cnPassportBody: '390 × 567 px · White background, neutral expression, no glasses recommended · For passport, visa applications submitted in China.',
+            usPassportTitle: 'US Passport',
+            usPassportBody: '600 × 600 px (2 × 2 inch) · Plain white or off-white background · No glasses (since 2016), neutral expression, full face visible.',
+            schengenVisaTitle: 'Schengen Visa (EU)',
+            schengenVisaBody: '413 × 531 px (35 × 45 mm) · Light gray or off-white background · 70-80% face coverage, neutral expression.',
+            japanVisaTitle: 'Japan Visa',
+            japanVisaBody: '600 × 600 px (45 × 45 mm) · White or off-white background · Front-facing, no head covering, taken within 6 months.',
+            // Cross-link section（H6）
+            moreTitle: 'More MiaoCut Tools',
+            moreLinkPortraitTitle: 'Portrait Background Remover →',
+            moreLinkPortraitDesc: 'Make clean LinkedIn or social profile pictures.',
+            moreLinkBgTitle: 'AI Background Remover →',
+            moreLinkBgDesc: 'One-click transparent PNG cutout for any photo.',
         },
         zh: {
             // SEO meta（被 scripts/build-i18n.mjs 用来生成 zh/id-photo-maker/index.html。
             // 改这些 key 后跑 npm run build:i18n 同步 zh 静态页。）
-            pageTitle: 'AI 证件照制作 - 免费护照照、签证照、一寸二寸 | MiaoCut',
+            pageTitle: '免费护照照 / 签证照 / 一寸二寸证件照制作 | MiaoCut',
             metaDescription: '免费在线制作证件照、护照照、签证照、一寸照、二寸照和打印排版照。可选尺寸、背景色、KB 大小，AI 自动抠图换底，无需注册。',
             metaKeywords: '证件照制作,护照照片,签证照片,一寸照,二寸照,AI 证件照,在线证件照,换证件照背景,证件照排版打印',
             ogTitle: '免费 AI 证件照制作工具 | MiaoCut',
@@ -94,9 +134,11 @@
             navWatermark: '去水印',
             navPortrait: '人像',
             navProduct: '商品图',
-            eyebrow: '护照照、签证照、一寸照、二寸照',
-            heroTitle: 'AI 证件照制作工具',
-            heroSub: '上传人像，选择证件照尺寸、背景颜色和打印相纸，一次生成标准照、高清照和排版照。',
+            eyebrow: '护照照 · 签证照 · 一寸 · 二寸 · 排版打印',
+            heroTitle: 'AI 护照 / 签证 / 证件照制作工具',
+            heroSub: '上传人像，选择各国证件照预设、背景颜色和文件 KB，一次生成标准照、高清照和排版打印照。',
+            breadcrumbHome: 'MiaoCut',
+            breadcrumbCurrent: '证件照制作',
             portraitLabel: '人像照片',
             uploadText: '点击上传 JPG、PNG 或 WebP',
             uploadHint: '正面半身照效果最好',
@@ -149,6 +191,32 @@
             faq6A: '照片在服务器内存里处理，结果返回后立即销毁。我们绝不存储你的图片、绝不用于 AI 训练，也无需注册账号。',
             faq7Q: '可以设置文件大小（KB）以满足线上表单要求吗？',
             faq7A: '可以。"目标 KB" 输入框允许你限制输出文件大小 —— 对于有严格文件大小限制的签证或求职申请表单非常实用。',
+            howToTitle: '如何制作护照照或证件照',
+            howStep1Title: '1. 上传你的人像',
+            howStep1Body: '上传 JPG / PNG / WebP 正面人像，光线均匀、表情自然效果最好。',
+            howStep2Title: '2. 选择尺寸和背景',
+            howStep2Body: '从国家预设里选（或自定义像素尺寸），挑选背景色，必要时微调主体大小和顶部留白。',
+            howStep3Title: '3. 生成、控制 KB、下载',
+            howStep3Body: 'MiaoCut 自动识别人脸，生成标准照、HD 透明底版本和打印排版照。需要严格文件大小时设置"目标 KB"。',
+            countryTitle: '各国证件照规格速查',
+            countrySubtitle: '常见证件尺寸与背景规则。提交前务必核对你具体证件、签证或办公室的最新要求 —— 规则可能更新。',
+            cnOneInchTitle: '中国一寸',
+            cnOneInchBody: '295 × 413 px · 白 / 蓝 / 红底 · 适合身份证、学生证、普通申请表。',
+            cnTwoInchTitle: '中国二寸',
+            cnTwoInchBody: '413 × 579 px · 白 / 蓝 / 红底 · 适合简历、毕业证、入职表、体检表。',
+            cnPassportTitle: '中国护照',
+            cnPassportBody: '390 × 567 px · 白底，表情自然，建议不戴眼镜 · 适合在国内办理护照、签证申请。',
+            usPassportTitle: '美国护照',
+            usPassportBody: '600 × 600 px（2 × 2 英寸）· 纯白或米白背景 · 不戴眼镜（2016 年后规定），表情自然，露出整张脸。',
+            schengenVisaTitle: '申根签证（欧盟）',
+            schengenVisaBody: '413 × 531 px（35 × 45 mm）· 浅灰或米白背景 · 面部占 70~80%，表情自然。',
+            japanVisaTitle: '日本签证',
+            japanVisaBody: '600 × 600 px（45 × 45 mm）· 白色或米白背景 · 正面，无头饰，6 个月内拍摄。',
+            moreTitle: '更多 MiaoCut 工具',
+            moreLinkPortraitTitle: '人像抠图 →',
+            moreLinkPortraitDesc: '制作干净的 LinkedIn 或社交头像。',
+            moreLinkBgTitle: 'AI 抠图 →',
+            moreLinkBgDesc: '一键生成透明 PNG 抠图。',
         },
     };
 
@@ -200,7 +268,6 @@
     function applyLanguage(lang) {
         state.lang = lang;
         localStorage.setItem('lang', lang);
-        document.documentElement.lang = lang;
         if (langSwitch) langSwitch.value = lang;
         document.querySelectorAll('[data-i18n]').forEach((el) => {
             const key = el.getAttribute('data-i18n');
@@ -210,9 +277,17 @@
             fileName.textContent = t('uploadText');
             uploadHint.textContent = t('uploadHint');
         }
-        document.title = lang === 'zh'
-            ? '证件照制作工具 - 免费 AI 护照照 / 签证照 / 一寸照 | MiaoCut'
-            : 'ID Photo Maker - Free AI Passport Photo & Headshot Tool | MiaoCut';
+        // 从字典读 <title>、meta —— 单一来源；<html lang> 由静态 HTML 在构建时写死
+        document.title = t('pageTitle');
+        const setMeta = (selector, value) => {
+            const el = document.querySelector(selector);
+            if (el && value) el.setAttribute('content', value);
+        };
+        setMeta('meta[name="description"]', t('metaDescription'));
+        setMeta('meta[name="keywords"]', t('metaKeywords'));
+        setMeta('meta[property="og:title"]', t('ogTitle'));
+        setMeta('meta[property="og:description"]', t('ogDescription'));
+        setMeta('meta[property="og:locale"]', t('ogLocale'));
     }
 
     function setStatus(text) {

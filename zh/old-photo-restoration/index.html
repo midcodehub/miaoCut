@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://api2.miaocut.app">
     <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
-    <title>老照片修复 - 在线 AI 高清修复与放大 | MiaoCut</title>
+    <title>免费 AI 老照片修复与高清放大 | MiaoCut</title>
     <meta name="description"
         content="在线修复老照片：降噪、还原褪色对比度、增强细节、放大褪色或破损的家庭老照片，免费、无需注册，导出高分辨率图片。">
     <meta name="keywords"
@@ -30,12 +30,113 @@
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "MiaoCut Old Photo Restoration",
+      "name": "MiaoCut AI Old Photo Restoration & Upscaler",
       "url": "https://miaocut.app/zh/old-photo-restoration/",
       "applicationCategory": "MultimediaApplication",
       "operatingSystem": "Web",
-      "description": "Online old photo restoration and upscaling tool.",
+      "description": "Free AI old photo restoration and upscaling tool. Reduce noise, recover faded contrast, sharpen soft details, and upscale vintage family photos.",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+    </script>
+    <!-- BreadcrumbList：让搜索结果出 breadcrumb rich snippet -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "MiaoCut", "item": "https://miaocut.app/zh/" },
+        { "@type": "ListItem", "position": 2, "name": "Old Photo Restoration", "item": "https://miaocut.app/zh/old-photo-restoration/" }
+      ]
+    }
+    </script>
+    <!-- HowTo schema：对应下方 "How to Restore an Old Photo" 段落 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Restore an Old Photo with AI",
+      "description": "Restore faded, noisy, or damaged old photos in three steps with MiaoCut's free AI photo restoration tool.",
+      "totalTime": "PT15S",
+      "tool": [{ "@type": "HowToTool", "name": "MiaoCut AI Old Photo Restoration" }],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Upload your old photo",
+          "text": "Upload a scanned print or phone capture in JPG, PNG, or WebP. Both work — though scanned originals usually give the best result."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Choose repair strength and scale",
+          "text": "Pick a repair strength (gentle, balanced, or strong) based on how damaged the photo is, plus an output scale (1x, 2x, or 4x) for prints or screen display."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Compare before/after and download",
+          "text": "Side-by-side preview shows the original and restored result. If you like it, download the restored image."
+        }
+      ]
+    }
+    </script>
+    <!-- FAQPage schema 必须与下方可见 FAQ section（data-i18n=faqTitle 那一段）保持一致。
+         Google 政策要求 schema 内的 Q&A 在页面上对用户可见，否则可能被判结构化数据违规。
+         改 FAQ 时请同步修改下方 HTML + old-photo.js 里 i18n.en.faqXX / i18n.zh.faqXX。 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How does AI old photo restoration work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Upload your old photo, choose a repair strength (gentle, balanced, or strong), and select an output scale. MiaoCut applies AI denoising, contrast recovery, and detail sharpening to bring faded or noisy photos back to a cleaner state."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will it modify or damage my original photo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Your original is never modified. MiaoCut processes a copy on the server, shows you a before/after preview, and you decide whether to download the restored version."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my photo private and safe?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Photos are processed in-memory on the server and discarded immediately after the restored result is returned. We never store your image, never use it for AI training, and there is no signup required. Your family memories never leave your control."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can it restore heavily damaged or torn photos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MiaoCut works best on faded, noisy, or low-contrast photos. For very heavy damage (large tears or missing areas), results are limited — for filling small damaged areas you can try the watermark remover (paint-and-fill)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I print the restored photo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The restored output is exported at your chosen scale (1x, 2x, or 4x). Use 2x or 4x if you plan to print at larger sizes or display on high-resolution screens."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it colorize black-and-white photos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not yet. The current MiaoCut focus is denoising, sharpening, and contrast recovery. If colorization would be useful for you, let us know via the feedback widget."
+          }
+        }
+      ]
     }
     </script>
     <link rel="stylesheet" href="/output.css">
@@ -77,11 +178,32 @@
     </nav>
 
     <main class="mx-auto max-w-6xl px-5 py-8">
+        <!-- 面包屑：辅助 SEO + 用户导航；与 head 中的 BreadcrumbList JSON-LD 对应 -->
+        <nav class="mb-5 text-sm text-gray-500" aria-label="Breadcrumb">
+            <ol class="flex items-center gap-2">
+                <li><a href="/zh/" class="hover:text-gray-900" data-i18n="breadcrumbHome">MiaoCut</a></li>
+                <li class="text-gray-300">/</li>
+                <li class="text-gray-700" data-i18n="breadcrumbCurrent">老照片修复</li>
+            </ol>
+        </nav>
+
         <section class="mb-7 flex flex-col gap-2">
             <p class="text-sm font-semibold text-gray-500" data-i18n="eyebrow">老照片、家庭相册、扫描照片</p>
-            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" data-i18n="heroTitle">老照片修复高清</h1>
-            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed" data-i18n="heroSub">修复褪色对比度、降低噪点、增强模糊细节，并导出更清晰的高分辨率照片。</p>
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" data-i18n="heroTitle">AI 老照片修复与高清放大</h1>
+            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed" data-i18n="heroSub">还原褪色对比度、降低扫描噪点、增强模糊细节，并放大老家庭照片到适合打印的高分辨率。</p>
         </section>
+
+        <!-- 隐私 callout：emotional persona（保护家庭回忆的子女）对隐私敏感度最高，
+             第一时间显眼放一个安心条，比泛泛说"私密处理"效果好得多。 -->
+        <aside role="note" aria-label="Privacy notice" class="mb-7 flex items-start gap-3 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3">
+            <svg class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+            </svg>
+            <p class="text-sm leading-relaxed text-emerald-900">
+                <strong class="font-semibold" data-i18n="privacyNotice">你的家庭记忆完全私密。</strong>
+                <span data-i18n="privacyBody">照片在服务器内存中处理，结果返回后立即销毁。绝不存储、绝不用于 AI 训练、无需注册账号。</span>
+            </p>
+        </aside>
 
         <section class="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start">
             <aside class="bg-white border border-gray-200 rounded-lg p-5">
@@ -163,6 +285,74 @@
             <div class="rounded-lg border border-gray-200 bg-white p-5">
                 <h3 class="mb-2 font-bold text-gray-900" data-i18n="flow3">保护隐私</h3>
                 <p data-i18n="flow3Body">沿用 MiaoCut 的纯内存处理策略，照片不会用于训练。</p>
+            </div>
+        </section>
+
+        <!-- How-to section：对应 head 中的 HowTo JSON-LD；改这 3 步必须同步 schema 和 old-photo.js i18n -->
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
+            <h2 class="text-xl font-bold mb-6" data-i18n="howToTitle">如何修复一张老照片</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700">
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <div class="text-2xl mb-2">📤</div>
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep1Title">1. 上传你的老照片</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="howStep1Body">扫描件或手机翻拍照片均可，支持 JPG、PNG、WebP。一般来说扫描原件效果更好。</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <div class="text-2xl mb-2">⚙️</div>
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep2Title">2. 选择修复强度和倍率</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="howStep2Body">根据照片损伤程度选择修复强度（轻柔 / 均衡 / 强力），并选择输出倍率（1x / 2x / 4x），打印或大屏显示推荐高倍率。</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <div class="text-2xl mb-2">✨</div>
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep3Title">3. 对比效果并下载</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="howStep3Body">左右对比预览原图与修复后效果，满意后下载修复版本。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 可见 FAQ section：与 head 中的 FAQPage JSON-LD 保持一致；改一处必须同步另一处 + old-photo.js i18n -->
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
+            <h2 class="text-xl font-bold mb-6" data-i18n="faqTitle">常见问题</h2>
+            <div class="space-y-4">
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">AI 老照片修复是怎么工作的？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq1A">上传你的老照片，选择修复强度（轻柔 / 均衡 / 强力）和输出倍率，MiaoCut 会用 AI 自动降噪、还原对比度、增强细节，让褪色或噪点严重的老照片更清晰。</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq2Q">会修改或损坏我的原图吗？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq2A">不会。原图永远不会被修改。MiaoCut 在服务器上处理一份副本，给你看修复前后对比，由你决定是否下载修复版本。</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq3Q">我的照片安全吗？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq3A">安全。照片纯内存处理，修复结果返回后立即销毁。我们绝不存储你的图片、绝不用于 AI 训练，也无需注册账号。你的家庭回忆始终在你掌控之中。</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq4Q">能修复严重破损或撕裂的老照片吗？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq4A">MiaoCut 最适合处理褪色、噪点、低对比度的老照片。如果损伤特别严重（大面积撕裂或缺失），效果会受限 —— 小范围破损可以试试去水印工具的"涂抹修复"。</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq5Q">修复后的照片可以打印吗？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq5A">可以。修复结果按你选择的倍率（1x / 2x / 4x）导出。打印大尺寸照片或在高分辨率屏幕显示时建议用 2x 或 4x。</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq6Q">可以给黑白老照片上色吗？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq6A">暂时不支持。当前老照片修复聚焦在降噪、增强、还原对比度。如果需要照片上色，欢迎通过反馈组件告诉我们。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cross-link section（H6）：把链接权重传给同主题工具 -->
+        <section class="mt-12">
+            <h2 class="text-xl font-bold mb-6 text-gray-900" data-i18n="moreTitle">更多 MiaoCut 工具</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <a href="/zh/portrait-background-remover/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all">
+                    <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkPortraitTitle">人像抠图 →</h3>
+                    <p class="text-sm text-gray-600" data-i18n="moreLinkPortraitDesc">制作干净的头像、简历照、社媒头像。</p>
+                </a>
+                <a href="/zh/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all">
+                    <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkBgTitle">AI 抠图 →</h3>
+                    <p class="text-sm text-gray-600" data-i18n="moreLinkBgDesc">一键生成透明 PNG 抠图。</p>
+                </a>
             </div>
         </section>
     </main>

@@ -140,6 +140,60 @@
     }
     </script>
 
+    <!-- HowTo schema：对应下方 "How to Remove Background from an Image" 三步段落。
+         给 Google 抓 rich results、给 ChatGPT/Perplexity 抓 step-by-step 引用。
+         text 内容必须和页面上 i18nData.en.uploadDesc / aiDesc / dlDesc 保持一致。 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Remove Background from an Image",
+      "description": "Remove the background from any photo and download a transparent PNG cutout in three steps with MiaoCut's free AI background remover.",
+      "totalTime": "PT5S",
+      "tool": [{ "@type": "HowToTool", "name": "MiaoCut AI Background Remover" }],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Upload Your Image",
+          "text": "Upload a JPG, PNG, or WebP image. No signup or credit card required.",
+          "url": "https://miaocut.app/#dropzone"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "AI Removes the Background",
+          "text": "MiaoCut's AI background remover detects the subject and removes the background automatically, including hair, fur, and complex edges."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Download Transparent PNG",
+          "text": "Download your HD cutout as a transparent PNG with no watermark."
+        }
+      ]
+    }
+    </script>
+
+    <!-- Organization schema：声明发布者身份，给 AI 搜索引擎（ChatGPT/Perplexity）一个可引用的实体。
+         独立开发者 + 透明技术栈是 MiaoCut 的核心信任卖点；这里把它机器可读化。
+         sameAs 加了 3 个 HF Space 实例的 URL 作为后端身份证明。 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "MiaoCut",
+      "url": "https://miaocut.app/",
+      "logo": "https://miaocut.app/og/home.png",
+      "description": "Free, no-signup AI photo toolkit — background remover, watermark eraser, old photo restoration, product photo enhancer, and ID photo maker. Built by an independent developer as a free alternative to subscription tools like remove.bg and PhotoRoom.",
+      "sameAs": [
+        "https://huggingface.co/spaces/midcodex/miao_cut",
+        "https://huggingface.co/spaces/midcodex/miao_cut2",
+        "https://huggingface.co/spaces/midcodex/miao_cut3"
+      ]
+    }
+    </script>
+
     <!--
       Tailwind CSS - 本地构建
       源：src/input.css；构建命令：npm run build:css；输出：output.css

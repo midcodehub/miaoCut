@@ -4,13 +4,29 @@
 
 This is **audit-only** — no code changes have been made. Each finding includes: which page(s), what's wrong, why it matters, the concrete fix, and an estimated impact.
 
-> **Implementation status (2026-05-14, post-implementation pass):**
-> - ✅ **C1** — FAQ schema/visible-content mismatch: visible FAQ sections added to watermark + id-photo (6 and 7 entries respectively), JSON-LD synced.
-> - ✅ **H7** — i18n strategy: chose **Path B** (separate `/zh/` URLs). Implemented via [scripts/build-i18n.mjs](../scripts/build-i18n.mjs); generates 6 ZH static pages + reciprocal hreflang in head and sitemap. Lang switcher updated to navigate between locales.
-> - ⏳ **H1, H2, H3** — content depth on old-photo, watermark, id-photo: thin pages still need full how-to/examples/cross-link buildout. Watermark FAQ now includes the compliance disclaimer (Q&A #2), partially addressing H2.
-> - ⏳ **H4, H5, H6, H8** — pending future passes (HowTo schema, Organization schema, cross-link sections on 3 pages, title length fixes).
-> - ⏳ **All P2/P3 items** — pending.
-> - 📦 **Bonus delivered**: sitemap.xml now auto-generated with 12 URLs (6 EN + 6 ZH) + xhtml:link annotations + fresh `lastmod` (resolves M3 + M4).
+> **Implementation status (2026-05-14, multi-pass):**
+>
+> **Pass 1 — Foundation:**
+> - ✅ **C1** — FAQ schema/visible-content mismatch: visible FAQ sections added to watermark + id-photo, JSON-LD synced.
+> - ✅ **H7** — i18n strategy (Path B): separate `/zh/` URLs implemented via [scripts/build-i18n.mjs](../scripts/build-i18n.mjs); 6 ZH static pages + reciprocal hreflang in head and sitemap. Lang switcher navigates between locales.
+> - 📦 sitemap.xml auto-generated with 12 URLs (6 EN + 6 ZH) + `xhtml:link` annotations + fresh `lastmod` (resolves M3 + M4).
+>
+> **Pass 2 — High-priority content + schema (this pass):**
+> - ✅ **H1** — Old-photo page rebuilt: privacy callout (emerald, emotional persona), how-to section, 6-entry FAQ, cross-link section, HowTo + FAQPage + BreadcrumbList schema, breadcrumb nav. Refactored applyLanguage to read meta from dict.
+> - ✅ **H2** — Watermark page complete compliance + content framework: vocabulary expanded (Object Eraser / Blemish Remover / Date Stamps), hero compliance callout (amber), how-to section, footer with DMCA legal notice, cross-link section, HowTo + BreadcrumbList schemas added; FAQ broadened with explicit DMCA §1202 reference. Refactored applyLanguage.
+> - ✅ **H3** — ID-photo page expanded: per-country sub-section (China 1-inch / 2-inch / passport, US passport, Schengen visa, Japan visa) targeting commercial-intent long-tail. How-to section, cross-link, HowTo + BreadcrumbList schemas, breadcrumb nav. Refactored applyLanguage.
+> - ✅ **H4** — HowTo schema added to home, product-photo, portrait, watermark, old-photo, id-photo (all 6 pages now have HowTo).
+> - ✅ **H5** — Organization schema added to home (logo, sameAs to 3 HF Spaces, full description for AI search citation).
+> - ✅ **H6** — Cross-link sections added to watermark, old-photo, id-photo (resolves internal link dead-ends).
+> - ✅ **H8** — Title length fixes on old-photo (67→52 chars) and id-photo (65→48 chars).
+>
+> **Still pending (lower-priority):**
+> - ⏳ **M1** — Add FAQPage schema to product-photo and portrait (visible FAQ exists; just need JSON-LD).
+> - ⏳ **M5** — Header markup inconsistency across 6 pages.
+> - ⏳ **M6** — `preconnect` inconsistency (product-photo, portrait, id-photo missing).
+> - ⏳ **M7** — Add example images (before/after) to watermark, old-photo, id-photo content sections.
+> - ⏳ **M8** — `aggregateRating` schema (gated until reviews exist).
+> - ⏳ **All P3 items** — bookmark banner overlap, image:image sitemap, Person author schema, robots.txt cleanup, explicit meta robots.
 
 ---
 

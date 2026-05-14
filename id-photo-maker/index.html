@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID Photo Maker - Free AI Passport Photo & Headshot Tool | MiaoCut</title>
+    <title>Free Passport & ID Photo Maker Online | MiaoCut</title>
     <meta name="description"
-        content="Create ID photos, passport photos, visa photos, and printable photo sheets online with MiaoCut. Choose size, background color, output KB, and print paper.">
+        content="Free AI passport, visa, and ID photo maker online. Country-specific size presets (China 1-inch/2-inch, US passport, Schengen visa, Japan visa). Choose background color, target KB, print layouts. No signup.">
     <meta name="keywords"
-        content="id photo maker, passport photo maker, visa photo maker, one inch photo, two inch photo, ai id photo, change photo background, printable id photo sheet">
-    <meta property="og:title" content="ID Photo Maker - Free AI Passport Photo & Headshot Tool | MiaoCut">
+        content="id photo maker, passport photo maker, visa photo maker, one inch photo, two inch photo, ai id photo, china passport photo, us passport photo, schengen visa photo, japan visa photo, change photo background, printable id photo sheet">
+    <meta property="og:title" content="Free AI Passport & ID Photo Maker | MiaoCut">
     <meta property="og:description"
-        content="Create ID photos, passport photos, visa photos, and printable photo sheets online with MiaoCut.">
+        content="Country-specific ID photo presets: China 1-inch / 2-inch, US passport, Schengen visa, Japan visa. Free, no signup.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://miaocut.app/id-photo-maker/">
     <meta property="og:locale" content="en_US">
@@ -19,21 +19,63 @@
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="AI ID Photo Maker by MiaoCut">
+    <meta property="og:image:alt" content="AI Passport & ID Photo Maker by MiaoCut">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://miaocut.app/og/id-photo.png">
-    <meta name="twitter:image:alt" content="AI ID Photo Maker by MiaoCut">
+    <meta name="twitter:image:alt" content="AI Passport & ID Photo Maker by MiaoCut">
     <link rel="canonical" href="https://miaocut.app/id-photo-maker/">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "MiaoCut ID Photo Maker",
+      "name": "MiaoCut AI Passport & ID Photo Maker",
       "url": "https://miaocut.app/id-photo-maker/",
       "applicationCategory": "MultimediaApplication",
       "operatingSystem": "Web",
-      "description": "Create passport photos, visa photos, one-inch photos, two-inch photos, and printable ID photo sheets online.",
+      "description": "Free AI passport, visa, and ID photo maker. Country-specific size presets, custom background colors, target KB control, printable layout sheets.",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+    </script>
+    <!-- BreadcrumbList：让搜索结果出 breadcrumb rich snippet -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "MiaoCut", "item": "https://miaocut.app/" },
+        { "@type": "ListItem", "position": 2, "name": "ID Photo Maker", "item": "https://miaocut.app/id-photo-maker/" }
+      ]
+    }
+    </script>
+    <!-- HowTo schema：对应下方 "How to Make a Passport or ID Photo" 段落 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Make a Passport or ID Photo Online",
+      "description": "Create a country-compliant passport, visa, or ID photo in three steps with MiaoCut's free AI ID photo maker.",
+      "totalTime": "PT20S",
+      "tool": [{ "@type": "HowToTool", "name": "MiaoCut AI ID Photo Maker" }],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Upload your portrait",
+          "text": "Upload a front-facing portrait in JPG, PNG, or WebP. Even, neutral lighting works best."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Pick size and background",
+          "text": "Choose a country preset (or enter custom dimensions), pick a background color, and adjust subject size or top margin if needed."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Generate, fit KB, download",
+          "text": "MiaoCut auto-detects your face and produces a standard photo, an HD transparent version, and a printable layout. Set Target KB if your form requires a specific file size."
+        }
+      ]
     }
     </script>
     <!-- FAQPage schema 必须与下方可见 FAQ section（data-i18n=faqTitle 那一段）保持一致。
@@ -93,10 +135,19 @@
     </nav>
 
     <main class="mx-auto max-w-6xl px-5 py-8">
+        <!-- 面包屑 -->
+        <nav class="mb-5 text-sm text-gray-500" aria-label="Breadcrumb">
+            <ol class="flex items-center gap-2">
+                <li><a href="/" class="hover:text-gray-900" data-i18n="breadcrumbHome">MiaoCut</a></li>
+                <li class="text-gray-300">/</li>
+                <li class="text-gray-700" data-i18n="breadcrumbCurrent">ID Photo Maker</li>
+            </ol>
+        </nav>
+
         <section class="mb-7 flex flex-col gap-2">
-            <p class="text-sm font-semibold text-gray-500" data-i18n="eyebrow">Passport photos, visa photos, one-inch photos</p>
-            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" data-i18n="heroTitle">AI ID Photo Maker</h1>
-            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed" data-i18n="heroSub">Upload a portrait, choose a document photo size, set the background color, and download standard, HD, or printable layout photos.</p>
+            <p class="text-sm font-semibold text-gray-500" data-i18n="eyebrow">Passport photos · Visa photos · One-inch · Two-inch · Print layouts</p>
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" data-i18n="heroTitle">AI Passport & ID Photo Maker</h1>
+            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed" data-i18n="heroSub">Upload a portrait, pick a country-specific size preset, set the background color and target KB, and download standard, HD, or printable layout photos.</p>
         </section>
 
         <div class="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start">
@@ -287,6 +338,78 @@
                     <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq7Q">Can I set a max file size in KB for online forms?</h3>
                     <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq7A">Yes. The "Target KB" input lets you cap the output file size — useful for visa or job application forms with strict file size limits.</p>
                 </div>
+            </div>
+        </section>
+
+        <!-- How-to section：对应 head 中的 HowTo JSON-LD -->
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
+            <h2 class="text-xl font-bold mb-6" data-i18n="howToTitle">How to Make a Passport or ID Photo</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700">
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <div class="text-2xl mb-2">📤</div>
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep1Title">1. Upload your portrait</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="howStep1Body">Upload a front-facing portrait in JPG, PNG, or WebP. Even, neutral lighting works best.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <div class="text-2xl mb-2">⚙️</div>
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep2Title">2. Pick size and background</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="howStep2Body">Choose a country preset (or enter custom dimensions), pick a background color, and adjust subject size or top margin if needed.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <div class="text-2xl mb-2">🖼️</div>
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep3Title">3. Generate, fit KB, download</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="howStep3Body">MiaoCut auto-detects your face and produces a standard photo, an HD transparent version, and a printable layout. Set Target KB if your form requires a specific file size.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Per-country sub-section（H3 重点）：分国家长尾流量入口。
+             这里列出常见证件规格，未来可拆成独立 landing pages（programmatic SEO）：
+             /id-photo-maker/us-passport/、/id-photo-maker/schengen-visa/ 等。
+             ⚠️ 各国官方规格随政策更新，文案里务必保留"以官方为准"声明。 -->
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
+            <h2 class="text-xl font-bold mb-2" data-i18n="countryTitle">ID Photo Specs by Country & Document</h2>
+            <p class="text-sm text-gray-600 mb-6 max-w-3xl" data-i18n="countrySubtitle">Common document sizes and background rules. Always check your specific consulate, embassy, or office's latest requirements before submitting — rules change.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-gray-700">
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="cnOneInchTitle">China 1-inch (一寸)</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="cnOneInchBody">295 × 413 px · White / blue / red background · For ID cards, school documents, simple application forms.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="cnTwoInchTitle">China 2-inch (二寸)</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="cnTwoInchBody">413 × 579 px · White / blue / red background · For resumes, diplomas, employment forms, medical reports.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="cnPassportTitle">China Passport (中国护照)</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="cnPassportBody">390 × 567 px · White background, neutral expression, no glasses recommended · For passport, visa applications submitted in China.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="usPassportTitle">US Passport</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="usPassportBody">600 × 600 px (2 × 2 inch) · Plain white or off-white background · No glasses (since 2016), neutral expression, full face visible.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="schengenVisaTitle">Schengen Visa (EU)</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="schengenVisaBody">413 × 531 px (35 × 45 mm) · Light gray or off-white background · 70-80% face coverage, neutral expression.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5">
+                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="japanVisaTitle">Japan Visa</h3>
+                    <p class="leading-relaxed text-gray-600" data-i18n="japanVisaBody">600 × 600 px (45 × 45 mm) · White or off-white background · Front-facing, no head covering, taken within 6 months.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cross-link section（H6） -->
+        <section class="mt-12">
+            <h2 class="text-xl font-bold mb-6 text-gray-900" data-i18n="moreTitle">More MiaoCut Tools</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <a href="/portrait-background-remover/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all">
+                    <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkPortraitTitle">Portrait Background Remover →</h3>
+                    <p class="text-sm text-gray-600" data-i18n="moreLinkPortraitDesc">Make clean LinkedIn or social profile pictures.</p>
+                </a>
+                <a href="/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all">
+                    <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkBgTitle">AI Background Remover →</h3>
+                    <p class="text-sm text-gray-600" data-i18n="moreLinkBgDesc">One-click transparent PNG cutout for any photo.</p>
+                </a>
             </div>
         </section>
     </main>
