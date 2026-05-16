@@ -101,7 +101,20 @@
             downloadEdited: "下载当前效果",
             downloadSquare: "下载方形 PNG",
             downloadCircle: "下载圆形 PNG",
-            startOver: "换一张图"
+            startOver: "换一张图",
+            footerToolsTitle: "全部 MiaoCut 工具",
+            footerCatRemove: "AI 抠图",
+            footerCatConvert: "格式转换",
+            footerCatRepair: "照片修复与增强",
+            footerTagline: "MiaoCut · 免费、注重隐私的 AI 图片工具集。",
+            toolBgTitle: "去除背景",
+            toolProductTitle: "商品图",
+            toolPortraitTitle: "人像",
+            toolIdTitle: "证件照",
+            toolJpgPngTitle: "JPG → 透明 PNG",
+            toolPngJpgTitle: "PNG → JPG",
+            toolWatermarkTitle: "去水印",
+            toolRestoreTitle: "老照片"
         },
         en: {
             dropzoneTitle: "Drag & drop image here, or click to upload",
@@ -178,7 +191,20 @@
             downloadEdited: "Download current version",
             downloadSquare: "Download square PNG",
             downloadCircle: "Download circular PNG",
-            startOver: "Choose another image"
+            startOver: "Choose another image",
+            footerToolsTitle: "All MiaoCut Tools",
+            footerCatRemove: "AI Background Removal",
+            footerCatConvert: "Format Conversion",
+            footerCatRepair: "Photo Repair & Enhancement",
+            footerTagline: "MiaoCut · Free AI image tools that respect your privacy.",
+            toolBgTitle: "Remove Background",
+            toolProductTitle: "Product",
+            toolPortraitTitle: "Portrait",
+            toolIdTitle: "ID Photo",
+            toolJpgPngTitle: "JPG → Transparent PNG",
+            toolPngJpgTitle: "PNG → JPG",
+            toolWatermarkTitle: "Watermark",
+            toolRestoreTitle: "Old Photo"
         }
     };
 

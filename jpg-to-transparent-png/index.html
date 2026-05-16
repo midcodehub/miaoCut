@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="sogou_site_verification" content="lLMMvkZKud" />
+    <meta name="baidu-site-verification" content="codeva-bJiTOFPj58" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Resource hints：提前对后端 API 和 Umami 做 TLS 握手，省 100~300ms。 -->
+    <link rel="preconnect" href="https://api2.miaocut.app">
+    <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
+    <title>JPG to Transparent PNG Converter — Free AI Background Removal | MiaoCut</title>
+    <meta name="description"
+        content="Convert JPG to transparent PNG free. AI removes the background so you can export logos, signatures, profile pictures, and product cutouts with true transparency — no Photoshop needed.">
+    <meta name="keywords"
+        content="jpg to transparent png, jpg to png transparent, convert jpg to transparent png, make jpg transparent, jpg to png with transparent background, transparent png maker, signature transparent png, logo transparent png">
+    <meta property="og:title"
+        content="JPG to Transparent PNG Converter — Free AI Background Removal | MiaoCut">
+    <meta property="og:description"
+        content="Convert JPG to transparent PNG free. AI removes the background so you can export logos, signatures, profile pictures, and product cutouts with true transparency — no Photoshop needed.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://miaocut.app/jpg-to-transparent-png/">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:image" content="https://miaocut.app/og/home.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="JPG to Transparent PNG Converter by MiaoCut AI">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://miaocut.app/og/home.png">
+    <meta name="twitter:image:alt" content="JPG to Transparent PNG Converter by MiaoCut AI">
+    <link rel="canonical" href="https://miaocut.app/jpg-to-transparent-png/">
+
+    <!-- WebApplication schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "MiaoCut JPG to Transparent PNG Converter",
+      "url": "https://miaocut.app/jpg-to-transparent-png/",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Web",
+      "description": "Free AI converter that turns JPG photos into transparent PNG files by removing the background. Ideal for logos, signatures, profile pictures, and product cutouts.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+    </script>
+    <!-- BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "MiaoCut", "item": "https://miaocut.app/" },
+        { "@type": "ListItem", "position": 2, "name": "JPG to Transparent PNG", "item": "https://miaocut.app/jpg-to-transparent-png/" }
+      ]
+    }
+    </script>
+    <!-- FAQPage schema：必须与下方可见 FAQ section 保持一致。改 FAQ 时同步改 HTML + PAGE_I18N。 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why can't I just rename a JPG file to PNG to make it transparent?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "JPG files store no alpha channel — every pixel is fully opaque. Renaming the extension does not add transparency. To get a real transparent PNG you must remove the background pixels and re-encode as PNG with alpha, which is what MiaoCut does in one step."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it work on JPG photos with a busy or non-solid background?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. MiaoCut uses an AI background removal model (BiRefNet) instead of simple color-matching, so it handles textured walls, outdoor scenes, and other complex backgrounds where Magic Wand or eraser tools would fail."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use this for signatures, logos, and profile pictures?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes — these are the most common use cases. Scan a signature on paper, snap a logo from a print sample, or upload a portrait photo, and download a transparent PNG you can drop into documents, slides, websites, or designs."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is there a file size or resolution limit?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Single uploads are capped at 12 MB and around 25 megapixels to keep the free service stable. Most phone photos and design files fit comfortably under those limits."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it really free? Any watermark or signup?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Free with no signup, no credit card, and no watermark on the output. Fair-use rate limits apply (a few cutouts per minute per IP) to keep the service available for everyone."
+          }
+        }
+      ]
+    }
+    </script>
+    <!-- HowTo schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Convert JPG to Transparent PNG",
+      "description": "Turn any JPG photo into a transparent PNG in three steps with MiaoCut's free AI converter.",
+      "totalTime": "PT10S",
+      "tool": [{ "@type": "HowToTool", "name": "MiaoCut JPG to Transparent PNG Converter" }],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Upload Your JPG",
+          "text": "Drag in a JPG photo, signature, or logo. No signup, no credit card."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "AI Removes the Background",
+          "text": "MiaoCut's AI detects the main subject and erases everything else, including complex or textured backgrounds."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Download Transparent PNG",
+          "text": "Download a PNG with a true transparent (alpha) background — ready to drop into documents, slides, websites, or designs."
+        }
+      ]
+    }
+    </script>
+    <link rel="stylesheet" href="/output.css">
+    <script defer src="https://cloud.umami.is/script.js"
+        data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
+    <link rel="alternate" hreflang="en" href="https://miaocut.app/jpg-to-transparent-png/">
+    <link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/jpg-to-transparent-png/">
+    <link rel="alternate" hreflang="x-default" href="https://miaocut.app/jpg-to-transparent-png/">
+</head>
+
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-gray-200">
+
+    <!-- 顶部导航 -->
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur">
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
+            <a href="/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
+            <div class="flex items-center gap-4">
+                <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600">
+                    <a href="/" class="hover:text-gray-900 transition-colors" data-i18n="navBg">Background Remover</a>
+                    <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navProduct">Product</a>
+                    <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navPortrait">Portrait</a>
+                    <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navWatermark">Watermark</a>
+                    <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors" data-i18n="navId">ID Photo</a>
+                    <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors" data-i18n="navRestore">Old Photo</a>
+                </nav>
+                <select id="lang-switch" aria-label="Language"
+                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
+                    <option value="en">English</option>
+                    <option value="zh">简体中文</option>
+                </select>
+            </div>
+        </div>
+    </header>
+    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600">
+        <a href="/" class="shrink-0" data-i18n="navBg">Background Remover</a>
+        <a href="/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">Product</a>
+        <a href="/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">Portrait</a>
+        <a href="/watermark-remover/" class="shrink-0" data-i18n="navWatermark">Watermark</a>
+        <a href="/id-photo-maker/" class="shrink-0" data-i18n="navId">ID Photo</a>
+        <a href="/old-photo-restoration/" class="shrink-0" data-i18n="navRestore">Old Photo</a>
+    </nav>
+
+    <!-- 面包屑 -->
+    <nav class="w-full max-w-3xl mx-auto px-4 mb-4 mt-4 text-sm text-gray-500" aria-label="Breadcrumb">
+        <ol class="flex items-center gap-2">
+            <li><a href="/" class="hover:text-gray-900" data-i18n="breadcrumbHome">MiaoCut</a></li>
+            <li class="text-gray-300">/</li>
+            <li class="text-gray-700" data-i18n="breadcrumbCurrent">JPG to Transparent PNG</li>
+        </ol>
+    </nav>
+
+    <!-- 核心区域 -->
+    <main class="flex-grow flex flex-col items-center justify-center px-4">
+
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4" data-i18n="title">JPG to Transparent PNG Converter</h1>
+            <p class="text-lg text-gray-500 max-w-2xl mx-auto" data-i18n="subtitle">JPG can't store transparency. Upload any JPG photo, signature, or logo — MiaoCut's AI removes the background and exports a true transparent PNG with a real alpha channel.</p>
+        </div>
+
+        <div class="w-full max-w-3xl">
+
+            <div id="profile-toggle" class="mb-4 flex items-center justify-center gap-2 text-sm flex-wrap">
+                <span class="text-gray-500" data-i18n="profileLabel">Quality:</span>
+                <button type="button" data-profile="sharp"
+                    class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors">
+                    <span data-i18n="profileSharp">Fast</span>
+                </button>
+                <button type="button" data-profile="fur"
+                    class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors">
+                    <span data-i18n="profileFur">Fine (hair / fur)</span>
+                </button>
+                <span id="profile-hint" class="text-xs text-gray-400 ml-1" data-i18n="profileHintSharp">~1s · everyday photos</span>
+            </div>
+
+            <div id="dropzone"
+                class="relative group cursor-pointer bg-white border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center min-h-[320px] hover:border-gray-400 hover:bg-gray-50 overflow-hidden">
+                <input type="file" id="fileInput" class="hidden" accept="image/jpeg, image/png, image/webp">
+                <div id="dropzone-content"
+                    class="flex flex-col items-center justify-center text-center p-8 pointer-events-none">
+                    <svg class="w-12 h-12 text-gray-400 mb-4 group-hover:text-gray-500 transition-colors" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                    </svg>
+                    <p class="text-lg font-medium text-gray-700 mb-1" data-i18n="dropzoneTitle">Drag & drop JPG here, or click to upload</p>
+                    <p class="text-sm text-gray-400" data-i18n="dropzoneSub">(Supports JPG / PNG / WebP)</p>
+                </div>
+            </div>
+
+            <div class="mt-6 flex flex-col items-center justify-center text-center text-gray-500 text-sm">
+                <div class="flex items-center gap-1.5 mb-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                        </path>
+                    </svg>
+                    <span class="font-medium" data-i18n="trustTitle">Your images are 100% safe.</span>
+                </div>
+                <p data-i18n="trustSub">Processed in-memory, destroyed automatically. Never used for AI training.</p>
+            </div>
+
+            <div class="mt-8 text-center text-sm text-gray-500 leading-relaxed max-w-2xl mx-auto">
+                <p data-i18n="seoIntro">MiaoCut converts JPG to transparent PNG in seconds. Drop in a photo, signature, logo, or product shot — the AI erases the background and exports a clean PNG with a real alpha channel that you can paste into documents, slides, websites, and design files.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- SEO 内容区 -->
+    <div class="w-full flex justify-center bg-white border-t border-gray-200 mt-12 pt-16 pb-20 px-6">
+        <div class="w-full max-w-4xl text-left">
+
+            <!-- How to -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="howItWorks">How to Convert JPG to Transparent PNG</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-gray-600">
+                    <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
+                        <div class="text-4xl mb-4">📤</div>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="howStep1Title">1. Upload Your JPG</h3>
+                        <p class="text-sm leading-relaxed" data-i18n="howStep1Desc">Drag in a JPG photo, signature, or logo. No signup, no credit card.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
+                        <div class="text-4xl mb-4">🤖</div>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="howStep2Title">2. AI Removes the Background</h3>
+                        <p class="text-sm leading-relaxed" data-i18n="howStep2Desc">MiaoCut's AI detects the main subject and erases everything else, including complex or textured backgrounds.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
+                        <div class="text-4xl mb-4">⬇️</div>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="howStep3Title">3. Download Transparent PNG</h3>
+                        <p class="text-sm leading-relaxed" data-i18n="howStep3Desc">Download a PNG with a true transparent (alpha) background — ready to drop into documents, slides, websites, or designs.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Why -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="whyTitle">Why Use MiaoCut Instead of "Rename to PNG"</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
+                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1" data-i18n="why1Title">JPG Has No Alpha Channel</strong>
+                            <span class="text-sm text-gray-600" data-i18n="why1Desc">Renaming a .jpg to .png keeps every pixel opaque. You need to actually erase the background and re-encode as PNG — that's what MiaoCut does in one click.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
+                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1" data-i18n="why2Title">Handles Busy Backgrounds</strong>
+                            <span class="text-sm text-gray-600" data-i18n="why2Desc">Magic Wand and color-key tools fail on textured walls, outdoor scenes, or gradient backgrounds. MiaoCut uses an AI segmentation model that sees the subject, not the color.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
+                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1" data-i18n="why3Title">No Photoshop Required</strong>
+                            <span class="text-sm text-gray-600" data-i18n="why3Desc">No layer masks, no manual brushing, no subscriptions. Upload, wait one second, download.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
+                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1" data-i18n="why4Title">Clean Edges for Hair &amp; Soft Details</strong>
+                            <span class="text-sm text-gray-600" data-i18n="why4Desc">Switch to Fine mode for portraits, pets, or signatures where soft edges matter — alpha matting keeps individual strokes and hair strands instead of carving them off.</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tips -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="tipsTitle">Tips for the Cleanest Transparent PNG</h2>
+                <ul class="space-y-3 text-gray-700 text-sm md:text-base list-disc list-inside max-w-3xl mx-auto">
+                    <li data-i18n="tip1">For signatures, scan or photograph on plain white paper with even light — then use Fine mode so thin ink strokes are preserved.</li>
+                    <li data-i18n="tip2">For logos pulled from print samples or screenshots, use Fast mode — it produces sharper, harder edges, which is what logos want.</li>
+                    <li data-i18n="tip3">For portraits and pet photos, switch to Fine mode. Alpha matting handles hair, fur, and soft edges much better than hard cutouts.</li>
+                    <li data-i18n="tip4">Higher subject-to-background contrast always helps, but is not required — MiaoCut handles cluttered backgrounds, just slower edges than studio shots.</li>
+                </ul>
+            </section>
+
+            <!-- FAQ -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="faqTitle">Frequently Asked Questions</h2>
+                <div class="space-y-4">
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">Why can't I just rename a JPG file to PNG to make it transparent?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq1A">JPG files store no alpha channel — every pixel is fully opaque. Renaming the extension does not add transparency. To get a real transparent PNG you must remove the background pixels and re-encode as PNG with alpha, which is what MiaoCut does in one step.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq2Q">Does it work on JPG photos with a busy or non-solid background?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq2A">Yes. MiaoCut uses an AI background removal model (BiRefNet) instead of simple color-matching, so it handles textured walls, outdoor scenes, and other complex backgrounds where Magic Wand or eraser tools would fail.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq3Q">Can I use this for signatures, logos, and profile pictures?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq3A">Yes — these are the most common use cases. Scan a signature on paper, snap a logo from a print sample, or upload a portrait photo, and download a transparent PNG you can drop into documents, slides, websites, or designs.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq4Q">Is there a file size or resolution limit?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq4A">Yes. Single uploads are capped at 12 MB and around 25 megapixels to keep the free service stable. Most phone photos and design files fit comfortably under those limits.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq5Q">Is it really free? Any watermark or signup?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq5A">Free with no signup, no credit card, and no watermark on the output. Fair-use rate limits apply (a few cutouts per minute per IP) to keep the service available for everyone.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cross-link -->
+            <section>
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center" data-i18n="moreTitle">More MiaoCut Tools</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <a href="/portrait-background-remover/"
+                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
+                        <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkPortraitTitle">Portrait Background Remover →</h3>
+                        <p class="text-sm text-gray-600" data-i18n="moreLinkPortraitDesc">Headshots, profile pictures, and social media cutouts.</p>
+                    </a>
+                    <a href="/product-photo-background-remover/"
+                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
+                        <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkProductTitle">Product Photo Background Remover →</h3>
+                        <p class="text-sm text-gray-600" data-i18n="moreLinkProductDesc">White-background and square-canvas product images for e-commerce.</p>
+                    </a>
+                    <a href="/png-to-jpg-white-background/"
+                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
+                        <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkPngJpgTitle">PNG to JPG (Smart White Background) →</h3>
+                        <p class="text-sm text-gray-600" data-i18n="moreLinkPngJpgDesc">The reverse — flatten a transparent PNG onto white (or any color) and export as JPG.</p>
+                    </a>
+                    <a href="/"
+                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all md:col-span-2">
+                        <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkHomeTitle">All-Purpose Background Remover →</h3>
+                        <p class="text-sm text-gray-600" data-i18n="moreLinkHomeDesc">Logos, pets, complex edges, anything else.</p>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- All Tools footer -->
+    <footer class="w-full bg-gray-900 text-gray-300 mt-0">
+        <div class="max-w-6xl mx-auto px-6 py-12">
+            <h2 class="text-xl font-bold text-white mb-8 text-center" data-i18n="footerToolsTitle">All MiaoCut Tools</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatRemove">AI Background Removal</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/" class="hover:text-white transition-colors" data-i18n="toolBgTitle">Remove Background</a></li>
+                        <li><a href="/product-photo-background-remover/" class="hover:text-white transition-colors" data-i18n="toolProductTitle">Product</a></li>
+                        <li><a href="/portrait-background-remover/" class="hover:text-white transition-colors" data-i18n="toolPortraitTitle">Portrait</a></li>
+                        <li><a href="/id-photo-maker/" class="hover:text-white transition-colors" data-i18n="toolIdTitle">ID Photo</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatConvert">Format Conversion</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/jpg-to-transparent-png/" class="hover:text-white transition-colors" data-i18n="toolJpgPngTitle">JPG → Transparent PNG</a></li>
+                        <li><a href="/png-to-jpg-white-background/" class="hover:text-white transition-colors" data-i18n="toolPngJpgTitle">PNG → JPG</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatRepair">Photo Repair &amp; Enhancement</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/watermark-remover/" class="hover:text-white transition-colors" data-i18n="toolWatermarkTitle">Watermark</a></li>
+                        <li><a href="/old-photo-restoration/" class="hover:text-white transition-colors" data-i18n="toolRestoreTitle">Old Photo</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
+                <p data-i18n="footerTagline">MiaoCut · Free AI image tools that respect your privacy.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bookmark Banner -->
+    <div id="bookmark-banner" class="fixed top-0 left-0 right-0 z-50 bg-gray-900 text-white">
+        <div class="max-w-3xl mx-auto flex items-center justify-between px-6 py-3">
+            <div class="flex items-center gap-3">
+                <span class="text-lg">&#11088;</span>
+                <p class="text-sm"><span data-i18n="bookmarkText">Like MiaoCut? Press</span> <kbd id="shortcut-key"
+                        class="px-1.5 py-0.5 bg-gray-700 rounded text-xs font-mono">Ctrl + D</kbd> <span
+                        data-i18n="bookmarkSuffix">to bookmark, next cutout is just 1 sec away!</span></p>
+            </div>
+            <button id="dismiss-banner" class="text-gray-400 hover:text-white transition-colors ml-4 shrink-0"
+                aria-label="close">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- 页面专属 i18n + 标题，必须在 /app.js 之前执行 -->
+    <script>
+        window.MIAOCUT_PAGE_KEY = 'jpg-to-transparent-png';
+        window.MIAOCUT_PAGE_TITLES = {
+            zh: "JPG 转透明 PNG — 免费 AI 抠图与透明背景导出 | MiaoCut",
+            en: "JPG to Transparent PNG Converter — Free AI Background Removal | MiaoCut"
+        };
+        window.MIAOCUT_PAGE_I18N = {
+            zh: {
+                metaDescription: "免费把 JPG 转成带透明背景的 PNG，AI 自动抠掉背景，无需 Photoshop。适合 logo、签名、头像、商品图导出真正透明的 PNG。",
+                metaKeywords: "JPG 转透明 PNG,JPG 转 PNG 透明背景,JPG 改透明背景,JPG 透明 PNG 转换器,签名透明 PNG,logo 透明 PNG,头像透明背景,免费 AI 抠图",
+                ogTitle: "JPG 转透明 PNG — 免费 AI 抠图与透明背景导出 | MiaoCut",
+                ogLocale: "zh_CN",
+                breadcrumbHome: "MiaoCut",
+                breadcrumbCurrent: "JPG 转透明 PNG",
+                title: "JPG 转透明 PNG 在线转换器",
+                subtitle: "JPG 格式本身不支持透明。上传任意 JPG 照片、签名或 logo，MiaoCut AI 自动抠掉背景，导出带真实 alpha 通道的透明 PNG。",
+                seoIntro: "MiaoCut 几秒钟把 JPG 转成透明 PNG。上传照片、签名、logo 或商品图，AI 自动擦除背景，导出带真实 alpha 通道的 PNG，可直接粘贴到文档、PPT、网页或设计稿。",
+                howItWorks: "如何把 JPG 转成透明 PNG",
+                howStep1Title: "1. 上传 JPG",
+                howStep1Desc: "拖入 JPG 照片、签名或 logo，无需注册、无需信用卡。",
+                howStep2Title: "2. AI 抠掉背景",
+                howStep2Desc: "MiaoCut AI 自动识别主体，擦除其余部分，包括复杂或带纹理的背景。",
+                howStep3Title: "3. 下载透明 PNG",
+                howStep3Desc: "下载带真实 alpha 透明通道的 PNG，可直接放入文档、PPT、网页或设计文件。",
+                whyTitle: "为什么不能只把 JPG 改名成 PNG",
+                why1Title: "JPG 没有 alpha 通道",
+                why1Desc: "把 .jpg 改名成 .png 不会让任何像素变透明 — 必须真正擦除背景并重新编码为带 alpha 的 PNG，这正是 MiaoCut 一键完成的。",
+                why2Title: "能处理杂乱背景",
+                why2Desc: "魔术棒和色键工具在纹理墙面、户外场景、渐变背景上几乎都失效。MiaoCut 用的是 AI 分割模型，看的是主体，不是颜色。",
+                why3Title: "不需要 Photoshop",
+                why3Desc: "不用图层蒙版，不用手动涂抹，不用订阅。上传，等一秒，下载。",
+                why4Title: "毛发和软边干净不发毛",
+                why4Desc: "人像、宠物、签名等软边场景切换到 Fine 模式 — alpha matting 会保留每根头发和笔触，而不是粗暴地切掉。",
+                tipsTitle: "导出最干净透明 PNG 的小技巧",
+                tip1: "签名场景：在干净白纸上扫描或拍照，使用均匀光线，然后切到 Fine 模式，细笔画也能保留。",
+                tip2: "Logo 场景：直接用 Fast 模式，输出边缘更锐利、更硬朗，正符合 logo 需求。",
+                tip3: "人像和宠物场景请切到 Fine 模式，alpha matting 处理头发、毛发和软边远好于硬切。",
+                tip4: "主体和背景对比度越高效果越好，但并非必需 — MiaoCut 能处理杂乱背景，只是边缘速度稍慢。",
+                faqTitle: "常见问题",
+                faq1Q: "为什么不能直接把 JPG 改名成 PNG 就有透明背景？",
+                faq1A: "JPG 文件根本不存 alpha 通道 — 每个像素都是完全不透明的。改后缀不会让它变透明。要得到真正的透明 PNG，必须先擦除背景像素再用带 alpha 的 PNG 重新编码，这正是 MiaoCut 一步完成的事。",
+                faq2Q: "JPG 背景很乱、不是纯色，也能处理吗？",
+                faq2A: "可以。MiaoCut 用的是 AI 抠图模型（BiRefNet），不是简单的颜色匹配，所以纹理墙面、户外场景等魔术棒和橡皮擦搞不定的复杂背景也能处理。",
+                faq3Q: "可以用来做签名、logo、头像吗？",
+                faq3A: "可以 — 这正是最常见的几个用途。扫描纸上签名、拍下印刷 logo 或上传人像照片，下载下来的透明 PNG 可以直接放进文档、PPT、网页或设计稿。",
+                faq4Q: "文件大小或分辨率有限制吗？",
+                faq4A: "有。单次上传限制 12 MB、约 2500 万像素以内，保障免费服务稳定。绝大多数手机照片和设计稿都在限制内。",
+                faq5Q: "真的免费吗？有水印或者要注册吗？",
+                faq5A: "完全免费、无需注册、无需信用卡、输出图无水印。仅有按 IP 的公平使用速率限制（每分钟几张），保证所有人都能用。",
+                moreTitle: "更多 MiaoCut 工具",
+                moreLinkPortraitTitle: "人像背景去除 →",
+                moreLinkPortraitDesc: "头像、证件照、社交媒体抠图。",
+                moreLinkProductTitle: "商品图抠图 →",
+                moreLinkProductDesc: "电商白底图与方形画布商品图。",
+                moreLinkPngJpgTitle: "PNG 转 JPG（智能白底）→",
+                moreLinkPngJpgDesc: "反向操作 — 把透明 PNG 铺到白底（或任意颜色）上导出 JPG。",
+                moreLinkHomeTitle: "通用背景去除 →",
+                moreLinkHomeDesc: "Logo、宠物、复杂边缘等任何场景。"
+            },
+            en: {
+                metaDescription: "Convert JPG to transparent PNG free. AI removes the background so you can export logos, signatures, profile pictures, and product cutouts with true transparency — no Photoshop needed.",
+                metaKeywords: "jpg to transparent png, jpg to png transparent, convert jpg to transparent png, make jpg transparent, jpg to png with transparent background, transparent png maker, signature transparent png, logo transparent png",
+                ogTitle: "JPG to Transparent PNG Converter — Free AI Background Removal | MiaoCut",
+                ogLocale: "en_US",
+                breadcrumbHome: "MiaoCut",
+                breadcrumbCurrent: "JPG to Transparent PNG",
+                title: "JPG to Transparent PNG Converter",
+                subtitle: "JPG can't store transparency. Upload any JPG photo, signature, or logo — MiaoCut's AI removes the background and exports a true transparent PNG with a real alpha channel.",
+                seoIntro: "MiaoCut converts JPG to transparent PNG in seconds. Drop in a photo, signature, logo, or product shot — the AI erases the background and exports a clean PNG with a real alpha channel that you can paste into documents, slides, websites, and design files.",
+                howItWorks: "How to Convert JPG to Transparent PNG",
+                howStep1Title: "1. Upload Your JPG",
+                howStep1Desc: "Drag in a JPG photo, signature, or logo. No signup, no credit card.",
+                howStep2Title: "2. AI Removes the Background",
+                howStep2Desc: "MiaoCut's AI detects the main subject and erases everything else, including complex or textured backgrounds.",
+                howStep3Title: "3. Download Transparent PNG",
+                howStep3Desc: "Download a PNG with a true transparent (alpha) background — ready to drop into documents, slides, websites, or designs.",
+                whyTitle: "Why Use MiaoCut Instead of \"Rename to PNG\"",
+                why1Title: "JPG Has No Alpha Channel",
+                why1Desc: "Renaming a .jpg to .png keeps every pixel opaque. You need to actually erase the background and re-encode as PNG — that's what MiaoCut does in one click.",
+                why2Title: "Handles Busy Backgrounds",
+                why2Desc: "Magic Wand and color-key tools fail on textured walls, outdoor scenes, or gradient backgrounds. MiaoCut uses an AI segmentation model that sees the subject, not the color.",
+                why3Title: "No Photoshop Required",
+                why3Desc: "No layer masks, no manual brushing, no subscriptions. Upload, wait one second, download.",
+                why4Title: "Clean Edges for Hair & Soft Details",
+                why4Desc: "Switch to Fine mode for portraits, pets, or signatures where soft edges matter — alpha matting keeps individual strokes and hair strands instead of carving them off.",
+                tipsTitle: "Tips for the Cleanest Transparent PNG",
+                tip1: "For signatures, scan or photograph on plain white paper with even light — then use Fine mode so thin ink strokes are preserved.",
+                tip2: "For logos pulled from print samples or screenshots, use Fast mode — it produces sharper, harder edges, which is what logos want.",
+                tip3: "For portraits and pet photos, switch to Fine mode. Alpha matting handles hair, fur, and soft edges much better than hard cutouts.",
+                tip4: "Higher subject-to-background contrast always helps, but is not required — MiaoCut handles cluttered backgrounds, just slower edges than studio shots.",
+                faqTitle: "Frequently Asked Questions",
+                faq1Q: "Why can't I just rename a JPG file to PNG to make it transparent?",
+                faq1A: "JPG files store no alpha channel — every pixel is fully opaque. Renaming the extension does not add transparency. To get a real transparent PNG you must remove the background pixels and re-encode as PNG with alpha, which is what MiaoCut does in one step.",
+                faq2Q: "Does it work on JPG photos with a busy or non-solid background?",
+                faq2A: "Yes. MiaoCut uses an AI background removal model (BiRefNet) instead of simple color-matching, so it handles textured walls, outdoor scenes, and other complex backgrounds where Magic Wand or eraser tools would fail.",
+                faq3Q: "Can I use this for signatures, logos, and profile pictures?",
+                faq3A: "Yes — these are the most common use cases. Scan a signature on paper, snap a logo from a print sample, or upload a portrait photo, and download a transparent PNG you can drop into documents, slides, websites, or designs.",
+                faq4Q: "Is there a file size or resolution limit?",
+                faq4A: "Yes. Single uploads are capped at 12 MB and around 25 megapixels to keep the free service stable. Most phone photos and design files fit comfortably under those limits.",
+                faq5Q: "Is it really free? Any watermark or signup?",
+                faq5A: "Free with no signup, no credit card, and no watermark on the output. Fair-use rate limits apply (a few cutouts per minute per IP) to keep the service available for everyone.",
+                moreTitle: "More MiaoCut Tools",
+                moreLinkPortraitTitle: "Portrait Background Remover →",
+                moreLinkPortraitDesc: "Headshots, profile pictures, and social media cutouts.",
+                moreLinkProductTitle: "Product Photo Background Remover →",
+                moreLinkProductDesc: "White-background and square-canvas product images for e-commerce.",
+                moreLinkPngJpgTitle: "PNG to JPG (Smart White Background) →",
+                moreLinkPngJpgDesc: "The reverse — flatten a transparent PNG onto white (or any color) and export as JPG.",
+                moreLinkHomeTitle: "All-Purpose Background Remover →",
+                moreLinkHomeDesc: "Logos, pets, complex edges, anything else."
+            }
+        };
+    </script>
+    <script src="/app.js"></script>
+
+    <script src="/feedback.js"></script>
+</body>
+
+</html>

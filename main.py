@@ -1419,6 +1419,23 @@ if SERVE_STATIC:
         return FileResponse("watermark-remover/watermark.js", media_type="application/javascript")
 
 
+    @app.get("/jpg-to-transparent-png/")
+    async def jpg_to_transparent_png():
+        # SEO 长尾页：复用 /api/remove-background 抠图后端，前端是 inline-i18n 模板
+        return FileResponse("jpg-to-transparent-png/index.html")
+
+
+    @app.get("/png-to-jpg-white-background/")
+    async def png_to_jpg_white_background():
+        # SEO 长尾页：纯前端 Canvas 转换，本地后端只负责送 index.html + .js 静态资源
+        return FileResponse("png-to-jpg-white-background/index.html")
+
+
+    @app.get("/png-to-jpg-white-background/png-to-jpg.js")
+    async def png_to_jpg_js():
+        return FileResponse("png-to-jpg-white-background/png-to-jpg.js", media_type="application/javascript")
+
+
 @app.post("/api/remove-background", dependencies=[Depends(verify_origin)])
 @limiter.limit("5/minute;50/day")  # 按真实 IP 限流：每分钟 5 次，每天 50 次
 async def remove_background(request: Request, file: UploadFile = File(...)):

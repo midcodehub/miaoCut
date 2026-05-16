@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="sogou_site_verification" content="lLMMvkZKud" />
+    <meta name="baidu-site-verification" content="codeva-bJiTOFPj58" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Resource hints：Umami 跨源；后端这里不调，所以不预连 api2 -->
+    <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
+    <title>PNG 转 JPG 在线转换器 — 智能白底，免黑色背景 | MiaoCut</title>
+    <meta name="description"
+        content="免费 PNG 转 JPG，自动填充白底。避开普通转换器的黑色背景填充 — 可选白色、灰色、黑色或任意自定义颜色，并可调节 JPG 画质，浏览器内完成。">
+    <meta name="keywords"
+        content="PNG 转 JPG,PNG 转 JPG 白底,PNG 转 JPEG,PNG 转 JPG 在线,透明 PNG 转 JPG,PNG 转 JPG 工具,PNG 加白底转 JPG,免费 PNG 转 JPG">
+    <meta property="og:title"
+        content="PNG 转 JPG 在线转换器 — 智能白底，免黑色背景 | MiaoCut">
+    <meta property="og:description"
+        content="免费 PNG 转 JPG，自动填充白底。避开普通转换器的黑色背景填充 — 可选白色、灰色、黑色或任意自定义颜色，并可调节 JPG 画质，浏览器内完成。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://miaocut.app/zh/png-to-jpg-white-background/">
+    <meta property="og:locale" content="zh_CN">
+    <meta property="og:image" content="https://miaocut.app/og/home.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="PNG to JPG Converter by MiaoCut">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://miaocut.app/og/home.png">
+    <meta name="twitter:image:alt" content="PNG to JPG Converter by MiaoCut">
+    <link rel="canonical" href="https://miaocut.app/zh/png-to-jpg-white-background/">
+
+    <!-- WebApplication schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "MiaoCut PNG to JPG Converter",
+      "url": "https://miaocut.app/zh/png-to-jpg-white-background/",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Web",
+      "description": "Free browser-based PNG to JPG converter with smart white background fill. Pick any background color, set JPG quality, and download. Runs 100% in-browser — no upload.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+    </script>
+    <!-- BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "MiaoCut", "item": "https://miaocut.app/zh/" },
+        { "@type": "ListItem", "position": 2, "name": "PNG to JPG Converter", "item": "https://miaocut.app/zh/png-to-jpg-white-background/" }
+      ]
+    }
+    </script>
+    <!-- FAQPage schema：必须与下方可见 FAQ section 保持一致 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why does my PNG get a black background when I convert it to JPG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "JPG does not support transparency. When a naive converter flattens a transparent PNG, it fills the alpha pixels with black by default. MiaoCut fills them with white (or any color you pick) so the result looks the way you expect — no surprise black blobs."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What background color should I pick?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "White is the safe default for documents, e-commerce, and most marketplaces. Light gray works well for product photography. Black suits dark-themed designs. The custom color picker covers brand colors."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my image uploaded to a server?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. This converter runs 100% in your browser using Canvas. Your image never leaves your device — nothing is uploaded, stored, or logged."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What JPG quality setting should I use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "92% is a balanced default — visually lossless for most photos with reasonable file size. Use 100% for print or archival. Use 75-85% if you need smaller files for the web and don't mind mild compression."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I convert WebP or other formats too?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The converter accepts PNG, WebP, and any format your browser can decode. The output is always JPG."
+          }
+        }
+      ]
+    }
+    </script>
+    <!-- HowTo schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Convert PNG to JPG with a White Background",
+      "description": "Flatten transparent PNG files into JPG with the background color you actually want.",
+      "totalTime": "PT5S",
+      "tool": [{ "@type": "HowToTool", "name": "MiaoCut PNG to JPG Converter" }],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Drop your PNG",
+          "text": "Drop a PNG (or WebP) into the upload zone. Everything runs in your browser — your image is not uploaded anywhere."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Pick a background color",
+          "text": "White is the default. Switch to gray, black, or pick any custom color — the preview updates live."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Download JPG",
+          "text": "Adjust JPG quality if you want, then download. The result is a clean JPG with the background color you chose."
+        }
+      ]
+    }
+    </script>
+    <link rel="stylesheet" href="/output.css">
+    <script defer src="https://cloud.umami.is/script.js"
+        data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
+    <link rel="alternate" hreflang="en" href="https://miaocut.app/png-to-jpg-white-background/">
+    <link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/png-to-jpg-white-background/">
+    <link rel="alternate" hreflang="x-default" href="https://miaocut.app/png-to-jpg-white-background/">
+</head>
+
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-gray-200">
+
+    <!-- 顶部导航 -->
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur">
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
+            <a href="/zh/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
+            <div class="flex items-center gap-4">
+                <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600">
+                    <a href="/zh/" class="hover:text-gray-900 transition-colors" data-i18n="navBg">背景去除</a>
+                    <a href="/zh/product-photo-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navProduct">商品图</a>
+                    <a href="/zh/portrait-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navPortrait">人像</a>
+                    <a href="/zh/watermark-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navWatermark">水印擦除</a>
+                    <a href="/zh/id-photo-maker/" class="hover:text-gray-900 transition-colors" data-i18n="navId">证件照</a>
+                    <a href="/zh/old-photo-restoration/" class="hover:text-gray-900 transition-colors" data-i18n="navRestore">老照片</a>
+                </nav>
+                <select id="lang-switch" aria-label="Language"
+                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
+                    <option value="en">English</option>
+                    <option value="zh">简体中文</option>
+                </select>
+            </div>
+        </div>
+    </header>
+    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600">
+        <a href="/zh/" class="shrink-0" data-i18n="navBg">背景去除</a>
+        <a href="/zh/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">商品图</a>
+        <a href="/zh/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">人像</a>
+        <a href="/zh/watermark-remover/" class="shrink-0" data-i18n="navWatermark">水印擦除</a>
+        <a href="/zh/id-photo-maker/" class="shrink-0" data-i18n="navId">证件照</a>
+        <a href="/zh/old-photo-restoration/" class="shrink-0" data-i18n="navRestore">老照片</a>
+    </nav>
+
+    <!-- 面包屑 -->
+    <nav class="w-full max-w-3xl mx-auto px-4 mb-4 mt-4 text-sm text-gray-500" aria-label="Breadcrumb">
+        <ol class="flex items-center gap-2">
+            <li><a href="/zh/" class="hover:text-gray-900" data-i18n="breadcrumbHome">MiaoCut</a></li>
+            <li class="text-gray-300">/</li>
+            <li class="text-gray-700" data-i18n="breadcrumbCurrent">PNG 转 JPG 转换器</li>
+        </ol>
+    </nav>
+
+    <!-- 核心区域 -->
+    <main class="flex-grow flex flex-col items-center px-4">
+
+        <div class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4" data-i18n="title">PNG 转 JPG 智能白底转换器</h1>
+            <p class="text-lg text-gray-500 max-w-2xl mx-auto" data-i18n="subtitle">JPG 格式本身不支持透明。我们把 PNG 的透明像素铺到白色（或你选的任意颜色）背景上，不再出现意外的黑色背景。100% 浏览器内完成。</p>
+        </div>
+
+        <div class="w-full max-w-3xl">
+
+            <!-- Dropzone -->
+            <div id="dropzone"
+                class="relative group cursor-pointer bg-white border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center min-h-[320px] hover:border-gray-400 hover:bg-gray-50 overflow-hidden">
+                <input type="file" id="fileInput" class="hidden" accept="image/png, image/webp, image/jpeg, image/gif, image/avif">
+                <div id="dropzone-content"
+                    class="flex flex-col items-center justify-center text-center p-8 pointer-events-none">
+                    <svg class="w-12 h-12 text-gray-400 mb-4 group-hover:text-gray-500 transition-colors" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                    </svg>
+                    <p class="text-lg font-medium text-gray-700 mb-1" data-i18n="dropzoneTitle">将 PNG 拖拽至此，或点击上传</p>
+                    <p class="text-sm text-gray-400" data-i18n="dropzoneSub">支持 PNG / WebP / GIF，浏览器内直接转 JPG</p>
+                </div>
+            </div>
+
+            <!-- Editor (hidden until file is loaded) -->
+            <div id="editor" class="hidden mt-6">
+
+                <!-- Two-pane preview -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-white border border-gray-200 rounded-xl p-3">
+                        <p class="text-xs uppercase tracking-wider text-gray-400 mb-2" data-i18n="paneOriginal">原图 (PNG)</p>
+                        <div class="aspect-square flex items-center justify-center rounded-lg overflow-hidden"
+                            style="background-image: linear-gradient(45deg, #e5e7eb 25%, transparent 25%), linear-gradient(-45deg, #e5e7eb 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e5e7eb 75%), linear-gradient(-45deg, transparent 75%, #e5e7eb 75%); background-size: 16px 16px; background-position: 0 0, 0 8px, 8px -8px, -8px 0px;">
+                            <canvas id="sourceCanvas" class="max-w-full max-h-full object-contain"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-xl p-3">
+                        <p class="text-xs uppercase tracking-wider text-gray-400 mb-2" data-i18n="paneResult">结果 (JPG)</p>
+                        <div class="aspect-square flex items-center justify-center rounded-lg overflow-hidden bg-gray-50">
+                            <canvas id="resultCanvas" class="max-w-full max-h-full object-contain"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="bg-white border border-gray-200 rounded-xl p-5 mb-6 space-y-5">
+                    <!-- Background color -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-3" data-i18n="bgLabel">背景颜色</label>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <button type="button" data-bg="#ffffff" class="bg-swatch group flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 hover:border-gray-500 transition-colors text-sm">
+                                <span class="w-5 h-5 rounded border border-gray-300 bg-white inline-block"></span>
+                                <span data-i18n="bgWhite">白色</span>
+                            </button>
+                            <button type="button" data-bg="#f3f4f6" class="bg-swatch group flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 hover:border-gray-500 transition-colors text-sm">
+                                <span class="w-5 h-5 rounded border border-gray-300 inline-block" style="background:#f3f4f6"></span>
+                                <span data-i18n="bgGray">浅灰</span>
+                            </button>
+                            <button type="button" data-bg="#000000" class="bg-swatch group flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 hover:border-gray-500 transition-colors text-sm">
+                                <span class="w-5 h-5 rounded border border-gray-300 bg-black inline-block"></span>
+                                <span data-i18n="bgBlack">黑色</span>
+                            </button>
+                            <label class="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 hover:border-gray-500 transition-colors text-sm cursor-pointer">
+                                <input id="bgColorPicker" type="color" value="#ffffff" class="w-5 h-5 rounded border border-gray-300 cursor-pointer">
+                                <span data-i18n="bgCustom">自定义</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Quality -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <label for="qualitySlider" class="block text-sm font-medium text-gray-700" data-i18n="qualityLabel">JPG 画质</label>
+                            <span id="qualityValue" class="text-sm text-gray-500 font-mono">92%</span>
+                        </div>
+                        <input id="qualitySlider" type="range" min="60" max="100" step="1" value="92"
+                            class="w-full accent-gray-900">
+                        <div class="flex items-center justify-between text-xs text-gray-400 mt-1">
+                            <span data-i18n="qualitySmaller">更小文件</span>
+                            <span data-i18n="qualityBetter">更好画质</span>
+                        </div>
+                    </div>
+
+                    <!-- File size readout -->
+                    <p id="sizeReadout" class="text-xs text-gray-500" data-i18n="sizeReadoutEmpty">修改设置后预览会实时更新。</p>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="flex gap-3 flex-wrap">
+                    <button id="downloadBtn" type="button"
+                        class="flex-1 min-w-[200px] bg-gray-900 hover:bg-gray-800 text-white font-medium px-5 py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        <span data-i18n="downloadBtn">下载 JPG</span>
+                    </button>
+                    <button id="replaceBtn" type="button"
+                        class="bg-white border border-gray-300 hover:border-gray-500 text-gray-700 font-medium px-5 py-3 rounded-xl transition-colors" data-i18n="replaceBtn">换一张转换</button>
+                </div>
+            </div>
+
+            <!-- Trust strip -->
+            <div class="mt-8 flex flex-col items-center justify-center text-center text-gray-500 text-sm">
+                <div class="flex items-center gap-1.5 mb-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                    <span class="font-medium" data-i18n="trustTitle">100% 隐私 — 全部在浏览器内运行。</span>
+                </div>
+                <p data-i18n="trustSub">图片永远不会离开你的设备。零上传、零服务器、零日志。</p>
+            </div>
+
+            <div class="mt-8 text-center text-sm text-gray-500 leading-relaxed max-w-2xl mx-auto">
+                <p data-i18n="seoIntro">MiaoCut PNG 转 JPG 工具完全在浏览器内通过 Canvas 完成。透明像素会被铺到你选的背景色（白、灰、黑或自定义）上，JPG 画质完全可调。无任何上传，图片始终留在你设备上。</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- SEO 内容区 -->
+    <div class="w-full flex justify-center bg-white border-t border-gray-200 mt-12 pt-16 pb-20 px-6">
+        <div class="w-full max-w-4xl text-left">
+
+            <!-- How to -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="howItWorks">如何把 PNG 转成带白底的 JPG</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-gray-600">
+                    <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
+                        <div class="text-4xl mb-4">📤</div>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="howStep1Title">1. 拖入 PNG</h3>
+                        <p class="text-sm leading-relaxed" data-i18n="howStep1Desc">把 PNG（或 WebP）拖到上传区。所有处理都在你的浏览器内完成，图片不会上传到任何地方。</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
+                        <div class="text-4xl mb-4">🎨</div>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="howStep2Title">2. 选择背景颜色</h3>
+                        <p class="text-sm leading-relaxed" data-i18n="howStep2Desc">默认是白色。可切换灰色、黑色，或选择任意自定义颜色 — 预览实时更新。</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
+                        <div class="text-4xl mb-4">⬇️</div>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="howStep3Title">3. 下载 JPG</h3>
+                        <p class="text-sm leading-relaxed" data-i18n="howStep3Desc">如果需要可以调节 JPG 画质，然后下载。导出的是干净的 JPG，背景就是你选的颜色。</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Why -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="whyTitle">为什么不用普通转换器</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
+                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1" data-i18n="why1Title">不会出现意外的黑色背景</strong>
+                            <span class="text-sm text-gray-600" data-i18n="why1Desc">普通转换器把透明像素填成黑色（因为是底层默认值）。我们默认填成白色，并允许你在下载前自由切换颜色。</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
+                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1" data-i18n="why2Title">100% 隐私</strong>
+                            <span class="text-sm text-gray-600" data-i18n="why2Desc">完全在浏览器内转换。文件不会被上传、记录或被任何人看到 — 包括我们自己。</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
+                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1" data-i18n="why3Title">可调画质</strong>
+                            <span class="text-sm text-gray-600" data-i18n="why3Desc">60% 到 100% 的画质滑块。根据用途，找到画质和文件大小的平衡点。</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
+                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1" data-i18n="why4Title">其实你想去背景？</strong>
+                            <span class="text-sm text-gray-600" data-i18n="why4Desc">如果 PNG 还带着背景而你想要真正透明的抠图，请改用我们的 JPG → 透明 PNG 工具。</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tips -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="tipsTitle">不同场景的建议</h2>
+                <ul class="space-y-3 text-gray-700 text-sm md:text-base list-disc list-inside max-w-3xl mx-auto">
+                    <li data-i18n="tip1">文档和大多数电商平台：保持白底 + 92% 画质，这是几乎所有场景的安全默认。</li>
+                    <li data-i18n="tip2">需要纯白 (255,255,255) 的电商平台：白色预设是字节级精确，不会有偏色。</li>
+                    <li data-i18n="tip3">打印或归档：把画质调到 100%。文件大一些，但几乎没有压缩损伤。</li>
+                    <li data-i18n="tip4">面向 Web 且更在意体积：75-85% 的画质能显著降低文件大小，画质损失很轻微。</li>
+                </ul>
+            </section>
+
+            <!-- FAQ -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="faqTitle">常见问题</h2>
+                <div class="space-y-4">
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">为什么 PNG 转成 JPG 之后变成黑色背景了？</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq1A">JPG 格式不支持透明。普通转换器把透明像素当成 0（也就是黑色）来填，所以会出现整片黑色。MiaoCut 默认填成白色（也可以选任意颜色），让结果符合你的预期，不再出现意外的黑色。</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq2Q">应该选什么背景颜色？</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq2A">文档、电商和绝大多数平台用白色就好。商品摄影场景浅灰也不错。深色设计场景选黑色。自定义颜色选择器适合品牌色。</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq3Q">图片会被上传到服务器吗？</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq3A">不会。整个转换器在你的浏览器内通过 Canvas 完成。图片永远不会离开你的设备 — 不会被上传、保存或记录。</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq4Q">JPG 画质该选多少？</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq4A">92% 是平衡的默认值 — 对大多数照片视觉上无损，文件大小合理。打印或归档用 100%。Web 用途又关心体积时 75-85% 能显著减小文件，画质损失轻微。</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq5Q">WebP 等其他格式也能转吗？</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq5A">可以。本工具接受 PNG、WebP，以及你的浏览器能解码的任何格式。输出固定是 JPG。</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cross-link -->
+            <section>
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center" data-i18n="moreTitle">更多 MiaoCut 工具</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <a href="/zh/jpg-to-transparent-png/"
+                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
+                        <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkJpgPngTitle">JPG 转透明 PNG →</h3>
+                        <p class="text-sm text-gray-600" data-i18n="moreLinkJpgPngDesc">反向操作 — 把 JPG 的背景抠掉，导出透明 PNG。</p>
+                    </a>
+                    <a href="/zh/product-photo-background-remover/"
+                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
+                        <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkProductTitle">商品图抠图 →</h3>
+                        <p class="text-sm text-gray-600" data-i18n="moreLinkProductDesc">电商白底图与方形画布商品图。</p>
+                    </a>
+                    <a href="/zh/"
+                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all md:col-span-2">
+                        <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkHomeTitle">通用背景去除 →</h3>
+                        <p class="text-sm text-gray-600" data-i18n="moreLinkHomeDesc">Logo、宠物、复杂边缘等任何场景。</p>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- All Tools footer -->
+    <footer class="w-full bg-gray-900 text-gray-300 mt-0">
+        <div class="max-w-6xl mx-auto px-6 py-12">
+            <h2 class="text-xl font-bold text-white mb-8 text-center" data-i18n="footerToolsTitle">全部 MiaoCut 工具</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatRemove">AI 抠图</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/zh/" class="hover:text-white transition-colors" data-i18n="toolBgTitle">去除背景</a></li>
+                        <li><a href="/zh/product-photo-background-remover/" class="hover:text-white transition-colors" data-i18n="toolProductTitle">商品图</a></li>
+                        <li><a href="/zh/portrait-background-remover/" class="hover:text-white transition-colors" data-i18n="toolPortraitTitle">人像</a></li>
+                        <li><a href="/zh/id-photo-maker/" class="hover:text-white transition-colors" data-i18n="toolIdTitle">证件照</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatConvert">格式转换</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/zh/jpg-to-transparent-png/" class="hover:text-white transition-colors" data-i18n="toolJpgPngTitle">JPG → 透明 PNG</a></li>
+                        <li><a href="/zh/png-to-jpg-white-background/" class="hover:text-white transition-colors" data-i18n="toolPngJpgTitle">PNG → JPG</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatRepair">照片修复与增强</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/zh/watermark-remover/" class="hover:text-white transition-colors" data-i18n="toolWatermarkTitle">去水印</a></li>
+                        <li><a href="/zh/old-photo-restoration/" class="hover:text-white transition-colors" data-i18n="toolRestoreTitle">老照片</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
+                <p data-i18n="footerTagline">MiaoCut · 免费、注重隐私的 AI 图片工具集。</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bookmark Banner -->
+    <div id="bookmark-banner" class="fixed top-0 left-0 right-0 z-50 bg-gray-900 text-white">
+        <div class="max-w-3xl mx-auto flex items-center justify-between px-6 py-3">
+            <div class="flex items-center gap-3">
+                <span class="text-lg">&#11088;</span>
+                <p class="text-sm"><span data-i18n="bookmarkText">喜欢 MiaoCut？按</span> <kbd id="shortcut-key"
+                        class="px-1.5 py-0.5 bg-gray-700 rounded text-xs font-mono">Ctrl + D</kbd> <span
+                        data-i18n="bookmarkSuffix">收藏，下次转换 1 秒可达！</span></p>
+            </div>
+            <button id="dismiss-banner" class="text-gray-400 hover:text-white transition-colors ml-4 shrink-0"
+                aria-label="close">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script src="/png-to-jpg-white-background/png-to-jpg.js"></script>
+</body>
+
+</html>

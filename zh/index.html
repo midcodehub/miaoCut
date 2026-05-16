@@ -308,7 +308,9 @@
                 <p data-i18n="trustSub">纯内存处理，15分钟后自动销毁，绝不用于 AI 训练。</p>
             </div>
 
-            <section class="mt-8 grid grid-cols-1 gap-3 md:grid-cols-4" aria-label="MiaoCut tools">
+            <!-- 工具卡片栏：紧贴上传区，给所有子页一个首屏可见的入口。
+                 8 张卡片做 2x4 网格（移动端 1 列、平板 2 列、桌面 4 列）。第一张高亮表示"当前页"。 -->
+            <section class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4" aria-label="MiaoCut tools">
                 <a href="/zh/" class="rounded-lg border border-gray-900 bg-white p-4 text-left shadow-sm">
                     <p class="text-sm font-bold text-gray-900" data-i18n="toolBgTitle">去除背景</p>
                     <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolBgBody">几秒生成高清透明 PNG。</p>
@@ -324,6 +326,22 @@
                 <a href="/zh/watermark-remover/" class="rounded-lg border border-gray-200 bg-white p-4 text-left hover:border-gray-400 transition-colors">
                     <p class="text-sm font-bold text-gray-900" data-i18n="toolWatermarkTitle">去水印</p>
                     <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolWatermarkBody">涂抹水印区域并智能修复。</p>
+                </a>
+                <a href="/zh/id-photo-maker/" class="rounded-lg border border-gray-200 bg-white p-4 text-left hover:border-gray-400 transition-colors">
+                    <p class="text-sm font-bold text-gray-900" data-i18n="toolIdTitle">证件照</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolIdBody">护照、简历、考试用证件照。</p>
+                </a>
+                <a href="/zh/old-photo-restoration/" class="rounded-lg border border-gray-200 bg-white p-4 text-left hover:border-gray-400 transition-colors">
+                    <p class="text-sm font-bold text-gray-900" data-i18n="toolRestoreTitle">老照片</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolRestoreBody">修复褪色、噪点、模糊的老照片。</p>
+                </a>
+                <a href="/zh/jpg-to-transparent-png/" class="rounded-lg border border-gray-200 bg-white p-4 text-left hover:border-gray-400 transition-colors">
+                    <p class="text-sm font-bold text-gray-900" data-i18n="toolJpgPngTitle">JPG → 透明 PNG</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolJpgPngBody">AI 把 JPG 抠图转透明 PNG。</p>
+                </a>
+                <a href="/zh/png-to-jpg-white-background/" class="rounded-lg border border-gray-200 bg-white p-4 text-left hover:border-gray-400 transition-colors">
+                    <p class="text-sm font-bold text-gray-900" data-i18n="toolPngJpgTitle">PNG → JPG</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolPngJpgBody">透明 PNG 铺白底导出 JPG。</p>
                 </a>
             </section>
 
@@ -499,10 +517,11 @@
                         <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCasePortraitTitle">人像与头像</h3>
                         <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCasePortraitDesc">为头像、社交媒体、简历、个人照片生成干净的透明抠图。</p>
                     </a>
-                    <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow">
+                    <a href="/zh/jpg-to-transparent-png/"
+                        class="block bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
                         <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCaseLogoTitle">Logo 与设计素材</h3>
                         <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCaseLogoDesc">去除 Logo、图标、图形上的白底或杂乱背景。</p>
-                    </div>
+                    </a>
                     <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow">
                         <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCasePetsTitle">宠物、毛发与发丝</h3>
                         <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCasePetsDesc">AI 智能处理头发、毛发、半透明等复杂边缘。</p>
@@ -556,6 +575,42 @@
         </div>
     </div>
 
+    <!-- All Tools footer：hub-and-spoke 内链结构，让 Google 在首页就能爬到所有子工具，
+         也给用户一个"完整目录"的位置。改任意一项时记得同步底下 PAGE_I18N 的 footer* / toolX* key。 -->
+    <footer class="w-full bg-gray-900 text-gray-300 mt-0">
+        <div class="max-w-6xl mx-auto px-6 py-12">
+            <h2 class="text-xl font-bold text-white mb-8 text-center" data-i18n="footerToolsTitle">全部 MiaoCut 工具</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatRemove">AI 抠图</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/zh/" class="hover:text-white transition-colors" data-i18n="toolBgTitle">去除背景</a></li>
+                        <li><a href="/zh/product-photo-background-remover/" class="hover:text-white transition-colors" data-i18n="toolProductTitle">商品图</a></li>
+                        <li><a href="/zh/portrait-background-remover/" class="hover:text-white transition-colors" data-i18n="toolPortraitTitle">人像</a></li>
+                        <li><a href="/zh/id-photo-maker/" class="hover:text-white transition-colors" data-i18n="toolIdTitle">证件照</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatConvert">格式转换</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/zh/jpg-to-transparent-png/" class="hover:text-white transition-colors" data-i18n="toolJpgPngTitle">JPG → 透明 PNG</a></li>
+                        <li><a href="/zh/png-to-jpg-white-background/" class="hover:text-white transition-colors" data-i18n="toolPngJpgTitle">PNG → JPG</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatRepair">照片修复与增强</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/zh/watermark-remover/" class="hover:text-white transition-colors" data-i18n="toolWatermarkTitle">去水印</a></li>
+                        <li><a href="/zh/old-photo-restoration/" class="hover:text-white transition-colors" data-i18n="toolRestoreTitle">老照片</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
+                <p data-i18n="footerTagline">MiaoCut · 免费、注重隐私的 AI 图片工具集。</p>
+            </div>
+        </div>
+    </footer>
+
     <!-- Bookmark Banner -->
     <div id="bookmark-banner" class="fixed top-0 left-0 right-0 z-50 bg-gray-900 text-white">
         <div class="max-w-3xl mx-auto flex items-center justify-between px-6 py-3">
@@ -605,6 +660,14 @@
                 toolPortraitBody: "头像、简历和社媒人像抠图。",
                 toolWatermarkTitle: "去水印",
                 toolWatermarkBody: "涂抹水印区域并智能修复。",
+                toolIdTitle: "证件照",
+                toolIdBody: "护照、简历、考试用证件照。",
+                toolRestoreTitle: "老照片",
+                toolRestoreBody: "修复褪色、噪点、模糊的老照片。",
+                toolJpgPngTitle: "JPG → 透明 PNG",
+                toolJpgPngBody: "AI 把 JPG 抠图转透明 PNG。",
+                toolPngJpgTitle: "PNG → JPG",
+                toolPngJpgBody: "透明 PNG 铺白底导出 JPG。",
                 seoIntro: "MiaoCut 是一款免费的 AI 抠图工具，可以自动去除图片背景。上传 JPG、PNG 或 WebP 照片，立即下载干净的高清透明 PNG。",
                 howItWorks: "如何在线去除图片背景",
                 uploadImg: "1. 上传你的图片",
@@ -658,7 +721,12 @@
                 faq7Q: "可以用于商品图吗？",
                 faq7A: "可以。MiaoCut 适用于商品图、电商照片、人像、Logo、宠物等多种场景。",
                 faq8Q: "输出格式是什么？",
-                faq8A: "输出为高质量的透明背景 PNG 图片。"
+                faq8A: "输出为高质量的透明背景 PNG 图片。",
+                footerToolsTitle: "全部 MiaoCut 工具",
+                footerCatRemove: "AI 抠图",
+                footerCatConvert: "格式转换",
+                footerCatRepair: "照片修复与增强",
+                footerTagline: "MiaoCut · 免费、注重隐私的 AI 图片工具集。"
             },
             en: {
                 metaDescription: "Remove background from images instantly with MiaoCut AI. Free online background remover with HD cutouts, no watermark, no signup, and privacy-first processing.",
@@ -675,6 +743,14 @@
                 toolPortraitBody: "Profile photos, resumes, and social cutouts.",
                 toolWatermarkTitle: "Watermark",
                 toolWatermarkBody: "Paint the mark and repair it.",
+                toolIdTitle: "ID Photo",
+                toolIdBody: "Passport, resume, and exam ID photos.",
+                toolRestoreTitle: "Old Photo",
+                toolRestoreBody: "Restore faded, noisy, or blurry photos.",
+                toolJpgPngTitle: "JPG → Transparent PNG",
+                toolJpgPngBody: "AI-cut JPG into a transparent PNG.",
+                toolPngJpgTitle: "PNG → JPG",
+                toolPngJpgBody: "Flatten transparent PNG onto white.",
                 seoIntro: "MiaoCut is a free AI background remover that helps you remove background from images automatically. Upload JPG, PNG, or WebP photos and download clean transparent PNG cutouts instantly.",
                 howItWorks: "How to Remove Background from an Image",
                 uploadImg: "1. Upload Your Image",
@@ -728,7 +804,12 @@
                 faq7Q: "Can I use it for product photos?",
                 faq7A: "Yes. MiaoCut works well for product images, e-commerce photos, portraits, logos, pets, and more.",
                 faq8Q: "What is the output format?",
-                faq8A: "The output is a high-quality PNG image with a transparent background."
+                faq8A: "The output is a high-quality PNG image with a transparent background.",
+                footerToolsTitle: "All MiaoCut Tools",
+                footerCatRemove: "AI Background Removal",
+                footerCatConvert: "Format Conversion",
+                footerCatRepair: "Photo Repair & Enhancement",
+                footerTagline: "MiaoCut · Free AI image tools that respect your privacy."
             }
         };
     </script>

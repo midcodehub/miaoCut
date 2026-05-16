@@ -11,6 +11,9 @@ module.exports = {
     './id-photo-maker/index.html',
     './old-photo-restoration/index.html',
     './watermark-remover/index.html',
+    './jpg-to-transparent-png/index.html',
+    './png-to-jpg-white-background/index.html',
+    './png-to-jpg-white-background/png-to-jpg.js',
     './feedback.js',
   ],
   theme: {

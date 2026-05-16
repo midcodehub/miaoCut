@@ -12,7 +12,12 @@
       "Bash(npx playwright *)",
       "Bash(grep -vE \"node_modules|\\\\.venv|__pycache__|\\\\.git$|data\")",
       "Bash(node scripts/build-i18n.mjs)",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Bash(grep -E \"^d|html$\")",
+      "Bash(grep -n \"^    }$\\\\|^    },\\\\|^};\" /Users/wuchao/git/miaoCut/watermark-remover/watermark.js)",
+      "Bash(grep -n \"^    }$\\\\|^    },\\\\|^};\" /Users/wuchao/git/miaoCut/old-photo-restoration/old-photo.js)",
+      "Bash(grep -n \"^    }$\\\\|^    },\\\\|^};\" /Users/wuchao/git/miaoCut/id-photo-maker/id-photo.js)",
+      "Bash(grep -n \"^    }$\\\\|^    },\\\\|^};\" /Users/wuchao/git/miaoCut/png-to-jpg-white-background/png-to-jpg.js)"
     ]
   }
 }
