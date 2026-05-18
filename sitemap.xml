@@ -4,7 +4,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://miaocut.app/</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/"/>
@@ -17,7 +17,7 @@
   </url>
   <url>
     <loc>https://miaocut.app/zh/</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/"/>
@@ -30,7 +30,7 @@
   </url>
   <url>
     <loc>https://miaocut.app/product-photo-background-remover/</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/product-photo-background-remover/"/>
@@ -43,7 +43,7 @@
   </url>
   <url>
     <loc>https://miaocut.app/zh/product-photo-background-remover/</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/product-photo-background-remover/"/>
@@ -56,7 +56,7 @@
   </url>
   <url>
     <loc>https://miaocut.app/portrait-background-remover/</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/portrait-background-remover/"/>
@@ -69,7 +69,7 @@
   </url>
   <url>
     <loc>https://miaocut.app/zh/portrait-background-remover/</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/portrait-background-remover/"/>
@@ -82,7 +82,7 @@
   </url>
   <url>
     <loc>https://miaocut.app/jpg-to-transparent-png/</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/jpg-to-transparent-png/"/>
@@ -95,7 +95,7 @@
   </url>
   <url>
     <loc>https://miaocut.app/zh/jpg-to-transparent-png/</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/jpg-to-transparent-png/"/>
@@ -108,7 +108,7 @@
   </url>
   <url>
     <loc>https://miaocut.app/watermark-remover/</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/watermark-remover/"/>
@@ -121,7 +121,7 @@
   </url>
   <url>
     <loc>https://miaocut.app/zh/watermark-remover/</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/watermark-remover/"/>
@@ -134,7 +134,7 @@
   </url>
   <url>
     <loc>https://miaocut.app/old-photo-restoration/</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/old-photo-restoration/"/>
@@ -147,7 +147,7 @@
   </url>
   <url>
     <loc>https://miaocut.app/zh/old-photo-restoration/</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/old-photo-restoration/"/>
@@ -160,7 +160,7 @@
   </url>
   <url>
     <loc>https://miaocut.app/id-photo-maker/</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/id-photo-maker/"/>
@@ -168,12 +168,12 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/id-photo-maker/"/>
     <image:image>
       <image:loc>https://miaocut.app/og/id-photo.png</image:loc>
-      <image:title>AI Passport & ID Photo Maker by MiaoCut</image:title>
+      <image:title>AI Passport &amp; ID Photo Maker by MiaoCut</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://miaocut.app/zh/id-photo-maker/</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/id-photo-maker/"/>
@@ -181,12 +181,12 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/id-photo-maker/"/>
     <image:image>
       <image:loc>https://miaocut.app/og/id-photo.png</image:loc>
-      <image:title>AI Passport & ID Photo Maker by MiaoCut</image:title>
+      <image:title>AI Passport &amp; ID Photo Maker by MiaoCut</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://miaocut.app/png-to-jpg-white-background/</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/png-to-jpg-white-background/"/>
@@ -199,7 +199,7 @@
   </url>
   <url>
     <loc>https://miaocut.app/zh/png-to-jpg-white-background/</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/png-to-jpg-white-background/"/>
