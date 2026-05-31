@@ -17,7 +17,8 @@
       "Bash(grep -n \"^    }$\\\\|^    },\\\\|^};\" /Users/wuchao/git/miaoCut/watermark-remover/watermark.js)",
       "Bash(grep -n \"^    }$\\\\|^    },\\\\|^};\" /Users/wuchao/git/miaoCut/old-photo-restoration/old-photo.js)",
       "Bash(grep -n \"^    }$\\\\|^    },\\\\|^};\" /Users/wuchao/git/miaoCut/id-photo-maker/id-photo.js)",
-      "Bash(grep -n \"^    }$\\\\|^    },\\\\|^};\" /Users/wuchao/git/miaoCut/png-to-jpg-white-background/png-to-jpg.js)"
+      "Bash(grep -n \"^    }$\\\\|^    },\\\\|^};\" /Users/wuchao/git/miaoCut/png-to-jpg-white-background/png-to-jpg.js)",
+      "Bash(node scripts/_inject_footer_guides.mjs)"
     ]
   }
 }

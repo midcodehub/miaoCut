@@ -14,6 +14,8 @@ module.exports = {
     './jpg-to-transparent-png/index.html',
     './png-to-jpg-white-background/index.html',
     './png-to-jpg-white-background/png-to-jpg.js',
+    // 教程中心（How-To Guides）：纯静态英文页，Hub + 各 Spoke
+    './how-to-remove-background/**/*.html',
     './feedback.js',
   ],
   theme: {
