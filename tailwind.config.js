@@ -16,6 +16,10 @@ module.exports = {
     './png-to-jpg-white-background/png-to-jpg.js',
     // 教程中心（How-To Guides）：纯静态英文页，Hub + 各 Spoke
     './how-to-remove-background/**/*.html',
+    // 竞品替代页 + 法务页（纯静态英文页）
+    './alternatives/**/*.html',
+    './privacy/**/*.html',
+    './terms/**/*.html',
     './feedback.js',
   ],
   theme: {
