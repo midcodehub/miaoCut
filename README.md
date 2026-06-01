@@ -3,13 +3,13 @@ title: miaoCut
 sdk: docker
 app_port: 7860
 ---
-<a href="https://trendshift.io/repositories/10645" target="_blank"><img src="https://trendshift.io/api/badge/repositories/10645" alt="idootop%2Fmi-gpt | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+
 # MiaoCut — Free Online AI Background Remover
 
 <p align="center">
   <a href="https://miaocut.app"><img src="https://miaocut.app/og/home.png" alt="MiaoCut — Free AI Background Remover" width="640"></a>
 </p>
-
+<a href="https://trendshift.io/repositories/10645" target="_blank"><img src="https://trendshift.io/api/badge/repositories/10645" alt="idootop%2Fmi-gpt | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
 <p align="center">
   <strong>👉 Try it live (no signup): <a href="https://miaocut.app">miaocut.app</a></strong>
 </p>
