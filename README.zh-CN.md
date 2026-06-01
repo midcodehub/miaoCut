@@ -3,7 +3,9 @@
 <p align="center">
   <a href="https://miaocut.app"><img src="https://miaocut.app/og/home.png" alt="MiaoCut — 免费在线 AI 抠图工具" width="640"></a>
 </p>
-
+<p align="center">
+  <a href="https://trendshift.io/repositories/10645" target="_blank"><img src="https://trendshift.io/api/badge/repositories/10645" alt="idootop%2Fmi-gpt | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+</p>
 <p align="center">
   <strong>👉 在线直接用（免登录）：<a href="https://miaocut.app">miaocut.app</a></strong>
 </p>
