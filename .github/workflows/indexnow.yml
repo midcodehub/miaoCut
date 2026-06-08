@@ -1,0 +1,106 @@
+# ============================================================
+# MiaoCut 前端 URL 自动提交到 IndexNow（Bing / Yandex 等共享协议）
+# ============================================================
+# 思路：
+#   - main 分支上「任何被 serve 的页面文件（index.html）变更」后触发。
+#   - diff 出本次 commit 真正改动的 index.html，映射成对外 URL（见
+#     scripts/indexnow_changed_urls.py），只把这些改动页面提交给 IndexNow——
+#     不是每次都全量重交 22 条，符合 IndexNow「告诉引擎这些 URL 变了」的本意。
+#   - 没有页面内容变化时直接跳过；首次推送 / 无法 diff / 手动强制时退回全量。
+#
+# 为什么不用配 secret：
+#   IndexNow key 本身是公开信息（明文挂在 https://miaocut.app/<key>.txt），
+#   写在 scripts/bing_submit.sh 里即可，无需 GitHub secret。
+#
+# 提醒：本 workflow 是「内容已经部署上线后通知引擎重爬」。前端由 Cloudflare Pages
+# 在 push 后自行构建部署；二者都由 push 触发，通常 Cloudflare 部署很快，IndexNow
+# 提交时线上多半已是新内容。若担心抢跑，可在本 workflow 里加一个 sleep 兜底。
+# ============================================================
+
+name: IndexNow Submit
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      # 站点所有可索引页面都是 index.html；只有页面文件变了才需要通知引擎重爬。
+      # （样式/脚本/后端文件变更不在此触发；真有内容变化时对应 index.html 一定也变。）
+      - "index.html"
+      - "**/index.html"
+  workflow_dispatch:
+    inputs:
+      submit_all:
+        description: "提交 sitemap 里的全部 URL（忽略 diff，用于大改版后强制全量重爬）"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+# 同一分支的多次推送顺序执行，避免并发提交互相打架；不取消进行中的（每次 push 的
+# URL 列表都该被提交到）。
+concurrency:
+  group: indexnow-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  submit:
+    name: Submit changed URLs to IndexNow
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history for diff)
+        uses: actions/checkout@v4
+        with:
+          # 需要 before commit 才能 diff，默认浅克隆拿不到，这里取全量历史。
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Compute URLs to submit
+        id: compute
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+          # 仅 workflow_dispatch 时有值；push 事件下为空字符串。
+          FORCE_ALL: ${{ inputs.submit_all }}
+        run: |
+          set -euo pipefail
+          OUT="$RUNNER_TEMP/indexnow_urls.txt"
+          : > "$OUT"
+          ZEROS="0000000000000000000000000000000000000000"
+          MODE="list"
+
+          if [ "${FORCE_ALL}" = "true" ]; then
+            echo "→ 手动强制全量"
+            MODE="all"
+          elif [ -z "${BEFORE}" ] || [ "${BEFORE}" = "${ZEROS}" ] || ! git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then
+            echo "→ 首次推送 / 无法定位 before commit，退回全量"
+            MODE="all"
+          else
+            echo "→ 增量：diff ${BEFORE}..${AFTER}"
+            git diff --name-only "${BEFORE}" "${AFTER}" | python3 scripts/indexnow_changed_urls.py > "$OUT" || true
+          fi
+
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+          echo "url_file=$OUT" >> "$GITHUB_OUTPUT"
+          echo "===== mode=$MODE，待提交 URL ====="
+          cat "$OUT" 2>/dev/null || true
+
+      - name: Submit to IndexNow
+        env:
+          MODE: ${{ steps.compute.outputs.mode }}
+          URL_FILE: ${{ steps.compute.outputs.url_file }}
+        run: |
+          set -euo pipefail
+          if [ "$MODE" = "all" ]; then
+            echo "→ 全量提交 sitemap 全部 URL"
+            bash scripts/bing_submit.sh
+          elif [ -s "$URL_FILE" ]; then
+            echo "→ 增量提交本次改动的页面 URL"
+            INDEXNOW_URL_FILE="$URL_FILE" bash scripts/bing_submit.sh
+          else
+            echo "ℹ️ 本次没有页面内容变化，跳过 IndexNow 提交。"
+          fi

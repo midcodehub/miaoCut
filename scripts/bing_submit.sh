@@ -1,13 +1,24 @@
 #!/bin/bash
 # =============================================
-# Bing 搜索引擎 URL 主动推送脚本 (IndexNow)
-# 自动从 sitemap.xml 提取 URL 并提交到 Bing
+# Bing / IndexNow URL 主动推送脚本
+# =============================================
+# 把一批 URL 提交给 IndexNow（Bing、Yandex 等参与方共享这个协议，提交一次都能收到），
+# 让搜索引擎更快发现并重爬这些页面。
+#
+# URL 来源（按优先级）：
+#   1) 命令行参数：bash bing_submit.sh https://miaocut.app/zh/ https://miaocut.app/...
+#   2) 环境变量 INDEXNOW_URL_FILE 指向的文件（每行一个 URL，空行忽略）—— CI 用这个
+#   3) 都没有时，回退到从 sitemap.xml 提取全部 <loc>（手动全量提交的老行为，保持兼容）
+#
+# 增量提交（只交本次真正改动的页面）由 .github/workflows/indexnow.yml +
+# scripts/indexnow_changed_urls.py 负责算出 URL 列表后，经 INDEXNOW_URL_FILE 传进来。
 # =============================================
 
 set -euo pipefail
 
 # --- 配置 ---
 HOST="miaocut.app"
+# IndexNow key：本身就是公开信息（明文挂在 https://miaocut.app/<key>.txt），无需当 secret 管理。
 KEY="b27e253973b44d85af293d4f007fba0c"
 KEY_LOCATION="https://${HOST}/${KEY}.txt"
 # 提交到 IndexNow API 接口 (也可使用 https://www.bing.com/indexnow)
@@ -19,47 +30,53 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 SITEMAP="$PROJECT_DIR/sitemap.xml"
 JSON_PAYLOAD="$PROJECT_DIR/indexnow_payload.json"
 
-# --- 从 sitemap.xml 提取 URL ---
-echo "📄 从 sitemap.xml 提取 URL 并生成 IndexNow 请求数据..."
-
-if [ ! -f "$SITEMAP" ]; then
-  echo "❌ 错误：未找到 sitemap.xml（路径：$SITEMAP）"
-  exit 1
+# --- 收集要提交的 URL ---
+URLS=()
+if [ "$#" -gt 0 ]; then
+  echo "📥 使用命令行参数里的 URL（$# 条）"
+  URLS=("$@")
+elif [ -n "${INDEXNOW_URL_FILE:-}" ] && [ -s "${INDEXNOW_URL_FILE}" ]; then
+  echo "📥 从 INDEXNOW_URL_FILE 读取 URL：${INDEXNOW_URL_FILE}"
+  while IFS= read -r line; do
+    [ -n "$line" ] && URLS+=("$line")
+  done < "${INDEXNOW_URL_FILE}"
+else
+  echo "📄 未指定 URL，回退到从 sitemap.xml 提取全部 <loc>..."
+  if [ ! -f "$SITEMAP" ]; then
+    echo "❌ 错误：未找到 sitemap.xml（路径：$SITEMAP）"
+    exit 1
+  fi
+  while IFS= read -r line; do
+    [ -n "$line" ] && URLS+=("$line")
+  done < <(grep -oE '<loc>[^<]+</loc>' "$SITEMAP" | sed -E 's#</?loc>##g')
 fi
 
-python3 - "$SITEMAP" "$JSON_PAYLOAD" "$HOST" "$KEY" "$KEY_LOCATION" <<'EOF'
-import sys
-import re
-import json
+if [ "${#URLS[@]}" -eq 0 ]; then
+  echo "ℹ️ 没有需要提交的 URL，跳过。"
+  exit 0
+fi
 
-sitemap_path = sys.argv[1]
-output_path  = sys.argv[2]
-host = sys.argv[3]
-key = sys.argv[4]
-key_location = sys.argv[5]
+echo "🚀 准备提交 ${#URLS[@]} 条 URL 到 IndexNow："
+printf '   - %s\n' "${URLS[@]}"
 
-with open(sitemap_path, 'r', encoding='utf-8') as f:
-    content = f.read()
-
-urls = re.findall(r'<loc>(.*?)</loc>', content)
-
+# --- 用 python 构造 JSON payload（稳妥处理 JSON 转义）---
+python3 - "$JSON_PAYLOAD" "$HOST" "$KEY" "$KEY_LOCATION" "${URLS[@]}" <<'EOF'
+import sys, json
+output_path, host, key, key_location = sys.argv[1:5]
+urls = sys.argv[5:]
 payload = {
     "host": host,
     "key": key,
     "keyLocation": key_location,
-    "urlList": urls
+    "urlList": urls,
 }
-
-with open(output_path, 'w', encoding='utf-8') as f:
+with open(output_path, "w", encoding="utf-8") as f:
     json.dump(payload, f, ensure_ascii=False, indent=2)
-
-print(f"共提取到 {len(urls)} 条 URL")
+print(f"共准备 {len(urls)} 条 URL")
 EOF
 
 # --- 提交到 IndexNow ---
-echo "🚀 正在提交到 Bing (IndexNow)..."
-
-# 执行提交并获取 HTTP 状态码
+echo "🚀 正在提交到 IndexNow..."
 HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
   -X POST \
   -H "Content-Type: application/json; charset=utf-8" \
@@ -68,14 +85,15 @@ HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
 
 echo "📊 API 响应状态码：$HTTP_STATUS"
 
-if [ "$HTTP_STATUS" -eq 200 ] || [ "$HTTP_STATUS" -eq 202 ]; then
+# 清理临时文件
+rm -f "$JSON_PAYLOAD"
+
+if [ "$HTTP_STATUS" = "200" ] || [ "$HTTP_STATUS" = "202" ]; then
   echo "✅ 成功提交到 IndexNow!"
 else
   echo "❌ 提交失败，返回状态码：$HTTP_STATUS"
+  exit 1
 fi
-
-# 清理临时文件
-rm -f "$JSON_PAYLOAD"
 
 echo ""
 echo "🕐 提交时间：$(date '+%Y-%m-%d %H:%M:%S')"
