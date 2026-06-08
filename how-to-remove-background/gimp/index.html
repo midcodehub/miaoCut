@@ -4,6 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preload" href="/fonts/geist/geist-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script>/* redesign-dark-applied */(function () {
+        try { var s = localStorage.getItem('theme');
+            var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', d); } catch (e) {}
+        document.addEventListener('DOMContentLoaded', function () {
+            var b = document.getElementById('theme-toggle');
+            if (b) b.addEventListener('click', function () {
+                var dark = document.documentElement.classList.toggle('dark');
+                try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {} });
+        });
+    })();</script>
     <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
     <title>How to Remove a Background in GIMP (Step by Step) | MiaoCut</title>
     <meta name="description"
@@ -126,22 +138,26 @@
         data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
 </head>
 
-<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-gray-200">
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-brand-100 selection:text-brand-900 dark:bg-zinc-950 dark:text-zinc-200">
 
-    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur">
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
-            <a href="/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
-            <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600">
-                <a href="/" class="hover:text-gray-900 transition-colors">Background Remover</a>
-                <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors">Product</a>
-                <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors">Portrait</a>
-                <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors">Watermark</a>
-                <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors">ID Photo</a>
-                <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors">Old Photo</a>
+            <a href="/" class="text-2xl font-black tracking-tight text-gray-900 dark:text-zinc-50">MiaoCut</a>
+            <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600 dark:text-zinc-300">
+                <button id="theme-toggle" type="button" aria-label="Toggle dark mode" class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors">
+                    <svg class="h-5 w-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
+                    <svg class="h-5 w-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
+                </button>
+                <a href="/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Background Remover</a>
+                <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Product</a>
+                <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Portrait</a>
+                <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Watermark</a>
+                <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">ID Photo</a>
+                <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Old Photo</a>
             </nav>
         </div>
     </header>
-    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600">
+    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
         <a href="/" class="shrink-0">Background Remover</a>
         <a href="/product-photo-background-remover/" class="shrink-0">Product</a>
         <a href="/portrait-background-remover/" class="shrink-0">Portrait</a>
@@ -151,69 +167,69 @@
     </nav>
 
     <!-- 面包屑 -->
-    <nav class="w-full max-w-3xl mx-auto px-4 mb-4 mt-4 text-sm text-gray-500" aria-label="Breadcrumb">
+    <nav class="w-full max-w-3xl mx-auto px-4 mb-4 mt-4 text-sm text-gray-500 dark:text-zinc-400" aria-label="Breadcrumb">
         <ol class="flex items-center gap-2 flex-wrap">
-            <li><a href="/" class="hover:text-gray-900">MiaoCut</a></li>
+            <li><a href="/" class="hover:text-gray-900 dark:hover:text-zinc-100">MiaoCut</a></li>
             <li class="text-gray-300">/</li>
-            <li><a href="/how-to-remove-background/" class="hover:text-gray-900">How to Remove a Background</a></li>
+            <li><a href="/how-to-remove-background/" class="hover:text-gray-900 dark:hover:text-zinc-100">How to Remove a Background</a></li>
             <li class="text-gray-300">/</li>
-            <li class="text-gray-700">In GIMP</li>
+            <li class="text-gray-700 dark:text-zinc-200">In GIMP</li>
         </ol>
     </nav>
 
     <main class="flex-grow w-full max-w-3xl mx-auto px-4">
 
         <article>
-            <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight mb-4">How to Remove a Background in GIMP</h1>
-            <p class="text-lg text-gray-600 leading-relaxed mb-6">GIMP is a free, open-source image editor that can erase backgrounds using its selection tools and layer masks. Here's exactly how to do it — add an alpha channel, select the background, delete, refine the edges, and export a transparent PNG — plus the faster one-click option when manual masking gets tedious.</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-4 dark:text-zinc-50">How to Remove a Background in GIMP</h1>
+            <p class="text-lg text-gray-600 leading-relaxed mb-6 dark:text-zinc-300">GIMP is a free, open-source image editor that can erase backgrounds using its selection tools and layer masks. Here's exactly how to do it — add an alpha channel, select the background, delete, refine the edges, and export a transparent PNG — plus the faster one-click option when manual masking gets tedious.</p>
 
             <!-- Interception CTA (top) -->
-            <div class="rounded-2xl border border-gray-200 bg-white p-6 mb-10 flex flex-col sm:flex-row items-center gap-5 shadow-sm">
+            <div class="rounded-xl border border-gray-200 bg-white p-6 mb-10 flex flex-col sm:flex-row items-center gap-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
                 <div class="text-3xl shrink-0">⚡</div>
                 <div class="flex-grow text-center sm:text-left">
-                    <p class="font-bold text-gray-900 mb-1">Don't want to mask by hand?</p>
-                    <p class="text-sm text-gray-600">Remove the background online in one click and download a transparent PNG — then open it in GIMP only if you need further edits. Free, no signup.</p>
+                    <p class="font-bold text-gray-900 mb-1 dark:text-zinc-50">Don't want to mask by hand?</p>
+                    <p class="text-sm text-gray-600 dark:text-zinc-300">Remove the background online in one click and download a transparent PNG — then open it in GIMP only if you need further edits. Free, no signup.</p>
                 </div>
                 <a href="/" class="shrink-0 inline-block rounded-full bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-gray-700" data-umami-event="gimp-cta-top">Try it free →</a>
             </div>
 
             <!-- Steps -->
             <section class="mb-12">
-                <h2 class="text-2xl font-extrabold text-gray-900 mb-6">Step-by-step: removing a background in GIMP</h2>
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 dark:text-zinc-50">Step-by-step: removing a background in GIMP</h2>
                 <ol class="space-y-6">
                     <li class="flex gap-4">
                         <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-900 text-sm font-bold text-white">1</span>
                         <div>
-                            <h3 class="font-bold text-gray-900 mb-1">Add an alpha channel</h3>
-                            <p class="text-gray-600 text-sm leading-relaxed">Open your image. In the <strong>Layers</strong> panel, right-click the layer and choose <strong>Add Alpha Channel</strong>. Without it, deleting fills with the background color instead of transparency.</p>
+                            <h3 class="font-bold text-gray-900 mb-1 dark:text-zinc-50">Add an alpha channel</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed dark:text-zinc-300">Open your image. In the <strong>Layers</strong> panel, right-click the layer and choose <strong>Add Alpha Channel</strong>. Without it, deleting fills with the background color instead of transparency.</p>
                         </div>
                     </li>
                     <li class="flex gap-4">
                         <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-900 text-sm font-bold text-white">2</span>
                         <div>
-                            <h3 class="font-bold text-gray-900 mb-1">Select the background</h3>
-                            <p class="text-gray-600 text-sm leading-relaxed">Pick <strong>Fuzzy Select</strong> (the magic wand, <kbd class="px-1 py-0.5 bg-gray-100 rounded text-xs">U</kbd>) and click a solid background area, or use <strong>Select by Color</strong> to grab all matching pixels at once. Hold <strong>Shift</strong> and click to add more regions.</p>
+                            <h3 class="font-bold text-gray-900 mb-1 dark:text-zinc-50">Select the background</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed dark:text-zinc-300">Pick <strong>Fuzzy Select</strong> (the magic wand, <kbd class="px-1 py-0.5 bg-gray-100 rounded text-xs dark:bg-zinc-800">U</kbd>) and click a solid background area, or use <strong>Select by Color</strong> to grab all matching pixels at once. Hold <strong>Shift</strong> and click to add more regions.</p>
                         </div>
                     </li>
                     <li class="flex gap-4">
                         <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-900 text-sm font-bold text-white">3</span>
                         <div>
-                            <h3 class="font-bold text-gray-900 mb-1">Delete it</h3>
-                            <p class="text-gray-600 text-sm leading-relaxed">Press <strong>Delete</strong>. A gray checkerboard pattern means those pixels are now transparent. Then choose <strong>Select &gt; None</strong> to clear the marching-ants selection.</p>
+                            <h3 class="font-bold text-gray-900 mb-1 dark:text-zinc-50">Delete it</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed dark:text-zinc-300">Press <strong>Delete</strong>. A gray checkerboard pattern means those pixels are now transparent. Then choose <strong>Select &gt; None</strong> to clear the marching-ants selection.</p>
                         </div>
                     </li>
                     <li class="flex gap-4">
                         <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-900 text-sm font-bold text-white">4</span>
                         <div>
-                            <h3 class="font-bold text-gray-900 mb-1">Refine the edges with a layer mask</h3>
-                            <p class="text-gray-600 text-sm leading-relaxed">For detailed subjects, add a mask via <strong>Layer &gt; Mask &gt; Add Layer Mask</strong>. Paint with <strong>black</strong> to hide and <strong>white</strong> to reveal — non-destructive cleanup for stray edges. The <strong>Paths</strong> tool (<kbd class="px-1 py-0.5 bg-gray-100 rounded text-xs">B</kbd>) gives precise outlines for hard-edged subjects.</p>
+                            <h3 class="font-bold text-gray-900 mb-1 dark:text-zinc-50">Refine the edges with a layer mask</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed dark:text-zinc-300">For detailed subjects, add a mask via <strong>Layer &gt; Mask &gt; Add Layer Mask</strong>. Paint with <strong>black</strong> to hide and <strong>white</strong> to reveal — non-destructive cleanup for stray edges. The <strong>Paths</strong> tool (<kbd class="px-1 py-0.5 bg-gray-100 rounded text-xs dark:bg-zinc-800">B</kbd>) gives precise outlines for hard-edged subjects.</p>
                         </div>
                     </li>
                     <li class="flex gap-4">
                         <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-900 text-sm font-bold text-white">5</span>
                         <div>
-                            <h3 class="font-bold text-gray-900 mb-1">Export as a transparent PNG</h3>
-                            <p class="text-gray-600 text-sm leading-relaxed">Choose <strong>File &gt; Export As</strong>, name the file with a <strong>.png</strong> extension, and click Export. PNG keeps the alpha channel; exporting as JPG would flatten transparency to white.</p>
+                            <h3 class="font-bold text-gray-900 mb-1 dark:text-zinc-50">Export as a transparent PNG</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed dark:text-zinc-300">Choose <strong>File &gt; Export As</strong>, name the file with a <strong>.png</strong> extension, and click Export. PNG keeps the alpha channel; exporting as JPG would flatten transparency to white.</p>
                         </div>
                     </li>
                 </ol>
@@ -221,8 +237,8 @@
 
             <!-- Limitations -->
             <section class="mb-12">
-                <h2 class="text-2xl font-extrabold text-gray-900 mb-4">Where GIMP gets tedious</h2>
-                <ul class="space-y-3 text-gray-700 text-sm md:text-base list-disc list-inside">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4 dark:text-zinc-50">Where GIMP gets tedious</h2>
+                <ul class="space-y-3 text-gray-700 text-sm md:text-base list-disc list-inside dark:text-zinc-200">
                     <li><strong>Hair and fur</strong> require painstaking manual masking — Fuzzy Select can't follow thousands of fine strands.</li>
                     <li><strong>Busy or low-contrast backgrounds</strong> make color-based selection unreliable; you end up cleaning up by hand.</li>
                     <li><strong>It's a learning curve</strong> — alpha channels, masks, and paths take time to learn if you're not a regular GIMP user.</li>
@@ -232,22 +248,22 @@
 
             <!-- Interception comparison -->
             <section class="mb-12">
-                <h2 class="text-2xl font-extrabold text-gray-900 mb-4">The faster alternative: one click in your browser</h2>
-                <p class="text-gray-600 leading-relaxed mb-6">For anything with soft edges or a complex background, an AI background remover beats manual masking. <a href="/" class="text-gray-900 font-semibold underline underline-offset-2">MiaoCut</a> uses the BiRefNet segmentation model — switch to <strong>Fine mode</strong> and it keeps individual hair strands and fur via alpha matting, all in about a second. Download the transparent PNG and open it in GIMP if you still want to fine-tune.</p>
+                <h2 class="text-2xl font-bold text-gray-900 mb-4 dark:text-zinc-50">The faster alternative: one click in your browser</h2>
+                <p class="text-gray-600 leading-relaxed mb-6 dark:text-zinc-300">For anything with soft edges or a complex background, an AI background remover beats manual masking. <a href="/" class="text-gray-900 font-semibold underline underline-offset-2 dark:text-zinc-50">MiaoCut</a> uses the BiRefNet segmentation model — switch to <strong>Fine mode</strong> and it keeps individual hair strands and fur via alpha matting, all in about a second. Download the transparent PNG and open it in GIMP if you still want to fine-tune.</p>
                 <div class="overflow-x-auto mb-6">
                     <table class="w-full text-left text-sm border-collapse">
                         <thead>
-                            <tr class="border-b border-gray-300 text-gray-900">
+                            <tr class="border-b border-gray-300 text-gray-900 dark:border-zinc-700 dark:text-zinc-50">
                                 <th class="py-3 pr-4 font-semibold"></th>
                                 <th class="py-3 pr-4 font-semibold">GIMP (manual)</th>
                                 <th class="py-3 font-semibold">MiaoCut</th>
                             </tr>
                         </thead>
-                        <tbody class="text-gray-600">
-                            <tr class="border-b border-gray-100"><td class="py-3 pr-4 font-medium text-gray-900">Time per image</td><td class="py-3 pr-4">5–15 min</td><td class="py-3">~1 sec</td></tr>
-                            <tr class="border-b border-gray-100"><td class="py-3 pr-4 font-medium text-gray-900">Hair &amp; fur</td><td class="py-3 pr-4">Very tedious</td><td class="py-3">Clean (Fine mode)</td></tr>
-                            <tr class="border-b border-gray-100"><td class="py-3 pr-4 font-medium text-gray-900">Skill needed</td><td class="py-3 pr-4">Moderate–high</td><td class="py-3">None</td></tr>
-                            <tr><td class="py-3 pr-4 font-medium text-gray-900">Cost</td><td class="py-3 pr-4">Free</td><td class="py-3">Free, no signup</td></tr>
+                        <tbody class="text-gray-600 dark:text-zinc-300">
+                            <tr class="border-b border-gray-100 dark:border-zinc-800"><td class="py-3 pr-4 font-medium text-gray-900 dark:text-zinc-50">Time per image</td><td class="py-3 pr-4">5–15 min</td><td class="py-3">~1 sec</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-zinc-800"><td class="py-3 pr-4 font-medium text-gray-900 dark:text-zinc-50">Hair &amp; fur</td><td class="py-3 pr-4">Very tedious</td><td class="py-3">Clean (Fine mode)</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-zinc-800"><td class="py-3 pr-4 font-medium text-gray-900 dark:text-zinc-50">Skill needed</td><td class="py-3 pr-4">Moderate–high</td><td class="py-3">None</td></tr>
+                            <tr><td class="py-3 pr-4 font-medium text-gray-900 dark:text-zinc-50">Cost</td><td class="py-3 pr-4">Free</td><td class="py-3">Free, no signup</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -258,46 +274,46 @@
 
             <!-- FAQ -->
             <section class="mb-12">
-                <h2 class="text-2xl font-extrabold text-gray-900 mb-6">Frequently Asked Questions</h2>
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 dark:text-zinc-50">Frequently Asked Questions</h2>
                 <div class="space-y-4">
-                    <div class="bg-white p-6 rounded-xl border border-gray-200">
-                        <h3 class="font-bold text-gray-900 text-base mb-2">Why is my GIMP background white instead of transparent after deleting?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed">The layer has no alpha channel, so deleting fills with the background color. Right-click the layer and choose <strong>Add Alpha Channel</strong> (or Layer &gt; Transparency &gt; Add Alpha Channel), then delete again.</p>
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50">Why is my GIMP background white instead of transparent after deleting?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300">The layer has no alpha channel, so deleting fills with the background color. Right-click the layer and choose <strong>Add Alpha Channel</strong> (or Layer &gt; Transparency &gt; Add Alpha Channel), then delete again.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-xl border border-gray-200">
-                        <h3 class="font-bold text-gray-900 text-base mb-2">Which GIMP tool is best for removing a background?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed">Fuzzy Select and Select by Color are fastest for solid backgrounds. For detailed edges, use a layer mask and paint by hand, or the Paths tool for precise outlines. No single tool handles every image automatically.</p>
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50">Which GIMP tool is best for removing a background?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300">Fuzzy Select and Select by Color are fastest for solid backgrounds. For detailed edges, use a layer mask and paint by hand, or the Paths tool for precise outlines. No single tool handles every image automatically.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-xl border border-gray-200">
-                        <h3 class="font-bold text-gray-900 text-base mb-2">How do I export a transparent background from GIMP?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed">Use <strong>File &gt; Export As</strong> and save with a <strong>.png</strong> extension. PNG supports an alpha channel; saving as JPG flattens transparency to white.</p>
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50">How do I export a transparent background from GIMP?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300">Use <strong>File &gt; Export As</strong> and save with a <strong>.png</strong> extension. PNG supports an alpha channel; saving as JPG flattens transparency to white.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-xl border border-gray-200">
-                        <h3 class="font-bold text-gray-900 text-base mb-2">Is there a faster way than doing it manually in GIMP?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed">Yes. For hair, fur, or busy backgrounds, an AI background remover does in a second what takes minutes to mask by hand. Use <a href="/" class="text-gray-900 underline underline-offset-2">MiaoCut</a> to get a clean transparent PNG, then open it in GIMP for any further edits.</p>
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50">Is there a faster way than doing it manually in GIMP?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300">Yes. For hair, fur, or busy backgrounds, an AI background remover does in a second what takes minutes to mask by hand. Use <a href="/" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">MiaoCut</a> to get a clean transparent PNG, then open it in GIMP for any further edits.</p>
                     </div>
                 </div>
             </section>
 
             <!-- Related guides -->
             <section class="mb-16">
-                <h2 class="text-xl font-bold text-gray-900 mb-6">Related guides &amp; tools</h2>
+                <h2 class="text-xl font-bold text-gray-900 mb-6 dark:text-zinc-50">Related guides &amp; tools</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <a href="/how-to-remove-background/powerpoint/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-semibold text-gray-900 mb-1">Remove background in PowerPoint →</h3>
-                        <p class="text-sm text-gray-600">Quick cutouts without leaving your deck.</p>
+                    <a href="/how-to-remove-background/powerpoint/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50">Remove background in PowerPoint →</h3>
+                        <p class="text-sm text-gray-600 dark:text-zinc-300">Quick cutouts without leaving your deck.</p>
                     </a>
-                    <a href="/how-to-remove-background/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-semibold text-gray-900 mb-1">All background removal methods →</h3>
-                        <p class="text-sm text-gray-600">Compare every method and pick the fastest one.</p>
+                    <a href="/how-to-remove-background/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50">All background removal methods →</h3>
+                        <p class="text-sm text-gray-600 dark:text-zinc-300">Compare every method and pick the fastest one.</p>
                     </a>
-                    <a href="/jpg-to-transparent-png/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-semibold text-gray-900 mb-1">JPG to Transparent PNG →</h3>
-                        <p class="text-sm text-gray-600">Export a true transparent PNG with an alpha channel.</p>
+                    <a href="/jpg-to-transparent-png/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50">JPG to Transparent PNG →</h3>
+                        <p class="text-sm text-gray-600 dark:text-zinc-300">Export a true transparent PNG with an alpha channel.</p>
                     </a>
-                    <a href="/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-semibold text-gray-900 mb-1">All-Purpose Background Remover →</h3>
-                        <p class="text-sm text-gray-600">One-click cutouts for anything.</p>
+                    <a href="/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50">All-Purpose Background Remover →</h3>
+                        <p class="text-sm text-gray-600 dark:text-zinc-300">One-click cutouts for anything.</p>
                     </a>
                 </div>
             </section>
@@ -334,7 +350,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
+            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500 dark:text-zinc-400">
                 <p class="mb-2">MiaoCut · Free AI image tools that respect your privacy.</p>
                 <p><a href="/privacy/" class="hover:text-white transition-colors">Privacy</a> · <a href="/terms/" class="hover:text-white transition-colors">Terms</a></p>
             </div>

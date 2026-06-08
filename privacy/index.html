@@ -4,6 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preload" href="/fonts/geist/geist-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script>/* redesign-dark-applied */(function () {
+        try { var s = localStorage.getItem('theme');
+            var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', d); } catch (e) {}
+        document.addEventListener('DOMContentLoaded', function () {
+            var b = document.getElementById('theme-toggle');
+            if (b) b.addEventListener('click', function () {
+                var dark = document.documentElement.classList.toggle('dark');
+                try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {} });
+        });
+    })();</script>
     <title>Privacy Policy | MiaoCut</title>
     <meta name="description" content="MiaoCut privacy policy: images are processed in memory and never stored or used to train AI. Learn what data we do and don't collect.">
     <meta name="robots" content="index,follow">
@@ -13,41 +25,45 @@
         data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
 </head>
 
-<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-gray-200">
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-brand-100 selection:text-brand-900 dark:bg-zinc-950 dark:text-zinc-200">
 
-    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur">
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
-            <a href="/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
-            <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600">
-                <a href="/" class="hover:text-gray-900 transition-colors">Background Remover</a>
-                <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors">Product</a>
-                <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors">Portrait</a>
-                <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors">Watermark</a>
-                <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors">ID Photo</a>
-                <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors">Old Photo</a>
+            <a href="/" class="text-2xl font-black tracking-tight text-gray-900 dark:text-zinc-50">MiaoCut</a>
+            <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600 dark:text-zinc-300">
+                <button id="theme-toggle" type="button" aria-label="Toggle dark mode" class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors">
+                    <svg class="h-5 w-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
+                    <svg class="h-5 w-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
+                </button>
+                <a href="/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Background Remover</a>
+                <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Product</a>
+                <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Portrait</a>
+                <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Watermark</a>
+                <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">ID Photo</a>
+                <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Old Photo</a>
             </nav>
         </div>
     </header>
 
     <!-- 面包屑 -->
-    <nav class="w-full max-w-3xl mx-auto px-4 mb-4 mt-4 text-sm text-gray-500" aria-label="Breadcrumb">
+    <nav class="w-full max-w-3xl mx-auto px-4 mb-4 mt-4 text-sm text-gray-500 dark:text-zinc-400" aria-label="Breadcrumb">
         <ol class="flex items-center gap-2">
-            <li><a href="/" class="hover:text-gray-900">MiaoCut</a></li>
+            <li><a href="/" class="hover:text-gray-900 dark:hover:text-zinc-100">MiaoCut</a></li>
             <li class="text-gray-300">/</li>
-            <li class="text-gray-700">Privacy Policy</li>
+            <li class="text-gray-700 dark:text-zinc-200">Privacy Policy</li>
         </ol>
     </nav>
 
     <main class="flex-grow w-full max-w-3xl mx-auto px-4">
         <article class="prose-custom">
-            <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight mb-2">Privacy Policy</h1>
-            <p class="text-sm text-gray-500 mb-8">Last updated: May 31, 2026</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-2 dark:text-zinc-50">Privacy Policy</h1>
+            <p class="text-sm text-gray-500 mb-8 dark:text-zinc-400">Last updated: May 31, 2026</p>
 
-            <p class="text-gray-600 leading-relaxed mb-8">MiaoCut (<a href="https://miaocut.app" class="text-gray-900 underline underline-offset-2">miaocut.app</a>) is a free, no-signup online image-processing service. We designed it to collect as little data as possible. This page explains what happens to your images and what limited data we process.</p>
+            <p class="text-gray-600 leading-relaxed mb-8 dark:text-zinc-300">MiaoCut (<a href="https://miaocut.app" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">miaocut.app</a>) is a free, no-signup online image-processing service. We designed it to collect as little data as possible. This page explains what happens to your images and what limited data we process.</p>
 
             <section class="mb-8">
-                <h2 class="text-xl font-bold text-gray-900 mb-3">Your images</h2>
-                <ul class="space-y-2 text-gray-600 text-sm md:text-base list-disc list-inside">
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Your images</h2>
+                <ul class="space-y-2 text-gray-600 text-sm md:text-base list-disc list-inside dark:text-zinc-300">
                     <li><strong>Processed in memory only.</strong> Images you upload are held in server memory just long enough to produce a result, then discarded.</li>
                     <li><strong>Not stored.</strong> We do not save uploaded images or results to disk or any database.</li>
                     <li><strong>Never used for training.</strong> Your images are never used to train AI models.</li>
@@ -56,8 +72,8 @@
             </section>
 
             <section class="mb-8">
-                <h2 class="text-xl font-bold text-gray-900 mb-3">Information we do process</h2>
-                <ul class="space-y-2 text-gray-600 text-sm md:text-base list-disc list-inside">
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Information we do process</h2>
+                <ul class="space-y-2 text-gray-600 text-sm md:text-base list-disc list-inside dark:text-zinc-300">
                     <li><strong>IP address (transient).</strong> Used only to enforce fair-use rate limits and prevent abuse. It is not used to build a profile of you.</li>
                     <li><strong>Anonymous usage analytics.</strong> We use a privacy-friendly analytics tool (Umami) that does not use cookies and does not collect personally identifiable information. It records aggregate events like page views and which tool was used.</li>
                     <li><strong>Optional feedback.</strong> If you choose to submit feedback, we store the message you send so we can improve the service.</li>
@@ -65,34 +81,34 @@
             </section>
 
             <section class="mb-8">
-                <h2 class="text-xl font-bold text-gray-900 mb-3">Cookies</h2>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed">MiaoCut does not use tracking or advertising cookies. Your browser may store small preferences locally (such as your chosen language or quality mode) using local storage; this stays on your device.</p>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Cookies</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">MiaoCut does not use tracking or advertising cookies. Your browser may store small preferences locally (such as your chosen language or quality mode) using local storage; this stays on your device.</p>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-xl font-bold text-gray-900 mb-3">Service providers</h2>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed">The website is served via Cloudflare, and background processing runs on Hugging Face infrastructure. These providers process requests on our behalf to deliver the service. We do not sell or share your data with advertisers.</p>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Service providers</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">The website is served via Cloudflare, and background processing runs on Hugging Face infrastructure. These providers process requests on our behalf to deliver the service. We do not sell or share your data with advertisers.</p>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-xl font-bold text-gray-900 mb-3">Children</h2>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed">MiaoCut is a general-purpose image tool and is not directed at children under 13.</p>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Children</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">MiaoCut is a general-purpose image tool and is not directed at children under 13.</p>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-xl font-bold text-gray-900 mb-3">Changes</h2>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed">We may update this policy as the service evolves. Material changes will be reflected by the "Last updated" date above.</p>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Changes</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">We may update this policy as the service evolves. Material changes will be reflected by the "Last updated" date above.</p>
             </section>
 
             <section class="mb-12">
-                <h2 class="text-xl font-bold text-gray-900 mb-3">Contact</h2>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed">Questions about privacy? Reach us through the feedback option on the site or at <a href="https://github.com/midcodehub" class="text-gray-900 underline underline-offset-2">our GitHub</a>.</p>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Contact</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">Questions about privacy? Reach us through the feedback option on the site or at <a href="https://github.com/midcodehub" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">our GitHub</a>.</p>
             </section>
         </article>
     </main>
 
     <footer class="w-full bg-gray-900 text-gray-300 mt-0">
-        <div class="max-w-6xl mx-auto px-6 py-10 text-center text-xs text-gray-500">
+        <div class="max-w-6xl mx-auto px-6 py-10 text-center text-xs text-gray-500 dark:text-zinc-400">
             <p class="mb-2">MiaoCut · Free AI image tools that respect your privacy.</p>
             <p><a href="/" class="hover:text-white transition-colors">Home</a> · <a href="/privacy/" class="hover:text-white transition-colors">Privacy</a> · <a href="/terms/" class="hover:text-white transition-colors">Terms</a></p>
         </div>

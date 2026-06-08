@@ -4,6 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preload" href="/fonts/geist/geist-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script>/* redesign-dark-applied */(function () {
+        try { var s = localStorage.getItem('theme');
+            var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', d); } catch (e) {}
+        document.addEventListener('DOMContentLoaded', function () {
+            var b = document.getElementById('theme-toggle');
+            if (b) b.addEventListener('click', function () {
+                var dark = document.documentElement.classList.toggle('dark');
+                try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {} });
+        });
+    })();</script>
     <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
     <title>How to Remove a Background in PowerPoint (Step by Step) | MiaoCut</title>
     <meta name="description"
@@ -126,22 +138,26 @@
         data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
 </head>
 
-<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-gray-200">
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-brand-100 selection:text-brand-900 dark:bg-zinc-950 dark:text-zinc-200">
 
-    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur">
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
-            <a href="/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
-            <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600">
-                <a href="/" class="hover:text-gray-900 transition-colors">Background Remover</a>
-                <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors">Product</a>
-                <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors">Portrait</a>
-                <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors">Watermark</a>
-                <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors">ID Photo</a>
-                <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors">Old Photo</a>
+            <a href="/" class="text-2xl font-black tracking-tight text-gray-900 dark:text-zinc-50">MiaoCut</a>
+            <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600 dark:text-zinc-300">
+                <button id="theme-toggle" type="button" aria-label="Toggle dark mode" class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors">
+                    <svg class="h-5 w-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
+                    <svg class="h-5 w-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
+                </button>
+                <a href="/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Background Remover</a>
+                <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Product</a>
+                <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Portrait</a>
+                <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Watermark</a>
+                <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">ID Photo</a>
+                <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Old Photo</a>
             </nav>
         </div>
     </header>
-    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600">
+    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
         <a href="/" class="shrink-0">Background Remover</a>
         <a href="/product-photo-background-remover/" class="shrink-0">Product</a>
         <a href="/portrait-background-remover/" class="shrink-0">Portrait</a>
@@ -151,69 +167,69 @@
     </nav>
 
     <!-- 面包屑 -->
-    <nav class="w-full max-w-3xl mx-auto px-4 mb-4 mt-4 text-sm text-gray-500" aria-label="Breadcrumb">
+    <nav class="w-full max-w-3xl mx-auto px-4 mb-4 mt-4 text-sm text-gray-500 dark:text-zinc-400" aria-label="Breadcrumb">
         <ol class="flex items-center gap-2 flex-wrap">
-            <li><a href="/" class="hover:text-gray-900">MiaoCut</a></li>
+            <li><a href="/" class="hover:text-gray-900 dark:hover:text-zinc-100">MiaoCut</a></li>
             <li class="text-gray-300">/</li>
-            <li><a href="/how-to-remove-background/" class="hover:text-gray-900">How to Remove a Background</a></li>
+            <li><a href="/how-to-remove-background/" class="hover:text-gray-900 dark:hover:text-zinc-100">How to Remove a Background</a></li>
             <li class="text-gray-300">/</li>
-            <li class="text-gray-700">In PowerPoint</li>
+            <li class="text-gray-700 dark:text-zinc-200">In PowerPoint</li>
         </ol>
     </nav>
 
     <main class="flex-grow w-full max-w-3xl mx-auto px-4">
 
         <article>
-            <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight mb-4">How to Remove a Background in PowerPoint</h1>
-            <p class="text-lg text-gray-600 leading-relaxed mb-6">PowerPoint has a built-in <strong>Remove Background</strong> tool that erases the background of any picture right on your slide — no other software needed. Here's exactly how to use it on Windows and Mac, where it falls short, and the faster one-click option when you need clean edges.</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-4 dark:text-zinc-50">How to Remove a Background in PowerPoint</h1>
+            <p class="text-lg text-gray-600 leading-relaxed mb-6 dark:text-zinc-300">PowerPoint has a built-in <strong>Remove Background</strong> tool that erases the background of any picture right on your slide — no other software needed. Here's exactly how to use it on Windows and Mac, where it falls short, and the faster one-click option when you need clean edges.</p>
 
             <!-- Interception CTA (top, for searchers who just want it done) -->
-            <div class="rounded-2xl border border-gray-200 bg-white p-6 mb-10 flex flex-col sm:flex-row items-center gap-5 shadow-sm">
+            <div class="rounded-xl border border-gray-200 bg-white p-6 mb-10 flex flex-col sm:flex-row items-center gap-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
                 <div class="text-3xl shrink-0">⚡</div>
                 <div class="flex-grow text-center sm:text-left">
-                    <p class="font-bold text-gray-900 mb-1">In a hurry? Skip the menus.</p>
-                    <p class="text-sm text-gray-600">Remove the background online in one click, download a transparent PNG, then drop it onto your slide. Free, no signup.</p>
+                    <p class="font-bold text-gray-900 mb-1 dark:text-zinc-50">In a hurry? Skip the menus.</p>
+                    <p class="text-sm text-gray-600 dark:text-zinc-300">Remove the background online in one click, download a transparent PNG, then drop it onto your slide. Free, no signup.</p>
                 </div>
                 <a href="/" class="shrink-0 inline-block rounded-full bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-gray-700" data-umami-event="ppt-cta-top">Try it free →</a>
             </div>
 
             <!-- Steps -->
             <section class="mb-12">
-                <h2 class="text-2xl font-extrabold text-gray-900 mb-6">Step-by-step: PowerPoint's Remove Background tool</h2>
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 dark:text-zinc-50">Step-by-step: PowerPoint's Remove Background tool</h2>
                 <ol class="space-y-6">
                     <li class="flex gap-4">
                         <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-900 text-sm font-bold text-white">1</span>
                         <div>
-                            <h3 class="font-bold text-gray-900 mb-1">Insert and select the image</h3>
-                            <p class="text-gray-600 text-sm leading-relaxed">Add your picture to a slide via <strong>Insert &gt; Pictures</strong>. Click it once so the blue <strong>Picture Format</strong> tab appears on the ribbon.</p>
+                            <h3 class="font-bold text-gray-900 mb-1 dark:text-zinc-50">Insert and select the image</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed dark:text-zinc-300">Add your picture to a slide via <strong>Insert &gt; Pictures</strong>. Click it once so the blue <strong>Picture Format</strong> tab appears on the ribbon.</p>
                         </div>
                     </li>
                     <li class="flex gap-4">
                         <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-900 text-sm font-bold text-white">2</span>
                         <div>
-                            <h3 class="font-bold text-gray-900 mb-1">Click Remove Background</h3>
-                            <p class="text-gray-600 text-sm leading-relaxed">On the <strong>Picture Format</strong> tab, click <strong>Remove Background</strong> at the far left. PowerPoint shades everything it thinks is background in magenta (pink).</p>
+                            <h3 class="font-bold text-gray-900 mb-1 dark:text-zinc-50">Click Remove Background</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed dark:text-zinc-300">On the <strong>Picture Format</strong> tab, click <strong>Remove Background</strong> at the far left. PowerPoint shades everything it thinks is background in magenta (pink).</p>
                         </div>
                     </li>
                     <li class="flex gap-4">
                         <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-900 text-sm font-bold text-white">3</span>
                         <div>
-                            <h3 class="font-bold text-gray-900 mb-1">Refine the selection</h3>
-                            <p class="text-gray-600 text-sm leading-relaxed">Use <strong>Mark Areas to Keep</strong> and <strong>Mark Areas to Remove</strong> to draw over spots it got wrong. Drag the handles of the box to include the whole subject.</p>
+                            <h3 class="font-bold text-gray-900 mb-1 dark:text-zinc-50">Refine the selection</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed dark:text-zinc-300">Use <strong>Mark Areas to Keep</strong> and <strong>Mark Areas to Remove</strong> to draw over spots it got wrong. Drag the handles of the box to include the whole subject.</p>
                         </div>
                     </li>
                     <li class="flex gap-4">
                         <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-900 text-sm font-bold text-white">4</span>
                         <div>
-                            <h3 class="font-bold text-gray-900 mb-1">Keep Changes</h3>
-                            <p class="text-gray-600 text-sm leading-relaxed">Click <strong>Keep Changes</strong> (or press Enter). The magenta areas turn transparent, leaving only your subject on the slide.</p>
+                            <h3 class="font-bold text-gray-900 mb-1 dark:text-zinc-50">Keep Changes</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed dark:text-zinc-300">Click <strong>Keep Changes</strong> (or press Enter). The magenta areas turn transparent, leaving only your subject on the slide.</p>
                         </div>
                     </li>
                     <li class="flex gap-4">
                         <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-900 text-sm font-bold text-white">5</span>
                         <div>
-                            <h3 class="font-bold text-gray-900 mb-1">(Optional) Save as a transparent PNG</h3>
-                            <p class="text-gray-600 text-sm leading-relaxed">To reuse the cutout elsewhere, right-click the picture &gt; <strong>Save as Picture</strong> &gt; choose <strong>PNG</strong> so the transparency is preserved.</p>
+                            <h3 class="font-bold text-gray-900 mb-1 dark:text-zinc-50">(Optional) Save as a transparent PNG</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed dark:text-zinc-300">To reuse the cutout elsewhere, right-click the picture &gt; <strong>Save as Picture</strong> &gt; choose <strong>PNG</strong> so the transparency is preserved.</p>
                         </div>
                     </li>
                 </ol>
@@ -221,8 +237,8 @@
 
             <!-- Limitations -->
             <section class="mb-12">
-                <h2 class="text-2xl font-extrabold text-gray-900 mb-4">Where PowerPoint's tool falls short</h2>
-                <ul class="space-y-3 text-gray-700 text-sm md:text-base list-disc list-inside">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4 dark:text-zinc-50">Where PowerPoint's tool falls short</h2>
+                <ul class="space-y-3 text-gray-700 text-sm md:text-base list-disc list-inside dark:text-zinc-200">
                     <li><strong>Hair, fur, and soft edges</strong> come out jagged — the tool works on color, not on a real understanding of the subject.</li>
                     <li><strong>Low-contrast images</strong> (subject and background are similar colors) need many manual Mark Areas passes.</li>
                     <li><strong>Not in PowerPoint for the web</strong> — the free online version can only adjust transparency, not remove backgrounds.</li>
@@ -232,22 +248,22 @@
 
             <!-- Interception comparison -->
             <section class="mb-12">
-                <h2 class="text-2xl font-extrabold text-gray-900 mb-4">The faster alternative: one click in your browser</h2>
-                <p class="text-gray-600 leading-relaxed mb-6">When PowerPoint can't get clean edges — or you just have a lot of images — an AI background remover is faster and sharper. <a href="/" class="text-gray-900 font-semibold underline underline-offset-2">MiaoCut</a> uses the BiRefNet segmentation model to cut out your subject (including hair and fur in Fine mode) in about a second. Download the transparent PNG and insert it onto your slide.</p>
+                <h2 class="text-2xl font-bold text-gray-900 mb-4 dark:text-zinc-50">The faster alternative: one click in your browser</h2>
+                <p class="text-gray-600 leading-relaxed mb-6 dark:text-zinc-300">When PowerPoint can't get clean edges — or you just have a lot of images — an AI background remover is faster and sharper. <a href="/" class="text-gray-900 font-semibold underline underline-offset-2 dark:text-zinc-50">MiaoCut</a> uses the BiRefNet segmentation model to cut out your subject (including hair and fur in Fine mode) in about a second. Download the transparent PNG and insert it onto your slide.</p>
                 <div class="overflow-x-auto mb-6">
                     <table class="w-full text-left text-sm border-collapse">
                         <thead>
-                            <tr class="border-b border-gray-300 text-gray-900">
+                            <tr class="border-b border-gray-300 text-gray-900 dark:border-zinc-700 dark:text-zinc-50">
                                 <th class="py-3 pr-4 font-semibold"></th>
                                 <th class="py-3 pr-4 font-semibold">PowerPoint</th>
                                 <th class="py-3 font-semibold">MiaoCut</th>
                             </tr>
                         </thead>
-                        <tbody class="text-gray-600">
-                            <tr class="border-b border-gray-100"><td class="py-3 pr-4 font-medium text-gray-900">Time per image</td><td class="py-3 pr-4">1–3 min</td><td class="py-3">~1 sec</td></tr>
-                            <tr class="border-b border-gray-100"><td class="py-3 pr-4 font-medium text-gray-900">Hair &amp; fur</td><td class="py-3 pr-4">Jagged</td><td class="py-3">Clean (Fine mode)</td></tr>
-                            <tr class="border-b border-gray-100"><td class="py-3 pr-4 font-medium text-gray-900">Manual touch-up</td><td class="py-3 pr-4">Usually needed</td><td class="py-3">Rarely</td></tr>
-                            <tr><td class="py-3 pr-4 font-medium text-gray-900">Cost</td><td class="py-3 pr-4">Office license</td><td class="py-3">Free, no signup</td></tr>
+                        <tbody class="text-gray-600 dark:text-zinc-300">
+                            <tr class="border-b border-gray-100 dark:border-zinc-800"><td class="py-3 pr-4 font-medium text-gray-900 dark:text-zinc-50">Time per image</td><td class="py-3 pr-4">1–3 min</td><td class="py-3">~1 sec</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-zinc-800"><td class="py-3 pr-4 font-medium text-gray-900 dark:text-zinc-50">Hair &amp; fur</td><td class="py-3 pr-4">Jagged</td><td class="py-3">Clean (Fine mode)</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-zinc-800"><td class="py-3 pr-4 font-medium text-gray-900 dark:text-zinc-50">Manual touch-up</td><td class="py-3 pr-4">Usually needed</td><td class="py-3">Rarely</td></tr>
+                            <tr><td class="py-3 pr-4 font-medium text-gray-900 dark:text-zinc-50">Cost</td><td class="py-3 pr-4">Office license</td><td class="py-3">Free, no signup</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -258,46 +274,46 @@
 
             <!-- FAQ -->
             <section class="mb-12">
-                <h2 class="text-2xl font-extrabold text-gray-900 mb-6">Frequently Asked Questions</h2>
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 dark:text-zinc-50">Frequently Asked Questions</h2>
                 <div class="space-y-4">
-                    <div class="bg-white p-6 rounded-xl border border-gray-200">
-                        <h3 class="font-bold text-gray-900 text-base mb-2">Does every version of PowerPoint have Remove Background?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed">The Remove Background tool is in PowerPoint 2010 and later on Windows, PowerPoint for Mac 2016 and later, and Microsoft 365. It is <em>not</em> available in PowerPoint for the web — there you can only set a picture's transparency, not remove a background.</p>
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50">Does every version of PowerPoint have Remove Background?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300">The Remove Background tool is in PowerPoint 2010 and later on Windows, PowerPoint for Mac 2016 and later, and Microsoft 365. It is <em>not</em> available in PowerPoint for the web — there you can only set a picture's transparency, not remove a background.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-xl border border-gray-200">
-                        <h3 class="font-bold text-gray-900 text-base mb-2">Why does PowerPoint remove the wrong parts of my image?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed">Its tool keys off color and contrast, so it struggles when the subject and background are similar colors, or with hair, fur, and soft edges. You correct it with Mark Areas to Keep / Remove, but on complex images that takes many passes.</p>
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50">Why does PowerPoint remove the wrong parts of my image?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300">Its tool keys off color and contrast, so it struggles when the subject and background are similar colors, or with hair, fur, and soft edges. You correct it with Mark Areas to Keep / Remove, but on complex images that takes many passes.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-xl border border-gray-200">
-                        <h3 class="font-bold text-gray-900 text-base mb-2">How do I get a clean transparent PNG from a difficult photo?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed">For hair, fur, or busy backgrounds, an AI background remover gets cleaner edges than PowerPoint's color-based tool. Use <a href="/" class="text-gray-900 underline underline-offset-2">MiaoCut</a> to remove the background in one click, download the transparent PNG, then insert it onto your slide.</p>
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50">How do I get a clean transparent PNG from a difficult photo?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300">For hair, fur, or busy backgrounds, an AI background remover gets cleaner edges than PowerPoint's color-based tool. Use <a href="/" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">MiaoCut</a> to remove the background in one click, download the transparent PNG, then insert it onto your slide.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-xl border border-gray-200">
-                        <h3 class="font-bold text-gray-900 text-base mb-2">Can I remove a background in PowerPoint on a Mac?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed">Yes. The steps are the same on Mac: select the image, open the Picture Format tab, click Remove Background, refine with the Mark Areas tools, and click Keep Changes.</p>
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50">Can I remove a background in PowerPoint on a Mac?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300">Yes. The steps are the same on Mac: select the image, open the Picture Format tab, click Remove Background, refine with the Mark Areas tools, and click Keep Changes.</p>
                     </div>
                 </div>
             </section>
 
             <!-- Related guides -->
             <section class="mb-16">
-                <h2 class="text-xl font-bold text-gray-900 mb-6">Related guides &amp; tools</h2>
+                <h2 class="text-xl font-bold text-gray-900 mb-6 dark:text-zinc-50">Related guides &amp; tools</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <a href="/how-to-remove-background/gimp/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-semibold text-gray-900 mb-1">Remove background in GIMP →</h3>
-                        <p class="text-sm text-gray-600">The free desktop alternative to Photoshop.</p>
+                    <a href="/how-to-remove-background/gimp/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50">Remove background in GIMP →</h3>
+                        <p class="text-sm text-gray-600 dark:text-zinc-300">The free desktop alternative to Photoshop.</p>
                     </a>
-                    <a href="/how-to-remove-background/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-semibold text-gray-900 mb-1">All background removal methods →</h3>
-                        <p class="text-sm text-gray-600">Compare every method and pick the fastest one.</p>
+                    <a href="/how-to-remove-background/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50">All background removal methods →</h3>
+                        <p class="text-sm text-gray-600 dark:text-zinc-300">Compare every method and pick the fastest one.</p>
                     </a>
-                    <a href="/jpg-to-transparent-png/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-semibold text-gray-900 mb-1">JPG to Transparent PNG →</h3>
-                        <p class="text-sm text-gray-600">Export a true transparent PNG for slides and docs.</p>
+                    <a href="/jpg-to-transparent-png/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50">JPG to Transparent PNG →</h3>
+                        <p class="text-sm text-gray-600 dark:text-zinc-300">Export a true transparent PNG for slides and docs.</p>
                     </a>
-                    <a href="/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-semibold text-gray-900 mb-1">All-Purpose Background Remover →</h3>
-                        <p class="text-sm text-gray-600">One-click cutouts for anything.</p>
+                    <a href="/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50">All-Purpose Background Remover →</h3>
+                        <p class="text-sm text-gray-600 dark:text-zinc-300">One-click cutouts for anything.</p>
                     </a>
                 </div>
             </section>
@@ -334,7 +350,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
+            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500 dark:text-zinc-400">
                 <p class="mb-2">MiaoCut · Free AI image tools that respect your privacy.</p>
                 <p><a href="/privacy/" class="hover:text-white transition-colors">Privacy</a> · <a href="/terms/" class="hover:text-white transition-colors">Terms</a></p>
             </div>

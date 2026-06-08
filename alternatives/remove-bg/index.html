@@ -4,6 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preload" href="/fonts/geist/geist-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script>/* redesign-dark-applied */(function () {
+        try { var s = localStorage.getItem('theme');
+            var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', d); } catch (e) {}
+        document.addEventListener('DOMContentLoaded', function () {
+            var b = document.getElementById('theme-toggle');
+            if (b) b.addEventListener('click', function () {
+                var dark = document.documentElement.classList.toggle('dark');
+                try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {} });
+        });
+    })();</script>
     <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
     <title>The Free remove.bg Alternative — No Signup, No Credits | MiaoCut</title>
     <meta name="description"
@@ -90,22 +102,26 @@
         data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
 </head>
 
-<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-gray-200">
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-brand-100 selection:text-brand-900 dark:bg-zinc-950 dark:text-zinc-200">
 
-    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur">
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
-            <a href="/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
-            <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600">
-                <a href="/" class="hover:text-gray-900 transition-colors">Background Remover</a>
-                <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors">Product</a>
-                <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors">Portrait</a>
-                <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors">Watermark</a>
-                <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors">ID Photo</a>
-                <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors">Old Photo</a>
+            <a href="/" class="text-2xl font-black tracking-tight text-gray-900 dark:text-zinc-50">MiaoCut</a>
+            <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600 dark:text-zinc-300">
+                <button id="theme-toggle" type="button" aria-label="Toggle dark mode" class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors">
+                    <svg class="h-5 w-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
+                    <svg class="h-5 w-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
+                </button>
+                <a href="/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Background Remover</a>
+                <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Product</a>
+                <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Portrait</a>
+                <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Watermark</a>
+                <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">ID Photo</a>
+                <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Old Photo</a>
             </nav>
         </div>
     </header>
-    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600">
+    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
         <a href="/" class="shrink-0">Background Remover</a>
         <a href="/product-photo-background-remover/" class="shrink-0">Product</a>
         <a href="/portrait-background-remover/" class="shrink-0">Portrait</a>
@@ -115,51 +131,51 @@
     </nav>
 
     <!-- 面包屑 -->
-    <nav class="w-full max-w-3xl mx-auto px-4 mb-4 mt-4 text-sm text-gray-500" aria-label="Breadcrumb">
+    <nav class="w-full max-w-3xl mx-auto px-4 mb-4 mt-4 text-sm text-gray-500 dark:text-zinc-400" aria-label="Breadcrumb">
         <ol class="flex items-center gap-2 flex-wrap">
-            <li><a href="/" class="hover:text-gray-900">MiaoCut</a></li>
+            <li><a href="/" class="hover:text-gray-900 dark:hover:text-zinc-100">MiaoCut</a></li>
             <li class="text-gray-300">/</li>
-            <li class="text-gray-700">remove.bg Alternative</li>
+            <li class="text-gray-700 dark:text-zinc-200">remove.bg Alternative</li>
         </ol>
     </nav>
 
     <main class="flex-grow w-full max-w-3xl mx-auto px-4">
 
         <article>
-            <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight mb-4">MiaoCut: The Free, Open-Source remove.bg Alternative</h1>
-            <p class="text-lg text-gray-600 leading-relaxed mb-6">Looking for a <strong>remove.bg alternative</strong> that doesn't gate your download behind paid credits? MiaoCut removes image backgrounds with AI in about one second — <strong>free, no signup, no credit limits, no watermark</strong>, and it exports a full-resolution transparent PNG. It's also open source, so you can self-host it.</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-4 dark:text-zinc-50">MiaoCut: The Free, Open-Source remove.bg Alternative</h1>
+            <p class="text-lg text-gray-600 leading-relaxed mb-6 dark:text-zinc-300">Looking for a <strong>remove.bg alternative</strong> that doesn't gate your download behind paid credits? MiaoCut removes image backgrounds with AI in about one second — <strong>free, no signup, no credit limits, no watermark</strong>, and it exports a full-resolution transparent PNG. It's also open source, so you can self-host it.</p>
 
             <!-- CTA top -->
-            <div class="rounded-2xl border border-gray-200 bg-white p-6 mb-10 flex flex-col sm:flex-row items-center gap-5 shadow-sm">
+            <div class="rounded-xl border border-gray-200 bg-white p-6 mb-10 flex flex-col sm:flex-row items-center gap-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
                 <div class="text-3xl shrink-0">⚡</div>
                 <div class="flex-grow text-center sm:text-left">
-                    <p class="font-bold text-gray-900 mb-1">Try it now — nothing to sign up for</p>
-                    <p class="text-sm text-gray-600">Drop an image, get a transparent PNG in ~1 second. Free, full resolution, no watermark.</p>
+                    <p class="font-bold text-gray-900 mb-1 dark:text-zinc-50">Try it now — nothing to sign up for</p>
+                    <p class="text-sm text-gray-600 dark:text-zinc-300">Drop an image, get a transparent PNG in ~1 second. Free, full resolution, no watermark.</p>
                 </div>
                 <a href="/" class="shrink-0 inline-block rounded-full bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-gray-700" data-umami-event="removebg-cta-top">Remove a background free →</a>
             </div>
 
             <!-- Comparison table -->
             <section class="mb-12">
-                <h2 class="text-2xl font-extrabold text-gray-900 mb-4">MiaoCut vs remove.bg</h2>
+                <h2 class="text-2xl font-bold text-gray-900 mb-4 dark:text-zinc-50">MiaoCut vs remove.bg</h2>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm border-collapse">
                         <thead>
-                            <tr class="border-b border-gray-300 text-gray-900">
+                            <tr class="border-b border-gray-300 text-gray-900 dark:border-zinc-700 dark:text-zinc-50">
                                 <th class="py-3 pr-4 font-semibold"></th>
                                 <th class="py-3 pr-4 font-semibold">MiaoCut</th>
                                 <th class="py-3 font-semibold">remove.bg</th>
                             </tr>
                         </thead>
-                        <tbody class="text-gray-600">
-                            <tr class="border-b border-gray-100"><td class="py-3 pr-4 font-medium text-gray-900">Price</td><td class="py-3 pr-4">Free</td><td class="py-3">Free preview, paid for full-res</td></tr>
-                            <tr class="border-b border-gray-100"><td class="py-3 pr-4 font-medium text-gray-900">Full-resolution download</td><td class="py-3 pr-4">Free</td><td class="py-3">Credits / subscription</td></tr>
-                            <tr class="border-b border-gray-100"><td class="py-3 pr-4 font-medium text-gray-900">Signup required</td><td class="py-3 pr-4">No</td><td class="py-3">Yes (for credits)</td></tr>
-                            <tr class="border-b border-gray-100"><td class="py-3 pr-4 font-medium text-gray-900">Credit limits</td><td class="py-3 pr-4">None</td><td class="py-3">Yes</td></tr>
-                            <tr class="border-b border-gray-100"><td class="py-3 pr-4 font-medium text-gray-900">Hair / fur mode</td><td class="py-3 pr-4">Yes (alpha matting)</td><td class="py-3">Yes</td></tr>
-                            <tr class="border-b border-gray-100"><td class="py-3 pr-4 font-medium text-gray-900">Open source</td><td class="py-3 pr-4">Yes (MIT)</td><td class="py-3">No</td></tr>
-                            <tr class="border-b border-gray-100"><td class="py-3 pr-4 font-medium text-gray-900">Self-hostable</td><td class="py-3 pr-4">Yes (Docker)</td><td class="py-3">No</td></tr>
-                            <tr><td class="py-3 pr-4 font-medium text-gray-900">Privacy</td><td class="py-3 pr-4">In-memory, not stored</td><td class="py-3">Cloud processing</td></tr>
+                        <tbody class="text-gray-600 dark:text-zinc-300">
+                            <tr class="border-b border-gray-100 dark:border-zinc-800"><td class="py-3 pr-4 font-medium text-gray-900 dark:text-zinc-50">Price</td><td class="py-3 pr-4">Free</td><td class="py-3">Free preview, paid for full-res</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-zinc-800"><td class="py-3 pr-4 font-medium text-gray-900 dark:text-zinc-50">Full-resolution download</td><td class="py-3 pr-4">Free</td><td class="py-3">Credits / subscription</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-zinc-800"><td class="py-3 pr-4 font-medium text-gray-900 dark:text-zinc-50">Signup required</td><td class="py-3 pr-4">No</td><td class="py-3">Yes (for credits)</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-zinc-800"><td class="py-3 pr-4 font-medium text-gray-900 dark:text-zinc-50">Credit limits</td><td class="py-3 pr-4">None</td><td class="py-3">Yes</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-zinc-800"><td class="py-3 pr-4 font-medium text-gray-900 dark:text-zinc-50">Hair / fur mode</td><td class="py-3 pr-4">Yes (alpha matting)</td><td class="py-3">Yes</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-zinc-800"><td class="py-3 pr-4 font-medium text-gray-900 dark:text-zinc-50">Open source</td><td class="py-3 pr-4">Yes (MIT)</td><td class="py-3">No</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-zinc-800"><td class="py-3 pr-4 font-medium text-gray-900 dark:text-zinc-50">Self-hostable</td><td class="py-3 pr-4">Yes (Docker)</td><td class="py-3">No</td></tr>
+                            <tr><td class="py-3 pr-4 font-medium text-gray-900 dark:text-zinc-50">Privacy</td><td class="py-3 pr-4">In-memory, not stored</td><td class="py-3">Cloud processing</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -167,9 +183,9 @@
 
             <!-- When to choose -->
             <section class="mb-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-6 rounded-xl border border-gray-200">
-                    <h2 class="text-lg font-bold text-gray-900 mb-3">When to choose MiaoCut</h2>
-                    <ul class="space-y-2 text-sm text-gray-600 list-disc list-inside">
+                <div class="bg-white p-6 rounded-xl border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
+                    <h2 class="text-lg font-bold text-gray-900 mb-3 dark:text-zinc-50">When to choose MiaoCut</h2>
+                    <ul class="space-y-2 text-sm text-gray-600 list-disc list-inside dark:text-zinc-300">
                         <li>You want full-resolution cutouts for free</li>
                         <li>You don't want to create an account or buy credits</li>
                         <li>You care about privacy (in-memory processing)</li>
@@ -177,14 +193,14 @@
                         <li>You also need ID photos, watermark removal, or old-photo restoration</li>
                     </ul>
                 </div>
-                <div class="bg-white p-6 rounded-xl border border-gray-200">
-                    <h2 class="text-lg font-bold text-gray-900 mb-3">When remove.bg may fit</h2>
-                    <ul class="space-y-2 text-sm text-gray-600 list-disc list-inside">
+                <div class="bg-white p-6 rounded-xl border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
+                    <h2 class="text-lg font-bold text-gray-900 mb-3 dark:text-zinc-50">When remove.bg may fit</h2>
+                    <ul class="space-y-2 text-sm text-gray-600 list-disc list-inside dark:text-zinc-300">
                         <li>You need a high-volume commercial API with an SLA</li>
                         <li>You want native Photoshop / Figma plugins</li>
                         <li>You're already on a paid remove.bg plan and it works for you</li>
                     </ul>
-                    <p class="mt-3 text-sm text-gray-500">We aim to be accurate. If anything here is out of date, <a href="/" class="underline underline-offset-2">let us know</a>.</p>
+                    <p class="mt-3 text-sm text-gray-500 dark:text-zinc-400">We aim to be accurate. If anything here is out of date, <a href="/" class="underline underline-offset-2">let us know</a>.</p>
                 </div>
             </section>
 
@@ -195,50 +211,50 @@
 
             <!-- FAQ -->
             <section class="mb-12">
-                <h2 class="text-2xl font-extrabold text-gray-900 mb-6">Frequently Asked Questions</h2>
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 dark:text-zinc-50">Frequently Asked Questions</h2>
                 <div class="space-y-4">
-                    <div class="bg-white p-6 rounded-xl border border-gray-200">
-                        <h3 class="font-bold text-gray-900 text-base mb-2">Is MiaoCut really a free alternative to remove.bg?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed">Yes. MiaoCut removes backgrounds for free with no signup, no credit limits, and no watermark, exporting a full-resolution transparent PNG. remove.bg lets you preview for free but gates full-resolution downloads behind paid credits or a subscription.</p>
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50">Is MiaoCut really a free alternative to remove.bg?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300">Yes. MiaoCut removes backgrounds for free with no signup, no credit limits, and no watermark, exporting a full-resolution transparent PNG. remove.bg lets you preview for free but gates full-resolution downloads behind paid credits or a subscription.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-xl border border-gray-200">
-                        <h3 class="font-bold text-gray-900 text-base mb-2">Do I need an account or credits?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed">No. No signup, no credit card, no per-image credits. Fair-use rate limits apply per IP to keep the free service stable, but there's no paywall on the result.</p>
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50">Do I need an account or credits?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300">No. No signup, no credit card, no per-image credits. Fair-use rate limits apply per IP to keep the free service stable, but there's no paywall on the result.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-xl border border-gray-200">
-                        <h3 class="font-bold text-gray-900 text-base mb-2">Is the cutout quality as good as remove.bg?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed">MiaoCut uses the BiRefNet AI model with a dedicated Fur mode (alpha matting) for hair, fur, and soft edges. For most photos — people, products, logos, pets — results are comparable, and full-resolution output is free.</p>
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50">Is the cutout quality as good as remove.bg?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300">MiaoCut uses the BiRefNet AI model with a dedicated Fur mode (alpha matting) for hair, fur, and soft edges. For most photos — people, products, logos, pets — results are comparable, and full-resolution output is free.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-xl border border-gray-200">
-                        <h3 class="font-bold text-gray-900 text-base mb-2">Is MiaoCut open source?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed">Yes — MIT licensed and self-hostable with Docker, so you can run your own private background remover. remove.bg is a closed, paid SaaS.</p>
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50">Is MiaoCut open source?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300">Yes — MIT licensed and self-hostable with Docker, so you can run your own private background remover. remove.bg is a closed, paid SaaS.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-xl border border-gray-200">
-                        <h3 class="font-bold text-gray-900 text-base mb-2">What happens to my images?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed">Images are processed in memory and discarded immediately. MiaoCut does not store uploaded images or use them to train AI models.</p>
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50">What happens to my images?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300">Images are processed in memory and discarded immediately. MiaoCut does not store uploaded images or use them to train AI models.</p>
                     </div>
                 </div>
             </section>
 
             <!-- Related -->
             <section class="mb-16">
-                <h2 class="text-xl font-bold text-gray-900 mb-6">Explore MiaoCut</h2>
+                <h2 class="text-xl font-bold text-gray-900 mb-6 dark:text-zinc-50">Explore MiaoCut</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <a href="/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-semibold text-gray-900 mb-1">Free Background Remover →</h3>
-                        <p class="text-sm text-gray-600">One-click cutouts for anything.</p>
+                    <a href="/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50">Free Background Remover →</h3>
+                        <p class="text-sm text-gray-600 dark:text-zinc-300">One-click cutouts for anything.</p>
                     </a>
-                    <a href="/how-to-remove-background/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-semibold text-gray-900 mb-1">How to remove a background →</h3>
-                        <p class="text-sm text-gray-600">Guides for PowerPoint, GIMP, and more.</p>
+                    <a href="/how-to-remove-background/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50">How to remove a background →</h3>
+                        <p class="text-sm text-gray-600 dark:text-zinc-300">Guides for PowerPoint, GIMP, and more.</p>
                     </a>
-                    <a href="/portrait-background-remover/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-semibold text-gray-900 mb-1">Portrait Background Remover →</h3>
-                        <p class="text-sm text-gray-600">Profile pictures and headshots.</p>
+                    <a href="/portrait-background-remover/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50">Portrait Background Remover →</h3>
+                        <p class="text-sm text-gray-600 dark:text-zinc-300">Profile pictures and headshots.</p>
                     </a>
-                    <a href="/jpg-to-transparent-png/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-semibold text-gray-900 mb-1">JPG to Transparent PNG →</h3>
-                        <p class="text-sm text-gray-600">Export a true transparent PNG.</p>
+                    <a href="/jpg-to-transparent-png/" class="block bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50">JPG to Transparent PNG →</h3>
+                        <p class="text-sm text-gray-600 dark:text-zinc-300">Export a true transparent PNG.</p>
                     </a>
                 </div>
             </section>
@@ -282,7 +298,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
+            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500 dark:text-zinc-400">
                 <p class="mb-2">MiaoCut · Free AI image tools that respect your privacy.</p>
                 <p><a href="/privacy/" class="hover:text-white transition-colors">Privacy</a> · <a href="/terms/" class="hover:text-white transition-colors">Terms</a></p>
             </div>
