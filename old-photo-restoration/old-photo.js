@@ -7,7 +7,7 @@
             // SEO meta（applyLanguage 从这里读 <title>/<meta>，覆盖静态 HTML；
             // build-i18n.mjs 不读 EN 这部分，但保留作为单一来源）
             pageTitle: 'Free AI Old Photo Restoration & Upscaler | MiaoCut',
-            metaDescription: 'Free AI old photo restoration online. Reduce noise, recover faded contrast, sharpen soft details, and upscale vintage family photos to print-ready resolution. No signup, in-memory processing.',
+            metaDescription: 'Free AI old photo restoration online. Reduce noise, recover faded contrast, sharpen soft details, and upscale vintage family photos to print-ready resolution.',
             metaKeywords: 'old photo restoration, restore old photos, photo enhancer, photo upscale, repair old photo, vintage photo restoration, ai photo repair, fix faded photos, family photo restore',
             ogTitle: 'Free AI Old Photo Restoration & Upscaler | MiaoCut',
             ogDescription: 'Reduce noise, recover faded contrast, sharpen details, and upscale vintage family photos. Free, no signup.',
@@ -105,7 +105,7 @@
             // SEO meta（被 scripts/build-i18n.mjs 用来生成 zh/old-photo-restoration/index.html。
             // 改这些 key 后跑 npm run build:i18n 同步 zh 静态页。）
             pageTitle: '免费 AI 老照片修复与高清放大 | MiaoCut',
-            metaDescription: '在线修复老照片：降噪、还原褪色对比度、增强细节、放大褪色或破损的家庭老照片，免费、无需注册，导出高分辨率图片。',
+            metaDescription: '免费在线 AI 老照片修复工具，一键为褪色、模糊、划痕或破损的家庭老照片降噪、还原对比度、增强细节并智能放大，重现清晰自然的画面。无需安装、无需注册，纯内存处理保护隐私，可导出可打印的高分辨率图片，让珍贵回忆焕然一新。',
             metaKeywords: '老照片修复,照片修复,老照片高清,照片增强,照片放大,AI 修复老照片,免费修复老照片,旧照片修复',
             ogTitle: '免费 AI 老照片修复 | MiaoCut',
             ogDescription: '降噪、还原褪色、增强细节，把老家庭照片重新变清晰。免费、无需注册。',
