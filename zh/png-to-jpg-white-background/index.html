@@ -6,6 +6,23 @@
     <meta name="sogou_site_verification" content="lLMMvkZKud" />
     <meta name="baidu-site-verification" content="codeva-bJiTOFPj58" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 品牌字体 Geist：预加载首屏 sans 可变字体（crossorigin 是 font preload 的硬性要求）-->
+    <link rel="preload" href="/fonts/geist/geist-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- 主题（明/暗）：在首屏渲染前同步设好 <html class="dark">，避免闪一下白；并在 DOM ready 后接管切换按钮 -->
+    <script>/* redesign-dark-applied */(function () {
+        try {
+            var s = localStorage.getItem('theme');
+            var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', d);
+        } catch (e) {}
+        document.addEventListener('DOMContentLoaded', function () {
+            var b = document.getElementById('theme-toggle');
+            if (b) b.addEventListener('click', function () {
+                var dark = document.documentElement.classList.toggle('dark');
+                try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+            });
+        });
+    })();</script>
     <!-- Resource hints：Umami 跨源；后端这里不调，所以不预连 api2 -->
     <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
     <title>PNG 转 JPG 在线转换器 — 智能白底，免黑色背景 | MiaoCut</title>
@@ -142,30 +159,35 @@
     <link rel="alternate" hreflang="x-default" href="https://miaocut.app/png-to-jpg-white-background/">
 </head>
 
-<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-gray-200">
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-brand-100 selection:text-brand-900 dark:bg-zinc-950 dark:text-zinc-200">
 
     <!-- 顶部导航 -->
-    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur">
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
-            <a href="/zh/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
+            <a href="/zh/" class="text-2xl font-black tracking-tight text-gray-900 dark:text-zinc-50">MiaoCut</a>
             <div class="flex items-center gap-4">
-                <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600">
-                    <a href="/zh/" class="hover:text-gray-900 transition-colors" data-i18n="navBg">背景去除</a>
-                    <a href="/zh/product-photo-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navProduct">商品图</a>
-                    <a href="/zh/portrait-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navPortrait">人像</a>
-                    <a href="/zh/watermark-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navWatermark">水印擦除</a>
-                    <a href="/zh/id-photo-maker/" class="hover:text-gray-900 transition-colors" data-i18n="navId">证件照</a>
-                    <a href="/zh/old-photo-restoration/" class="hover:text-gray-900 transition-colors" data-i18n="navRestore">老照片</a>
+                <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600 dark:text-zinc-300">
+                    <a href="/zh/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navBg">背景去除</a>
+                    <a href="/zh/product-photo-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navProduct">商品图</a>
+                    <a href="/zh/portrait-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navPortrait">人像</a>
+                    <a href="/zh/watermark-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navWatermark">水印擦除</a>
+                    <a href="/zh/id-photo-maker/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navId">证件照</a>
+                    <a href="/zh/old-photo-restoration/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navRestore">老照片</a>
                 </nav>
+                <button id="theme-toggle" type="button" aria-label="Toggle dark mode"
+                    class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors">
+                    <svg class="h-5 w-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
+                    <svg class="h-5 w-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
+                </button>
                 <select id="lang-switch" aria-label="Language"
-                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
+                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors dark:text-zinc-300 dark:hover:text-zinc-100">
                     <option value="en">English</option>
                     <option value="zh">简体中文</option>
                 </select>
             </div>
         </div>
     </header>
-    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600">
+    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
         <a href="/zh/" class="shrink-0" data-i18n="navBg">背景去除</a>
         <a href="/zh/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">商品图</a>
         <a href="/zh/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">人像</a>
@@ -175,11 +197,11 @@
     </nav>
 
     <!-- 面包屑 -->
-    <nav class="w-full max-w-3xl mx-auto px-4 mb-4 mt-4 text-sm text-gray-500" aria-label="Breadcrumb">
+    <nav class="w-full max-w-3xl mx-auto px-4 mb-4 mt-4 text-sm text-gray-500 dark:text-zinc-400" aria-label="Breadcrumb">
         <ol class="flex items-center gap-2">
-            <li><a href="/zh/" class="hover:text-gray-900" data-i18n="breadcrumbHome">MiaoCut</a></li>
+            <li><a href="/zh/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-i18n="breadcrumbHome">MiaoCut</a></li>
             <li class="text-gray-300">/</li>
-            <li class="text-gray-700" data-i18n="breadcrumbCurrent">PNG 转 JPG 转换器</li>
+            <li class="text-gray-700 dark:text-zinc-200" data-i18n="breadcrumbCurrent">PNG 转 JPG 转换器</li>
         </ol>
     </nav>
 
@@ -187,25 +209,25 @@
     <main class="flex-grow flex flex-col items-center px-4">
 
         <div class="text-center mb-10">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4" data-i18n="title">PNG 转 JPG 智能白底转换器</h1>
-            <p class="text-lg text-gray-500 max-w-2xl mx-auto" data-i18n="subtitle">JPG 格式本身不支持透明。我们把 PNG 的透明像素铺到白色（或你选的任意颜色）背景上，不再出现意外的黑色背景。100% 浏览器内完成。</p>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight mb-4 dark:text-zinc-50" data-i18n="title">PNG 转 JPG 智能白底转换器</h1>
+            <p class="text-lg text-gray-500 max-w-2xl mx-auto dark:text-zinc-400" data-i18n="subtitle">JPG 格式本身不支持透明。我们把 PNG 的透明像素铺到白色（或你选的任意颜色）背景上，不再出现意外的黑色背景。100% 浏览器内完成。</p>
         </div>
 
         <div class="w-full max-w-3xl">
 
             <!-- Dropzone -->
             <div id="dropzone"
-                class="relative group cursor-pointer bg-white border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center min-h-[320px] hover:border-gray-400 hover:bg-gray-50 overflow-hidden">
+                class="relative group cursor-pointer bg-white border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center min-h-[320px] hover:border-gray-400 hover:bg-gray-50 overflow-hidden dark:bg-zinc-900 dark:border-zinc-700 dark:hover:border-zinc-600 dark:hover:bg-zinc-800">
                 <input type="file" id="fileInput" class="hidden" accept="image/png, image/webp, image/jpeg, image/gif, image/avif">
                 <div id="dropzone-content"
                     class="flex flex-col items-center justify-center text-center p-8 pointer-events-none">
-                    <svg class="w-12 h-12 text-gray-400 mb-4 group-hover:text-gray-500 transition-colors" fill="none"
+                    <svg class="w-12 h-12 text-gray-400 mb-4 group-hover:text-gray-500 transition-colors dark:text-zinc-500" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                     </svg>
-                    <p class="text-lg font-medium text-gray-700 mb-1" data-i18n="dropzoneTitle">将 PNG 拖拽至此，或点击上传</p>
-                    <p class="text-sm text-gray-400" data-i18n="dropzoneSub">支持 PNG / WebP / GIF，浏览器内直接转 JPG</p>
+                    <p class="text-lg font-medium text-gray-700 mb-1 dark:text-zinc-200" data-i18n="dropzoneTitle">将 PNG 拖拽至此，或点击上传</p>
+                    <p class="text-sm text-gray-400 dark:text-zinc-500" data-i18n="dropzoneSub">支持 PNG / WebP / GIF，浏览器内直接转 JPG</p>
                 </div>
             </div>
 
@@ -214,41 +236,41 @@
 
                 <!-- Two-pane preview -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div class="bg-white border border-gray-200 rounded-xl p-3">
-                        <p class="text-xs uppercase tracking-wider text-gray-400 mb-2" data-i18n="paneOriginal">原图 (PNG)</p>
+                    <div class="bg-white border border-gray-200 rounded-xl p-3 dark:bg-zinc-900 dark:border-zinc-800">
+                        <p class="text-xs uppercase tracking-wider text-gray-400 mb-2 dark:text-zinc-500" data-i18n="paneOriginal">原图 (PNG)</p>
                         <div class="aspect-square flex items-center justify-center rounded-lg overflow-hidden"
                             style="background-image: linear-gradient(45deg, #e5e7eb 25%, transparent 25%), linear-gradient(-45deg, #e5e7eb 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e5e7eb 75%), linear-gradient(-45deg, transparent 75%, #e5e7eb 75%); background-size: 16px 16px; background-position: 0 0, 0 8px, 8px -8px, -8px 0px;">
                             <canvas id="sourceCanvas" class="max-w-full max-h-full object-contain"></canvas>
                         </div>
                     </div>
-                    <div class="bg-white border border-gray-200 rounded-xl p-3">
-                        <p class="text-xs uppercase tracking-wider text-gray-400 mb-2" data-i18n="paneResult">结果 (JPG)</p>
-                        <div class="aspect-square flex items-center justify-center rounded-lg overflow-hidden bg-gray-50">
+                    <div class="bg-white border border-gray-200 rounded-xl p-3 dark:bg-zinc-900 dark:border-zinc-800">
+                        <p class="text-xs uppercase tracking-wider text-gray-400 mb-2 dark:text-zinc-500" data-i18n="paneResult">结果 (JPG)</p>
+                        <div class="aspect-square flex items-center justify-center rounded-lg overflow-hidden bg-gray-50 dark:bg-zinc-900">
                             <canvas id="resultCanvas" class="max-w-full max-h-full object-contain"></canvas>
                         </div>
                     </div>
                 </div>
 
                 <!-- Controls -->
-                <div class="bg-white border border-gray-200 rounded-xl p-5 mb-6 space-y-5">
+                <div class="bg-white border border-gray-200 rounded-xl p-5 mb-6 space-y-5 dark:bg-zinc-900 dark:border-zinc-800">
                     <!-- Background color -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-3" data-i18n="bgLabel">背景颜色</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-3 dark:text-zinc-200" data-i18n="bgLabel">背景颜色</label>
                         <div class="flex items-center gap-2 flex-wrap">
-                            <button type="button" data-bg="#ffffff" class="bg-swatch group flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 hover:border-gray-500 transition-colors text-sm">
-                                <span class="w-5 h-5 rounded border border-gray-300 bg-white inline-block"></span>
+                            <button type="button" data-bg="#ffffff" class="bg-swatch group flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 hover:border-gray-500 transition-colors text-sm dark:border-zinc-700">
+                                <span class="w-5 h-5 rounded border border-gray-300 bg-white inline-block dark:border-zinc-700 dark:bg-zinc-900"></span>
                                 <span data-i18n="bgWhite">白色</span>
                             </button>
-                            <button type="button" data-bg="#f3f4f6" class="bg-swatch group flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 hover:border-gray-500 transition-colors text-sm">
-                                <span class="w-5 h-5 rounded border border-gray-300 inline-block" style="background:#f3f4f6"></span>
+                            <button type="button" data-bg="#f3f4f6" class="bg-swatch group flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 hover:border-gray-500 transition-colors text-sm dark:border-zinc-700">
+                                <span class="w-5 h-5 rounded border border-gray-300 inline-block dark:border-zinc-700" style="background:#f3f4f6"></span>
                                 <span data-i18n="bgGray">浅灰</span>
                             </button>
-                            <button type="button" data-bg="#000000" class="bg-swatch group flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 hover:border-gray-500 transition-colors text-sm">
-                                <span class="w-5 h-5 rounded border border-gray-300 bg-black inline-block"></span>
+                            <button type="button" data-bg="#000000" class="bg-swatch group flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 hover:border-gray-500 transition-colors text-sm dark:border-zinc-700">
+                                <span class="w-5 h-5 rounded border border-gray-300 bg-black inline-block dark:border-zinc-700"></span>
                                 <span data-i18n="bgBlack">黑色</span>
                             </button>
-                            <label class="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 hover:border-gray-500 transition-colors text-sm cursor-pointer">
-                                <input id="bgColorPicker" type="color" value="#ffffff" class="w-5 h-5 rounded border border-gray-300 cursor-pointer">
+                            <label class="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 hover:border-gray-500 transition-colors text-sm cursor-pointer dark:border-zinc-700">
+                                <input id="bgColorPicker" type="color" value="#ffffff" class="w-5 h-5 rounded border border-gray-300 cursor-pointer dark:border-zinc-700">
                                 <span data-i18n="bgCustom">自定义</span>
                             </label>
                         </div>
@@ -257,19 +279,19 @@
                     <!-- Quality -->
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <label for="qualitySlider" class="block text-sm font-medium text-gray-700" data-i18n="qualityLabel">JPG 画质</label>
-                            <span id="qualityValue" class="text-sm text-gray-500 font-mono">92%</span>
+                            <label for="qualitySlider" class="block text-sm font-medium text-gray-700 dark:text-zinc-200" data-i18n="qualityLabel">JPG 画质</label>
+                            <span id="qualityValue" class="text-sm text-gray-500 font-mono dark:text-zinc-400">92%</span>
                         </div>
                         <input id="qualitySlider" type="range" min="60" max="100" step="1" value="92"
                             class="w-full accent-gray-900">
-                        <div class="flex items-center justify-between text-xs text-gray-400 mt-1">
+                        <div class="flex items-center justify-between text-xs text-gray-400 mt-1 dark:text-zinc-500">
                             <span data-i18n="qualitySmaller">更小文件</span>
                             <span data-i18n="qualityBetter">更好画质</span>
                         </div>
                     </div>
 
                     <!-- File size readout -->
-                    <p id="sizeReadout" class="text-xs text-gray-500" data-i18n="sizeReadoutEmpty">修改设置后预览会实时更新。</p>
+                    <p id="sizeReadout" class="text-xs text-gray-500 dark:text-zinc-400" data-i18n="sizeReadoutEmpty">修改设置后预览会实时更新。</p>
                 </div>
 
                 <!-- Action buttons -->
@@ -282,12 +304,12 @@
                         <span data-i18n="downloadBtn">下载 JPG</span>
                     </button>
                     <button id="replaceBtn" type="button"
-                        class="bg-white border border-gray-300 hover:border-gray-500 text-gray-700 font-medium px-5 py-3 rounded-xl transition-colors" data-i18n="replaceBtn">换一张转换</button>
+                        class="bg-white border border-gray-300 hover:border-gray-500 text-gray-700 font-medium px-5 py-3 rounded-xl transition-colors dark:bg-zinc-900 dark:border-zinc-700 dark:text-zinc-200" data-i18n="replaceBtn">换一张转换</button>
                 </div>
             </div>
 
             <!-- Trust strip -->
-            <div class="mt-8 flex flex-col items-center justify-center text-center text-gray-500 text-sm">
+            <div class="mt-8 flex flex-col items-center justify-center text-center text-gray-500 text-sm dark:text-zinc-400">
                 <div class="flex items-center gap-1.5 mb-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -298,7 +320,7 @@
                 <p data-i18n="trustSub">图片永远不会离开你的设备。零上传、零服务器、零日志。</p>
             </div>
 
-            <div class="mt-8 text-center text-sm text-gray-500 leading-relaxed max-w-2xl mx-auto">
+            <div class="mt-8 text-center text-sm text-gray-500 leading-relaxed max-w-2xl mx-auto dark:text-zinc-400">
                 <p data-i18n="seoIntro">MiaoCut PNG 转 JPG 工具完全在浏览器内通过 Canvas 完成。透明像素会被铺到你选的背景色（白、灰、黑或自定义）上，JPG 画质完全可调。无任何上传，图片始终留在你设备上。</p>
             </div>
         </div>
@@ -306,26 +328,26 @@
     </main>
 
     <!-- SEO 内容区 -->
-    <div class="w-full flex justify-center bg-white border-t border-gray-200 mt-12 pt-16 pb-20 px-6">
+    <div class="w-full flex justify-center bg-white border-t border-gray-200 mt-12 pt-16 pb-20 px-6 dark:bg-zinc-900 dark:border-zinc-800">
         <div class="w-full max-w-4xl text-left">
 
             <!-- How to -->
             <section class="mb-16">
-                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="howItWorks">如何把 PNG 转成带白底的 JPG</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-gray-600">
-                    <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center dark:text-zinc-50" data-i18n="howItWorks">如何把 PNG 转成带白底的 JPG</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-gray-600 dark:text-zinc-300">
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md transition-shadow text-center dark:bg-zinc-900 dark:border-zinc-800">
                         <div class="text-4xl mb-4">📤</div>
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="howStep1Title">1. 拖入 PNG</h3>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="howStep1Title">1. 拖入 PNG</h3>
                         <p class="text-sm leading-relaxed" data-i18n="howStep1Desc">把 PNG（或 WebP）拖到上传区。所有处理都在你的浏览器内完成，图片不会上传到任何地方。</p>
                     </div>
-                    <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md transition-shadow text-center dark:bg-zinc-900 dark:border-zinc-800">
                         <div class="text-4xl mb-4">🎨</div>
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="howStep2Title">2. 选择背景颜色</h3>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="howStep2Title">2. 选择背景颜色</h3>
                         <p class="text-sm leading-relaxed" data-i18n="howStep2Desc">默认是白色。可切换灰色、黑色，或选择任意自定义颜色 — 预览实时更新。</p>
                     </div>
-                    <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md transition-shadow text-center dark:bg-zinc-900 dark:border-zinc-800">
                         <div class="text-4xl mb-4">⬇️</div>
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="howStep3Title">3. 下载 JPG</h3>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="howStep3Title">3. 下载 JPG</h3>
                         <p class="text-sm leading-relaxed" data-i18n="howStep3Desc">如果需要可以调节 JPG 画质，然后下载。导出的是干净的 JPG，背景就是你选的颜色。</p>
                     </div>
                 </div>
@@ -333,42 +355,42 @@
 
             <!-- Why -->
             <section class="mb-16">
-                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="whyTitle">为什么不用普通转换器</h2>
+                <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center dark:text-zinc-50" data-i18n="whyTitle">为什么不用普通转换器</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
-                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl dark:bg-zinc-900">
+                        <svg class="w-6 h-6 text-brand-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="why1Title">不会出现意外的黑色背景</strong>
-                            <span class="text-sm text-gray-600" data-i18n="why1Desc">普通转换器把透明像素填成黑色（因为是底层默认值）。我们默认填成白色，并允许你在下载前自由切换颜色。</span>
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="why1Title">不会出现意外的黑色背景</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="why1Desc">普通转换器把透明像素填成黑色（因为是底层默认值）。我们默认填成白色，并允许你在下载前自由切换颜色。</span>
                         </div>
                     </div>
-                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
-                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl dark:bg-zinc-900">
+                        <svg class="w-6 h-6 text-brand-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="why2Title">100% 隐私</strong>
-                            <span class="text-sm text-gray-600" data-i18n="why2Desc">完全在浏览器内转换。文件不会被上传、记录或被任何人看到 — 包括我们自己。</span>
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="why2Title">100% 隐私</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="why2Desc">完全在浏览器内转换。文件不会被上传、记录或被任何人看到 — 包括我们自己。</span>
                         </div>
                     </div>
-                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
-                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl dark:bg-zinc-900">
+                        <svg class="w-6 h-6 text-brand-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="why3Title">可调画质</strong>
-                            <span class="text-sm text-gray-600" data-i18n="why3Desc">60% 到 100% 的画质滑块。根据用途，找到画质和文件大小的平衡点。</span>
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="why3Title">可调画质</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="why3Desc">60% 到 100% 的画质滑块。根据用途，找到画质和文件大小的平衡点。</span>
                         </div>
                     </div>
-                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
-                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl dark:bg-zinc-900">
+                        <svg class="w-6 h-6 text-brand-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="why4Title">其实你想去背景？</strong>
-                            <span class="text-sm text-gray-600" data-i18n="why4Desc">如果 PNG 还带着背景而你想要真正透明的抠图，请改用我们的 JPG → 透明 PNG 工具。</span>
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="why4Title">其实你想去背景？</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="why4Desc">如果 PNG 还带着背景而你想要真正透明的抠图，请改用我们的 JPG → 透明 PNG 工具。</span>
                         </div>
                     </div>
                 </div>
@@ -376,8 +398,8 @@
 
             <!-- Tips -->
             <section class="mb-16">
-                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="tipsTitle">不同场景的建议</h2>
-                <ul class="space-y-3 text-gray-700 text-sm md:text-base list-disc list-inside max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center dark:text-zinc-50" data-i18n="tipsTitle">不同场景的建议</h2>
+                <ul class="space-y-3 text-gray-700 text-sm md:text-base list-disc list-inside max-w-3xl mx-auto dark:text-zinc-200">
                     <li data-i18n="tip1">文档和大多数电商平台：保持白底 + 92% 画质，这是几乎所有场景的安全默认。</li>
                     <li data-i18n="tip2">需要纯白 (255,255,255) 的电商平台：白色预设是字节级精确，不会有偏色。</li>
                     <li data-i18n="tip3">打印或归档：把画质调到 100%。文件大一些，但几乎没有压缩损伤。</li>
@@ -387,49 +409,49 @@
 
             <!-- FAQ -->
             <section class="mb-16">
-                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="faqTitle">常见问题</h2>
+                <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center dark:text-zinc-50" data-i18n="faqTitle">常见问题</h2>
                 <div class="space-y-4">
-                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">为什么 PNG 转成 JPG 之后变成黑色背景了？</h4>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq1A">JPG 格式不支持透明。普通转换器把透明像素当成 0（也就是黑色）来填，所以会出现整片黑色。MiaoCut 默认填成白色（也可以选任意颜色），让结果符合你的预期，不再出现意外的黑色。</p>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h4 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq1Q">为什么 PNG 转成 JPG 之后变成黑色背景了？</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq1A">JPG 格式不支持透明。普通转换器把透明像素当成 0（也就是黑色）来填，所以会出现整片黑色。MiaoCut 默认填成白色（也可以选任意颜色），让结果符合你的预期，不再出现意外的黑色。</p>
                     </div>
-                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq2Q">应该选什么背景颜色？</h4>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq2A">文档、电商和绝大多数平台用白色就好。商品摄影场景浅灰也不错。深色设计场景选黑色。自定义颜色选择器适合品牌色。</p>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h4 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq2Q">应该选什么背景颜色？</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq2A">文档、电商和绝大多数平台用白色就好。商品摄影场景浅灰也不错。深色设计场景选黑色。自定义颜色选择器适合品牌色。</p>
                     </div>
-                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq3Q">图片会被上传到服务器吗？</h4>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq3A">不会。整个转换器在你的浏览器内通过 Canvas 完成。图片永远不会离开你的设备 — 不会被上传、保存或记录。</p>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h4 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq3Q">图片会被上传到服务器吗？</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq3A">不会。整个转换器在你的浏览器内通过 Canvas 完成。图片永远不会离开你的设备 — 不会被上传、保存或记录。</p>
                     </div>
-                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq4Q">JPG 画质该选多少？</h4>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq4A">92% 是平衡的默认值 — 对大多数照片视觉上无损，文件大小合理。打印或归档用 100%。Web 用途又关心体积时 75-85% 能显著减小文件，画质损失轻微。</p>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h4 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq4Q">JPG 画质该选多少？</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq4A">92% 是平衡的默认值 — 对大多数照片视觉上无损，文件大小合理。打印或归档用 100%。Web 用途又关心体积时 75-85% 能显著减小文件，画质损失轻微。</p>
                     </div>
-                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq5Q">WebP 等其他格式也能转吗？</h4>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq5A">可以。本工具接受 PNG、WebP，以及你的浏览器能解码的任何格式。输出固定是 JPG。</p>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h4 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq5Q">WebP 等其他格式也能转吗？</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq5A">可以。本工具接受 PNG、WebP，以及你的浏览器能解码的任何格式。输出固定是 JPG。</p>
                     </div>
                 </div>
             </section>
 
             <!-- Cross-link -->
             <section>
-                <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center" data-i18n="moreTitle">更多 MiaoCut 工具</h2>
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center dark:text-zinc-50" data-i18n="moreTitle">更多 MiaoCut 工具</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <a href="/zh/jpg-to-transparent-png/"
-                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkJpgPngTitle">JPG 转透明 PNG →</h3>
-                        <p class="text-sm text-gray-600" data-i18n="moreLinkJpgPngDesc">反向操作 — 把 JPG 的背景抠掉，导出透明 PNG。</p>
+                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="moreLinkJpgPngTitle">JPG 转透明 PNG →</h3>
+                        <p class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="moreLinkJpgPngDesc">反向操作 — 把 JPG 的背景抠掉，导出透明 PNG。</p>
                     </a>
                     <a href="/zh/product-photo-background-remover/"
-                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkProductTitle">商品图抠图 →</h3>
-                        <p class="text-sm text-gray-600" data-i18n="moreLinkProductDesc">电商白底图与方形画布商品图。</p>
+                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="moreLinkProductTitle">商品图抠图 →</h3>
+                        <p class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="moreLinkProductDesc">电商白底图与方形画布商品图。</p>
                     </a>
                     <a href="/zh/"
-                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all md:col-span-2">
-                        <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkHomeTitle">通用背景去除 →</h3>
-                        <p class="text-sm text-gray-600" data-i18n="moreLinkHomeDesc">Logo、宠物、复杂边缘等任何场景。</p>
+                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all md:col-span-2 dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="moreLinkHomeTitle">通用背景去除 →</h3>
+                        <p class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="moreLinkHomeDesc">Logo、宠物、复杂边缘等任何场景。</p>
                     </a>
                 </div>
             </section>
@@ -473,7 +495,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
+            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500 dark:text-zinc-400">
                 <p class="mb-2" data-i18n="footerTagline">MiaoCut · 免费、注重隐私的 AI 图片工具集。</p>
                 <p><a href="/privacy/" class="hover:text-white transition-colors" data-i18n="footerPrivacy">隐私政策</a> · <a href="/terms/" class="hover:text-white transition-colors" data-i18n="footerTerms">服务条款</a></p>
             </div>
@@ -489,7 +511,7 @@
                         class="px-1.5 py-0.5 bg-gray-700 rounded text-xs font-mono">Ctrl + D</kbd> <span
                         data-i18n="bookmarkSuffix">收藏，下次转换 1 秒可达！</span></p>
             </div>
-            <button id="dismiss-banner" class="text-gray-400 hover:text-white transition-colors ml-4 shrink-0"
+            <button id="dismiss-banner" class="text-gray-400 hover:text-white transition-colors ml-4 shrink-0 dark:text-zinc-500"
                 aria-label="close">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>

@@ -6,6 +6,21 @@
     <meta name="sogou_site_verification" content="lLMMvkZKud" />
     <meta name="baidu-site-verification" content="codeva-bJiTOFPj58" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 主题（明/暗）：在首屏渲染前同步设好 <html class="dark">，避免闪一下白；并在 DOM ready 后接管切换按钮 -->
+    <script>/* redesign-dark-applied */(function () {
+        try {
+            var s = localStorage.getItem('theme');
+            var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', d);
+        } catch (e) {}
+        document.addEventListener('DOMContentLoaded', function () {
+            var b = document.getElementById('theme-toggle');
+            if (b) b.addEventListener('click', function () {
+                var dark = document.documentElement.classList.toggle('dark');
+                try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+            });
+        });
+    })();</script>
 
     <!-- Resource hints：在解析 HTML 时就提前对后端 API 和 Umami 做 TLS 握手，
          用户点上传时直接复用已有连接，省 100~300ms。crossorigin 是因为 Umami 脚本是跨源 CORS 资源。 -->
@@ -223,30 +238,35 @@
     <link rel="alternate" hreflang="x-default" href="https://miaocut.app/">
 </head>
 
-<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-brand-100 selection:text-brand-900">
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-brand-100 selection:text-brand-900 dark:bg-zinc-950 dark:text-zinc-200">
 
-    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur">
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
-            <a href="/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
+            <a href="/" class="text-2xl font-black tracking-tight text-gray-900 dark:text-zinc-50">MiaoCut</a>
             <div class="flex items-center gap-4">
-                <nav class="hidden items-center gap-4 text-sm font-medium text-gray-600 md:flex">
-                    <a href="/" class="text-gray-900" data-i18n="navBg">Background Remover</a>
-                    <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navProduct">Product</a>
-                    <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navPortrait">Portrait</a>
-                    <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navWatermark">Watermark</a>
-                    <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors" data-i18n="navId">ID Photo</a>
-                    <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors" data-i18n="navRestore">Old Photo</a>
+                <nav class="hidden items-center gap-4 text-sm font-medium text-gray-600 md:flex dark:text-zinc-300">
+                    <a href="/" class="text-gray-900 dark:text-zinc-50" data-i18n="navBg">Background Remover</a>
+                    <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navProduct">Product</a>
+                    <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navPortrait">Portrait</a>
+                    <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navWatermark">Watermark</a>
+                    <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navId">ID Photo</a>
+                    <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navRestore">Old Photo</a>
                 </nav>
+                <button id="theme-toggle" type="button" aria-label="Toggle dark mode"
+                    class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors">
+                    <svg class="h-5 w-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
+                    <svg class="h-5 w-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
+                </button>
                 <select id="lang-switch" aria-label="Language"
-                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
+                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors dark:text-zinc-300 dark:hover:text-zinc-100">
                     <option value="en">English</option>
                     <option value="zh">简体中文</option>
                 </select>
             </div>
         </div>
     </header>
-    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600">
-        <a href="/" class="shrink-0 text-gray-900" data-i18n="navBg">Background Remover</a>
+    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
+        <a href="/" class="shrink-0 text-gray-900 dark:text-zinc-50" data-i18n="navBg">Background Remover</a>
         <a href="/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">Product</a>
         <a href="/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">Portrait</a>
         <a href="/watermark-remover/" class="shrink-0" data-i18n="navWatermark">Watermark</a>
@@ -259,9 +279,9 @@
 
         <!-- 标语 -->
         <div class="text-center mb-10 md:mb-14">
-            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 tracking-[-0.02em] mb-5 text-balance" data-i18n="title">Free
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 tracking-[-0.02em] mb-5 text-balance dark:text-zinc-50" data-i18n="title">Free
                 AI Background Remover</h1>
-            <p class="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed text-pretty" data-i18n="subtitle">Remove background from images
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed text-pretty dark:text-zinc-300" data-i18n="subtitle">Remove background from images
                 online in 1 second. Get HD transparent PNG cutouts with no watermark, no signup, and privacy-first
                 processing.</p>
         </div>
@@ -272,38 +292,38 @@
             <!-- 质量模式切换：sharp 走默认快速通道，fur 触发 alpha matting + 前景色去污染（细腻但慢 ~3s）。
                  选中态由 JS 切类，不依赖 CSS :checked 选择器（input type=button 没 :checked）。 -->
             <div id="profile-toggle" class="mb-4 flex items-center justify-center gap-2 text-sm flex-wrap">
-                <span class="text-gray-500" data-i18n="profileLabel">Quality:</span>
+                <span class="text-gray-500 dark:text-zinc-400" data-i18n="profileLabel">Quality:</span>
                 <button type="button" data-profile="sharp"
-                    class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors">
+                    class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors dark:border-zinc-700 dark:text-zinc-200 dark:hover:border-zinc-600">
                     <span data-i18n="profileSharp">Fast</span>
                 </button>
                 <button type="button" data-profile="fur"
-                    class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors">
+                    class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors dark:border-zinc-700 dark:text-zinc-200 dark:hover:border-zinc-600">
                     <span data-i18n="profileFur">Fine (hair / fur)</span>
                 </button>
-                <span id="profile-hint" class="text-xs text-gray-500 ml-1" data-i18n="profileHintSharp">~1s · everyday
+                <span id="profile-hint" class="text-xs text-gray-500 ml-1 dark:text-zinc-400" data-i18n="profileHintSharp">~1s · everyday
                     photos</span>
             </div>
 
             <div id="dropzone"
-                class="relative group cursor-pointer bg-white border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center min-h-[320px] transition-colors hover:border-brand-400 hover:bg-brand-50/40 overflow-hidden">
+                class="relative group cursor-pointer bg-white border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center min-h-[320px] transition-colors hover:border-brand-400 hover:bg-brand-50/40 overflow-hidden dark:bg-zinc-900 dark:border-zinc-700 dark:hover:bg-brand-500/10">
                 <input type="file" id="fileInput" class="hidden" accept="image/jpeg, image/png, image/webp">
 
                 <div id="dropzone-content"
                     class="flex flex-col items-center justify-center text-center p-8 pointer-events-none">
-                    <svg class="w-12 h-12 text-gray-400 mb-4 group-hover:text-brand-600 transition-colors" fill="none"
+                    <svg class="w-12 h-12 text-gray-400 mb-4 group-hover:text-brand-600 transition-colors dark:text-zinc-500 dark:group-hover:text-brand-400" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                     </svg>
-                    <p class="text-lg font-medium text-gray-700 mb-1" data-i18n="dropzoneTitle">Drag & drop image here,
+                    <p class="text-lg font-medium text-gray-700 mb-1 dark:text-zinc-200" data-i18n="dropzoneTitle">Drag & drop image here,
                         or click to upload</p>
-                    <p class="text-sm text-gray-500" data-i18n="dropzoneSub">(Supports JPG / PNG / WebP)</p>
+                    <p class="text-sm text-gray-500 dark:text-zinc-400" data-i18n="dropzoneSub">(Supports JPG / PNG / WebP)</p>
                 </div>
             </div>
 
             <!-- 信任背书 -->
-            <div class="mt-6 flex flex-col items-center justify-center text-center text-gray-500 text-sm">
+            <div class="mt-6 flex flex-col items-center justify-center text-center text-gray-500 text-sm dark:text-zinc-400">
                 <div class="flex items-center gap-1.5 mb-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
@@ -319,42 +339,42 @@
             <!-- 工具卡片栏：紧贴上传区，给所有子页一个首屏可见的入口。
                  8 张卡片做 2x4 网格（移动端 1 列、平板 2 列、桌面 4 列）。第一张高亮表示"当前页"。 -->
             <section class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4" aria-label="MiaoCut tools">
-                <a href="/" class="rounded-lg border border-brand-600 bg-brand-50/60 p-4 text-left shadow-sm">
-                    <p class="text-sm font-bold text-gray-900" data-i18n="toolBgTitle">Remove Background</p>
-                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolBgBody">HD transparent PNG in seconds.</p>
+                <a href="/" class="rounded-lg border border-brand-600 bg-brand-50/60 p-4 text-left shadow-sm dark:border-brand-500 dark:bg-brand-500/10">
+                    <p class="text-sm font-bold text-gray-900 dark:text-zinc-50" data-i18n="toolBgTitle">Remove Background</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500 dark:text-zinc-400" data-i18n="toolBgBody">HD transparent PNG in seconds.</p>
                 </a>
-                <a href="/product-photo-background-remover/" class="rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-brand-400 hover:shadow-sm">
-                    <p class="text-sm font-bold text-gray-900" data-i18n="toolProductTitle">Product</p>
-                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolProductBody">White backgrounds, square crops, and shadows.</p>
+                <a href="/product-photo-background-remover/" class="rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-brand-400 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                    <p class="text-sm font-bold text-gray-900 dark:text-zinc-50" data-i18n="toolProductTitle">Product</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500 dark:text-zinc-400" data-i18n="toolProductBody">White backgrounds, square crops, and shadows.</p>
                 </a>
-                <a href="/portrait-background-remover/" class="rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-brand-400 hover:shadow-sm">
-                    <p class="text-sm font-bold text-gray-900" data-i18n="toolPortraitTitle">Portrait</p>
-                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolPortraitBody">Profile photos, resumes, and social cutouts.</p>
+                <a href="/portrait-background-remover/" class="rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-brand-400 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                    <p class="text-sm font-bold text-gray-900 dark:text-zinc-50" data-i18n="toolPortraitTitle">Portrait</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500 dark:text-zinc-400" data-i18n="toolPortraitBody">Profile photos, resumes, and social cutouts.</p>
                 </a>
-                <a href="/watermark-remover/" class="rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-brand-400 hover:shadow-sm">
-                    <p class="text-sm font-bold text-gray-900" data-i18n="toolWatermarkTitle">Watermark</p>
-                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolWatermarkBody">Paint the mark and repair it.</p>
+                <a href="/watermark-remover/" class="rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-brand-400 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                    <p class="text-sm font-bold text-gray-900 dark:text-zinc-50" data-i18n="toolWatermarkTitle">Watermark</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500 dark:text-zinc-400" data-i18n="toolWatermarkBody">Paint the mark and repair it.</p>
                 </a>
-                <a href="/id-photo-maker/" class="rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-brand-400 hover:shadow-sm">
-                    <p class="text-sm font-bold text-gray-900" data-i18n="toolIdTitle">ID Photo</p>
-                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolIdBody">Passport, resume, and exam ID photos.</p>
+                <a href="/id-photo-maker/" class="rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-brand-400 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                    <p class="text-sm font-bold text-gray-900 dark:text-zinc-50" data-i18n="toolIdTitle">ID Photo</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500 dark:text-zinc-400" data-i18n="toolIdBody">Passport, resume, and exam ID photos.</p>
                 </a>
-                <a href="/old-photo-restoration/" class="rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-brand-400 hover:shadow-sm">
-                    <p class="text-sm font-bold text-gray-900" data-i18n="toolRestoreTitle">Old Photo</p>
-                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolRestoreBody">Restore faded, noisy, or blurry photos.</p>
+                <a href="/old-photo-restoration/" class="rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-brand-400 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                    <p class="text-sm font-bold text-gray-900 dark:text-zinc-50" data-i18n="toolRestoreTitle">Old Photo</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500 dark:text-zinc-400" data-i18n="toolRestoreBody">Restore faded, noisy, or blurry photos.</p>
                 </a>
-                <a href="/jpg-to-transparent-png/" class="rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-brand-400 hover:shadow-sm">
-                    <p class="text-sm font-bold text-gray-900" data-i18n="toolJpgPngTitle">JPG → Transparent PNG</p>
-                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolJpgPngBody">AI-cut JPG into a transparent PNG.</p>
+                <a href="/jpg-to-transparent-png/" class="rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-brand-400 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                    <p class="text-sm font-bold text-gray-900 dark:text-zinc-50" data-i18n="toolJpgPngTitle">JPG → Transparent PNG</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500 dark:text-zinc-400" data-i18n="toolJpgPngBody">AI-cut JPG into a transparent PNG.</p>
                 </a>
-                <a href="/png-to-jpg-white-background/" class="rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-brand-400 hover:shadow-sm">
-                    <p class="text-sm font-bold text-gray-900" data-i18n="toolPngJpgTitle">PNG → JPG</p>
-                    <p class="mt-1 text-xs leading-relaxed text-gray-500" data-i18n="toolPngJpgBody">Flatten transparent PNG onto white.</p>
+                <a href="/png-to-jpg-white-background/" class="rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-brand-400 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                    <p class="text-sm font-bold text-gray-900 dark:text-zinc-50" data-i18n="toolPngJpgTitle">PNG → JPG</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500 dark:text-zinc-400" data-i18n="toolPngJpgBody">Flatten transparent PNG onto white.</p>
                 </a>
             </section>
 
             <!-- 首屏关键词说明区：紧贴上传区下方，给搜索引擎抓主题词，给用户做一行价值锚定 -->
-            <div class="mt-8 text-center text-sm text-gray-500 leading-relaxed max-w-2xl mx-auto">
+            <div class="mt-8 text-center text-sm text-gray-500 leading-relaxed max-w-2xl mx-auto dark:text-zinc-400">
                 <p data-i18n="seoIntro">MiaoCut is a free AI background remover that helps you remove background from
                     images automatically. Upload JPG, PNG, or WebP photos and download clean transparent PNG cutouts
                     instantly.</p>
@@ -364,46 +384,46 @@
     </main>
 
     <!-- SEO 丰富内容区 (获取谷歌被动流量的引擎) -->
-    <div class="w-full flex justify-center bg-white border-t border-gray-200 mt-12 pt-16 pb-20 px-6">
+    <div class="w-full flex justify-center bg-white border-t border-gray-200 mt-12 pt-16 pb-20 px-6 dark:bg-zinc-900 dark:border-zinc-800">
         <div class="w-full max-w-4xl text-left">
 
             <!-- How it works -->
             <section class="mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-10 text-center" data-i18n="howItWorks">How to Remove
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-10 text-center dark:text-zinc-50" data-i18n="howItWorks">How to Remove
                     Background from an Image</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-gray-600">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-gray-600 dark:text-zinc-300">
                     <div
-                        class="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md transition-shadow text-center">
-                        <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                        class="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md transition-shadow text-center dark:bg-zinc-900 dark:border-zinc-800">
+                        <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
                             <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
                             </svg>
                         </div>
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="uploadImg">1. Upload Your Image</h3>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="uploadImg">1. Upload Your Image</h3>
                         <p class="text-sm leading-relaxed" data-i18n="uploadDesc">Upload a JPG, PNG, or WebP image. No
                             signup or credit card required.</p>
                     </div>
                     <div
-                        class="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md transition-shadow text-center">
-                        <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                        class="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md transition-shadow text-center dark:bg-zinc-900 dark:border-zinc-800">
+                        <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
                             <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" />
                             </svg>
                         </div>
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="aiProc">2. AI Removes the Background
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="aiProc">2. AI Removes the Background
                         </h3>
                         <p class="text-sm leading-relaxed" data-i18n="aiDesc">MiaoCut's AI background remover detects
                             the subject and removes the background automatically, including hair, fur, and complex
                             edges.</p>
                     </div>
                     <div
-                        class="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md transition-shadow text-center">
-                        <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                        class="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md transition-shadow text-center dark:bg-zinc-900 dark:border-zinc-800">
+                        <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
                             <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                             </svg>
                         </div>
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="dlFree">3. Download Transparent PNG
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="dlFree">3. Download Transparent PNG
                         </h3>
                         <p class="text-sm leading-relaxed" data-i18n="dlDesc">Download your HD cutout as a transparent
                             PNG with no watermark.</p>
@@ -416,47 +436,47 @@
                  alt 文案是 SEO 关键词锚点，4 个 alt 各占一类长尾词，不要本地化成中文（目标是英文搜索流量）。
                  文件未补全时浏览器会显示破图占位，所以最好和图片一起 commit。 -->
             <section class="mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-10 text-center" data-i18n="examplesTitle">See MiaoCut
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-10 text-center dark:text-zinc-50" data-i18n="examplesTitle">See MiaoCut
                     in Action</h2>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200">
+                    <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200 dark:bg-zinc-800 dark:border-zinc-800">
                         <img src="/examples/product-cutout.webp"
                             srcset="/examples/product-cutout-256.webp 256w, /examples/product-cutout.webp 512w"
                             sizes="(max-width: 768px) 50vw, 200px"
                             alt="Sneaker product photo with transparent background after AI cutout"
                             width="512" height="512" loading="lazy" decoding="async"
                             class="w-full h-auto block">
-                        <figcaption class="text-xs text-gray-600 text-center py-2" data-i18n="exampleProduct">Product
+                        <figcaption class="text-xs text-gray-600 text-center py-2 dark:text-zinc-300" data-i18n="exampleProduct">Product
                             photo</figcaption>
                     </figure>
-                    <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200">
+                    <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200 dark:bg-zinc-800 dark:border-zinc-800">
                         <img src="/examples/portrait-cutout.webp"
                             srcset="/examples/portrait-cutout-256.webp 256w, /examples/portrait-cutout.webp 512w"
                             sizes="(max-width: 768px) 50vw, 200px"
                             alt="Portrait of curly-haired woman with background removed and hair edges preserved"
                             width="512" height="512" loading="lazy" decoding="async"
                             class="w-full h-auto block">
-                        <figcaption class="text-xs text-gray-600 text-center py-2" data-i18n="examplePortrait">Portrait
+                        <figcaption class="text-xs text-gray-600 text-center py-2 dark:text-zinc-300" data-i18n="examplePortrait">Portrait
                         </figcaption>
                     </figure>
-                    <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200">
+                    <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200 dark:bg-zinc-800 dark:border-zinc-800">
                         <img src="/examples/logo-cutout.webp"
                             srcset="/examples/logo-cutout-256.webp 256w, /examples/logo-cutout.webp 512w"
                             sizes="(max-width: 768px) 50vw, 200px"
                             alt="MiaoCut brand logo extracted to transparent PNG with clean edges"
                             width="512" height="512" loading="lazy" decoding="async"
                             class="w-full h-auto block">
-                        <figcaption class="text-xs text-gray-600 text-center py-2" data-i18n="exampleLogo">Logo
+                        <figcaption class="text-xs text-gray-600 text-center py-2 dark:text-zinc-300" data-i18n="exampleLogo">Logo
                         </figcaption>
                     </figure>
-                    <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200">
+                    <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200 dark:bg-zinc-800 dark:border-zinc-800">
                         <img src="/examples/pet-cutout.webp"
                             srcset="/examples/pet-cutout-256.webp 256w, /examples/pet-cutout.webp 512w"
                             sizes="(max-width: 768px) 50vw, 200px"
                             alt="White Persian cat with fluffy fur edges cleanly cut out by AI"
                             width="512" height="512" loading="lazy" decoding="async"
                             class="w-full h-auto block">
-                        <figcaption class="text-xs text-gray-600 text-center py-2" data-i18n="examplePet">Pet
+                        <figcaption class="text-xs text-gray-600 text-center py-2 dark:text-zinc-300" data-i18n="examplePet">Pet
                         </figcaption>
                     </figure>
                 </div>
@@ -464,80 +484,80 @@
 
             <!-- Why Choose Us -->
             <section class="mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-10 text-center" data-i18n="whyChoose">Why Choose
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-10 text-center dark:text-zinc-50" data-i18n="whyChoose">Why Choose
                     MiaoCut AI Background Remover?</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="flex items-start bg-gray-50 p-5 rounded-xl border border-gray-100 transition-shadow hover:shadow-sm">
-                        <svg class="w-6 h-6 text-brand-600 mr-3 shrink-0" fill="none" stroke="currentColor"
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl border border-gray-100 transition-shadow hover:shadow-sm dark:bg-zinc-900 dark:border-zinc-800">
+                        <svg class="w-6 h-6 text-brand-600 mr-3 shrink-0 dark:text-brand-400" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
                             </path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="freeLimit">Free Background
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="freeLimit">Free Background
                                 Remover</strong>
-                            <span class="text-sm text-gray-600" data-i18n="freeDesc">100% free with no hidden costs, no
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="freeDesc">100% free with no hidden costs, no
                                 subscription traps, and unlimited image processing.</span>
                         </div>
                     </div>
-                    <div class="flex items-start bg-gray-50 p-5 rounded-xl border border-gray-100 transition-shadow hover:shadow-sm">
-                        <svg class="w-6 h-6 text-brand-600 mr-3 shrink-0" fill="none" stroke="currentColor"
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl border border-gray-100 transition-shadow hover:shadow-sm dark:bg-zinc-900 dark:border-zinc-800">
+                        <svg class="w-6 h-6 text-brand-600 mr-3 shrink-0 dark:text-brand-400" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
                             </path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="hdQuality">HD Transparent PNG</strong>
-                            <span class="text-sm text-gray-600" data-i18n="hdDesc">Download high-definition transparent
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="hdQuality">HD Transparent PNG</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="hdDesc">Download high-definition transparent
                                 PNG cutouts at original resolution — never compressed.</span>
                         </div>
                     </div>
-                    <div class="flex items-start bg-gray-50 p-5 rounded-xl border border-gray-100 transition-shadow hover:shadow-sm">
-                        <svg class="w-6 h-6 text-brand-600 mr-3 shrink-0" fill="none" stroke="currentColor"
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl border border-gray-100 transition-shadow hover:shadow-sm dark:bg-zinc-900 dark:border-zinc-800">
+                        <svg class="w-6 h-6 text-brand-600 mr-3 shrink-0 dark:text-brand-400" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
                             </path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="noWatermark">No Watermark</strong>
-                            <span class="text-sm text-gray-600" data-i18n="noWDesc">Get clean background-removed images
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="noWatermark">No Watermark</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="noWDesc">Get clean background-removed images
                                 with no watermark, ready for e-commerce, design, or personal use.</span>
                         </div>
                     </div>
-                    <div class="flex items-start bg-gray-50 p-5 rounded-xl border border-gray-100 transition-shadow hover:shadow-sm">
-                        <svg class="w-6 h-6 text-brand-600 mr-3 shrink-0" fill="none" stroke="currentColor"
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl border border-gray-100 transition-shadow hover:shadow-sm dark:bg-zinc-900 dark:border-zinc-800">
+                        <svg class="w-6 h-6 text-brand-600 mr-3 shrink-0 dark:text-brand-400" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
                             </path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="noSignup">No Signup Required</strong>
-                            <span class="text-sm text-gray-600" data-i18n="noSignupDesc">Remove backgrounds online
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="noSignup">No Signup Required</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="noSignupDesc">Remove backgrounds online
                                 instantly — no account, no login, no email needed.</span>
                         </div>
                     </div>
-                    <div class="flex items-start bg-gray-50 p-5 rounded-xl border border-gray-100 transition-shadow hover:shadow-sm">
-                        <svg class="w-6 h-6 text-brand-600 mr-3 shrink-0" fill="none" stroke="currentColor"
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl border border-gray-100 transition-shadow hover:shadow-sm dark:bg-zinc-900 dark:border-zinc-800">
+                        <svg class="w-6 h-6 text-brand-600 mr-3 shrink-0 dark:text-brand-400" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
                             </path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="privacyFirst">Privacy-First Image
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="privacyFirst">Privacy-First Image
                                 Processing</strong>
-                            <span class="text-sm text-gray-600" data-i18n="privacyDesc">Images are processed in-memory
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="privacyDesc">Images are processed in-memory
                                 and destroyed automatically. We never use your data for AI training.</span>
                         </div>
                     </div>
-                    <div class="flex items-start bg-gray-50 p-5 rounded-xl border border-gray-100 transition-shadow hover:shadow-sm">
-                        <svg class="w-6 h-6 text-brand-600 mr-3 shrink-0" fill="none" stroke="currentColor"
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl border border-gray-100 transition-shadow hover:shadow-sm dark:bg-zinc-900 dark:border-zinc-800">
+                        <svg class="w-6 h-6 text-brand-600 mr-3 shrink-0 dark:text-brand-400" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
                             </path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="sotaModel">Powered by BiRefNet</strong>
-                            <span class="text-sm text-gray-600" data-i18n="sotaDesc">SOTA AI model handles JPG, PNG, and
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="sotaModel">Powered by BiRefNet</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="sotaDesc">SOTA AI model handles JPG, PNG, and
                                 WebP with precise edges on hair, fur, and semi-transparent objects.</span>
                         </div>
                     </div>
@@ -548,42 +568,42 @@
             <!-- 前两张卡片是独立 landing page 的内链入口（指向 use case 子页，吃精准长尾流量）；
                  后两张暂留为静态 div，新增子页时再换成 <a>。 -->
             <section class="mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-10 text-center" data-i18n="useCasesTitle">Popular
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-10 text-center dark:text-zinc-50" data-i18n="useCasesTitle">Popular
                     Use Cases</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <a href="/product-photo-background-remover/"
-                        class="block bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCaseProductTitle">Product Photos
+                        class="block bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="useCaseProductTitle">Product Photos
                         </h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCaseProductDesc">Remove
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="useCaseProductDesc">Remove
                             backgrounds from product images for e-commerce, Amazon, Shopify, Etsy, and online stores.
                         </p>
                     </a>
                     <a href="/portrait-background-remover/"
-                        class="block bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCasePortraitTitle">Portraits &
+                        class="block bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="useCasePortraitTitle">Portraits &
                             Profile Pictures</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCasePortraitDesc">Create clean
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="useCasePortraitDesc">Create clean
                             transparent cutouts for avatars, social media, resumes, and profile photos.</p>
                     </a>
                     <a href="/jpg-to-transparent-png/"
-                        class="block bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCaseLogoTitle">Logos & Design
+                        class="block bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="useCaseLogoTitle">Logos & Design
                             Assets</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCaseLogoDesc">Remove white or
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="useCaseLogoDesc">Remove white or
                             messy backgrounds from logos, icons, and graphics.</p>
                     </a>
-                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCasePetsTitle">Pets, Hair & Fur
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md transition-shadow dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="useCasePetsTitle">Pets, Hair & Fur
                         </h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCasePetsDesc">Use AI to handle
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="useCasePetsDesc">Use AI to handle
                             complex edges like hair, fur, and semi-transparent objects.</p>
                     </div>
                     <a href="/old-photo-restoration/"
-                        class="block bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="useCaseOldPhotoTitle">Old Photo
+                        class="block bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="useCaseOldPhotoTitle">Old Photo
                             Restoration</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="useCaseOldPhotoDesc">Restore faded
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="useCaseOldPhotoDesc">Restore faded
                             family photos, reduce noise, sharpen details, and export a cleaner high-resolution image.</p>
                     </a>
                 </div>
@@ -591,63 +611,63 @@
 
             <!-- FAQ -->
             <section>
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-10 text-center" data-i18n="faqTitle">Frequently Asked
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-10 text-center dark:text-zinc-50" data-i18n="faqTitle">Frequently Asked
                     Questions</h2>
                 <div class="space-y-4">
-                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">Is this AI background
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq1Q">Is this AI background
                             remover really free?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq1A">Yes! MiaoCut is built by an
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq1A">Yes! MiaoCut is built by an
                             independent developer to provide a genuinely free alternative to expensive subscription
                             tools like remove.bg. There are no watermarks and no strict resolution limits.</p>
                     </div>
-                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq2Q">What image formats are
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq2Q">What image formats are
                             supported?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq2A">You can upload JPG, PNG, and
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq2A">You can upload JPG, PNG, and
                             WebP images. The output will be a high-quality PNG image with a transparent background,
                             ready for your designs.</p>
                     </div>
-                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq3Q">How good is the edge
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq3Q">How good is the edge
                             detection for hair or fur?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq3A">MiaoCut utilizes the latest
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq3A">MiaoCut utilizes the latest
                             SOTA AI models (BiRefNet) which excel at complex edges. It perfectly handles human hair,
                             animal fur, and even semi-transparent objects like glass or wedding dresses.</p>
                     </div>
-                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq4Q">Can I remove background
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq4Q">Can I remove background
                             from an image for free?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq4A">Yes. MiaoCut is a free AI
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq4A">Yes. MiaoCut is a free AI
                             background remover. You can upload images and download transparent PNG results without
                             watermark.</p>
                     </div>
-                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq5Q">Does MiaoCut add a
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq5Q">Does MiaoCut add a
                             watermark?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq5A">No. MiaoCut provides clean
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq5A">No. MiaoCut provides clean
                             background-removed images without watermark.</p>
                     </div>
-                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq6Q">Do I need to sign up?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq6A">No. You can remove image
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq6Q">Do I need to sign up?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq6A">No. You can remove image
                             backgrounds online without creating an account.</p>
                     </div>
-                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq7Q">Can I use it for product
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq7Q">Can I use it for product
                             photos?</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq7A">Yes. MiaoCut works well for
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq7A">Yes. MiaoCut works well for
                             product images, e-commerce photos, portraits, logos, pets, and more.</p>
                     </div>
-                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq8Q">What is the output format?
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq8Q">What is the output format?
                         </h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq8A">The output is a high-quality
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq8A">The output is a high-quality
                             PNG image with a transparent background.</p>
                     </div>
                 </div>
-                <p class="mt-8 text-center text-sm text-gray-500">
-                    <span data-i18n="guidesPromoText">Using another app? See our step-by-step guides for </span><a href="/how-to-remove-background/" class="text-gray-900 font-medium underline underline-offset-2 hover:text-gray-600" data-i18n="guidesPromoLink">removing backgrounds in PowerPoint, GIMP, and more</a>.
+                <p class="mt-8 text-center text-sm text-gray-500 dark:text-zinc-400">
+                    <span data-i18n="guidesPromoText">Using another app? See our step-by-step guides for </span><a href="/how-to-remove-background/" class="text-gray-900 font-medium underline underline-offset-2 hover:text-gray-600 dark:text-zinc-50 dark:hover:text-zinc-300" data-i18n="guidesPromoLink">removing backgrounds in PowerPoint, GIMP, and more</a>.
                 </p>
             </section>
         </div>
@@ -691,7 +711,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
+            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500 dark:text-zinc-400">
                 <p class="mb-2" data-i18n="footerTagline">MiaoCut · Free AI image tools that respect your privacy.</p>
                 <p><a href="/privacy/" class="hover:text-white transition-colors" data-i18n="footerPrivacy">Privacy</a> · <a href="/terms/" class="hover:text-white transition-colors" data-i18n="footerTerms">Terms</a></p>
             </div>
@@ -707,7 +727,7 @@
                         class="px-1.5 py-0.5 bg-gray-700 rounded text-xs font-mono">Ctrl + D</kbd> <span
                         data-i18n="bookmarkSuffix">to bookmark, next cutout is just 1 sec away!</span></p>
             </div>
-            <button id="dismiss-banner" class="text-gray-400 hover:text-white transition-colors ml-4 shrink-0"
+            <button id="dismiss-banner" class="text-gray-400 hover:text-white transition-colors ml-4 shrink-0 dark:text-zinc-500"
                 aria-label="close">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">

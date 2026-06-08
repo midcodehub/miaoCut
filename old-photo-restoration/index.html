@@ -4,6 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 品牌字体 Geist：预加载首屏 sans 可变字体（crossorigin 是 font preload 的硬性要求）-->
+    <link rel="preload" href="/fonts/geist/geist-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- 主题（明/暗）：在首屏渲染前同步设好 <html class="dark">，避免闪一下白；并在 DOM ready 后接管切换按钮 -->
+    <script>/* redesign-dark-applied */(function () {
+        try {
+            var s = localStorage.getItem('theme');
+            var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', d);
+        } catch (e) {}
+        document.addEventListener('DOMContentLoaded', function () {
+            var b = document.getElementById('theme-toggle');
+            if (b) b.addEventListener('click', function () {
+                var dark = document.documentElement.classList.toggle('dark');
+                try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+            });
+        });
+    })();</script>
     <link rel="preconnect" href="https://api2.miaocut.app">
     <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
     <title>Free AI Old Photo Restoration & Upscaler | MiaoCut</title>
@@ -147,92 +164,97 @@
     <link rel="alternate" hreflang="x-default" href="https://miaocut.app/old-photo-restoration/">
 </head>
 
-<body class="bg-gray-50 min-h-screen font-sans text-gray-900 selection:bg-gray-200">
+<body class="bg-gray-50 min-h-screen font-sans text-gray-900 selection:bg-brand-100 selection:text-brand-900 dark:bg-zinc-950 dark:text-zinc-200">
     <!-- Sticky header：与首页统一为同一种实现（M5） -->
-    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur">
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
         <div class="mx-auto max-w-6xl px-5 py-4 flex items-center justify-between gap-4">
-            <a href="/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
+            <a href="/" class="text-2xl font-black tracking-tight text-gray-900 dark:text-zinc-50">MiaoCut</a>
             <div class="flex items-center gap-4">
-                <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600">
-                    <a href="/" class="hover:text-gray-900 transition-colors" data-i18n="navBg">Background Remover</a>
-                    <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navProduct">Product</a>
-                    <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navPortrait">Portrait</a>
-                    <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navWatermark">Watermark</a>
-                    <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors" data-i18n="navId">ID Photo</a>
-                    <a href="/old-photo-restoration/" class="text-gray-900" data-i18n="navRestore">Old Photo</a>
+                <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600 dark:text-zinc-300">
+                    <a href="/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navBg">Background Remover</a>
+                    <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navProduct">Product</a>
+                    <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navPortrait">Portrait</a>
+                    <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navWatermark">Watermark</a>
+                    <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navId">ID Photo</a>
+                    <a href="/old-photo-restoration/" class="text-gray-900 dark:text-zinc-50" data-i18n="navRestore">Old Photo</a>
                 </nav>
+                <button id="theme-toggle" type="button" aria-label="Toggle dark mode"
+                    class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors">
+                    <svg class="h-5 w-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
+                    <svg class="h-5 w-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
+                </button>
                 <select id="lang-switch" aria-label="Language"
-                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
+                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors dark:text-zinc-300 dark:hover:text-zinc-100">
                     <option value="en">English</option>
                     <option value="zh">简体中文</option>
                 </select>
             </div>
         </div>
     </header>
-    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600">
+    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
         <a href="/" class="shrink-0" data-i18n="navBg">Background Remover</a>
         <a href="/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">Product</a>
         <a href="/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">Portrait</a>
         <a href="/watermark-remover/" class="shrink-0" data-i18n="navWatermark">Watermark</a>
         <a href="/id-photo-maker/" class="shrink-0" data-i18n="navId">ID Photo</a>
-        <a href="/old-photo-restoration/" class="shrink-0 text-gray-900" data-i18n="navRestore">Old Photo</a>
+        <a href="/old-photo-restoration/" class="shrink-0 text-gray-900 dark:text-zinc-50" data-i18n="navRestore">Old Photo</a>
     </nav>
 
     <main class="mx-auto max-w-6xl px-5 py-8">
         <!-- 面包屑：辅助 SEO + 用户导航；与 head 中的 BreadcrumbList JSON-LD 对应 -->
-        <nav class="mb-5 text-sm text-gray-500" aria-label="Breadcrumb">
+        <nav class="mb-5 text-sm text-gray-500 dark:text-zinc-400" aria-label="Breadcrumb">
             <ol class="flex items-center gap-2">
-                <li><a href="/" class="hover:text-gray-900" data-i18n="breadcrumbHome">MiaoCut</a></li>
+                <li><a href="/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-i18n="breadcrumbHome">MiaoCut</a></li>
                 <li class="text-gray-300">/</li>
-                <li class="text-gray-700" data-i18n="breadcrumbCurrent">Old Photo Restoration</li>
+                <li class="text-gray-700 dark:text-zinc-200" data-i18n="breadcrumbCurrent">Old Photo Restoration</li>
             </ol>
         </nav>
 
         <section class="mb-7 flex flex-col gap-2">
-            <p class="text-sm font-semibold text-gray-500" data-i18n="eyebrow">Vintage photos, family albums, scanned prints</p>
-            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" data-i18n="heroTitle">AI Old Photo Restoration & Upscaler</h1>
-            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed" data-i18n="heroSub">Recover faded contrast, reduce noise, sharpen soft details, and upscale vintage family photos to print-ready resolution.</p>
+            <p class="text-sm font-semibold text-gray-500 dark:text-zinc-400" data-i18n="eyebrow">Vintage photos, family albums, scanned prints</p>
+            <h1 class="text-3xl md:text-4xl font-bold tracking-tight" data-i18n="heroTitle">AI Old Photo Restoration & Upscaler</h1>
+            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed dark:text-zinc-400" data-i18n="heroSub">Recover faded contrast, reduce noise, sharpen soft details, and upscale vintage family photos to print-ready resolution.</p>
         </section>
 
         <!-- 隐私 callout：emotional persona（保护家庭回忆的子女）对隐私敏感度最高，
              第一时间显眼放一个安心条，比泛泛说"私密处理"效果好得多。 -->
-        <aside role="note" aria-label="Privacy notice" class="mb-7 flex items-start gap-3 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3">
-            <svg class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <aside role="note" aria-label="Privacy notice" class="mb-7 flex items-start gap-3 rounded-lg border border-brand-300 bg-brand-50 px-4 py-3 dark:bg-brand-500/10">
+            <svg class="mt-0.5 h-5 w-5 shrink-0 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
             </svg>
-            <p class="text-sm leading-relaxed text-emerald-900">
+            <p class="text-sm leading-relaxed text-brand-900">
                 <strong class="font-semibold" data-i18n="privacyNotice">Your family memories stay private.</strong>
                 <span data-i18n="privacyBody">Photos are processed in-memory on the server and discarded immediately after the result is returned. No storage, no AI training, no signup required.</span>
             </p>
         </aside>
 
         <section class="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start">
-            <aside class="bg-white border border-gray-200 rounded-lg p-5">
+            <aside class="bg-white border border-gray-200 rounded-lg p-5 dark:bg-zinc-900 dark:border-zinc-800">
                 <label id="upload-card"
-                    class="flex min-h-[250px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center hover:border-gray-400 hover:bg-white transition-colors">
-                    <svg id="upload-icon" class="mb-3 h-10 w-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="flex min-h-[250px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center hover:border-gray-400 hover:bg-white transition-colors dark:border-zinc-700 dark:bg-zinc-900 dark:hover:border-zinc-600">
+                    <svg id="upload-icon" class="mb-3 h-10 w-10 text-gray-400 dark:text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                     </svg>
-                    <img id="upload-preview" alt="Selected photo preview" class="mb-3 hidden max-h-56 w-full rounded border border-gray-200 bg-white object-contain">
-                    <span id="file-name" class="text-sm font-medium text-gray-700" data-i18n="uploadText">Click to upload JPG, PNG, or WebP</span>
-                    <span id="upload-hint" class="mt-1 text-xs text-gray-400" data-i18n="uploadHint">Scanned photos and phone captures both work</span>
+                    <img id="upload-preview" alt="Selected photo preview" class="mb-3 hidden max-h-56 w-full rounded border border-gray-200 bg-white object-contain dark:border-zinc-800 dark:bg-zinc-900">
+                    <span id="file-name" class="text-sm font-medium text-gray-700 dark:text-zinc-200" data-i18n="uploadText">Click to upload JPG, PNG, or WebP</span>
+                    <span id="upload-hint" class="mt-1 text-xs text-gray-400 dark:text-zinc-500" data-i18n="uploadHint">Scanned photos and phone captures both work</span>
                     <input id="restore-file" type="file" class="hidden" accept="image/jpeg,image/png,image/webp">
                 </label>
 
                 <div class="mt-5 space-y-4">
                     <div>
-                        <label class="mb-1 block text-sm font-semibold text-gray-700" for="restore-strength" data-i18n="strengthLabel">Repair strength</label>
+                        <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-zinc-200" for="restore-strength" data-i18n="strengthLabel">Repair strength</label>
                         <select id="restore-strength"
-                            class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300">
+                            class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:border-zinc-800 dark:bg-zinc-900">
                             <option value="gentle" data-i18n="strengthGentle">Gentle</option>
                             <option value="balanced" selected data-i18n="strengthBalanced">Balanced</option>
                             <option value="strong" data-i18n="strengthStrong">Strong</option>
                         </select>
                     </div>
                     <div>
-                        <label class="mb-1 block text-sm font-semibold text-gray-700" for="restore-scale" data-i18n="scaleLabel">Output scale</label>
+                        <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-zinc-200" for="restore-scale" data-i18n="scaleLabel">Output scale</label>
                         <select id="restore-scale"
-                            class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300">
+                            class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:border-zinc-800 dark:bg-zinc-900">
                             <option value="1">1x</option>
                             <option value="2" selected>2x</option>
                             <option value="4">4x</option>
@@ -241,118 +263,118 @@
                     <button id="restore-btn"
                         class="w-full rounded-lg bg-gray-900 px-4 py-3 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-300 transition-colors"
                         data-i18n="restoreBtn">Restore Photo</button>
-                    <p id="status" class="min-h-[20px] text-sm text-gray-500"></p>
+                    <p id="status" class="min-h-[20px] text-sm text-gray-500 dark:text-zinc-400"></p>
                 </div>
             </aside>
 
-            <section class="bg-white border border-gray-200 rounded-lg p-5 min-h-[520px]">
+            <section class="bg-white border border-gray-200 rounded-lg p-5 min-h-[520px] dark:bg-zinc-900 dark:border-zinc-800">
                 <div class="mb-4 flex items-center justify-between gap-3">
                     <div>
                         <h2 class="text-lg font-bold" data-i18n="previewTitle">Preview</h2>
-                        <p class="text-sm text-gray-500" data-i18n="previewSub">Compare the uploaded photo with the restored output.</p>
+                        <p class="text-sm text-gray-500 dark:text-zinc-400" data-i18n="previewSub">Compare the uploaded photo with the restored output.</p>
                     </div>
                     <button id="download-btn"
-                        class="hidden rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 hover:border-gray-400 hover:text-gray-900 transition-colors"
+                        class="hidden rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 hover:border-gray-400 hover:text-gray-900 transition-colors dark:border-zinc-800 dark:text-zinc-200 dark:hover:border-zinc-600 dark:hover:text-zinc-100"
                         data-i18n="downloadBtn">Download</button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <figure class="min-h-[360px] rounded-lg border border-gray-200 bg-gray-50 p-3">
-                        <figcaption class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400" data-i18n="beforeLabel">Before</figcaption>
+                    <figure class="min-h-[360px] rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-zinc-800 dark:bg-zinc-900">
+                        <figcaption class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-zinc-500" data-i18n="beforeLabel">Before</figcaption>
                         <div class="flex min-h-[310px] items-center justify-center">
                             <img id="before-img" alt="Original photo preview" class="hidden max-h-[430px] max-w-full object-contain">
-                            <p id="before-empty" class="text-sm text-gray-400" data-i18n="beforeEmpty">Original photo will appear here</p>
+                            <p id="before-empty" class="text-sm text-gray-400 dark:text-zinc-500" data-i18n="beforeEmpty">Original photo will appear here</p>
                         </div>
                     </figure>
-                    <figure class="min-h-[360px] rounded-lg border border-gray-200 bg-gray-50 p-3">
-                        <figcaption class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400" data-i18n="afterLabel">After</figcaption>
+                    <figure class="min-h-[360px] rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-zinc-800 dark:bg-zinc-900">
+                        <figcaption class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-zinc-500" data-i18n="afterLabel">After</figcaption>
                         <div class="flex min-h-[310px] items-center justify-center">
                             <img id="after-img" alt="Restored photo preview" class="hidden max-h-[430px] max-w-full object-contain">
-                            <p id="after-empty" class="text-sm text-gray-400" data-i18n="afterEmpty">Restored photo will appear here</p>
+                            <p id="after-empty" class="text-sm text-gray-400 dark:text-zinc-500" data-i18n="afterEmpty">Restored photo will appear here</p>
                         </div>
                     </figure>
                 </div>
             </section>
         </section>
 
-        <section class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
-            <div class="rounded-lg border border-gray-200 bg-white p-5">
-                <h3 class="mb-2 font-bold text-gray-900" data-i18n="flow1">Restore texture</h3>
+        <section class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 dark:text-zinc-300">
+            <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+                <h3 class="mb-2 font-bold text-gray-900 dark:text-zinc-50" data-i18n="flow1">Restore texture</h3>
                 <p data-i18n="flow1Body">Reduce scan noise and bring faded tonal range back into the photo.</p>
             </div>
-            <div class="rounded-lg border border-gray-200 bg-white p-5">
-                <h3 class="mb-2 font-bold text-gray-900" data-i18n="flow2">Enhance details</h3>
+            <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+                <h3 class="mb-2 font-bold text-gray-900 dark:text-zinc-50" data-i18n="flow2">Enhance details</h3>
                 <p data-i18n="flow2Body">Sharpen soft edges and prepare old prints for larger screens.</p>
             </div>
-            <div class="rounded-lg border border-gray-200 bg-white p-5">
-                <h3 class="mb-2 font-bold text-gray-900" data-i18n="flow3">Keep private</h3>
+            <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+                <h3 class="mb-2 font-bold text-gray-900 dark:text-zinc-50" data-i18n="flow3">Keep private</h3>
                 <p data-i18n="flow3Body">Images follow the same in-memory processing policy as other MiaoCut tools.</p>
             </div>
         </section>
 
         <!-- How-to section：对应 head 中的 HowTo JSON-LD；改这 3 步必须同步 schema 和 old-photo.js i18n -->
-        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6 dark:bg-zinc-900 dark:border-zinc-800">
             <h2 class="text-xl font-bold mb-6" data-i18n="howToTitle">How to Restore an Old Photo</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700">
-                <div class="rounded-lg border border-gray-200 p-5">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700 dark:text-zinc-200">
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
                     <div class="text-2xl mb-2">📤</div>
-                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep1Title">1. Upload your old photo</h3>
-                    <p class="leading-relaxed text-gray-600" data-i18n="howStep1Body">Upload a scanned print or phone capture in JPG, PNG, or WebP. Both work — though scanned originals usually give the best result.</p>
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="howStep1Title">1. Upload your old photo</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="howStep1Body">Upload a scanned print or phone capture in JPG, PNG, or WebP. Both work — though scanned originals usually give the best result.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
                     <div class="text-2xl mb-2">⚙️</div>
-                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep2Title">2. Choose repair strength and scale</h3>
-                    <p class="leading-relaxed text-gray-600" data-i18n="howStep2Body">Pick a repair strength (gentle / balanced / strong) based on how damaged the photo is, plus an output scale (1x / 2x / 4x) for prints or screen display.</p>
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="howStep2Title">2. Choose repair strength and scale</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="howStep2Body">Pick a repair strength (gentle / balanced / strong) based on how damaged the photo is, plus an output scale (1x / 2x / 4x) for prints or screen display.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
                     <div class="text-2xl mb-2">✨</div>
-                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep3Title">3. Compare before/after and download</h3>
-                    <p class="leading-relaxed text-gray-600" data-i18n="howStep3Body">Side-by-side preview shows the original and restored result. If you like it, download the restored image.</p>
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="howStep3Title">3. Compare before/after and download</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="howStep3Body">Side-by-side preview shows the original and restored result. If you like it, download the restored image.</p>
                 </div>
             </div>
         </section>
 
         <!-- 可见 FAQ section：与 head 中的 FAQPage JSON-LD 保持一致；改一处必须同步另一处 + old-photo.js i18n -->
-        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6 dark:bg-zinc-900 dark:border-zinc-800">
             <h2 class="text-xl font-bold mb-6" data-i18n="faqTitle">Frequently Asked Questions</h2>
             <div class="space-y-4">
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">How does AI old photo restoration work?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq1A">Upload your old photo, choose a repair strength (gentle, balanced, or strong), and select an output scale. MiaoCut applies AI denoising, contrast recovery, and detail sharpening to bring faded or noisy photos back to a cleaner state.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq1Q">How does AI old photo restoration work?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq1A">Upload your old photo, choose a repair strength (gentle, balanced, or strong), and select an output scale. MiaoCut applies AI denoising, contrast recovery, and detail sharpening to bring faded or noisy photos back to a cleaner state.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq2Q">Will it modify or damage my original photo?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq2A">No. Your original is never modified. MiaoCut processes a copy on the server, shows you a before/after preview, and you decide whether to download the restored version.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq2Q">Will it modify or damage my original photo?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq2A">No. Your original is never modified. MiaoCut processes a copy on the server, shows you a before/after preview, and you decide whether to download the restored version.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq3Q">Is my photo private and safe?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq3A">Yes. Photos are processed in-memory on the server and discarded immediately after the restored result is returned. We never store your image, never use it for AI training, and there is no signup required. Your family memories never leave your control.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq3Q">Is my photo private and safe?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq3A">Yes. Photos are processed in-memory on the server and discarded immediately after the restored result is returned. We never store your image, never use it for AI training, and there is no signup required. Your family memories never leave your control.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq4Q">Can it restore heavily damaged or torn photos?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq4A">MiaoCut works best on faded, noisy, or low-contrast photos. For very heavy damage (large tears or missing areas), results are limited — for filling small damaged areas you can try the watermark remover (paint-and-fill).</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq4Q">Can it restore heavily damaged or torn photos?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq4A">MiaoCut works best on faded, noisy, or low-contrast photos. For very heavy damage (large tears or missing areas), results are limited — for filling small damaged areas you can try the watermark remover (paint-and-fill).</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq5Q">Can I print the restored photo?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq5A">Yes. The restored output is exported at your chosen scale (1x, 2x, or 4x). Use 2x or 4x if you plan to print at larger sizes or display on high-resolution screens.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq5Q">Can I print the restored photo?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq5A">Yes. The restored output is exported at your chosen scale (1x, 2x, or 4x). Use 2x or 4x if you plan to print at larger sizes or display on high-resolution screens.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq6Q">Does it colorize black-and-white photos?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq6A">Not yet. The current MiaoCut focus is denoising, sharpening, and contrast recovery. If colorization would be useful for you, let us know via the feedback widget.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq6Q">Does it colorize black-and-white photos?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq6A">Not yet. The current MiaoCut focus is denoising, sharpening, and contrast recovery. If colorization would be useful for you, let us know via the feedback widget.</p>
                 </div>
             </div>
         </section>
 
         <!-- Cross-link section（H6）：把链接权重传给同主题工具 -->
         <section class="mt-12">
-            <h2 class="text-xl font-bold mb-6 text-gray-900" data-i18n="moreTitle">More MiaoCut Tools</h2>
+            <h2 class="text-xl font-bold mb-6 text-gray-900 dark:text-zinc-50" data-i18n="moreTitle">More MiaoCut Tools</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <a href="/portrait-background-remover/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all">
-                    <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkPortraitTitle">Portrait Background Remover →</h3>
-                    <p class="text-sm text-gray-600" data-i18n="moreLinkPortraitDesc">Make clean headshots, profile pictures, and resume photos.</p>
+                <a href="/portrait-background-remover/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                    <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="moreLinkPortraitTitle">Portrait Background Remover →</h3>
+                    <p class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="moreLinkPortraitDesc">Make clean headshots, profile pictures, and resume photos.</p>
                 </a>
-                <a href="/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all">
-                    <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkBgTitle">AI Background Remover →</h3>
-                    <p class="text-sm text-gray-600" data-i18n="moreLinkBgDesc">One-click transparent PNG cutout for any photo.</p>
+                <a href="/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                    <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="moreLinkBgTitle">AI Background Remover →</h3>
+                    <p class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="moreLinkBgDesc">One-click transparent PNG cutout for any photo.</p>
                 </a>
             </div>
         </section>
@@ -395,7 +417,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
+            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500 dark:text-zinc-400">
                 <p class="mb-2" data-i18n="footerTagline">MiaoCut · Free AI image tools that respect your privacy.</p>
                 <p><a href="/privacy/" class="hover:text-white transition-colors" data-i18n="footerPrivacy">Privacy</a> · <a href="/terms/" class="hover:text-white transition-colors" data-i18n="footerTerms">Terms</a></p>
             </div>

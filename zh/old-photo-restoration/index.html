@@ -4,6 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 品牌字体 Geist：预加载首屏 sans 可变字体（crossorigin 是 font preload 的硬性要求）-->
+    <link rel="preload" href="/fonts/geist/geist-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- 主题（明/暗）：在首屏渲染前同步设好 <html class="dark">，避免闪一下白；并在 DOM ready 后接管切换按钮 -->
+    <script>/* redesign-dark-applied */(function () {
+        try {
+            var s = localStorage.getItem('theme');
+            var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', d);
+        } catch (e) {}
+        document.addEventListener('DOMContentLoaded', function () {
+            var b = document.getElementById('theme-toggle');
+            if (b) b.addEventListener('click', function () {
+                var dark = document.documentElement.classList.toggle('dark');
+                try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+            });
+        });
+    })();</script>
     <link rel="preconnect" href="https://api2.miaocut.app">
     <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
     <title>免费 AI 老照片修复与高清放大 | MiaoCut</title>
@@ -147,92 +164,97 @@
     <link rel="alternate" hreflang="x-default" href="https://miaocut.app/old-photo-restoration/">
 </head>
 
-<body class="bg-gray-50 min-h-screen font-sans text-gray-900 selection:bg-gray-200">
+<body class="bg-gray-50 min-h-screen font-sans text-gray-900 selection:bg-brand-100 selection:text-brand-900 dark:bg-zinc-950 dark:text-zinc-200">
     <!-- Sticky header：与首页统一为同一种实现（M5） -->
-    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur">
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
         <div class="mx-auto max-w-6xl px-5 py-4 flex items-center justify-between gap-4">
-            <a href="/zh/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
+            <a href="/zh/" class="text-2xl font-black tracking-tight text-gray-900 dark:text-zinc-50">MiaoCut</a>
             <div class="flex items-center gap-4">
-                <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600">
-                    <a href="/zh/" class="hover:text-gray-900 transition-colors" data-i18n="navBg">AI 抠图</a>
-                    <a href="/zh/product-photo-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navProduct">商品图</a>
-                    <a href="/zh/portrait-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navPortrait">人像</a>
-                    <a href="/zh/watermark-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navWatermark">去水印</a>
-                    <a href="/zh/id-photo-maker/" class="hover:text-gray-900 transition-colors" data-i18n="navId">证件照</a>
-                    <a href="/zh/old-photo-restoration/" class="text-gray-900" data-i18n="navRestore">老照片修复</a>
+                <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600 dark:text-zinc-300">
+                    <a href="/zh/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navBg">AI 抠图</a>
+                    <a href="/zh/product-photo-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navProduct">商品图</a>
+                    <a href="/zh/portrait-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navPortrait">人像</a>
+                    <a href="/zh/watermark-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navWatermark">去水印</a>
+                    <a href="/zh/id-photo-maker/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navId">证件照</a>
+                    <a href="/zh/old-photo-restoration/" class="text-gray-900 dark:text-zinc-50" data-i18n="navRestore">老照片修复</a>
                 </nav>
+                <button id="theme-toggle" type="button" aria-label="Toggle dark mode"
+                    class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors">
+                    <svg class="h-5 w-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
+                    <svg class="h-5 w-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
+                </button>
                 <select id="lang-switch" aria-label="Language"
-                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
+                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors dark:text-zinc-300 dark:hover:text-zinc-100">
                     <option value="en">English</option>
                     <option value="zh">简体中文</option>
                 </select>
             </div>
         </div>
     </header>
-    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600">
+    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
         <a href="/zh/" class="shrink-0" data-i18n="navBg">AI 抠图</a>
         <a href="/zh/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">商品图</a>
         <a href="/zh/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">人像</a>
         <a href="/zh/watermark-remover/" class="shrink-0" data-i18n="navWatermark">去水印</a>
         <a href="/zh/id-photo-maker/" class="shrink-0" data-i18n="navId">证件照</a>
-        <a href="/zh/old-photo-restoration/" class="shrink-0 text-gray-900" data-i18n="navRestore">老照片修复</a>
+        <a href="/zh/old-photo-restoration/" class="shrink-0 text-gray-900 dark:text-zinc-50" data-i18n="navRestore">老照片修复</a>
     </nav>
 
     <main class="mx-auto max-w-6xl px-5 py-8">
         <!-- 面包屑：辅助 SEO + 用户导航；与 head 中的 BreadcrumbList JSON-LD 对应 -->
-        <nav class="mb-5 text-sm text-gray-500" aria-label="Breadcrumb">
+        <nav class="mb-5 text-sm text-gray-500 dark:text-zinc-400" aria-label="Breadcrumb">
             <ol class="flex items-center gap-2">
-                <li><a href="/zh/" class="hover:text-gray-900" data-i18n="breadcrumbHome">MiaoCut</a></li>
+                <li><a href="/zh/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-i18n="breadcrumbHome">MiaoCut</a></li>
                 <li class="text-gray-300">/</li>
-                <li class="text-gray-700" data-i18n="breadcrumbCurrent">老照片修复</li>
+                <li class="text-gray-700 dark:text-zinc-200" data-i18n="breadcrumbCurrent">老照片修复</li>
             </ol>
         </nav>
 
         <section class="mb-7 flex flex-col gap-2">
-            <p class="text-sm font-semibold text-gray-500" data-i18n="eyebrow">老照片、家庭相册、扫描照片</p>
-            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" data-i18n="heroTitle">AI 老照片修复与高清放大</h1>
-            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed" data-i18n="heroSub">还原褪色对比度、降低扫描噪点、增强模糊细节，并放大老家庭照片到适合打印的高分辨率。</p>
+            <p class="text-sm font-semibold text-gray-500 dark:text-zinc-400" data-i18n="eyebrow">老照片、家庭相册、扫描照片</p>
+            <h1 class="text-3xl md:text-4xl font-bold tracking-tight" data-i18n="heroTitle">AI 老照片修复与高清放大</h1>
+            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed dark:text-zinc-400" data-i18n="heroSub">还原褪色对比度、降低扫描噪点、增强模糊细节，并放大老家庭照片到适合打印的高分辨率。</p>
         </section>
 
         <!-- 隐私 callout：emotional persona（保护家庭回忆的子女）对隐私敏感度最高，
              第一时间显眼放一个安心条，比泛泛说"私密处理"效果好得多。 -->
-        <aside role="note" aria-label="Privacy notice" class="mb-7 flex items-start gap-3 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3">
-            <svg class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <aside role="note" aria-label="Privacy notice" class="mb-7 flex items-start gap-3 rounded-lg border border-brand-300 bg-brand-50 px-4 py-3 dark:bg-brand-500/10">
+            <svg class="mt-0.5 h-5 w-5 shrink-0 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
             </svg>
-            <p class="text-sm leading-relaxed text-emerald-900">
+            <p class="text-sm leading-relaxed text-brand-900">
                 <strong class="font-semibold" data-i18n="privacyNotice">你的家庭记忆完全私密。</strong>
                 <span data-i18n="privacyBody">照片在服务器内存中处理，结果返回后立即销毁。绝不存储、绝不用于 AI 训练、无需注册账号。</span>
             </p>
         </aside>
 
         <section class="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start">
-            <aside class="bg-white border border-gray-200 rounded-lg p-5">
+            <aside class="bg-white border border-gray-200 rounded-lg p-5 dark:bg-zinc-900 dark:border-zinc-800">
                 <label id="upload-card"
-                    class="flex min-h-[250px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center hover:border-gray-400 hover:bg-white transition-colors">
-                    <svg id="upload-icon" class="mb-3 h-10 w-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="flex min-h-[250px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center hover:border-gray-400 hover:bg-white transition-colors dark:border-zinc-700 dark:bg-zinc-900 dark:hover:border-zinc-600">
+                    <svg id="upload-icon" class="mb-3 h-10 w-10 text-gray-400 dark:text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                     </svg>
-                    <img id="upload-preview" alt="Selected photo preview" class="mb-3 hidden max-h-56 w-full rounded border border-gray-200 bg-white object-contain">
-                    <span id="file-name" class="text-sm font-medium text-gray-700" data-i18n="uploadText">点击上传 JPG、PNG 或 WebP</span>
-                    <span id="upload-hint" class="mt-1 text-xs text-gray-400" data-i18n="uploadHint">扫描件和手机翻拍照片都可以</span>
+                    <img id="upload-preview" alt="Selected photo preview" class="mb-3 hidden max-h-56 w-full rounded border border-gray-200 bg-white object-contain dark:border-zinc-800 dark:bg-zinc-900">
+                    <span id="file-name" class="text-sm font-medium text-gray-700 dark:text-zinc-200" data-i18n="uploadText">点击上传 JPG、PNG 或 WebP</span>
+                    <span id="upload-hint" class="mt-1 text-xs text-gray-400 dark:text-zinc-500" data-i18n="uploadHint">扫描件和手机翻拍照片都可以</span>
                     <input id="restore-file" type="file" class="hidden" accept="image/jpeg,image/png,image/webp">
                 </label>
 
                 <div class="mt-5 space-y-4">
                     <div>
-                        <label class="mb-1 block text-sm font-semibold text-gray-700" for="restore-strength" data-i18n="strengthLabel">修复强度</label>
+                        <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-zinc-200" for="restore-strength" data-i18n="strengthLabel">修复强度</label>
                         <select id="restore-strength"
-                            class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300">
+                            class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:border-zinc-800 dark:bg-zinc-900">
                             <option value="gentle" data-i18n="strengthGentle">轻柔</option>
                             <option value="balanced" selected data-i18n="strengthBalanced">均衡</option>
                             <option value="strong" data-i18n="strengthStrong">强力</option>
                         </select>
                     </div>
                     <div>
-                        <label class="mb-1 block text-sm font-semibold text-gray-700" for="restore-scale" data-i18n="scaleLabel">输出倍率</label>
+                        <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-zinc-200" for="restore-scale" data-i18n="scaleLabel">输出倍率</label>
                         <select id="restore-scale"
-                            class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300">
+                            class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:border-zinc-800 dark:bg-zinc-900">
                             <option value="1">1x</option>
                             <option value="2" selected>2x</option>
                             <option value="4">4x</option>
@@ -241,118 +263,118 @@
                     <button id="restore-btn"
                         class="w-full rounded-lg bg-gray-900 px-4 py-3 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-300 transition-colors"
                         data-i18n="restoreBtn">修复照片</button>
-                    <p id="status" class="min-h-[20px] text-sm text-gray-500"></p>
+                    <p id="status" class="min-h-[20px] text-sm text-gray-500 dark:text-zinc-400"></p>
                 </div>
             </aside>
 
-            <section class="bg-white border border-gray-200 rounded-lg p-5 min-h-[520px]">
+            <section class="bg-white border border-gray-200 rounded-lg p-5 min-h-[520px] dark:bg-zinc-900 dark:border-zinc-800">
                 <div class="mb-4 flex items-center justify-between gap-3">
                     <div>
                         <h2 class="text-lg font-bold" data-i18n="previewTitle">预览</h2>
-                        <p class="text-sm text-gray-500" data-i18n="previewSub">对比原图和修复后的高清结果。</p>
+                        <p class="text-sm text-gray-500 dark:text-zinc-400" data-i18n="previewSub">对比原图和修复后的高清结果。</p>
                     </div>
                     <button id="download-btn"
-                        class="hidden rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 hover:border-gray-400 hover:text-gray-900 transition-colors"
+                        class="hidden rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 hover:border-gray-400 hover:text-gray-900 transition-colors dark:border-zinc-800 dark:text-zinc-200 dark:hover:border-zinc-600 dark:hover:text-zinc-100"
                         data-i18n="downloadBtn">下载</button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <figure class="min-h-[360px] rounded-lg border border-gray-200 bg-gray-50 p-3">
-                        <figcaption class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400" data-i18n="beforeLabel">修复前</figcaption>
+                    <figure class="min-h-[360px] rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-zinc-800 dark:bg-zinc-900">
+                        <figcaption class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-zinc-500" data-i18n="beforeLabel">修复前</figcaption>
                         <div class="flex min-h-[310px] items-center justify-center">
                             <img id="before-img" alt="Original photo preview" class="hidden max-h-[430px] max-w-full object-contain">
-                            <p id="before-empty" class="text-sm text-gray-400" data-i18n="beforeEmpty">原图会显示在这里</p>
+                            <p id="before-empty" class="text-sm text-gray-400 dark:text-zinc-500" data-i18n="beforeEmpty">原图会显示在这里</p>
                         </div>
                     </figure>
-                    <figure class="min-h-[360px] rounded-lg border border-gray-200 bg-gray-50 p-3">
-                        <figcaption class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400" data-i18n="afterLabel">修复后</figcaption>
+                    <figure class="min-h-[360px] rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-zinc-800 dark:bg-zinc-900">
+                        <figcaption class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-zinc-500" data-i18n="afterLabel">修复后</figcaption>
                         <div class="flex min-h-[310px] items-center justify-center">
                             <img id="after-img" alt="Restored photo preview" class="hidden max-h-[430px] max-w-full object-contain">
-                            <p id="after-empty" class="text-sm text-gray-400" data-i18n="afterEmpty">修复结果会显示在这里</p>
+                            <p id="after-empty" class="text-sm text-gray-400 dark:text-zinc-500" data-i18n="afterEmpty">修复结果会显示在这里</p>
                         </div>
                     </figure>
                 </div>
             </section>
         </section>
 
-        <section class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
-            <div class="rounded-lg border border-gray-200 bg-white p-5">
-                <h3 class="mb-2 font-bold text-gray-900" data-i18n="flow1">恢复质感</h3>
+        <section class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 dark:text-zinc-300">
+            <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+                <h3 class="mb-2 font-bold text-gray-900 dark:text-zinc-50" data-i18n="flow1">恢复质感</h3>
                 <p data-i18n="flow1Body">降低扫描噪点，让褪色照片重新拉开明暗层次。</p>
             </div>
-            <div class="rounded-lg border border-gray-200 bg-white p-5">
-                <h3 class="mb-2 font-bold text-gray-900" data-i18n="flow2">增强细节</h3>
+            <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+                <h3 class="mb-2 font-bold text-gray-900 dark:text-zinc-50" data-i18n="flow2">增强细节</h3>
                 <p data-i18n="flow2Body">锐化柔软边缘，让旧照片更适合大屏查看和保存。</p>
             </div>
-            <div class="rounded-lg border border-gray-200 bg-white p-5">
-                <h3 class="mb-2 font-bold text-gray-900" data-i18n="flow3">保护隐私</h3>
+            <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+                <h3 class="mb-2 font-bold text-gray-900 dark:text-zinc-50" data-i18n="flow3">保护隐私</h3>
                 <p data-i18n="flow3Body">沿用 MiaoCut 的纯内存处理策略，照片不会用于训练。</p>
             </div>
         </section>
 
         <!-- How-to section：对应 head 中的 HowTo JSON-LD；改这 3 步必须同步 schema 和 old-photo.js i18n -->
-        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6 dark:bg-zinc-900 dark:border-zinc-800">
             <h2 class="text-xl font-bold mb-6" data-i18n="howToTitle">如何修复一张老照片</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700">
-                <div class="rounded-lg border border-gray-200 p-5">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700 dark:text-zinc-200">
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
                     <div class="text-2xl mb-2">📤</div>
-                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep1Title">1. 上传你的老照片</h3>
-                    <p class="leading-relaxed text-gray-600" data-i18n="howStep1Body">扫描件或手机翻拍照片均可，支持 JPG、PNG、WebP。一般来说扫描原件效果更好。</p>
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="howStep1Title">1. 上传你的老照片</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="howStep1Body">扫描件或手机翻拍照片均可，支持 JPG、PNG、WebP。一般来说扫描原件效果更好。</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
                     <div class="text-2xl mb-2">⚙️</div>
-                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep2Title">2. 选择修复强度和倍率</h3>
-                    <p class="leading-relaxed text-gray-600" data-i18n="howStep2Body">根据照片损伤程度选择修复强度（轻柔 / 均衡 / 强力），并选择输出倍率（1x / 2x / 4x），打印或大屏显示推荐高倍率。</p>
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="howStep2Title">2. 选择修复强度和倍率</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="howStep2Body">根据照片损伤程度选择修复强度（轻柔 / 均衡 / 强力），并选择输出倍率（1x / 2x / 4x），打印或大屏显示推荐高倍率。</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
                     <div class="text-2xl mb-2">✨</div>
-                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep3Title">3. 对比效果并下载</h3>
-                    <p class="leading-relaxed text-gray-600" data-i18n="howStep3Body">左右对比预览原图与修复后效果，满意后下载修复版本。</p>
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="howStep3Title">3. 对比效果并下载</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="howStep3Body">左右对比预览原图与修复后效果，满意后下载修复版本。</p>
                 </div>
             </div>
         </section>
 
         <!-- 可见 FAQ section：与 head 中的 FAQPage JSON-LD 保持一致；改一处必须同步另一处 + old-photo.js i18n -->
-        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6 dark:bg-zinc-900 dark:border-zinc-800">
             <h2 class="text-xl font-bold mb-6" data-i18n="faqTitle">常见问题</h2>
             <div class="space-y-4">
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">AI 老照片修复是怎么工作的？</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq1A">上传你的老照片，选择修复强度（轻柔 / 均衡 / 强力）和输出倍率，MiaoCut 会用 AI 自动降噪、还原对比度、增强细节，让褪色或噪点严重的老照片更清晰。</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq1Q">AI 老照片修复是怎么工作的？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq1A">上传你的老照片，选择修复强度（轻柔 / 均衡 / 强力）和输出倍率，MiaoCut 会用 AI 自动降噪、还原对比度、增强细节，让褪色或噪点严重的老照片更清晰。</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq2Q">会修改或损坏我的原图吗？</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq2A">不会。原图永远不会被修改。MiaoCut 在服务器上处理一份副本，给你看修复前后对比，由你决定是否下载修复版本。</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq2Q">会修改或损坏我的原图吗？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq2A">不会。原图永远不会被修改。MiaoCut 在服务器上处理一份副本，给你看修复前后对比，由你决定是否下载修复版本。</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq3Q">我的照片安全吗？</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq3A">安全。照片纯内存处理，修复结果返回后立即销毁。我们绝不存储你的图片、绝不用于 AI 训练，也无需注册账号。你的家庭回忆始终在你掌控之中。</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq3Q">我的照片安全吗？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq3A">安全。照片纯内存处理，修复结果返回后立即销毁。我们绝不存储你的图片、绝不用于 AI 训练，也无需注册账号。你的家庭回忆始终在你掌控之中。</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq4Q">能修复严重破损或撕裂的老照片吗？</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq4A">MiaoCut 最适合处理褪色、噪点、低对比度的老照片。如果损伤特别严重（大面积撕裂或缺失），效果会受限 —— 小范围破损可以试试去水印工具的"涂抹修复"。</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq4Q">能修复严重破损或撕裂的老照片吗？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq4A">MiaoCut 最适合处理褪色、噪点、低对比度的老照片。如果损伤特别严重（大面积撕裂或缺失），效果会受限 —— 小范围破损可以试试去水印工具的"涂抹修复"。</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq5Q">修复后的照片可以打印吗？</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq5A">可以。修复结果按你选择的倍率（1x / 2x / 4x）导出。打印大尺寸照片或在高分辨率屏幕显示时建议用 2x 或 4x。</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq5Q">修复后的照片可以打印吗？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq5A">可以。修复结果按你选择的倍率（1x / 2x / 4x）导出。打印大尺寸照片或在高分辨率屏幕显示时建议用 2x 或 4x。</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq6Q">可以给黑白老照片上色吗？</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq6A">暂时不支持。当前老照片修复聚焦在降噪、增强、还原对比度。如果需要照片上色，欢迎通过反馈组件告诉我们。</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq6Q">可以给黑白老照片上色吗？</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq6A">暂时不支持。当前老照片修复聚焦在降噪、增强、还原对比度。如果需要照片上色，欢迎通过反馈组件告诉我们。</p>
                 </div>
             </div>
         </section>
 
         <!-- Cross-link section（H6）：把链接权重传给同主题工具 -->
         <section class="mt-12">
-            <h2 class="text-xl font-bold mb-6 text-gray-900" data-i18n="moreTitle">更多 MiaoCut 工具</h2>
+            <h2 class="text-xl font-bold mb-6 text-gray-900 dark:text-zinc-50" data-i18n="moreTitle">更多 MiaoCut 工具</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <a href="/zh/portrait-background-remover/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all">
-                    <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkPortraitTitle">人像抠图 →</h3>
-                    <p class="text-sm text-gray-600" data-i18n="moreLinkPortraitDesc">制作干净的头像、简历照、社媒头像。</p>
+                <a href="/zh/portrait-background-remover/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                    <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="moreLinkPortraitTitle">人像抠图 →</h3>
+                    <p class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="moreLinkPortraitDesc">制作干净的头像、简历照、社媒头像。</p>
                 </a>
-                <a href="/zh/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all">
-                    <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkBgTitle">AI 抠图 →</h3>
-                    <p class="text-sm text-gray-600" data-i18n="moreLinkBgDesc">一键生成透明 PNG 抠图。</p>
+                <a href="/zh/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                    <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="moreLinkBgTitle">AI 抠图 →</h3>
+                    <p class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="moreLinkBgDesc">一键生成透明 PNG 抠图。</p>
                 </a>
             </div>
         </section>
@@ -395,7 +417,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
+            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500 dark:text-zinc-400">
                 <p class="mb-2" data-i18n="footerTagline">MiaoCut · 免费、注重隐私的 AI 图片工具集。</p>
                 <p><a href="/privacy/" class="hover:text-white transition-colors" data-i18n="footerPrivacy">隐私政策</a> · <a href="/terms/" class="hover:text-white transition-colors" data-i18n="footerTerms">服务条款</a></p>
             </div>

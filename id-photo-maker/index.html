@@ -4,6 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 品牌字体 Geist：预加载首屏 sans 可变字体（crossorigin 是 font preload 的硬性要求）-->
+    <link rel="preload" href="/fonts/geist/geist-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- 主题（明/暗）：在首屏渲染前同步设好 <html class="dark">，避免闪一下白；并在 DOM ready 后接管切换按钮 -->
+    <script>/* redesign-dark-applied */(function () {
+        try {
+            var s = localStorage.getItem('theme');
+            var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', d);
+        } catch (e) {}
+        document.addEventListener('DOMContentLoaded', function () {
+            var b = document.getElementById('theme-toggle');
+            if (b) b.addEventListener('click', function () {
+                var dark = document.documentElement.classList.toggle('dark');
+                try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+            });
+        });
+    })();</script>
     <!-- Resource hints：见 index.html 同段注释 -->
     <link rel="preconnect" href="https://api2.miaocut.app">
     <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
@@ -107,74 +124,79 @@
     <link rel="alternate" hreflang="x-default" href="https://miaocut.app/id-photo-maker/">
 </head>
 
-<body class="bg-gray-50 min-h-screen font-sans text-gray-900 selection:bg-gray-200">
+<body class="bg-gray-50 min-h-screen font-sans text-gray-900 selection:bg-brand-100 selection:text-brand-900 dark:bg-zinc-950 dark:text-zinc-200">
     <!-- Sticky header：与首页统一为同一种实现（M5） -->
-    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur">
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
         <div class="mx-auto max-w-6xl px-5 py-4 flex items-center justify-between gap-4">
-            <a href="/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
+            <a href="/" class="text-2xl font-black tracking-tight text-gray-900 dark:text-zinc-50">MiaoCut</a>
             <div class="flex items-center gap-4">
-                <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600">
-                    <a href="/" class="hover:text-gray-900 transition-colors" data-i18n="navBg">Background Remover</a>
-                    <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navProduct">Product</a>
-                    <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navPortrait">Portrait</a>
-                    <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navWatermark">Watermark</a>
-                    <a href="/id-photo-maker/" class="text-gray-900" data-i18n="navId">ID Photo</a>
-                    <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors" data-i18n="navRestore">Old Photo</a>
+                <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600 dark:text-zinc-300">
+                    <a href="/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navBg">Background Remover</a>
+                    <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navProduct">Product</a>
+                    <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navPortrait">Portrait</a>
+                    <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navWatermark">Watermark</a>
+                    <a href="/id-photo-maker/" class="text-gray-900 dark:text-zinc-50" data-i18n="navId">ID Photo</a>
+                    <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navRestore">Old Photo</a>
                 </nav>
+                <button id="theme-toggle" type="button" aria-label="Toggle dark mode"
+                    class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors">
+                    <svg class="h-5 w-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
+                    <svg class="h-5 w-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
+                </button>
                 <select id="lang-switch"
-                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
+                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors dark:text-zinc-300 dark:hover:text-zinc-100">
                     <option value="en">English</option>
                     <option value="zh">简体中文</option>
                 </select>
             </div>
         </div>
     </header>
-    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600">
+    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
         <a href="/" class="shrink-0" data-i18n="navBg">Background Remover</a>
         <a href="/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">Product</a>
         <a href="/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">Portrait</a>
         <a href="/watermark-remover/" class="shrink-0" data-i18n="navWatermark">Watermark</a>
-        <a href="/id-photo-maker/" class="shrink-0 text-gray-900" data-i18n="navId">ID Photo</a>
+        <a href="/id-photo-maker/" class="shrink-0 text-gray-900 dark:text-zinc-50" data-i18n="navId">ID Photo</a>
         <a href="/old-photo-restoration/" class="shrink-0" data-i18n="navRestore">Old Photo</a>
     </nav>
 
     <main class="mx-auto max-w-6xl px-5 py-8">
         <!-- 面包屑 -->
-        <nav class="mb-5 text-sm text-gray-500" aria-label="Breadcrumb">
+        <nav class="mb-5 text-sm text-gray-500 dark:text-zinc-400" aria-label="Breadcrumb">
             <ol class="flex items-center gap-2">
-                <li><a href="/" class="hover:text-gray-900" data-i18n="breadcrumbHome">MiaoCut</a></li>
+                <li><a href="/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-i18n="breadcrumbHome">MiaoCut</a></li>
                 <li class="text-gray-300">/</li>
-                <li class="text-gray-700" data-i18n="breadcrumbCurrent">ID Photo Maker</li>
+                <li class="text-gray-700 dark:text-zinc-200" data-i18n="breadcrumbCurrent">ID Photo Maker</li>
             </ol>
         </nav>
 
         <section class="mb-7 flex flex-col gap-2">
-            <p class="text-sm font-semibold text-gray-500" data-i18n="eyebrow">Passport photos · Visa photos · One-inch · Two-inch · Print layouts</p>
-            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" data-i18n="heroTitle">AI Passport & ID Photo Maker</h1>
-            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed" data-i18n="heroSub">Upload a portrait, pick a country-specific size preset, set the background color and target KB, and download standard, HD, or printable layout photos.</p>
+            <p class="text-sm font-semibold text-gray-500 dark:text-zinc-400" data-i18n="eyebrow">Passport photos · Visa photos · One-inch · Two-inch · Print layouts</p>
+            <h1 class="text-3xl md:text-4xl font-bold tracking-tight" data-i18n="heroTitle">AI Passport & ID Photo Maker</h1>
+            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed dark:text-zinc-400" data-i18n="heroSub">Upload a portrait, pick a country-specific size preset, set the background color and target KB, and download standard, HD, or printable layout photos.</p>
         </section>
 
         <div class="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start">
-            <section class="bg-white border border-gray-200 rounded-lg p-5">
+            <section class="bg-white border border-gray-200 rounded-lg p-5 dark:bg-zinc-900 dark:border-zinc-800">
                 <div class="space-y-5">
                     <div>
                         <label class="block text-sm font-semibold mb-2" for="id-file" data-i18n="portraitLabel">Portrait</label>
                         <label id="upload-card"
-                            class="flex min-h-40 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center hover:bg-gray-100"
+                            class="flex min-h-40 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center hover:bg-gray-100 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800"
                             for="id-file">
-                            <svg id="upload-icon" class="mb-3 h-9 w-9 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg id="upload-icon" class="mb-3 h-9 w-9 text-gray-400 dark:text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M8 8l4-4m0 0l4 4m-4-4v12" />
                             </svg>
-                            <img id="upload-preview" alt="Selected portrait preview" class="mb-3 hidden max-h-56 w-full rounded border border-gray-200 bg-white object-contain">
-                            <span id="file-name" class="text-sm font-medium text-gray-700" data-i18n="uploadText">Click to upload JPG, PNG, or WebP</span>
-                            <span id="upload-hint" class="mt-1 text-xs text-gray-400" data-i18n="uploadHint">Front-facing portrait works best</span>
+                            <img id="upload-preview" alt="Selected portrait preview" class="mb-3 hidden max-h-56 w-full rounded border border-gray-200 bg-white object-contain dark:border-zinc-800 dark:bg-zinc-900">
+                            <span id="file-name" class="text-sm font-medium text-gray-700 dark:text-zinc-200" data-i18n="uploadText">Click to upload JPG, PNG, or WebP</span>
+                            <span id="upload-hint" class="mt-1 text-xs text-gray-400 dark:text-zinc-500" data-i18n="uploadHint">Front-facing portrait works best</span>
                         </label>
                         <input id="id-file" type="file" class="hidden" accept="image/jpeg,image/png,image/webp">
                     </div>
 
                     <div>
                         <label class="block text-sm font-semibold mb-2" for="preset" data-i18n="sizeLabel">Photo size</label>
-                        <select id="preset" class="h-11 w-full rounded border border-gray-300 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-gray-300">
+                        <select id="preset" class="h-11 w-full rounded border border-gray-300 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-gray-300 dark:border-zinc-700 dark:bg-zinc-900">
                             <option value="one_inch">1 inch - 295 x 413 px</option>
                             <option value="small_one_inch">Small 1 inch - 260 x 378 px</option>
                             <option value="large_one_inch">Large 1 inch - 390 x 567 px</option>
@@ -189,12 +211,12 @@
                         </select>
                         <div id="custom-size" class="mt-3 grid grid-cols-2 gap-3 hidden">
                             <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1" for="width" data-i18n="widthLabel">Width</label>
-                                <input id="width" type="number" min="120" max="1600" value="295" class="h-10 w-full rounded border border-gray-300 px-3 text-sm">
+                                <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="width" data-i18n="widthLabel">Width</label>
+                                <input id="width" type="number" min="120" max="1600" value="295" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
                             </div>
                             <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1" for="height" data-i18n="heightLabel">Height</label>
-                                <input id="height" type="number" min="120" max="2200" value="413" class="h-10 w-full rounded border border-gray-300 px-3 text-sm">
+                                <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="height" data-i18n="heightLabel">Height</label>
+                                <input id="height" type="number" min="120" max="2200" value="413" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
                             </div>
                         </div>
                     </div>
@@ -202,13 +224,13 @@
                     <div>
                         <div class="mb-2 flex items-center justify-between">
                             <label class="text-sm font-semibold" data-i18n="bgLabel">Background</label>
-                            <input id="custom-color" type="text" value="438edb" maxlength="7" class="h-8 w-24 rounded border border-gray-300 px-2 text-xs font-mono">
+                            <input id="custom-color" type="text" value="438edb" maxlength="7" class="h-8 w-24 rounded border border-gray-300 px-2 text-xs font-mono dark:border-zinc-700">
                         </div>
                         <div id="color-swatches" class="grid grid-cols-4 gap-2">
-                            <button type="button" data-color="ffffff" class="color-swatch h-10 rounded border-2 border-transparent bg-white" title="White"></button>
+                            <button type="button" data-color="ffffff" class="color-swatch h-10 rounded border-2 border-transparent bg-white dark:bg-zinc-900" title="White"></button>
                             <button type="button" data-color="438edb" class="color-swatch h-10 rounded border-2 border-gray-900 bg-[#438edb]" title="Blue"></button>
                             <button type="button" data-color="d5332e" class="color-swatch h-10 rounded border-2 border-transparent bg-[#d5332e]" title="Red"></button>
-                            <button type="button" data-color="f3f4f6" class="color-swatch h-10 rounded border-2 border-transparent bg-gray-100" title="Gray"></button>
+                            <button type="button" data-color="f3f4f6" class="color-swatch h-10 rounded border-2 border-transparent bg-gray-100 dark:bg-zinc-800" title="Gray"></button>
                             <button type="button" data-color="dbeafe" class="color-swatch h-10 rounded border-2 border-transparent bg-blue-100" title="Light blue"></button>
                             <button type="button" data-color="1d4ed8" class="color-swatch h-10 rounded border-2 border-transparent bg-blue-700" title="Dark blue"></button>
                             <button type="button" data-color="fce7f3" class="color-swatch h-10 rounded border-2 border-transparent bg-pink-100" title="Pink"></button>
@@ -218,37 +240,37 @@
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1" for="head-ratio" data-i18n="subjectLabel">Subject</label>
+                            <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="head-ratio" data-i18n="subjectLabel">Subject</label>
                             <input id="head-ratio" type="range" min="55" max="85" value="72" class="w-full">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1" for="top-margin" data-i18n="topLabel">Top margin</label>
+                            <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="top-margin" data-i18n="topLabel">Top margin</label>
                             <input id="top-margin" type="range" min="3" max="18" value="8" class="w-full">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1" for="target-kb" data-i18n="kbLabel">Target KB</label>
-                            <input id="target-kb" type="number" min="8" max="1024" placeholder="Optional" class="h-10 w-full rounded border border-gray-300 px-3 text-sm">
+                            <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="target-kb" data-i18n="kbLabel">Target KB</label>
+                            <input id="target-kb" type="number" min="8" max="1024" placeholder="Optional" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1" for="profile" data-i18n="qualityLabel">Quality</label>
-                            <select id="profile" class="h-10 w-full rounded border border-gray-300 px-3 text-sm">
+                            <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="profile" data-i18n="qualityLabel">Quality</label>
+                            <select id="profile" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
                                 <option value="sharp">Fast</option>
                                 <option value="fur">Fine edges</option>
                             </select>
                         </div>
                     </div>
 
-                    <label class="flex items-center justify-between rounded border border-gray-200 px-3 py-2 text-sm">
-                        <span class="font-medium text-gray-700" data-i18n="alignLabel">Face alignment</span>
+                    <label class="flex items-center justify-between rounded border border-gray-200 px-3 py-2 text-sm dark:border-zinc-800">
+                        <span class="font-medium text-gray-700 dark:text-zinc-200" data-i18n="alignLabel">Face alignment</span>
                         <input id="face-alignment" type="checkbox" checked class="h-4 w-4">
                     </label>
 
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1" for="paper" data-i18n="paperLabel">Print paper</label>
-                        <select id="paper" class="h-10 w-full rounded border border-gray-300 px-3 text-sm">
+                        <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="paper" data-i18n="paperLabel">Print paper</label>
+                        <select id="paper" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
                             <option value="6inch">6 inch - 1800 x 1200 px</option>
                             <option value="5inch">5 inch - 1500 x 1050 px</option>
                             <option value="7inch">7 inch - 2100 x 1500 px</option>
@@ -257,112 +279,112 @@
                     </div>
 
                     <button id="generate" class="flex h-11 w-full items-center justify-center rounded bg-gray-900 px-4 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400" data-i18n="generateBtn">Generate ID Photo</button>
-                    <p id="status" class="min-h-5 text-sm text-gray-500"></p>
+                    <p id="status" class="min-h-5 text-sm text-gray-500 dark:text-zinc-400"></p>
                 </div>
             </section>
 
             <section class="space-y-4">
                 <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
-                    <div class="bg-white border border-gray-200 rounded-lg p-5">
+                    <div class="bg-white border border-gray-200 rounded-lg p-5 dark:bg-zinc-900 dark:border-zinc-800">
                         <div class="mb-4 flex items-center justify-between gap-3">
                             <h2 class="text-base font-bold" data-i18n="standardTitle">Standard</h2>
-                            <button id="download-standard" class="hidden h-9 rounded border border-gray-300 px-3 text-sm font-medium hover:bg-gray-50" data-i18n="downloadJpg">Download JPG</button>
+                            <button id="download-standard" class="hidden h-9 rounded border border-gray-300 px-3 text-sm font-medium hover:bg-gray-50 dark:border-zinc-700 dark:hover:bg-zinc-800" data-i18n="downloadJpg">Download JPG</button>
                         </div>
-                        <div class="flex min-h-[360px] items-center justify-center rounded bg-gray-100 p-4">
-                            <img id="standard-preview" alt="Generated standard ID photo preview" class="max-h-[320px] max-w-full rounded border border-gray-200 bg-white object-contain hidden">
-                            <p id="standard-empty" class="text-sm text-gray-400" data-i18n="standardEmpty">Standard photo will appear here</p>
+                        <div class="flex min-h-[360px] items-center justify-center rounded bg-gray-100 p-4 dark:bg-zinc-800">
+                            <img id="standard-preview" alt="Generated standard ID photo preview" class="max-h-[320px] max-w-full rounded border border-gray-200 bg-white object-contain hidden dark:border-zinc-800 dark:bg-zinc-900">
+                            <p id="standard-empty" class="text-sm text-gray-400 dark:text-zinc-500" data-i18n="standardEmpty">Standard photo will appear here</p>
                         </div>
                     </div>
 
-                    <div class="bg-white border border-gray-200 rounded-lg p-5">
+                    <div class="bg-white border border-gray-200 rounded-lg p-5 dark:bg-zinc-900 dark:border-zinc-800">
                         <div class="mb-4 flex items-center justify-between gap-3">
                             <h2 class="text-base font-bold" data-i18n="hdTitle">HD</h2>
-                            <button id="download-hd" class="hidden h-9 rounded border border-gray-300 px-3 text-sm font-medium hover:bg-gray-50" data-i18n="downloadPng">Download PNG</button>
+                            <button id="download-hd" class="hidden h-9 rounded border border-gray-300 px-3 text-sm font-medium hover:bg-gray-50 dark:border-zinc-700 dark:hover:bg-zinc-800" data-i18n="downloadPng">Download PNG</button>
                         </div>
-                        <div class="flex min-h-[360px] items-center justify-center rounded bg-gray-100 p-4">
-                            <img id="hd-preview" alt="Generated HD ID photo preview" class="max-h-[320px] max-w-full rounded border border-gray-200 bg-white object-contain hidden">
-                            <p id="hd-empty" class="text-sm text-gray-400" data-i18n="hdEmpty">HD transparent photo will appear here</p>
+                        <div class="flex min-h-[360px] items-center justify-center rounded bg-gray-100 p-4 dark:bg-zinc-800">
+                            <img id="hd-preview" alt="Generated HD ID photo preview" class="max-h-[320px] max-w-full rounded border border-gray-200 bg-white object-contain hidden dark:border-zinc-800 dark:bg-zinc-900">
+                            <p id="hd-empty" class="text-sm text-gray-400 dark:text-zinc-500" data-i18n="hdEmpty">HD transparent photo will appear here</p>
                         </div>
                     </div>
 
-                    <div class="bg-white border border-gray-200 rounded-lg p-5">
+                    <div class="bg-white border border-gray-200 rounded-lg p-5 dark:bg-zinc-900 dark:border-zinc-800">
                         <div class="mb-4 flex items-center justify-between gap-3">
                             <h2 class="text-base font-bold" data-i18n="layoutTitle">Layout</h2>
-                            <button id="download-layout" class="hidden h-9 rounded border border-gray-300 px-3 text-sm font-medium hover:bg-gray-50" data-i18n="downloadLayout">Download Layout</button>
+                            <button id="download-layout" class="hidden h-9 rounded border border-gray-300 px-3 text-sm font-medium hover:bg-gray-50 dark:border-zinc-700 dark:hover:bg-zinc-800" data-i18n="downloadLayout">Download Layout</button>
                         </div>
-                        <div class="flex min-h-[360px] items-center justify-center rounded bg-gray-100 p-4">
-                            <img id="layout-preview" alt="Printable ID photo sheet preview" class="max-h-[320px] max-w-full rounded border border-gray-200 bg-white object-contain hidden">
-                            <p id="layout-empty" class="text-sm text-gray-400" data-i18n="layoutEmpty">Printable layout will appear here</p>
+                        <div class="flex min-h-[360px] items-center justify-center rounded bg-gray-100 p-4 dark:bg-zinc-800">
+                            <img id="layout-preview" alt="Printable ID photo sheet preview" class="max-h-[320px] max-w-full rounded border border-gray-200 bg-white object-contain hidden dark:border-zinc-800 dark:bg-zinc-900">
+                            <p id="layout-empty" class="text-sm text-gray-400 dark:text-zinc-500" data-i18n="layoutEmpty">Printable layout will appear here</p>
                         </div>
-                        <p id="layout-meta" class="mt-3 text-xs text-gray-500"></p>
+                        <p id="layout-meta" class="mt-3 text-xs text-gray-500 dark:text-zinc-400"></p>
                     </div>
                 </div>
 
-                <div class="bg-white border border-gray-200 rounded-lg p-5">
+                <div class="bg-white border border-gray-200 rounded-lg p-5 dark:bg-zinc-900 dark:border-zinc-800">
                     <h2 class="text-xl font-bold mb-3" data-i18n="seoTitle">Make ID photos for documents, resumes, and online forms</h2>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="seoBody">MiaoCut's ID photo maker helps you create passport photos, visa photos, one-inch photos, two-inch photos, resume photos, and printable photo sheets. Choose a preset size, adjust the portrait placement, switch background colors, and download both standard and high-resolution outputs.</p>
-                    <div class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
-                        <div class="rounded border border-gray-200 p-4"><h3 class="font-bold text-gray-900 mb-1" data-i18n="seoCard1">Common sizes</h3><p data-i18n="seoCard1Body">One inch, two inch, passport, visa, resume, and custom pixel sizes.</p></div>
-                        <div class="rounded border border-gray-200 p-4"><h3 class="font-bold text-gray-900 mb-1" data-i18n="seoCard2">Background colors</h3><p data-i18n="seoCard2Body">White, blue, red, gray, light blue, dark blue, pink, black, and custom HEX colors.</p></div>
-                        <div class="rounded border border-gray-200 p-4"><h3 class="font-bold text-gray-900 mb-1" data-i18n="seoCard3">Print sheets</h3><p data-i18n="seoCard3Body">Generate 5-inch, 6-inch, 7-inch, or A4 printable layouts.</p></div>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="seoBody">MiaoCut's ID photo maker helps you create passport photos, visa photos, one-inch photos, two-inch photos, resume photos, and printable photo sheets. Choose a preset size, adjust the portrait placement, switch background colors, and download both standard and high-resolution outputs.</p>
+                    <div class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 dark:text-zinc-300">
+                        <div class="rounded border border-gray-200 p-4 dark:border-zinc-800"><h3 class="font-bold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="seoCard1">Common sizes</h3><p data-i18n="seoCard1Body">One inch, two inch, passport, visa, resume, and custom pixel sizes.</p></div>
+                        <div class="rounded border border-gray-200 p-4 dark:border-zinc-800"><h3 class="font-bold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="seoCard2">Background colors</h3><p data-i18n="seoCard2Body">White, blue, red, gray, light blue, dark blue, pink, black, and custom HEX colors.</p></div>
+                        <div class="rounded border border-gray-200 p-4 dark:border-zinc-800"><h3 class="font-bold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="seoCard3">Print sheets</h3><p data-i18n="seoCard3Body">Generate 5-inch, 6-inch, 7-inch, or A4 printable layouts.</p></div>
                     </div>
                 </div>
             </section>
         </div>
 
         <!-- 可见 FAQ：与 head 中的 FAQPage JSON-LD 保持一致；改一处必须同步另一处 + id-photo.js i18n。 -->
-        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6 dark:bg-zinc-900 dark:border-zinc-800">
             <h2 class="text-xl font-bold mb-6" data-i18n="faqTitle">Frequently Asked Questions</h2>
             <div class="space-y-4">
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">What ID photo sizes does MiaoCut support?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq1A">China 1-inch (295×413), 2-inch (413×579), small/large 1-inch and 2-inch variants, China passport (390×567), US passport (600×600), Schengen visa (600×600), resume photo (480×640), social profile (512×512), plus any custom pixel size.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq1Q">What ID photo sizes does MiaoCut support?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq1A">China 1-inch (295×413), 2-inch (413×579), small/large 1-inch and 2-inch variants, China passport (390×567), US passport (600×600), Schengen visa (600×600), resume photo (480×640), social profile (512×512), plus any custom pixel size.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq2Q">What background colors are supported?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq2A">White, blue, red, gray, light blue, dark blue, pink, black, and any custom HEX color.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq2Q">What background colors are supported?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq2A">White, blue, red, gray, light blue, dark blue, pink, black, and any custom HEX color.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq3Q">Can I print multiple ID photos on one sheet?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq3A">Yes. Choose 5-inch, 6-inch, 7-inch, or A4 paper to generate a printable layout sheet with multiple copies arranged for cutting.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq3Q">Can I print multiple ID photos on one sheet?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq3A">Yes. Choose 5-inch, 6-inch, 7-inch, or A4 paper to generate a printable layout sheet with multiple copies arranged for cutting.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq4Q">Will my photo meet official document requirements?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq4A">MiaoCut produces correctly sized photos with neutral backgrounds, but always check your specific document or visa office’s latest requirements (head size, expression, glasses rules, file format) before submitting.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq4Q">Will my photo meet official document requirements?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq4A">MiaoCut produces correctly sized photos with neutral backgrounds, but always check your specific document or visa office’s latest requirements (head size, expression, glasses rules, file format) before submitting.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq5Q">Does MiaoCut detect my face automatically?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq5A">Yes. MediaPipe Face Mesh detects your eye line and head position, then the photo is auto-cropped and aligned to fit the chosen size preset. You can fine-tune subject size and top margin with the sliders.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq5Q">Does MiaoCut detect my face automatically?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq5A">Yes. MediaPipe Face Mesh detects your eye line and head position, then the photo is auto-cropped and aligned to fit the chosen size preset. You can fine-tune subject size and top margin with the sliders.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq6Q">Is my photo private?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq6A">Photos are processed in-memory on the server and discarded immediately after the result is returned. We don’t store your image, don’t use it for AI training, and there is no signup required.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq6Q">Is my photo private?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq6A">Photos are processed in-memory on the server and discarded immediately after the result is returned. We don’t store your image, don’t use it for AI training, and there is no signup required.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq7Q">Can I set a max file size in KB for online forms?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq7A">Yes. The "Target KB" input lets you cap the output file size — useful for visa or job application forms with strict file size limits.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq7Q">Can I set a max file size in KB for online forms?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq7A">Yes. The "Target KB" input lets you cap the output file size — useful for visa or job application forms with strict file size limits.</p>
                 </div>
             </div>
         </section>
 
         <!-- How-to section：对应 head 中的 HowTo JSON-LD -->
-        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6 dark:bg-zinc-900 dark:border-zinc-800">
             <h2 class="text-xl font-bold mb-6" data-i18n="howToTitle">How to Make a Passport or ID Photo</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700">
-                <div class="rounded-lg border border-gray-200 p-5">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700 dark:text-zinc-200">
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
                     <div class="text-2xl mb-2">📤</div>
-                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep1Title">1. Upload your portrait</h3>
-                    <p class="leading-relaxed text-gray-600" data-i18n="howStep1Body">Upload a front-facing portrait in JPG, PNG, or WebP. Even, neutral lighting works best.</p>
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="howStep1Title">1. Upload your portrait</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="howStep1Body">Upload a front-facing portrait in JPG, PNG, or WebP. Even, neutral lighting works best.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
                     <div class="text-2xl mb-2">⚙️</div>
-                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep2Title">2. Pick size and background</h3>
-                    <p class="leading-relaxed text-gray-600" data-i18n="howStep2Body">Choose a country preset (or enter custom dimensions), pick a background color, and adjust subject size or top margin if needed.</p>
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="howStep2Title">2. Pick size and background</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="howStep2Body">Choose a country preset (or enter custom dimensions), pick a background color, and adjust subject size or top margin if needed.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
                     <div class="text-2xl mb-2">🖼️</div>
-                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep3Title">3. Generate, fit KB, download</h3>
-                    <p class="leading-relaxed text-gray-600" data-i18n="howStep3Body">MiaoCut auto-detects your face and produces a standard photo, an HD transparent version, and a printable layout. Set Target KB if your form requires a specific file size.</p>
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="howStep3Title">3. Generate, fit KB, download</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="howStep3Body">MiaoCut auto-detects your face and produces a standard photo, an HD transparent version, and a printable layout. Set Target KB if your form requires a specific file size.</p>
                 </div>
             </div>
         </section>
@@ -371,48 +393,48 @@
              这里列出常见证件规格，未来可拆成独立 landing pages（programmatic SEO）：
              /id-photo-maker/us-passport/、/id-photo-maker/schengen-visa/ 等。
              ⚠️ 各国官方规格随政策更新，文案里务必保留"以官方为准"声明。 -->
-        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6 dark:bg-zinc-900 dark:border-zinc-800">
             <h2 class="text-xl font-bold mb-2" data-i18n="countryTitle">ID Photo Specs by Country & Document</h2>
-            <p class="text-sm text-gray-600 mb-6 max-w-3xl" data-i18n="countrySubtitle">Common document sizes and background rules. Always check your specific consulate, embassy, or office's latest requirements before submitting — rules change.</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-gray-700">
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="cnOneInchTitle">China 1-inch (一寸)</h3>
-                    <p class="leading-relaxed text-gray-600" data-i18n="cnOneInchBody">295 × 413 px · White / blue / red background · For ID cards, school documents, simple application forms.</p>
+            <p class="text-sm text-gray-600 mb-6 max-w-3xl dark:text-zinc-300" data-i18n="countrySubtitle">Common document sizes and background rules. Always check your specific consulate, embassy, or office's latest requirements before submitting — rules change.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-gray-700 dark:text-zinc-200">
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="cnOneInchTitle">China 1-inch (一寸)</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="cnOneInchBody">295 × 413 px · White / blue / red background · For ID cards, school documents, simple application forms.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="cnTwoInchTitle">China 2-inch (二寸)</h3>
-                    <p class="leading-relaxed text-gray-600" data-i18n="cnTwoInchBody">413 × 579 px · White / blue / red background · For resumes, diplomas, employment forms, medical reports.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="cnTwoInchTitle">China 2-inch (二寸)</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="cnTwoInchBody">413 × 579 px · White / blue / red background · For resumes, diplomas, employment forms, medical reports.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="cnPassportTitle">China Passport (中国护照)</h3>
-                    <p class="leading-relaxed text-gray-600" data-i18n="cnPassportBody">390 × 567 px · White background, neutral expression, no glasses recommended · For passport, visa applications submitted in China.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="cnPassportTitle">China Passport (中国护照)</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="cnPassportBody">390 × 567 px · White background, neutral expression, no glasses recommended · For passport, visa applications submitted in China.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="usPassportTitle">US Passport</h3>
-                    <p class="leading-relaxed text-gray-600" data-i18n="usPassportBody">600 × 600 px (2 × 2 inch) · Plain white or off-white background · No glasses (since 2016), neutral expression, full face visible.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="usPassportTitle">US Passport</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="usPassportBody">600 × 600 px (2 × 2 inch) · Plain white or off-white background · No glasses (since 2016), neutral expression, full face visible.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="schengenVisaTitle">Schengen Visa (EU)</h3>
-                    <p class="leading-relaxed text-gray-600" data-i18n="schengenVisaBody">413 × 531 px (35 × 45 mm) · Light gray or off-white background · 70-80% face coverage, neutral expression.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="schengenVisaTitle">Schengen Visa (EU)</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="schengenVisaBody">413 × 531 px (35 × 45 mm) · Light gray or off-white background · 70-80% face coverage, neutral expression.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="japanVisaTitle">Japan Visa</h3>
-                    <p class="leading-relaxed text-gray-600" data-i18n="japanVisaBody">600 × 600 px (45 × 45 mm) · White or off-white background · Front-facing, no head covering, taken within 6 months.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="japanVisaTitle">Japan Visa</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="japanVisaBody">600 × 600 px (45 × 45 mm) · White or off-white background · Front-facing, no head covering, taken within 6 months.</p>
                 </div>
             </div>
         </section>
 
         <!-- Cross-link section（H6） -->
         <section class="mt-12">
-            <h2 class="text-xl font-bold mb-6 text-gray-900" data-i18n="moreTitle">More MiaoCut Tools</h2>
+            <h2 class="text-xl font-bold mb-6 text-gray-900 dark:text-zinc-50" data-i18n="moreTitle">More MiaoCut Tools</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <a href="/portrait-background-remover/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all">
-                    <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkPortraitTitle">Portrait Background Remover →</h3>
-                    <p class="text-sm text-gray-600" data-i18n="moreLinkPortraitDesc">Make clean LinkedIn or social profile pictures.</p>
+                <a href="/portrait-background-remover/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                    <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="moreLinkPortraitTitle">Portrait Background Remover →</h3>
+                    <p class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="moreLinkPortraitDesc">Make clean LinkedIn or social profile pictures.</p>
                 </a>
-                <a href="/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all">
-                    <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkBgTitle">AI Background Remover →</h3>
-                    <p class="text-sm text-gray-600" data-i18n="moreLinkBgDesc">One-click transparent PNG cutout for any photo.</p>
+                <a href="/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                    <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="moreLinkBgTitle">AI Background Remover →</h3>
+                    <p class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="moreLinkBgDesc">One-click transparent PNG cutout for any photo.</p>
                 </a>
             </div>
         </section>
@@ -455,7 +477,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
+            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500 dark:text-zinc-400">
                 <p class="mb-2" data-i18n="footerTagline">MiaoCut · Free AI image tools that respect your privacy.</p>
                 <p><a href="/privacy/" class="hover:text-white transition-colors" data-i18n="footerPrivacy">Privacy</a> · <a href="/terms/" class="hover:text-white transition-colors" data-i18n="footerTerms">Terms</a></p>
             </div>

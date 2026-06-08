@@ -4,6 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 品牌字体 Geist：预加载首屏 sans 可变字体（crossorigin 是 font preload 的硬性要求）-->
+    <link rel="preload" href="/fonts/geist/geist-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- 主题（明/暗）：在首屏渲染前同步设好 <html class="dark">，避免闪一下白；并在 DOM ready 后接管切换按钮 -->
+    <script>/* redesign-dark-applied */(function () {
+        try {
+            var s = localStorage.getItem('theme');
+            var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', d);
+        } catch (e) {}
+        document.addEventListener('DOMContentLoaded', function () {
+            var b = document.getElementById('theme-toggle');
+            if (b) b.addEventListener('click', function () {
+                var dark = document.documentElement.classList.toggle('dark');
+                try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+            });
+        });
+    })();</script>
     <link rel="preconnect" href="https://api2.miaocut.app">
     <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
     <title>AI Object Eraser & Watermark Remover - Clean Photos Online | MiaoCut</title>
@@ -147,42 +164,47 @@
     <link rel="alternate" hreflang="x-default" href="https://miaocut.app/watermark-remover/">
 </head>
 
-<body class="bg-gray-50 min-h-screen font-sans text-gray-900 selection:bg-gray-200">
+<body class="bg-gray-50 min-h-screen font-sans text-gray-900 selection:bg-brand-100 selection:text-brand-900 dark:bg-zinc-950 dark:text-zinc-200">
     <!-- Sticky header：与首页统一为同一种实现（M5） -->
-    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur">
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
         <div class="mx-auto max-w-6xl px-5 py-4 flex items-center justify-between gap-4">
-            <a href="/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
+            <a href="/" class="text-2xl font-black tracking-tight text-gray-900 dark:text-zinc-50">MiaoCut</a>
             <div class="flex items-center gap-4">
-                <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600">
-                    <a href="/" class="hover:text-gray-900 transition-colors" data-i18n="navBg">Background Remover</a>
-                    <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navProduct">Product</a>
-                    <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navPortrait">Portrait</a>
-                    <a href="/watermark-remover/" class="text-gray-900" data-i18n="navWatermark">Watermark</a>
-                    <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors" data-i18n="navId">ID Photo</a>
-                    <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors" data-i18n="navRestore">Old Photo</a>
+                <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600 dark:text-zinc-300">
+                    <a href="/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navBg">Background Remover</a>
+                    <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navProduct">Product</a>
+                    <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navPortrait">Portrait</a>
+                    <a href="/watermark-remover/" class="text-gray-900 dark:text-zinc-50" data-i18n="navWatermark">Watermark</a>
+                    <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navId">ID Photo</a>
+                    <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navRestore">Old Photo</a>
                 </nav>
+                <button id="theme-toggle" type="button" aria-label="Toggle dark mode"
+                    class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors">
+                    <svg class="h-5 w-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
+                    <svg class="h-5 w-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
+                </button>
                 <select id="lang-switch" aria-label="Language"
-                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
+                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors dark:text-zinc-300 dark:hover:text-zinc-100">
                     <option value="en">English</option>
                     <option value="zh">简体中文</option>
                 </select>
             </div>
         </div>
     </header>
-    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600">
+    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
         <a href="/" class="shrink-0" data-i18n="navBg">Background Remover</a>
         <a href="/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">Product</a>
         <a href="/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">Portrait</a>
-        <a href="/watermark-remover/" class="shrink-0 text-gray-900" data-i18n="navWatermark">Watermark</a>
+        <a href="/watermark-remover/" class="shrink-0 text-gray-900 dark:text-zinc-50" data-i18n="navWatermark">Watermark</a>
         <a href="/id-photo-maker/" class="shrink-0" data-i18n="navId">ID Photo</a>
         <a href="/old-photo-restoration/" class="shrink-0" data-i18n="navRestore">Old Photo</a>
     </nav>
 
     <main class="mx-auto max-w-6xl px-5 py-8">
         <section class="mb-7 flex flex-col gap-2">
-            <p class="text-sm font-semibold text-gray-500" data-i18n="eyebrow">Object eraser · Blemish remover · Date stamps · Distracting objects</p>
-            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" data-i18n="heroTitle">AI Object Eraser & Watermark Remover</h1>
-            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed" data-i18n="heroSub">Upload one of your own photos, paint over the unwanted object or watermark, and let AI fill in the area cleanly.</p>
+            <p class="text-sm font-semibold text-gray-500 dark:text-zinc-400" data-i18n="eyebrow">Object eraser · Blemish remover · Date stamps · Distracting objects</p>
+            <h1 class="text-3xl md:text-4xl font-bold tracking-tight" data-i18n="heroTitle">AI Object Eraser & Watermark Remover</h1>
+            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed dark:text-zinc-400" data-i18n="heroSub">Upload one of your own photos, paint over the unwanted object or watermark, and let AI fill in the area cleanly.</p>
         </section>
 
         <!-- 合规 callout：紧贴 hero 显示，明确"自有素材专用"立场。
@@ -199,30 +221,30 @@
         </aside>
 
         <section class="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-6 items-start">
-            <aside class="bg-white border border-gray-200 rounded-lg p-5">
+            <aside class="bg-white border border-gray-200 rounded-lg p-5 dark:bg-zinc-900 dark:border-zinc-800">
                 <label id="upload-card"
-                    class="flex min-h-[190px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center hover:border-gray-400 hover:bg-white transition-colors"
+                    class="flex min-h-[190px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center hover:border-gray-400 hover:bg-white transition-colors dark:border-zinc-700 dark:bg-zinc-900 dark:hover:border-zinc-600"
                     for="imageInput">
-                    <svg id="upload-icon" class="mb-3 h-10 w-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg id="upload-icon" class="mb-3 h-10 w-10 text-gray-400 dark:text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                     </svg>
-                    <span id="file-name" class="text-sm font-medium text-gray-700" data-i18n="uploadText">Click to upload JPG, PNG, or WebP</span>
-                    <span id="upload-hint" class="mt-1 text-xs text-gray-400" data-i18n="uploadHint">High-resolution images with small marks work best</span>
+                    <span id="file-name" class="text-sm font-medium text-gray-700 dark:text-zinc-200" data-i18n="uploadText">Click to upload JPG, PNG, or WebP</span>
+                    <span id="upload-hint" class="mt-1 text-xs text-gray-400 dark:text-zinc-500" data-i18n="uploadHint">High-resolution images with small marks work best</span>
                     <input id="imageInput" type="file" class="hidden" accept="image/jpeg,image/png,image/webp">
                 </label>
 
                 <div class="mt-5 space-y-4">
                     <div>
                         <div class="mb-1 flex items-center justify-between text-sm">
-                            <label class="font-semibold text-gray-700" for="brushSize" data-i18n="brushLabel">Brush size</label>
-                            <span class="text-xs font-medium text-gray-500"><span id="brushValue">32</span>px</span>
+                            <label class="font-semibold text-gray-700 dark:text-zinc-200" for="brushSize" data-i18n="brushLabel">Brush size</label>
+                            <span class="text-xs font-medium text-gray-500 dark:text-zinc-400"><span id="brushValue">32</span>px</span>
                         </div>
                         <input id="brushSize" type="range" min="4" max="120" value="32" class="w-full accent-gray-900">
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
                         <button id="clearButton" type="button"
-                            class="h-11 rounded-lg border border-gray-200 px-4 text-sm font-semibold text-gray-700 hover:border-gray-400 hover:text-gray-900 disabled:cursor-not-allowed disabled:text-gray-300 transition-colors"
+                            class="h-11 rounded-lg border border-gray-200 px-4 text-sm font-semibold text-gray-700 hover:border-gray-400 hover:text-gray-900 disabled:cursor-not-allowed disabled:text-gray-300 transition-colors dark:border-zinc-800 dark:text-zinc-200 dark:hover:border-zinc-600 dark:hover:text-zinc-100"
                             disabled data-i18n="clearBtn">Clear mask</button>
                         <button id="processButton" type="button"
                             class="h-11 rounded-lg bg-gray-900 px-4 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-300 transition-colors"
@@ -230,27 +252,27 @@
                     </div>
 
                     <button id="downloadButton" type="button"
-                        class="hidden h-11 w-full rounded-lg border border-gray-200 px-4 text-sm font-semibold text-gray-700 hover:border-gray-400 hover:text-gray-900 transition-colors"
+                        class="hidden h-11 w-full rounded-lg border border-gray-200 px-4 text-sm font-semibold text-gray-700 hover:border-gray-400 hover:text-gray-900 transition-colors dark:border-zinc-800 dark:text-zinc-200 dark:hover:border-zinc-600 dark:hover:text-zinc-100"
                         data-i18n="downloadBtn">Download result</button>
 
-                    <p id="loading" class="hidden rounded-lg bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700" data-i18n="loading">AI is repairing the image...</p>
+                    <p id="loading" class="hidden rounded-lg bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700 dark:bg-zinc-800 dark:text-zinc-200" data-i18n="loading">AI is repairing the image...</p>
                     <p id="status" class="min-h-[20px] text-sm text-red-600"></p>
                 </div>
 
-                <div class="mt-6 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
-                    <h2 class="font-bold text-gray-900" data-i18n="tipsTitle">Best results</h2>
+                <div class="mt-6 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
+                    <h2 class="font-bold text-gray-900 dark:text-zinc-50" data-i18n="tipsTitle">Best results</h2>
                     <p class="mt-2 leading-relaxed" data-i18n="tipsBody">Paint slightly beyond the edge of what you want to erase. Use a smaller brush near detailed areas.</p>
                 </div>
             </aside>
 
             <section class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                <div class="bg-white border border-gray-200 rounded-lg p-5">
+                <div class="bg-white border border-gray-200 rounded-lg p-5 dark:bg-zinc-900 dark:border-zinc-800">
                     <div class="mb-4">
                         <h2 class="text-lg font-bold" data-i18n="sourceTitle">Paint mask</h2>
-                        <p class="text-sm text-gray-500" data-i18n="sourceSub">Cover only the object, blemish, or watermark you want to remove.</p>
+                        <p class="text-sm text-gray-500 dark:text-zinc-400" data-i18n="sourceSub">Cover only the object, blemish, or watermark you want to remove.</p>
                     </div>
-                    <div class="flex min-h-[460px] items-center justify-center overflow-hidden rounded-lg border border-dashed border-gray-300 bg-gray-50">
-                        <div id="emptyState" class="px-8 text-center text-sm text-gray-400" data-i18n="emptySource">Upload an image to start painting</div>
+                    <div class="flex min-h-[460px] items-center justify-center overflow-hidden rounded-lg border border-dashed border-gray-300 bg-gray-50 dark:border-zinc-700 dark:bg-zinc-900">
+                        <div id="emptyState" class="px-8 text-center text-sm text-gray-400 dark:text-zinc-500" data-i18n="emptySource">Upload an image to start painting</div>
                         <div id="imageWrap" class="relative max-w-full leading-none" hidden>
                             <img id="sourceImage" alt="Source image for watermark removal" class="block max-h-[560px] max-w-full select-none">
                             <canvas id="drawCanvas" class="absolute inset-0 cursor-crosshair touch-none"></canvas>
@@ -258,32 +280,32 @@
                     </div>
                 </div>
 
-                <div class="bg-white border border-gray-200 rounded-lg p-5">
+                <div class="bg-white border border-gray-200 rounded-lg p-5 dark:bg-zinc-900 dark:border-zinc-800">
                     <div class="mb-4">
                         <h2 class="text-lg font-bold" data-i18n="resultTitle">Result</h2>
-                        <p class="text-sm text-gray-500" data-i18n="resultSub">The repaired image will appear here.</p>
+                        <p class="text-sm text-gray-500 dark:text-zinc-400" data-i18n="resultSub">The repaired image will appear here.</p>
                     </div>
-                    <div id="resultBox" class="flex min-h-[460px] items-center justify-center overflow-hidden rounded-lg border border-gray-200 bg-gray-50">
-                        <div class="px-8 text-center text-sm text-gray-400" data-i18n="emptyResult">No result yet</div>
+                    <div id="resultBox" class="flex min-h-[460px] items-center justify-center overflow-hidden rounded-lg border border-gray-200 bg-gray-50 dark:border-zinc-800 dark:bg-zinc-900">
+                        <div class="px-8 text-center text-sm text-gray-400 dark:text-zinc-500" data-i18n="emptyResult">No result yet</div>
                     </div>
                 </div>
             </section>
         </section>
 
-        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6 dark:bg-zinc-900 dark:border-zinc-800">
             <h2 class="text-xl font-bold" data-i18n="seoTitle">Erase objects, watermarks, and blemishes from your own photos</h2>
-            <p class="mt-3 max-w-3xl text-sm leading-relaxed text-gray-600" data-i18n="seoBody">MiaoCut's AI object eraser lets you mark the exact area to repair. It is useful for date stamps, screenshot artifacts, distracting objects, your own logos, and watermarks on photos you own or have explicit permission to edit.</p>
-            <div class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
-                <div class="rounded-lg border border-gray-200 p-4">
-                    <h3 class="font-bold text-gray-900" data-i18n="seoCard1">Manual precision</h3>
+            <p class="mt-3 max-w-3xl text-sm leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="seoBody">MiaoCut's AI object eraser lets you mark the exact area to repair. It is useful for date stamps, screenshot artifacts, distracting objects, your own logos, and watermarks on photos you own or have explicit permission to edit.</p>
+            <div class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 dark:text-zinc-300">
+                <div class="rounded-lg border border-gray-200 p-4 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 dark:text-zinc-50" data-i18n="seoCard1">Manual precision</h3>
                     <p class="mt-1" data-i18n="seoCard1Body">Paint exactly where the unwanted content appears instead of guessing with unreliable auto detection.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-4">
-                    <h3 class="font-bold text-gray-900" data-i18n="seoCard2">LaMa inpainting</h3>
+                <div class="rounded-lg border border-gray-200 p-4 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 dark:text-zinc-50" data-i18n="seoCard2">LaMa inpainting</h3>
                     <p class="mt-1" data-i18n="seoCard2Body">The painted area is repaired using LaMa — an open-source large-mask AI inpainting model.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-4">
-                    <h3 class="font-bold text-gray-900" data-i18n="seoCard3">Private workflow</h3>
+                <div class="rounded-lg border border-gray-200 p-4 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 dark:text-zinc-50" data-i18n="seoCard3">Private workflow</h3>
                     <p class="mt-1" data-i18n="seoCard3Body">Images are processed in-memory and discarded immediately. Never used for AI training.</p>
                 </div>
             </div>
@@ -291,68 +313,68 @@
 
         <!-- How-to section：对应 head 中的 HowTo JSON-LD；改这 3 步必须同步 schema 和 watermark.js i18n。
              用户的 SEO 长尾意图 ("how to remove date stamp from photo" / "如何擦除画面里的物体") 主要靠这里命中。 -->
-        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6 dark:bg-zinc-900 dark:border-zinc-800">
             <h2 class="text-xl font-bold mb-6" data-i18n="howToTitle">How to Erase Objects, Watermarks, and Blemishes</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700">
-                <div class="rounded-lg border border-gray-200 p-5">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700 dark:text-zinc-200">
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
                     <div class="text-2xl mb-2">📤</div>
-                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep1Title">1. Upload your image</h3>
-                    <p class="leading-relaxed text-gray-600" data-i18n="howStep1Body">Upload a JPG, PNG, or WebP from your own collection. No signup or credit card required.</p>
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="howStep1Title">1. Upload your image</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="howStep1Body">Upload a JPG, PNG, or WebP from your own collection. No signup or credit card required.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
                     <div class="text-2xl mb-2">🖌️</div>
-                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep2Title">2. Paint over the area</h3>
-                    <p class="leading-relaxed text-gray-600" data-i18n="howStep2Body">Use the brush to cover the object, blemish, or your own watermark. Paint slightly beyond the edges for cleaner results.</p>
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="howStep2Title">2. Paint over the area</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="howStep2Body">Use the brush to cover the object, blemish, or your own watermark. Paint slightly beyond the edges for cleaner results.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
                     <div class="text-2xl mb-2">✨</div>
-                    <h3 class="font-bold text-gray-900 mb-2" data-i18n="howStep3Title">3. Download the cleaned image</h3>
-                    <p class="leading-relaxed text-gray-600" data-i18n="howStep3Body">AI uses LaMa inpainting to fill the painted area based on the surrounding context. Preview the result and download.</p>
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="howStep3Title">3. Download the cleaned image</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="howStep3Body">AI uses LaMa inpainting to fill the painted area based on the surrounding context. Preview the result and download.</p>
                 </div>
             </div>
         </section>
 
         <!-- 可见 FAQ：与 head 中的 FAQPage JSON-LD 保持一致；改一处必须同步另一处 + watermark.js i18n。 -->
-        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6 dark:bg-zinc-900 dark:border-zinc-800">
             <h2 class="text-xl font-bold mb-6" data-i18n="faqTitle">Frequently Asked Questions</h2>
             <div class="space-y-4">
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">What kinds of content can I erase with this tool?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq1A">MiaoCut works on small unwanted content in your photos: distracting objects, date stamps from your phone camera, screenshot artifacts, burned-in subtitles, your own logos on product shots, and watermarks on photos you own or have explicit permission to edit.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq1Q">What kinds of content can I erase with this tool?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq1A">MiaoCut works on small unwanted content in your photos: distracting objects, date stamps from your phone camera, screenshot artifacts, burned-in subtitles, your own logos on product shots, and watermarks on photos you own or have explicit permission to edit.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq2Q">Can I remove watermarks from photos I don’t own?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq2A">No. MiaoCut is for editing photos you own or have explicit permission to edit. Do not use it to remove copyright watermarks from stock photos, social media content, AI-generated imagery, or any image you do not have the rights to — that may violate copyright law (for example, DMCA §1202 in the US) and equivalent statutes in other jurisdictions.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq2Q">Can I remove watermarks from photos I don’t own?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq2A">No. MiaoCut is for editing photos you own or have explicit permission to edit. Do not use it to remove copyright watermarks from stock photos, social media content, AI-generated imagery, or any image you do not have the rights to — that may violate copyright law (for example, DMCA §1202 in the US) and equivalent statutes in other jurisdictions.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq3Q">How does the AI repair the painted area?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq3A">MiaoCut uses LaMa (Large Mask Inpainting), an open-source AI model. It analyzes the surrounding pixels and fills in the painted area to match the rest of the image.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq3Q">How does the AI repair the painted area?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq3A">MiaoCut uses LaMa (Large Mask Inpainting), an open-source AI model. It analyzes the surrounding pixels and fills in the painted area to match the rest of the image.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq4Q">What kinds of images work best?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq4A">High-resolution photos where the mark covers a small portion of the image, and the surrounding background has enough visual context (sky, plain wall, even texture). Marks across complex content like faces or detailed patterns are harder to repair cleanly.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq4Q">What kinds of images work best?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq4A">High-resolution photos where the mark covers a small portion of the image, and the surrounding background has enough visual context (sky, plain wall, even texture). Marks across complex content like faces or detailed patterns are harder to repair cleanly.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq5Q">Are my images uploaded or stored anywhere?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq5A">Images are processed in-memory on the server and discarded immediately after the result is returned. We never store your image, never use it for AI training, and there is no signup required.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq5Q">Are my images uploaded or stored anywhere?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq5A">Images are processed in-memory on the server and discarded immediately after the result is returned. We never store your image, never use it for AI training, and there is no signup required.</p>
                 </div>
-                <div class="rounded-lg border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq6Q">Why does my result look blurry or unclean?</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq6A">Try painting slightly beyond the edge with a smaller brush. For very large marks or marks across detailed content, results may be limited — this tool works best on small, well-bounded areas with simple surroundings.</p>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq6Q">Why does my result look blurry or unclean?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq6A">Try painting slightly beyond the edge with a smaller brush. For very large marks or marks across detailed content, results may be limited — this tool works best on small, well-bounded areas with simple surroundings.</p>
                 </div>
             </div>
         </section>
         <!-- Cross-link section（H6）：把链接权重传给同主题工具，给用户下一步动作 -->
         <section class="mt-12">
-            <h2 class="text-xl font-bold mb-6 text-gray-900" data-i18n="moreTitle">More MiaoCut Tools</h2>
+            <h2 class="text-xl font-bold mb-6 text-gray-900 dark:text-zinc-50" data-i18n="moreTitle">More MiaoCut Tools</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <a href="/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all">
-                    <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkBgTitle">AI Background Remover →</h3>
-                    <p class="text-sm text-gray-600" data-i18n="moreLinkBgDesc">One-click transparent PNG cutout for any photo.</p>
+                <a href="/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                    <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="moreLinkBgTitle">AI Background Remover →</h3>
+                    <p class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="moreLinkBgDesc">One-click transparent PNG cutout for any photo.</p>
                 </a>
-                <a href="/old-photo-restoration/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all">
-                    <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkOldPhotoTitle">Old Photo Restoration →</h3>
-                    <p class="text-sm text-gray-600" data-i18n="moreLinkOldPhotoDesc">Restore faded family photos, reduce noise, sharpen details.</p>
+                <a href="/old-photo-restoration/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                    <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="moreLinkOldPhotoTitle">Old Photo Restoration →</h3>
+                    <p class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="moreLinkOldPhotoDesc">Restore faded family photos, reduce noise, sharpen details.</p>
                 </a>
             </div>
         </section>
@@ -360,9 +382,9 @@
 
     <!-- Footer 法律声明：DMCA 避风港姿态。提供"使用边界 + 用户责任 + 我们的处理"三段式声明，
          同时让 Google 看到我们对工具用途有边界声明。文案与 hero 合规 callout 一致，但更详细。 -->
-    <footer class="mt-12 border-t border-gray-200 bg-gray-50">
-        <div class="mx-auto max-w-6xl px-5 py-8 text-sm text-gray-600 leading-relaxed">
-            <h2 class="text-base font-semibold text-gray-900 mb-3" data-i18n="footerLegalTitle">Acceptable Use & Legal Notice</h2>
+    <footer class="mt-12 border-t border-gray-200 bg-gray-50 dark:border-zinc-800 dark:bg-zinc-900">
+        <div class="mx-auto max-w-6xl px-5 py-8 text-sm text-gray-600 leading-relaxed dark:text-zinc-300">
+            <h2 class="text-base font-semibold text-gray-900 mb-3 dark:text-zinc-50" data-i18n="footerLegalTitle">Acceptable Use & Legal Notice</h2>
             <p class="mb-3" data-i18n="footerLegalBody1">MiaoCut's object eraser is intended for cleaning up images that you own or have explicit permission to edit. Common acceptable uses include removing date stamps from your own phone photos, erasing your own logos for redesign, removing screenshot artifacts, and cleaning up your own product shots.</p>
             <p class="mb-3" data-i18n="footerLegalBody2">Do not use this tool to remove copyright watermarks from stock photos, social media content, AI-generated imagery, or any image you do not own or have rights to. Removing copyright notices may violate copyright law (for example, DMCA §1202 in the United States) and equivalent statutes in other jurisdictions.</p>
             <p data-i18n="footerLegalBody3">MiaoCut processes uploaded images in-memory and discards them immediately. We do not store or train on user uploads. By using this tool, you confirm that you have the right to edit the image you upload. We comply with DMCA takedown procedures — if you believe content has been processed in violation of your rights, please contact us.</p>
@@ -406,7 +428,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
+            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500 dark:text-zinc-400">
                 <p class="mb-2" data-i18n="footerTagline">MiaoCut · Free AI image tools that respect your privacy.</p>
                 <p><a href="/privacy/" class="hover:text-white transition-colors" data-i18n="footerPrivacy">Privacy</a> · <a href="/terms/" class="hover:text-white transition-colors" data-i18n="footerTerms">Terms</a></p>
             </div>

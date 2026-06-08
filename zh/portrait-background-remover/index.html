@@ -6,6 +6,23 @@
     <meta name="sogou_site_verification" content="lLMMvkZKud" />
     <meta name="baidu-site-verification" content="codeva-bJiTOFPj58" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 品牌字体 Geist：预加载首屏 sans 可变字体（crossorigin 是 font preload 的硬性要求）-->
+    <link rel="preload" href="/fonts/geist/geist-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- 主题（明/暗）：在首屏渲染前同步设好 <html class="dark">，避免闪一下白；并在 DOM ready 后接管切换按钮 -->
+    <script>/* redesign-dark-applied */(function () {
+        try {
+            var s = localStorage.getItem('theme');
+            var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', d);
+        } catch (e) {}
+        document.addEventListener('DOMContentLoaded', function () {
+            var b = document.getElementById('theme-toggle');
+            if (b) b.addEventListener('click', function () {
+                var dark = document.documentElement.classList.toggle('dark');
+                try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+            });
+        });
+    })();</script>
     <!-- Resource hints：见 index.html 同段注释 -->
     <link rel="preconnect" href="https://api2.miaocut.app">
     <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
@@ -143,84 +160,89 @@
     <link rel="alternate" hreflang="x-default" href="https://miaocut.app/portrait-background-remover/">
 </head>
 
-<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-gray-200">
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-brand-100 selection:text-brand-900 dark:bg-zinc-950 dark:text-zinc-200">
 
     <!-- Sticky header：与首页统一为同一种实现（M5） -->
-    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur">
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
-            <a href="/zh/" class="text-2xl font-black tracking-tight text-gray-900">MiaoCut</a>
+            <a href="/zh/" class="text-2xl font-black tracking-tight text-gray-900 dark:text-zinc-50">MiaoCut</a>
             <div class="flex items-center gap-4">
-                <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600">
-                    <a href="/zh/" class="hover:text-gray-900 transition-colors" data-i18n="navBg">AI 抠图</a>
-                    <a href="/zh/product-photo-background-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navProduct">商品图</a>
-                    <a href="/zh/portrait-background-remover/" class="text-gray-900" data-i18n="navPortrait">人像</a>
-                    <a href="/zh/watermark-remover/" class="hover:text-gray-900 transition-colors" data-i18n="navWatermark">去水印</a>
-                    <a href="/zh/id-photo-maker/" class="hover:text-gray-900 transition-colors" data-i18n="navId">证件照</a>
-                    <a href="/zh/old-photo-restoration/" class="hover:text-gray-900 transition-colors" data-i18n="navRestore">老照片修复</a>
+                <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600 dark:text-zinc-300">
+                    <a href="/zh/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navBg">AI 抠图</a>
+                    <a href="/zh/product-photo-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navProduct">商品图</a>
+                    <a href="/zh/portrait-background-remover/" class="text-gray-900 dark:text-zinc-50" data-i18n="navPortrait">人像</a>
+                    <a href="/zh/watermark-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navWatermark">去水印</a>
+                    <a href="/zh/id-photo-maker/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navId">证件照</a>
+                    <a href="/zh/old-photo-restoration/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navRestore">老照片修复</a>
                 </nav>
+                <button id="theme-toggle" type="button" aria-label="Toggle dark mode"
+                    class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors">
+                    <svg class="h-5 w-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
+                    <svg class="h-5 w-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
+                </button>
                 <select id="lang-switch" aria-label="Language"
-                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors">
+                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors dark:text-zinc-300 dark:hover:text-zinc-100">
                     <option value="en">English</option>
                     <option value="zh">简体中文</option>
                 </select>
             </div>
         </div>
     </header>
-    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600">
+    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
         <a href="/zh/" class="shrink-0" data-i18n="navBg">AI 抠图</a>
         <a href="/zh/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">商品图</a>
-        <a href="/zh/portrait-background-remover/" class="shrink-0 text-gray-900" data-i18n="navPortrait">人像</a>
+        <a href="/zh/portrait-background-remover/" class="shrink-0 text-gray-900 dark:text-zinc-50" data-i18n="navPortrait">人像</a>
         <a href="/zh/watermark-remover/" class="shrink-0" data-i18n="navWatermark">去水印</a>
         <a href="/zh/id-photo-maker/" class="shrink-0" data-i18n="navId">证件照</a>
         <a href="/zh/old-photo-restoration/" class="shrink-0" data-i18n="navRestore">老照片修复</a>
     </nav>
 
-    <nav class="w-full max-w-3xl mx-auto px-4 mb-4 text-sm text-gray-500" aria-label="Breadcrumb">
+    <nav class="w-full max-w-3xl mx-auto px-4 mb-4 text-sm text-gray-500 dark:text-zinc-400" aria-label="Breadcrumb">
         <ol class="flex items-center gap-2">
-            <li><a href="/zh/" class="hover:text-gray-900" data-i18n="breadcrumbHome">MiaoCut</a></li>
+            <li><a href="/zh/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-i18n="breadcrumbHome">MiaoCut</a></li>
             <li class="text-gray-300">/</li>
-            <li class="text-gray-700" data-i18n="breadcrumbCurrent">人像背景去除</li>
+            <li class="text-gray-700 dark:text-zinc-200" data-i18n="breadcrumbCurrent">人像背景去除</li>
         </ol>
     </nav>
 
     <main class="flex-grow flex flex-col items-center justify-center px-4">
 
         <div class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4" data-i18n="title">人像抠图与头像背景工具</h1>
-            <p class="text-lg text-gray-500 max-w-2xl mx-auto" data-i18n="subtitle">去除人像背景，选择职业头像背景，并导出方形头像、圆形社交头像或简历照片。</p>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight mb-4 dark:text-zinc-50" data-i18n="title">人像抠图与头像背景工具</h1>
+            <p class="text-lg text-gray-500 max-w-2xl mx-auto dark:text-zinc-400" data-i18n="subtitle">去除人像背景，选择职业头像背景，并导出方形头像、圆形社交头像或简历照片。</p>
         </div>
 
         <div class="w-full max-w-3xl">
 
             <div id="profile-toggle" class="mb-4 flex items-center justify-center gap-2 text-sm flex-wrap">
-                <span class="text-gray-500" data-i18n="profileLabel">质量：</span>
+                <span class="text-gray-500 dark:text-zinc-400" data-i18n="profileLabel">质量：</span>
                 <button type="button" data-profile="sharp"
-                    class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors">
+                    class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors dark:border-zinc-700 dark:text-zinc-200 dark:hover:border-zinc-600">
                     <span data-i18n="profileSharp">快速</span>
                 </button>
                 <button type="button" data-profile="fur"
-                    class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors">
+                    class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors dark:border-zinc-700 dark:text-zinc-200 dark:hover:border-zinc-600">
                     <span data-i18n="profileFur">细腻（毛发/发丝）</span>
                 </button>
-                <span id="profile-hint" class="text-xs text-gray-400 ml-1" data-i18n="profileHintSharp">约 1 秒 · 适合日常照片</span>
+                <span id="profile-hint" class="text-xs text-gray-400 ml-1 dark:text-zinc-500" data-i18n="profileHintSharp">约 1 秒 · 适合日常照片</span>
             </div>
 
             <div id="dropzone"
-                class="relative group cursor-pointer bg-white border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center min-h-[320px] hover:border-gray-400 hover:bg-gray-50 overflow-hidden">
+                class="relative group cursor-pointer bg-white border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center min-h-[320px] hover:border-gray-400 hover:bg-gray-50 overflow-hidden dark:bg-zinc-900 dark:border-zinc-700 dark:hover:border-zinc-600 dark:hover:bg-zinc-800">
                 <input type="file" id="fileInput" class="hidden" accept="image/jpeg, image/png, image/webp">
                 <div id="dropzone-content"
                     class="flex flex-col items-center justify-center text-center p-8 pointer-events-none">
-                    <svg class="w-12 h-12 text-gray-400 mb-4 group-hover:text-gray-500 transition-colors" fill="none"
+                    <svg class="w-12 h-12 text-gray-400 mb-4 group-hover:text-gray-500 transition-colors dark:text-zinc-500" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                     </svg>
-                    <p class="text-lg font-medium text-gray-700 mb-1" data-i18n="dropzoneTitle">将图片拖拽至此，或点击上传</p>
-                    <p class="text-sm text-gray-400" data-i18n="dropzoneSub">（支持 JPG / PNG / WebP）</p>
+                    <p class="text-lg font-medium text-gray-700 mb-1 dark:text-zinc-200" data-i18n="dropzoneTitle">将图片拖拽至此，或点击上传</p>
+                    <p class="text-sm text-gray-400 dark:text-zinc-500" data-i18n="dropzoneSub">（支持 JPG / PNG / WebP）</p>
                 </div>
             </div>
 
-            <div class="mt-6 flex flex-col items-center justify-center text-center text-gray-500 text-sm">
+            <div class="mt-6 flex flex-col items-center justify-center text-center text-gray-500 text-sm dark:text-zinc-400">
                 <div class="flex items-center gap-1.5 mb-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
@@ -233,93 +255,93 @@
                 <p data-i18n="trustSub">纯内存处理，15分钟后自动销毁，绝不用于 AI 训练。</p>
             </div>
 
-            <div class="mt-8 text-center text-sm text-gray-500 leading-relaxed max-w-2xl mx-auto">
+            <div class="mt-8 text-center text-sm text-gray-500 leading-relaxed max-w-2xl mx-auto dark:text-zinc-400">
                 <p data-i18n="seoIntro">MiaoCut 的 AI 抠图能处理人像中的发丝、眼镜、耳饰和头像照片。上传 JPG、PNG 或 WebP，去除背景后可选择浅灰、白色、蓝色、渐变或虚化原图背景，适合 LinkedIn、简历、头像和社交媒体。</p>
             </div>
         </div>
 
     </main>
 
-    <div class="w-full flex justify-center bg-white border-t border-gray-200 mt-12 pt-16 pb-20 px-6">
+    <div class="w-full flex justify-center bg-white border-t border-gray-200 mt-12 pt-16 pb-20 px-6 dark:bg-zinc-900 dark:border-zinc-800">
         <div class="w-full max-w-4xl text-left">
 
             <section class="mb-16">
-                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="howItWorks">如何把人像制作成头像</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-gray-600">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center dark:text-zinc-50" data-i18n="howItWorks">如何把人像制作成头像</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-gray-600 dark:text-zinc-300">
                     <div
-                        class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
+                        class="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md transition-shadow text-center dark:bg-zinc-900 dark:border-zinc-800">
                         <div class="text-4xl mb-4">📸</div>
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="howStep1Title">1. 上传你的人像</h3>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="howStep1Title">1. 上传你的人像</h3>
                         <p class="text-sm leading-relaxed" data-i18n="howStep1Desc">上传头像、自拍或全身照（JPG / PNG / WebP），无需注册。</p>
                     </div>
                     <div
-                        class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
+                        class="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md transition-shadow text-center dark:bg-zinc-900 dark:border-zinc-800">
                         <div class="text-4xl mb-4">✂️</div>
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="howStep2Title">2. AI 抠出人像</h3>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="howStep2Title">2. AI 抠出人像</h3>
                         <p class="text-sm leading-relaxed" data-i18n="howStep2Desc">MiaoCut 自动识别人物并去除背景，保留发丝、眼镜和配饰。</p>
                     </div>
                     <div
-                        class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow text-center">
+                        class="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md transition-shadow text-center dark:bg-zinc-900 dark:border-zinc-800">
                         <div class="text-4xl mb-4">💼</div>
-                        <h3 class="font-bold text-gray-900 mb-2 text-lg" data-i18n="howStep3Title">3. 选择背景和尺寸</h3>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="howStep3Title">3. 选择背景和尺寸</h3>
                         <p class="text-sm leading-relaxed" data-i18n="howStep3Desc">选择中性、蓝色、渐变或虚化背景，并导出 512px / 1024px 头像、圆形头像或简历照片。</p>
                     </div>
                 </div>
             </section>
 
             <section class="mb-16">
-                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="whyTitle">为什么用 MiaoCut 处理人像</h2>
+                <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center dark:text-zinc-50" data-i18n="whyTitle">为什么用 MiaoCut 处理人像</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
-                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor"
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl dark:bg-zinc-900">
+                        <svg class="w-6 h-6 text-brand-500 mr-3 shrink-0" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
                             </path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="why1Title">发丝级精细度</strong>
-                            <span class="text-sm text-gray-600" data-i18n="why1Desc">BiRefNet + alpha matting 保留每根发丝和飞发，长发、卷发、毛躁头发都干净 — 没有灰色光晕。</span>
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="why1Title">发丝级精细度</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="why1Desc">BiRefNet + alpha matting 保留每根发丝和飞发，长发、卷发、毛躁头发都干净 — 没有灰色光晕。</span>
                         </div>
                     </div>
-                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
-                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor"
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl dark:bg-zinc-900">
+                        <svg class="w-6 h-6 text-brand-500 mr-3 shrink-0" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
                             </path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="why2Title">内置头像背景</strong>
-                            <span class="text-sm text-gray-600" data-i18n="why2Desc">上传后可选择浅灰、白色、蓝色、渐变、自定义色、透明或虚化原图背景。</span>
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="why2Title">内置头像背景</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="why2Desc">上传后可选择浅灰、白色、蓝色、渐变、自定义色、透明或虚化原图背景。</span>
                         </div>
                     </div>
-                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
-                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor"
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl dark:bg-zinc-900">
+                        <svg class="w-6 h-6 text-brand-500 mr-3 shrink-0" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
                             </path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="why3Title">头像和简历尺寸</strong>
-                            <span class="text-sm text-gray-600" data-i18n="why3Desc">可导出 512px / 1024px 方形头像、圆形头像，或 480×640 简历人像。</span>
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="why3Title">头像和简历尺寸</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="why3Desc">可导出 512px / 1024px 方形头像、圆形头像，或 480×640 简历人像。</span>
                         </div>
                     </div>
-                    <div class="flex items-start bg-gray-50 p-5 rounded-xl">
-                        <svg class="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor"
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl dark:bg-zinc-900">
+                        <svg class="w-6 h-6 text-brand-500 mr-3 shrink-0" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
                             </path>
                         </svg>
                         <div>
-                            <strong class="block text-gray-900 mb-1" data-i18n="why4Title">隐私优先，无水印</strong>
-                            <span class="text-sm text-gray-600" data-i18n="why4Desc">图片纯内存处理，绝不用于 AI 训练，并且导出结果不带水印。</span>
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="why4Title">隐私优先，无水印</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="why4Desc">图片纯内存处理，绝不用于 AI 训练，并且导出结果不带水印。</span>
                         </div>
                     </div>
                 </div>
             </section>
 
             <section class="mb-16">
-                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="tipsTitle">拍出最干净人像抠图的小技巧</h2>
-                <ul class="space-y-3 text-gray-700 text-sm md:text-base list-disc list-inside max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center dark:text-zinc-50" data-i18n="tipsTitle">拍出最干净人像抠图的小技巧</h2>
+                <ul class="space-y-3 text-gray-700 text-sm md:text-base list-disc list-inside max-w-3xl mx-auto dark:text-zinc-200">
                     <li data-i18n="tip1">正面对镜头，使用均匀的正面光。逆光会让发丝边缘更难分离。</li>
                     <li data-i18n="tip2">避免背景颜色与头发或衣服相近 — 这是大多数 AI 工具最容易模糊边界的地方。</li>
                     <li data-i18n="tip3">长发、卷发、多层次发型请切到 Fine（毛发/发丝）模式。多花一点时间值得。</li>
@@ -328,43 +350,43 @@
             </section>
 
             <section class="mb-16">
-                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center" data-i18n="faqTitle">常见问题</h2>
+                <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center dark:text-zinc-50" data-i18n="faqTitle">常见问题</h2>
                 <div class="space-y-4">
-                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq1Q">能正确处理长发、卷发或飞发吗？</h4>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq1A">可以。把质量切到 "Fine（毛发/发丝）" 模式。MiaoCut 使用 BiRefNet + alpha matting 保留每根发丝，最大限度减少其他工具会留下的绿色/灰色光晕。</p>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h4 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq1Q">能正确处理长发、卷发或飞发吗？</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq1A">可以。把质量切到 "Fine（毛发/发丝）" 模式。MiaoCut 使用 BiRefNet + alpha matting 保留每根发丝，最大限度减少其他工具会留下的绿色/灰色光晕。</p>
                     </div>
-                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq2Q">可以直接制作 LinkedIn 或社交头像吗？</h4>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq2A">可以。选择中性或品牌背景，设置 512px 或 1024px 头像尺寸，并下载方形或圆形头像。</p>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h4 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq2Q">可以直接制作 LinkedIn 或社交头像吗？</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq2A">可以。选择中性或品牌背景，设置 512px 或 1024px 头像尺寸，并下载方形或圆形头像。</p>
                     </div>
-                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq3Q">可以制作简历照片吗？</h4>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq3A">可以。使用简历人像预设，选择白色或浅灰背景，即可导出适合 CV 和职业资料页的人像照片。</p>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h4 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq3Q">可以制作简历照片吗？</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq3A">可以。使用简历人像预设，选择白色或浅灰背景，即可导出适合 CV 和职业资料页的人像照片。</p>
                     </div>
-                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq4Q">我的照片安全吗？</h4>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq4A">安全。照片纯内存处理，抠图返回后立即销毁。我们绝不存储您的图片，绝不用于 AI 训练，无需注册账号。</p>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h4 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq4Q">我的照片安全吗？</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq4A">安全。照片纯内存处理，抠图返回后立即销毁。我们绝不存储您的图片，绝不用于 AI 训练，无需注册账号。</p>
                     </div>
-                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                        <h4 class="font-bold text-gray-900 text-base mb-2" data-i18n="faq5Q">能处理多人合影吗？</h4>
-                        <p class="text-sm text-gray-600 leading-relaxed" data-i18n="faq5A">可以，但单一主体效果最好。对于所有人都属于前景的紧凑合影，会保留所有人物，整体去除背景。</p>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h4 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq5Q">能处理多人合影吗？</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq5A">可以，但单一主体效果最好。对于所有人都属于前景的紧凑合影，会保留所有人物，整体去除背景。</p>
                     </div>
                 </div>
             </section>
 
             <section>
-                <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center" data-i18n="moreTitle">更多 MiaoCut 工具</h2>
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center dark:text-zinc-50" data-i18n="moreTitle">更多 MiaoCut 工具</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <a href="/zh/product-photo-background-remover/"
-                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkProductTitle">商品图抠图 →</h3>
-                        <p class="text-sm text-gray-600" data-i18n="moreLinkProductDesc">适合亚马逊、Shopify、Etsy、eBay 卖家。</p>
+                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="moreLinkProductTitle">商品图抠图 →</h3>
+                        <p class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="moreLinkProductDesc">适合亚马逊、Shopify、Etsy、eBay 卖家。</p>
                     </a>
                     <a href="/zh/"
-                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all">
-                        <h3 class="font-semibold text-gray-900 mb-1" data-i18n="moreLinkHomeTitle">通用背景去除 →</h3>
-                        <p class="text-sm text-gray-600" data-i18n="moreLinkHomeDesc">Logo、宠物、复杂边缘等任何场景。</p>
+                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="moreLinkHomeTitle">通用背景去除 →</h3>
+                        <p class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="moreLinkHomeDesc">Logo、宠物、复杂边缘等任何场景。</p>
                     </a>
                 </div>
             </section>
@@ -408,7 +430,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
+            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500 dark:text-zinc-400">
                 <p class="mb-2" data-i18n="footerTagline">MiaoCut · 免费、注重隐私的 AI 图片工具集。</p>
                 <p><a href="/privacy/" class="hover:text-white transition-colors" data-i18n="footerPrivacy">隐私政策</a> · <a href="/terms/" class="hover:text-white transition-colors" data-i18n="footerTerms">服务条款</a></p>
             </div>
@@ -423,7 +445,7 @@
                         class="px-1.5 py-0.5 bg-gray-700 rounded text-xs font-mono">Ctrl + D</kbd> <span
                         data-i18n="bookmarkSuffix">加入书签，下次抠图只需 1 秒！</span></p>
             </div>
-            <button id="dismiss-banner" class="text-gray-400 hover:text-white transition-colors ml-4 shrink-0"
+            <button id="dismiss-banner" class="text-gray-400 hover:text-white transition-colors ml-4 shrink-0 dark:text-zinc-500"
                 aria-label="close">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
