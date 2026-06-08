@@ -10,6 +10,10 @@
 /app.js
   Cache-Control: public, max-age=86400, must-revalidate
 
+# 字体：文件名稳定（内容不变），可长缓存 + immutable
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
 # 图片：内容稳定，1 周缓存
 /examples/*
   Cache-Control: public, max-age=604800, must-revalidate

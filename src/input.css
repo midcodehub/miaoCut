@@ -2,6 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── 自托管品牌字体 Geist（可变字重 woff2，latin 子集）────────────────
+   放在 @layer 之外的顶层，确保 @font-face 不被 Tailwind 的 layer 规则处理掉。
+   font-display: swap → 字体没下完先用系统字体顶上，不挡首屏渲染（保 LCP）。
+   字重 100 900 = variable font 的全字重轴，一个文件覆盖所有 font-weight。*/
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/geist/geist-sans-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/geist/geist-mono-latin.woff2') format('woff2');
+}
+
+@layer base {
+  /* 抗锯齿：让 Geist 在 macOS / Windows 上更清爽 */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+}
+
 /* 项目自定义样式（原本以 <style> 内联在 index.html）*/
 @layer components {
   #dropzone {

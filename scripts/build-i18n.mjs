@@ -87,6 +87,7 @@ const ASSET_PATH_PREFIXES = [
   '/feedback.js',
   '/examples/',
   '/og/',
+  '/fonts/',
   '/watermark-remover/watermark.js',
   '/old-photo-restoration/old-photo.js',
   '/id-photo-maker/id-photo.js',
