@@ -455,6 +455,31 @@ def get_matting_session():
     return _matting_session
 
 
+def _warmup_matting_sync() -> None:
+    """加载 matting 会话并空跑一次 1024² 推理，把模型加载 + 首次推理的图/内存模式编译提前付掉。"""
+    import numpy as np
+    sess = get_matting_session()
+    if sess is None:
+        return
+    dummy = np.zeros((1, 3, _MATTING_INPUT_SIZE, _MATTING_INPUT_SIZE), dtype=np.float32)
+    sess.run(None, {sess.get_inputs()[0].name: dummy})
+
+
+async def warmup_matting_session() -> None:
+    """启动后台预热 fur 档 matting 模型，避免首个 fur 请求承担"加载 + 首次推理编译"（冷启动 ~24s）。
+
+    之前刻意留懒加载是怕内存紧的机器白占一份模型常驻；但 cpu-basic 是 16GB、两个模型才 ~2~3GB，
+    内存不是瓶颈，所以默认随 WARMUP_BIREFNET_ON_STARTUP 一起预热。想省常驻就设 ENABLE_FUR_MATTING=0。
+    """
+    if not ENABLE_FUR_MATTING:
+        return
+    try:
+        await asyncio.to_thread(_warmup_matting_sync)
+        logger.info("Matting model warmup complete")
+    except Exception as exc:
+        logger.warning("Matting model warmup failed; first fur request will lazy-load: %s", exc)
+
+
 # ============================================================
 # 真实客户端 IP 提取（限流 key）
 # ============================================================
@@ -702,6 +727,8 @@ async def schedule_model_warmup() -> None:
     if WARMUP_BIREFNET_ON_STARTUP:
         logger.info("Scheduling BiRefNet warmup after startup")
         asyncio.create_task(warmup_high_quality_session())
+        # fur 档 matting 模型也一起预热，消除首个 fur 请求的冷启动 ~24s
+        asyncio.create_task(warmup_matting_session())
 
 
 # ============================================================
