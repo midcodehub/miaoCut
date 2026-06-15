@@ -115,6 +115,17 @@ ENABLE_INT8_MODEL = os.getenv("ENABLE_INT8_MODEL", "0") == "1"
 _raw_profile = os.getenv("CUTOUT_PROFILE", "sharp").lower()
 CUTOUT_PROFILE = _raw_profile if _raw_profile in ("sharp", "fur") else "sharp"
 
+# fur 档底座：默认用 BiRefNet_lite-matting（专门训练的抠图模型，直出软 alpha）。
+# 它和 sharp 用的 birefnet-general-lite 同架构、同 1024² 输入、同 onnxruntime CPU 速度（实测 ~9s），
+# 但边缘是逐根毛丝的软过渡，换底色时既没有 legacy 流水线那种"亮光晕"，也没有 sharp 那种"背景色脏边"。
+# ⚠️ 只接 fur 档：matting 模型会把 Logo/文字/细色块判成半透明给抹掉，所以 sharp（默认档）必须保持
+#    birefnet-general-lite 分割模型不变，硬边/图形主体继续走 sharp。
+# 找不到模型文件（_find_matting_model_path 返回 None）时，fur 自动回退到 legacy alpha-matting 流水线，
+# 老前端 / 没带模型的 build 都不受影响。设 ENABLE_FUR_MATTING=0 可强制用 legacy。
+ENABLE_FUR_MATTING = os.getenv("ENABLE_FUR_MATTING", "1") == "1"
+# 模型文件名（不含 .onnx）。生产由 Dockerfile 构建期拉取到 U2NET_HOME；本地放 ~/.u2net/ 或 ./models/ 即可。
+MATTING_MODEL_NAME = os.getenv("MATTING_MODEL_NAME", "birefnet-lite-matting")
+
 # 反馈写入：生产建议配置 Cloudflare Worker，把反馈统一写入 D1。
 # 不配置 FEEDBACK_ENDPOINT 时退回本地 JSONL，方便开发和离线调试。
 FEEDBACK_ENDPOINT = os.getenv("FEEDBACK_ENDPOINT", "").strip()
@@ -371,6 +382,77 @@ async def warmup_high_quality_session() -> None:
         logger.info("BiRefNet model warmup complete")
     except Exception as exc:
         logger.warning("BiRefNet model warmup failed; first request will retry lazy loading: %s", exc)
+
+
+# ============================================================
+# fur 档抠图模型：BiRefNet_lite-matting（直出软 alpha）
+# ============================================================
+# 与 sharp 用的 birefnet-general-lite 是同一套 swin_v1_tiny 架构，只是权重在抠图数据集上训练过，
+# 直接输出逐根毛丝的软 alpha。这里**不走 rembg 的 remove()**：rembg 的 BiRefNetSession.predict()
+# 会对输出再做一次 sigmoid + min-max 归一化，而我们导出的 onnx 已经把 sigmoid 烤进图里
+# （见 scripts/export_matting_onnx.py），所以用独立推理，前后处理与离线验证完全一致。
+_matting_session = None
+_matting_session_lock = threading.Lock()
+_matting_session_missing = False  # 找过一次没找到就别反复扫盘
+
+# ImageNet 归一化常量（BiRefNet 标准预处理；与 rembg 的 normalize 一致）
+_MATTING_INPUT_SIZE = 1024
+_MATTING_MEAN = (0.485, 0.456, 0.406)
+_MATTING_STD = (0.229, 0.224, 0.225)
+
+
+def _find_matting_model_path():
+    """按 U2NET_HOME > ~/.u2net > 仓库 models/ 的顺序找 matting onnx，找不到返回 None。
+
+    生产：Dockerfile 把模型拉到 U2NET_HOME（/opt/miaocut-models，bundled 分支不会被改写）。
+    本地：_ensure_writable_model_cache 可能把 U2NET_HOME 改写成 /tmp 兜底，所以额外兜底 ~/.u2net 和
+          仓库内 models/（scripts/export_matting_onnx.py 默认产出到 models/），三处放任一处都生效。
+    """
+    fname = f"{MATTING_MODEL_NAME}.onnx"
+    candidates = [
+        Path(os.environ.get("U2NET_HOME", "/data/.u2net")) / fname,
+        Path.home() / ".u2net" / fname,
+        Path(__file__).parent / "models" / fname,
+    ]
+    # 去重保序后取第一个存在的
+    seen, ordered = set(), []
+    for p in candidates:
+        if p not in seen:
+            seen.add(p)
+            ordered.append(p)
+    return next((p for p in ordered if p.is_file()), None)
+
+
+def get_matting_session():
+    """按需加载 fur 档的 matting onnx。找不到模型文件时返回 None（调用方回退 legacy）。
+
+    懒加载（不在启动 warmup 里强加载）：它和 sharp 模型是两份独立常驻内存，
+    内存紧的 Space 上只有真正用到 fur 时才付这份内存，避免 sharp-only 流量白白多占 ~一份模型。
+    """
+    global _matting_session, _matting_session_missing
+    if not ENABLE_FUR_MATTING or _matting_session_missing:
+        return None
+    if _matting_session is None:
+        with _matting_session_lock:
+            if _matting_session is None and not _matting_session_missing:
+                path = _find_matting_model_path()
+                if path is None:
+                    logger.warning(
+                        "fur matting model '%s.onnx' not found (U2NET_HOME / ./models); "
+                        "fur falls back to legacy alpha-matting pipeline", MATTING_MODEL_NAME)
+                    _matting_session_missing = True
+                    return None
+                sess_opts = ort.SessionOptions()
+                threads = os.getenv("MIAOCUT_OMP_NUM_THREADS") or os.getenv("OMP_NUM_THREADS")
+                if threads:
+                    n = int(threads)
+                    sess_opts.inter_op_num_threads = n
+                    sess_opts.intra_op_num_threads = n
+                logger.info("Loading fur matting model: %s (%.0f MB)",
+                            path, path.stat().st_size / 1024 / 1024)
+                _matting_session = ort.InferenceSession(
+                    str(path), sess_opts, providers=["CPUExecutionProvider"])
+    return _matting_session
 
 
 # ============================================================
@@ -757,8 +839,71 @@ def _run_sharp_pipeline(data: bytes) -> bytes:
 
 
 def _run_fur_pipeline(data: bytes) -> bytes:
+    """Fur 档调度：有 matting 模型走 _run_matting_pipeline（首选），否则回退 legacy。"""
+    session = get_matting_session()
+    if session is not None:
+        try:
+            return _run_matting_pipeline(data, session)
+        except Exception as exc:
+            logger.warning("matting pipeline failed (%s); falling back to legacy fur pipeline", exc)
+    return _run_fur_pipeline_legacy(data)
+
+
+def _run_matting_pipeline(data: bytes, session) -> bytes:
     """
-    Fur 模式：alpha matting（保留软过渡）+ 前景色去污染（消背景色调）。
+    Fur 首选：BiRefNet_lite-matting 直出软 alpha。
+
+    前后处理与离线验证（scripts/export_matting_onnx.py）完全一致：
+      1) resize 到 1024² + ImageNet 归一化；
+      2) onnxruntime 推理，输出已是 sigmoid 后的软 alpha [1,1,1024,1024]；
+      3) alpha 双线性放回原尺寸，配原图 RGB 合成 RGBA。
+    不做 trimap / pymatting / 前景估算——matting 模型的 alpha 在真背景处本就接近 0，
+    所以既无 legacy 的"亮光晕"，也无需去污染（实测换白/灰/深底色边可忽略）。
+
+    速度 ~9s/张（onnxruntime CPU，与 sharp 同量级）；内存没有 legacy 的 pymatting +500MB 峰值。
+    """
+    import time
+    import numpy as np
+
+    img_size_kb = len(data) / 1024
+    t0 = time.perf_counter()
+
+    img = Image.open(io.BytesIO(data)).convert("RGB")
+    orig_w, orig_h = img.size
+
+    # 预处理：1024² + ImageNet 归一化（NCHW float32）
+    resized = img.resize((_MATTING_INPUT_SIZE, _MATTING_INPUT_SIZE), Image.Resampling.BILINEAR)
+    arr = np.asarray(resized, dtype=np.float32) / 255.0
+    arr = (arr - np.array(_MATTING_MEAN, dtype=np.float32)) / np.array(_MATTING_STD, dtype=np.float32)
+    inp = np.expand_dims(arr.transpose(2, 0, 1), 0)
+
+    input_name = session.get_inputs()[0].name
+    pred = session.run(None, {input_name: inp})[0]  # [1,1,1024,1024]，已 sigmoid
+    t1 = time.perf_counter()
+
+    alpha = np.clip(pred[0, 0], 0.0, 1.0)
+    # alpha 双线性放回原尺寸
+    alpha_img = Image.fromarray((alpha * 255.0).astype(np.uint8), mode="L").resize(
+        (orig_w, orig_h), Image.Resampling.BILINEAR)
+    alpha_u8 = np.asarray(alpha_img)
+    # 清理零星浮点 noise（< ~1% 透明度直接归零，避免暗色散点）
+    alpha_u8 = np.where(alpha_u8 < 3, 0, alpha_u8).astype(np.uint8)
+
+    rgba = np.dstack([np.asarray(img, dtype=np.uint8), alpha_u8])
+    buf = io.BytesIO()
+    Image.fromarray(rgba, mode="RGBA").save(buf, format="PNG")
+    t2 = time.perf_counter()
+
+    logger.info(
+        "matting pipeline: infer=%.2fs post=%.2fs total=%.2fs (input=%.0fKB output_px=%dx%d)",
+        t1 - t0, t2 - t1, t2 - t0, img_size_kb, orig_w, orig_h,
+    )
+    return buf.getvalue()
+
+
+def _run_fur_pipeline_legacy(data: bytes) -> bytes:
+    """
+    Fur 回退：alpha matting（保留软过渡）+ 前景色去污染（消背景色调）。
 
     解决 sharp 模式无法处理的两个问题：
 

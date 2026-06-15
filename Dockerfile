@@ -59,6 +59,13 @@ COPY --chown=user:user main.py .
 # 找不到该文件时静默回退到 FP32，本地 dev / 没跑量化的 build 都能正常运行。
 COPY --chown=user:user models/birefnet-general-lite-int8.onnx /opt/miaocut-models/
 
+# fur 档的 BiRefNet_lite-matting 模型（~224MB，由 scripts/export_matting_onnx.py 离线导出）。
+# 维护方式和上面 int8 完全一致：owner 手动跑 scripts/upload_model_to_hf.py 把 onnx 推到三个 Space 的
+# models/ 目录（同一个脚本现在两个模型一起推），workflow 的 allow_patterns 不碰 *.onnx。
+# main.py 的 get_matting_session 检测到它就启用 fur matting；缺失时 fur 自动回退 legacy（见 ENABLE_FUR_MATTING）。
+# ⚠️ 改这行会触发三个 Space rebuild：务必先把 onnx 传齐全部 3 个 Space 再 push，否则 COPY 找不到文件会让 build 失败。
+COPY --chown=user:user models/birefnet-lite-matting.onnx /opt/miaocut-models/
+
 # Hugging Face Spaces 默认公开 7860 端口；反馈数据写 /data 以便挂载持久化存储。
 # 模型已内置到镜像；如果将来缺失，main.py 会自动退到可写缓存目录。
 ENV PORT=7860 \
