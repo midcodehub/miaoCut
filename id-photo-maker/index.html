@@ -121,6 +121,12 @@
         data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
     <link rel="alternate" hreflang="en" href="https://miaocut.app/id-photo-maker/">
     <link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/id-photo-maker/">
+    <link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/id-photo-maker/">
+    <link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/id-photo-maker/">
+    <link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/id-photo-maker/">
+    <link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/id-photo-maker/">
+    <link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/id-photo-maker/">
+    <link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/id-photo-maker/">
     <link rel="alternate" hreflang="x-default" href="https://miaocut.app/id-photo-maker/">
 </head>
 
@@ -148,6 +154,12 @@
                     class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors dark:text-zinc-300 dark:hover:text-zinc-100">
                     <option value="en">English</option>
                     <option value="zh">简体中文</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="pt-br">Português (BR)</option>
+                    <option value="bn">বাংলা</option>
+                    <option value="fil">Filipino</option>
+                    <option value="ur">اردو</option>
                 </select>
             </div>
         </div>
@@ -198,17 +210,17 @@
                     <div>
                         <label class="block text-sm font-semibold mb-2" for="preset" data-i18n="sizeLabel">Photo size</label>
                         <select id="preset" class="h-11 w-full rounded border border-gray-300 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-gray-300 dark:border-zinc-700 dark:bg-zinc-900">
-                            <option value="one_inch">1 inch - 295 x 413 px</option>
-                            <option value="small_one_inch">Small 1 inch - 260 x 378 px</option>
-                            <option value="large_one_inch">Large 1 inch - 390 x 567 px</option>
-                            <option value="two_inch">2 inch - 413 x 579 px</option>
-                            <option value="small_two_inch">Small 2 inch - 413 x 531 px</option>
-                            <option value="china_passport">China passport - 390 x 567 px</option>
-                            <option value="us_passport">US passport - 600 x 600 px</option>
-                            <option value="visa_square">Visa square - 600 x 600 px</option>
-                            <option value="resume">Resume photo - 480 x 640 px</option>
-                            <option value="social_profile">Profile square - 512 x 512 px</option>
-                            <option value="custom">Custom size</option>
+                            <option value="one_inch" data-i18n="presetOneInch">1 inch - 295 x 413 px</option>
+                            <option value="small_one_inch" data-i18n="presetSmallOneInch">Small 1 inch - 260 x 378 px</option>
+                            <option value="large_one_inch" data-i18n="presetLargeOneInch">Large 1 inch - 390 x 567 px</option>
+                            <option value="two_inch" data-i18n="presetTwoInch">2 inch - 413 x 579 px</option>
+                            <option value="small_two_inch" data-i18n="presetSmallTwoInch">Small 2 inch - 413 x 531 px</option>
+                            <option value="china_passport" data-i18n="presetChinaPassport">China passport - 390 x 567 px</option>
+                            <option value="us_passport" data-i18n="presetUsPassport">US passport - 600 x 600 px</option>
+                            <option value="visa_square" data-i18n="presetVisaSquare">Visa square - 600 x 600 px</option>
+                            <option value="resume" data-i18n="presetResume">Resume photo - 480 x 640 px</option>
+                            <option value="social_profile" data-i18n="presetProfileSquare">Profile square - 512 x 512 px</option>
+                            <option value="custom" data-i18n="presetCustom">Custom size</option>
                         </select>
                         <div id="custom-size" class="mt-3 grid grid-cols-2 gap-3 hidden">
                             <div>
@@ -228,14 +240,14 @@
                             <input id="custom-color" type="text" value="438edb" maxlength="7" class="h-8 w-24 rounded border border-gray-300 px-2 text-xs font-mono dark:border-zinc-700">
                         </div>
                         <div id="color-swatches" class="grid grid-cols-4 gap-2">
-                            <button type="button" data-color="ffffff" class="color-swatch h-10 rounded border-2 border-transparent bg-white dark:bg-zinc-900" title="White"></button>
-                            <button type="button" data-color="438edb" class="color-swatch h-10 rounded border-2 border-gray-900 bg-[#438edb]" title="Blue"></button>
-                            <button type="button" data-color="d5332e" class="color-swatch h-10 rounded border-2 border-transparent bg-[#d5332e]" title="Red"></button>
-                            <button type="button" data-color="f3f4f6" class="color-swatch h-10 rounded border-2 border-transparent bg-gray-100 dark:bg-zinc-800" title="Gray"></button>
-                            <button type="button" data-color="dbeafe" class="color-swatch h-10 rounded border-2 border-transparent bg-blue-100" title="Light blue"></button>
-                            <button type="button" data-color="1d4ed8" class="color-swatch h-10 rounded border-2 border-transparent bg-blue-700" title="Dark blue"></button>
-                            <button type="button" data-color="fce7f3" class="color-swatch h-10 rounded border-2 border-transparent bg-pink-100" title="Pink"></button>
-                            <button type="button" data-color="111827" class="color-swatch h-10 rounded border-2 border-transparent bg-gray-900" title="Black"></button>
+                            <button type="button" data-color="ffffff" class="color-swatch h-10 rounded border-2 border-transparent bg-white dark:bg-zinc-900" title="White" aria-label="White" data-i18n-title="colorWhite" data-i18n-aria="colorWhite"></button>
+                            <button type="button" data-color="438edb" class="color-swatch h-10 rounded border-2 border-gray-900 bg-[#438edb]" title="Blue" aria-label="Blue" data-i18n-title="colorBlue" data-i18n-aria="colorBlue"></button>
+                            <button type="button" data-color="d5332e" class="color-swatch h-10 rounded border-2 border-transparent bg-[#d5332e]" title="Red" aria-label="Red" data-i18n-title="colorRed" data-i18n-aria="colorRed"></button>
+                            <button type="button" data-color="f3f4f6" class="color-swatch h-10 rounded border-2 border-transparent bg-gray-100 dark:bg-zinc-800" title="Gray" aria-label="Gray" data-i18n-title="colorGray" data-i18n-aria="colorGray"></button>
+                            <button type="button" data-color="dbeafe" class="color-swatch h-10 rounded border-2 border-transparent bg-blue-100" title="Light blue" aria-label="Light blue" data-i18n-title="colorLightBlue" data-i18n-aria="colorLightBlue"></button>
+                            <button type="button" data-color="1d4ed8" class="color-swatch h-10 rounded border-2 border-transparent bg-blue-700" title="Dark blue" aria-label="Dark blue" data-i18n-title="colorDarkBlue" data-i18n-aria="colorDarkBlue"></button>
+                            <button type="button" data-color="fce7f3" class="color-swatch h-10 rounded border-2 border-transparent bg-pink-100" title="Pink" aria-label="Pink" data-i18n-title="colorPink" data-i18n-aria="colorPink"></button>
+                            <button type="button" data-color="111827" class="color-swatch h-10 rounded border-2 border-transparent bg-gray-900" title="Black" aria-label="Black" data-i18n-title="colorBlack" data-i18n-aria="colorBlack"></button>
                         </div>
                     </div>
 
@@ -253,13 +265,13 @@
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="target-kb" data-i18n="kbLabel">Target KB</label>
-                            <input id="target-kb" type="number" min="8" max="1024" placeholder="Optional" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
+                            <input id="target-kb" type="number" min="8" max="1024" placeholder="Optional" data-i18n-ph="optionalPlaceholder" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="profile" data-i18n="qualityLabel">Quality</label>
                             <select id="profile" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
-                                <option value="sharp">Fast</option>
-                                <option value="fur">Fine edges</option>
+                                <option value="sharp" data-i18n="qualityFast">Fast</option>
+                                <option value="fur" data-i18n="qualityFineEdges">Fine edges</option>
                             </select>
                         </div>
                     </div>
@@ -272,10 +284,10 @@
                     <div>
                         <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="paper" data-i18n="paperLabel">Print paper</label>
                         <select id="paper" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
-                            <option value="6inch">6 inch - 1800 x 1200 px</option>
-                            <option value="5inch">5 inch - 1500 x 1050 px</option>
-                            <option value="7inch">7 inch - 2100 x 1500 px</option>
-                            <option value="a4">A4 - 2480 x 3508 px</option>
+                            <option value="6inch" data-i18n="paper6Inch">6 inch - 1800 x 1200 px</option>
+                            <option value="5inch" data-i18n="paper5Inch">5 inch - 1500 x 1050 px</option>
+                            <option value="7inch" data-i18n="paper7Inch">7 inch - 2100 x 1500 px</option>
+                            <option value="a4" data-i18n="paperA4">A4 - 2480 x 3508 px</option>
                         </select>
                     </div>
 

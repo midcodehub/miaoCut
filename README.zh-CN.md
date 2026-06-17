@@ -70,7 +70,7 @@
 └─────────────────────────────────┘      └────────────────────────────────────┘
 ```
 
-- **前端** —— 单文件 SPA（`index.html` + 编译后的 `output.css`），内置中英文 i18n，客户端图片压缩，XHR 真实上传进度。Cloudflare Pages 直接 serve。
+- **前端** —— 静态 HTML 页面（`index.html` + 编译后的 `output.css`），内置英文、中文、印地语、印尼语、巴西葡语、孟加拉语、Filipino、乌尔都语 i18n，客户端图片压缩，XHR 真实上传进度。Cloudflare Pages 直接 serve。
 - **后端** —— FastAPI（单 Worker）。AI 模型：**BiRefNet-General-Lite**（INT8 量化）经 rembg 抠图、**MediaPipe Face Mesh** 做证件照裁切、**LaMa** 做去水印修复。限流（SlowAPI）和并发控制都在进程内存里，**不依赖 Redis 等外部存储**。
 
 ## 🚀 自部署

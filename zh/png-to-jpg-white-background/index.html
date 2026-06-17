@@ -49,113 +49,138 @@
 
     <!-- WebApplication schema -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "MiaoCut PNG to JPG Converter",
-      "url": "https://miaocut.app/zh/png-to-jpg-white-background/",
-      "applicationCategory": "MultimediaApplication",
-      "operatingSystem": "Web",
-      "description": "Free browser-based PNG to JPG converter with smart white background fill. Pick any background color, set JPG quality, and download. Runs 100% in-browser — no upload.",
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+{
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "MiaoCut PNG to JPG Converter",
+    "url": "https://miaocut.app/zh/png-to-jpg-white-background/",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Web",
+    "description": "Free browser-based PNG to JPG converter with smart white background fill. Pick any background color, set JPG quality, and download. Runs 100% in-browser — no upload.",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
     }
-    </script>
+}
+</script>
     <!-- BreadcrumbList -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "MiaoCut", "item": "https://miaocut.app/zh/" },
-        { "@type": "ListItem", "position": 2, "name": "PNG to JPG Converter", "item": "https://miaocut.app/zh/png-to-jpg-white-background/" }
-      ]
-    }
-    </script>
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "MiaoCut",
+            "item": "https://miaocut.app/zh/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "PNG 转 JPG 转换器",
+            "item": "https://miaocut.app/zh/png-to-jpg-white-background/"
+        }
+    ]
+}
+</script>
     <!-- FAQPage schema：必须与下方可见 FAQ section 保持一致 -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
         {
-          "@type": "Question",
-          "name": "Why does my PNG get a black background when I convert it to JPG?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "JPG does not support transparency. When a naive converter flattens a transparent PNG, it fills the alpha pixels with black by default. MiaoCut fills them with white (or any color you pick) so the result looks the way you expect — no surprise black blobs."
-          }
+            "@type": "Question",
+            "name": "为什么 PNG 转成 JPG 之后变成黑色背景了？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "JPG 格式不支持透明。普通转换器把透明像素当成 0（也就是黑色）来填，所以会出现整片黑色。MiaoCut 默认填成白色（也可以选任意颜色），让结果符合你的预期，不再出现意外的黑色。"
+            }
         },
         {
-          "@type": "Question",
-          "name": "What background color should I pick?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "White is the safe default for documents, e-commerce, and most marketplaces. Light gray works well for product photography. Black suits dark-themed designs. The custom color picker covers brand colors."
-          }
+            "@type": "Question",
+            "name": "应该选什么背景颜色？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "文档、电商和绝大多数平台用白色就好。商品摄影场景浅灰也不错。深色设计场景选黑色。自定义颜色选择器适合品牌色。"
+            }
         },
         {
-          "@type": "Question",
-          "name": "Is my image uploaded to a server?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No. This converter runs 100% in your browser using Canvas. Your image never leaves your device — nothing is uploaded, stored, or logged."
-          }
+            "@type": "Question",
+            "name": "图片会被上传到服务器吗？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "不会。整个转换器在你的浏览器内通过 Canvas 完成。图片永远不会离开你的设备 — 不会被上传、保存或记录。"
+            }
         },
         {
-          "@type": "Question",
-          "name": "What JPG quality setting should I use?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "92% is a balanced default — visually lossless for most photos with reasonable file size. Use 100% for print or archival. Use 75-85% if you need smaller files for the web and don't mind mild compression."
-          }
+            "@type": "Question",
+            "name": "JPG 画质该选多少？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "92% 是平衡的默认值 — 对大多数照片视觉上无损，文件大小合理。打印或归档用 100%。Web 用途又关心体积时 75-85% 能显著减小文件，画质损失轻微。"
+            }
         },
         {
-          "@type": "Question",
-          "name": "Can I convert WebP or other formats too?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. The converter accepts PNG, WebP, and any format your browser can decode. The output is always JPG."
-          }
+            "@type": "Question",
+            "name": "WebP 等其他格式也能转吗？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "可以。本工具接受 PNG、WebP，以及你的浏览器能解码的任何格式。输出固定是 JPG。"
+            }
         }
-      ]
-    }
-    </script>
+    ]
+}
+</script>
     <!-- HowTo schema -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "HowTo",
-      "name": "How to Convert PNG to JPG with a White Background",
-      "description": "Flatten transparent PNG files into JPG with the background color you actually want.",
-      "totalTime": "PT5S",
-      "tool": [{ "@type": "HowToTool", "name": "MiaoCut PNG to JPG Converter" }],
-      "step": [
+{
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "如何把 PNG 转成带白底的 JPG",
+    "description": "Flatten transparent PNG files into JPG with the background color you actually want.",
+    "totalTime": "PT5S",
+    "tool": [
         {
-          "@type": "HowToStep",
-          "position": 1,
-          "name": "Drop your PNG",
-          "text": "Drop a PNG (or WebP) into the upload zone. Everything runs in your browser — your image is not uploaded anywhere."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 2,
-          "name": "Pick a background color",
-          "text": "White is the default. Switch to gray, black, or pick any custom color — the preview updates live."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 3,
-          "name": "Download JPG",
-          "text": "Adjust JPG quality if you want, then download. The result is a clean JPG with the background color you chose."
+            "@type": "HowToTool",
+            "name": "MiaoCut PNG to JPG Converter"
         }
-      ]
-    }
-    </script>
+    ],
+    "step": [
+        {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Drop your PNG",
+            "text": "把 PNG（或 WebP）拖到上传区。所有处理都在你的浏览器内完成，图片不会上传到任何地方。"
+        },
+        {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Pick a background color",
+            "text": "默认是白色。可切换灰色、黑色，或选择任意自定义颜色 — 预览实时更新。"
+        },
+        {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "下载 JPG",
+            "text": "如果需要可以调节 JPG 画质，然后下载。导出的是干净的 JPG，背景就是你选的颜色。"
+        }
+    ]
+}
+</script>
     <link rel="stylesheet" href="/output.css">
     <script defer src="https://cloud.umami.is/script.js"
         data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
     <link rel="alternate" hreflang="en" href="https://miaocut.app/png-to-jpg-white-background/">
     <link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/png-to-jpg-white-background/">
+    <link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/png-to-jpg-white-background/">
+    <link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/png-to-jpg-white-background/">
+    <link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/png-to-jpg-white-background/">
+    <link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/png-to-jpg-white-background/">
+    <link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/png-to-jpg-white-background/">
+    <link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/png-to-jpg-white-background/">
     <link rel="alternate" hreflang="x-default" href="https://miaocut.app/png-to-jpg-white-background/">
 </head>
 
@@ -184,6 +209,12 @@
                     class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors dark:text-zinc-300 dark:hover:text-zinc-100">
                     <option value="en">English</option>
                     <option value="zh">简体中文</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="pt-br">Português (BR)</option>
+                    <option value="bn">বাংলা</option>
+                    <option value="fil">Filipino</option>
+                    <option value="ur">اردو</option>
                 </select>
             </div>
         </div>

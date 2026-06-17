@@ -44,123 +44,148 @@
     <meta name="twitter:image:alt" content="AI Object Eraser and Watermark Remover by MiaoCut">
     <link rel="canonical" href="https://miaocut.app/zh/watermark-remover/">
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "MiaoCut AI Object Eraser & Watermark Remover",
-      "url": "https://miaocut.app/zh/watermark-remover/",
-      "applicationCategory": "MultimediaApplication",
-      "operatingSystem": "Web",
-      "description": "Free AI object eraser, blemish remover, and watermark remover. Paint over date stamps, distracting objects, or your own watermarks — AI fills the area in cleanly using LaMa inpainting.",
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+{
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "MiaoCut AI Object Eraser & Watermark Remover",
+    "url": "https://miaocut.app/zh/watermark-remover/",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Web",
+    "description": "Free AI object eraser, blemish remover, and watermark remover. Paint over date stamps, distracting objects, or your own watermarks — AI fills the area in cleanly using LaMa inpainting.",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
     }
-    </script>
+}
+</script>
     <!-- BreadcrumbList：让搜索结果出 breadcrumb rich snippet -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "MiaoCut", "item": "https://miaocut.app/zh/" },
-        { "@type": "ListItem", "position": 2, "name": "AI Object Eraser & Watermark Remover", "item": "https://miaocut.app/zh/watermark-remover/" }
-      ]
-    }
-    </script>
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "MiaoCut",
+            "item": "https://miaocut.app/zh/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "AI 物体擦除与去水印工具",
+            "item": "https://miaocut.app/zh/watermark-remover/"
+        }
+    ]
+}
+</script>
     <!-- HowTo schema：对应下方 "How to Erase Objects, Watermarks, and Blemishes" 段落 -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "HowTo",
-      "name": "How to Erase Objects, Watermarks, and Blemishes from Your Own Photos",
-      "description": "Use MiaoCut's AI object eraser to clean up date stamps, distracting objects, blemishes, and your own watermarks from photos you own.",
-      "totalTime": "PT15S",
-      "tool": [{ "@type": "HowToTool", "name": "MiaoCut AI Object Eraser" }],
-      "step": [
+{
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Erase Objects, Watermarks, and Blemishes from Your Own Photos",
+    "description": "Use MiaoCut's AI object eraser to clean up date stamps, distracting objects, blemishes, and your own watermarks from photos you own.",
+    "totalTime": "PT15S",
+    "tool": [
         {
-          "@type": "HowToStep",
-          "position": 1,
-          "name": "Upload your image",
-          "text": "Upload a JPG, PNG, or WebP from your own collection. No signup or credit card required."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 2,
-          "name": "Paint over the area",
-          "text": "Use the brush to cover the object, blemish, or your own watermark. Paint slightly beyond the edges for cleaner results."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 3,
-          "name": "Download the cleaned image",
-          "text": "AI uses LaMa inpainting to fill the painted area based on the surrounding context. Preview the result and download."
+            "@type": "HowToTool",
+            "name": "MiaoCut AI Object Eraser"
         }
-      ]
-    }
-    </script>
+    ],
+    "step": [
+        {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Upload your image",
+            "text": "上传你拥有版权的 JPG、PNG 或 WebP 照片，无需注册、无需信用卡。"
+        },
+        {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Paint over the area",
+            "text": "用画笔覆盖物体、瑕疵或自有水印；涂抹时略微超出边缘，效果更干净。"
+        },
+        {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Download the cleaned image",
+            "text": "AI 用 LaMa 图像修复算法根据周围像素自动填补涂抹区域。预览结果后即可下载。"
+        }
+    ]
+}
+</script>
     <!-- FAQPage schema 必须与下方可见 FAQ section（data-i18n=faqTitle 那一段）保持一致。
          Google 政策要求 schema 内的 Q&A 在页面上对用户可见，否则可能被判结构化数据违规。
          改 FAQ 时请同步修改下方 HTML + watermark.js 里 i18n.en.faqXX / i18n.zh.faqXX。 -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
         {
-          "@type": "Question",
-          "name": "What kinds of content can I erase with this tool?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "MiaoCut works on small unwanted content in your photos: distracting objects, date stamps from your phone camera, screenshot artifacts, burned-in subtitles, your own logos on product shots, and watermarks on photos you own or have explicit permission to edit."
-          }
+            "@type": "Question",
+            "name": "这个工具能擦除哪些类型的内容？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "MiaoCut 适合处理你照片里小范围的多余内容：干扰物、手机相机的日期戳、截图残留、烧录字幕、自家商品图上的 Logo，以及你拥有版权或获得授权的照片上的水印。"
+            }
         },
         {
-          "@type": "Question",
-          "name": "Can I remove watermarks from photos I don't own?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No. MiaoCut is for editing photos you own or have explicit permission to edit. Do not use it to remove copyright watermarks from stock photos, social media content, AI-generated imagery, or any image you do not have the rights to — that may violate copyright law (for example, DMCA §1202 in the US) and equivalent statutes in other jurisdictions."
-          }
+            "@type": "Question",
+            "name": "Can I remove watermarks from photos I don't own?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "不可以。MiaoCut 仅用于编辑你拥有或明确获得授权的照片。请勿用它去除图库素材、社交媒体内容、AI 生成图像或任何你没有版权的图片上的水印 —— 这可能违反版权法（例如美国 DMCA §1202）以及其他司法辖区的相应法规。"
+            }
         },
         {
-          "@type": "Question",
-          "name": "How does the AI repair the painted area?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "MiaoCut uses LaMa (Large Mask Inpainting), an open-source AI model. It analyzes the surrounding pixels and fills in the painted area to match the rest of the image."
-          }
+            "@type": "Question",
+            "name": "AI 是怎么修复涂抹区域的？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "MiaoCut 使用 LaMa（Large Mask Inpainting）开源 AI 模型，根据周围像素分析并填补涂抹区域，让它与画面其余部分自然衔接。"
+            }
         },
         {
-          "@type": "Question",
-          "name": "What kinds of images work best?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "High-resolution photos where the mark covers a small portion of the image, and the surrounding background has enough visual context (sky, plain wall, even texture). Marks across complex content like faces or detailed patterns are harder to repair cleanly."
-          }
+            "@type": "Question",
+            "name": "什么样的图片处理效果最好？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "高分辨率照片、水印只占画面一小块、周围背景有足够视觉信息（天空、纯色墙面、均匀纹理）。如果水印横跨人脸或复杂图案，修复效果会受限。"
+            }
         },
         {
-          "@type": "Question",
-          "name": "Are my images uploaded or stored anywhere?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Images are processed in-memory on the server and discarded immediately after the result is returned. We never store your image, never use it for AI training, and there is no signup required."
-          }
+            "@type": "Question",
+            "name": "我的图片会被上传或保存吗？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "图片在服务器内存里处理，结果返回后立即销毁。我们绝不存储你的图片、绝不用于 AI 训练，也无需注册账号。"
+            }
         },
         {
-          "@type": "Question",
-          "name": "Why does my result look blurry or unclean?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Try painting slightly beyond the edge with a smaller brush. For very large marks or marks across detailed content, results may be limited — this tool works best on small, well-bounded areas with simple surroundings."
-          }
+            "@type": "Question",
+            "name": "处理结果看起来模糊或不干净怎么办？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "试试画笔调小一点、涂抹时略微超出边缘。对于范围特别大或穿过复杂细节的水印，效果会有限 —— 本工具最适合背景简单、边界清晰的小范围区域。"
+            }
         }
-      ]
-    }
-    </script>
+    ]
+}
+</script>
     <link rel="stylesheet" href="/output.css">
     <script defer src="https://cloud.umami.is/script.js"
         data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
     <link rel="alternate" hreflang="en" href="https://miaocut.app/watermark-remover/">
     <link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/watermark-remover/">
+    <link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/watermark-remover/">
+    <link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/watermark-remover/">
+    <link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/watermark-remover/">
+    <link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/watermark-remover/">
+    <link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/watermark-remover/">
+    <link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/watermark-remover/">
     <link rel="alternate" hreflang="x-default" href="https://miaocut.app/watermark-remover/">
 </head>
 
@@ -188,6 +213,12 @@
                     class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors dark:text-zinc-300 dark:hover:text-zinc-100">
                     <option value="en">English</option>
                     <option value="zh">简体中文</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="pt-br">Português (BR)</option>
+                    <option value="bn">বাংলা</option>
+                    <option value="fil">Filipino</option>
+                    <option value="ur">اردو</option>
                 </select>
             </div>
         </div>

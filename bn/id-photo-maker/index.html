@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="bn-BD">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 品牌字体 Geist：预加载首屏 sans 可变字体（crossorigin 是 font preload 的硬性要求）-->
+    <link rel="preload" href="/fonts/geist/geist-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- 主题（明/暗）：在首屏渲染前同步设好 <html class="dark">，避免闪一下白；并在 DOM ready 后接管切换按钮 -->
+    <script>/* redesign-dark-applied */(function () {
+        try {
+            var s = localStorage.getItem('theme');
+            var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', d);
+        } catch (e) {}
+        document.addEventListener('DOMContentLoaded', function () {
+            var b = document.getElementById('theme-toggle');
+            if (b) b.addEventListener('click', function () {
+                var dark = document.documentElement.classList.toggle('dark');
+                try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+            });
+        });
+    })();</script>
+    <!-- Resource hints：见 index.html 同段注释 -->
+    <link rel="preconnect" href="https://api2.miaocut.app">
+    <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
+    <title>বিনামূল্যে পাসপোর্ট এবং ID ফটো মেকার অনলাইন | MiaoCut</title>
+    <meta name="description"
+        content="বিনামূল্যে AI পাসপোর্ট, ভিসা, এবং ID ফটো মেকার অনলাইন। দেশ-নির্দিষ্ট আকারের প্রিসেট (চীন 1-ইঞ্চি/2-ইঞ্চি, মার্কিন পাসপোর্ট, শেনজেন ভিসা, জাপান ভিসা)। ব্যাকগ্রাউন্ড কালার, টার্গেট KB, প্রিন্ট লেআউট বেছে নিন। সাইন আপ নেই।">
+    <meta name="keywords"
+        content="আইডি ফটো মেকার, পাসপোর্ট ফটো মেকার, ভিসা ফটো মেকার, এক ইঞ্চি ফটো, দুই ইঞ্চি ফটো, এআই আইডি ফটো, চায়না পাসপোর্ট ফটো, ইউএস পাসপোর্ট ফটো, শেনজেন ভিসা ফটো, জাপান ভিসা ফটো, ছবির ব্যাকগ্রাউন্ড পরিবর্তন, প্রিন্টযোগ্য আইডি ফটো শীট">
+    <meta property="og:title" content="বিনামূল্যে AI পাসপোর্ট এবং ID ফটো মেকার | MiaoCut">
+    <meta property="og:description"
+        content="দেশ-নির্দিষ্ট ID ফটো প্রিসেট: চীন 1-ইঞ্চি / 2-ইঞ্চি, মার্কিন পাসপোর্ট, শেনজেন ভিসা, জাপানের ভিসা৷ বিনামূল্যে, সাইন আপ নেই।">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://miaocut.app/bn/id-photo-maker/">
+    <meta property="og:locale" content="bn_BD">
+    <meta property="og:image" content="https://miaocut.app/og/id-photo.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="AI Passport & ID Photo Maker by MiaoCut">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://miaocut.app/og/id-photo.png">
+    <meta name="twitter:image:alt" content="AI Passport & ID Photo Maker by MiaoCut">
+    <link rel="canonical" href="https://miaocut.app/bn/id-photo-maker/">
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "MiaoCut AI Passport & ID Photo Maker",
+    "url": "https://miaocut.app/bn/id-photo-maker/",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Web",
+    "description": "Free AI passport, visa, and ID photo maker. Country-specific size presets, custom background colors, target KB control, printable layout sheets.",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    }
+}
+</script>
+    <!-- BreadcrumbList：让搜索结果出 breadcrumb rich snippet -->
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "MiaoCut",
+            "item": "https://miaocut.app/bn/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "ID ফটো মেকার",
+            "item": "https://miaocut.app/bn/id-photo-maker/"
+        }
+    ]
+}
+</script>
+    <!-- HowTo schema：对应下方 "How to Make a Passport or ID Photo" 段落 -->
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Make a Passport or ID Photo Online",
+    "description": "Create a country-compliant passport, visa, or ID photo in three steps with MiaoCut's free AI ID photo maker.",
+    "totalTime": "PT20S",
+    "tool": [
+        {
+            "@type": "HowToTool",
+            "name": "MiaoCut AI ID Photo Maker"
+        }
+    ],
+    "step": [
+        {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Upload your portrait",
+            "text": "JPG, PNG, বা WebP-এ একটি সম্মুখ-মুখী প্রতিকৃতি আপলোড করুন৷ এমনকি, নিরপেক্ষ আলো সবচেয়ে ভাল কাজ করে।"
+        },
+        {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Pick size and background",
+            "text": "একটি দেশ প্রিসেট চয়ন করুন (বা কাস্টম মাত্রা লিখুন), একটি পটভূমির রঙ চয়ন করুন এবং প্রয়োজনে বিষয়ের আকার বা শীর্ষ মার্জিন সামঞ্জস্য করুন।"
+        },
+        {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Generate, fit KB, download",
+            "text": "MiaoCut স্বয়ংক্রিয়ভাবে আপনার মুখ সনাক্ত করে এবং একটি আদর্শ ফটো, একটি HD স্বচ্ছ সংস্করণ এবং একটি মুদ্রণযোগ্য বিন্যাস তৈরি করে৷ আপনার ফর্মের জন্য একটি নির্দিষ্ট ফাইলের আকারের প্রয়োজন হলে লক্ষ্য KB সেট করুন৷"
+        }
+    ]
+}
+</script>
+    <!-- FAQPage schema 必须与下方可见 FAQ section（data-i18n=faqTitle 那一段）保持一致。
+         Google 政策要求 schema 内的 Q&A 在页面上对用户可见，否则可能被判结构化数据违规。
+         改 FAQ 时请同步修改下方 HTML + id-photo.js 里 i18n.en.faqXX / i18n.zh.faqXX。 -->
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "কোন ID ছবির আকার MiaoCut সমর্থন করে?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "চায়না 1-ইঞ্চি (295×413), 2-ইঞ্চি (413×579), ছোট/বড় 1-ইঞ্চি এবং 2-ইঞ্চি ভেরিয়েন্ট, চায়না পাসপোর্ট (390×567), ইউএস পাসপোর্ট (600×600), শেনজেন ভিসা (600×600), রেজিউম ফটো (480×el 525 সোশাল), কাস্টম প্রোফাইল (480×el 525), কাস্টম প্রোফাইল আকার"
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "কি পটভূমি রং সমর্থিত?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "সাদা, নীল, লাল, ধূসর, হালকা নীল, গাঢ় নীল, গোলাপী, কালো এবং যেকোনো কাস্টম HEX রঙ।"
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "আমি কি একটি শীটে একাধিক ID ছবি প্রিন্ট করতে পারি?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "হ্যাঁ। 5-ইঞ্চি, 6-ইঞ্চি, 7-ইঞ্চি, বা A4 কাগজ বেছে নিন যাতে কাটার জন্য সাজানো একাধিক কপি সহ একটি মুদ্রণযোগ্য লেআউট শীট তৈরি করা যায়।"
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "আমার ফটো কি অফিসিয়াল নথির প্রয়োজনীয়তা পূরণ করবে?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "MiaoCut নিরপেক্ষ ব্যাকগ্রাউন্ড সহ সঠিক আকারের ফটো তৈরি করে, তবে জমা দেওয়ার আগে সর্বদা আপনার নির্দিষ্ট নথি বা ভিসা অফিসের সর্বশেষ প্রয়োজনীয়তা (মাথার আকার, অভিব্যক্তি, চশমার নিয়ম, ফাইল বিন্যাস) পরীক্ষা করে দেখুন।"
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "MiaoCut কি স্বয়ংক্রিয়ভাবে আমার মুখ সনাক্ত করে?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "হ্যাঁ। MediaPipe Face Mesh আপনার চোখের লাইন এবং মাথার অবস্থান সনাক্ত করে, তারপর ফটোটি স্বয়ংক্রিয়ভাবে কাটা হয় এবং নির্বাচিত আকারের প্রিসেটের সাথে মানানসই হয়। আপনি স্লাইডারগুলির সাহায্যে বিষয়ের আকার এবং শীর্ষ মার্জিন ঠিক করতে পারেন।"
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "আমার ছবি কি ব্যক্তিগত?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "ফটোগুলি সার্ভারে মেমরিতে প্রক্রিয়া করা হয় এবং ফলাফল ফেরত দেওয়ার সাথে সাথেই বাতিল করা হয়। আমরা আপনার ছবি সঞ্চয় করি না, এটি AI প্রশিক্ষণের জন্য ব্যবহার করি না এবং সাইন আপের প্রয়োজন নেই৷"
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "আমি কি অনলাইন ফর্মের জন্য KB-এ সর্বোচ্চ ফাইলের আকার সেট করতে পারি?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. The 'Target KB' input lets you cap the output file size — useful for visa or job application forms with strict file size limits."
+            }
+        }
+    ]
+}
+</script>
+    <link rel="stylesheet" href="/output.css">
+    <script defer src="https://cloud.umami.is/script.js"
+        data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
+    <link rel="alternate" hreflang="en" href="https://miaocut.app/id-photo-maker/">
+    <link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/id-photo-maker/">
+    <link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/id-photo-maker/">
+    <link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/id-photo-maker/">
+    <link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/id-photo-maker/">
+    <link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/id-photo-maker/">
+    <link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/id-photo-maker/">
+    <link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/id-photo-maker/">
+    <link rel="alternate" hreflang="x-default" href="https://miaocut.app/id-photo-maker/">
+</head>
+
+<body class="bg-gray-50 min-h-screen font-sans text-gray-900 selection:bg-brand-100 selection:text-brand-900 dark:bg-zinc-950 dark:text-zinc-200">
+    <!-- Sticky header：与首页统一为同一种实现（M5） -->
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
+        <div class="mx-auto max-w-6xl px-5 py-4 flex items-center justify-between gap-4">
+            <a href="/bn/" class="text-2xl font-black tracking-tight text-gray-900 dark:text-zinc-50">MiaoCut</a>
+            <div class="flex items-center gap-4">
+                <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600 dark:text-zinc-300">
+                    <a href="/bn/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navBg">ব্যাকগ্রাউন্ড রিমুভার</a>
+                    <a href="/bn/product-photo-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navProduct">পণ্য</a>
+                    <a href="/bn/portrait-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navPortrait">প্রতিকৃতি</a>
+                    <a href="/bn/watermark-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navWatermark">জলছাপ</a>
+                    <a href="/bn/id-photo-maker/" class="text-gray-900 dark:text-zinc-50" data-i18n="navId">ID ছবি</a>
+                    <a href="/bn/old-photo-restoration/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navRestore">পুরানো ছবি</a>
+                </nav>
+                <a href="https://github.com/midcodehub/miaoCut" target="_blank" rel="noopener" aria-label="MiaoCut on GitHub (open source)" title="View source on GitHub" class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z" /></svg></a>
+                <button id="theme-toggle" type="button" aria-label="Toggle dark mode"
+                    class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors">
+                    <svg class="h-5 w-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
+                    <svg class="h-5 w-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
+                </button>
+                <select id="lang-switch"
+                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors dark:text-zinc-300 dark:hover:text-zinc-100">
+                    <option value="en">English</option>
+                    <option value="zh">简体中文</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="pt-br">Português (BR)</option>
+                    <option value="bn">বাংলা</option>
+                    <option value="fil">Filipino</option>
+                    <option value="ur">اردو</option>
+                </select>
+            </div>
+        </div>
+    </header>
+    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
+        <a href="/bn/" class="shrink-0" data-i18n="navBg">ব্যাকগ্রাউন্ড রিমুভার</a>
+        <a href="/bn/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">পণ্য</a>
+        <a href="/bn/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">প্রতিকৃতি</a>
+        <a href="/bn/watermark-remover/" class="shrink-0" data-i18n="navWatermark">জলছাপ</a>
+        <a href="/bn/id-photo-maker/" class="shrink-0 text-gray-900 dark:text-zinc-50" data-i18n="navId">ID ছবি</a>
+        <a href="/bn/old-photo-restoration/" class="shrink-0" data-i18n="navRestore">পুরানো ছবি</a>
+    </nav>
+
+    <main class="mx-auto max-w-6xl px-5 py-8">
+        <!-- 面包屑 -->
+        <nav class="mb-5 text-sm text-gray-500 dark:text-zinc-400" aria-label="Breadcrumb">
+            <ol class="flex items-center gap-2">
+                <li><a href="/bn/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-i18n="breadcrumbHome">MiaoCut</a></li>
+                <li class="text-gray-300">/</li>
+                <li class="text-gray-700 dark:text-zinc-200" data-i18n="breadcrumbCurrent">ID ফটো মেকার</li>
+            </ol>
+        </nav>
+
+        <section class="mb-7 flex flex-col gap-2">
+            <p class="text-sm font-semibold text-gray-500 dark:text-zinc-400" data-i18n="eyebrow">পাসপোর্ট ফটো · ভিসার ছবি · এক ইঞ্চি · দুই ইঞ্চি · প্রিন্ট লেআউট</p>
+            <h1 class="text-3xl md:text-4xl font-bold tracking-tight" data-i18n="heroTitle">AI পাসপোর্ট এবং ID ফটো মেকার</h1>
+            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed dark:text-zinc-400" data-i18n="heroSub">একটি প্রতিকৃতি আপলোড করুন, একটি দেশ-নির্দিষ্ট আকারের প্রিসেট চয়ন করুন, পটভূমির রঙ সেট করুন এবং KB টার্গেট করুন এবং স্ট্যান্ডার্ড, HD বা মুদ্রণযোগ্য লেআউট ফটোগুলি ডাউনলোড করুন৷</p>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start">
+            <section class="bg-white border border-gray-200 rounded-lg p-5 dark:bg-zinc-900 dark:border-zinc-800">
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-semibold mb-2" for="id-file" data-i18n="portraitLabel">প্রতিকৃতি</label>
+                        <label id="upload-card"
+                            class="flex min-h-40 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center hover:bg-gray-100 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+                            for="id-file">
+                            <svg id="upload-icon" class="mb-3 h-9 w-9 text-gray-400 dark:text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M8 8l4-4m0 0l4 4m-4-4v12" />
+                            </svg>
+                            <img id="upload-preview" alt="Selected portrait preview" class="mb-3 hidden max-h-56 w-full rounded border border-gray-200 bg-white object-contain dark:border-zinc-800 dark:bg-zinc-900">
+                            <span id="file-name" class="text-sm font-medium text-gray-700 dark:text-zinc-200" data-i18n="uploadText">JPG, PNG, বা WebP আপলোড করতে ক্লিক করুন</span>
+                            <span id="upload-hint" class="mt-1 text-xs text-gray-400 dark:text-zinc-300" data-i18n="uploadHint">সামনের দিকের পোর্ট্রেট সবচেয়ে ভালো কাজ করে</span>
+                        </label>
+                        <input id="id-file" type="file" class="hidden" accept="image/jpeg,image/png,image/webp">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-2" for="preset" data-i18n="sizeLabel">ছবির আকার</label>
+                        <select id="preset" class="h-11 w-full rounded border border-gray-300 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-gray-300 dark:border-zinc-700 dark:bg-zinc-900">
+                            <option value="one_inch" data-i18n="presetOneInch">১ ইঞ্চি - 295 x 413 px</option>
+                            <option value="small_one_inch" data-i18n="presetSmallOneInch">ছোট ১ ইঞ্চি - 260 x 378 px</option>
+                            <option value="large_one_inch" data-i18n="presetLargeOneInch">বড় ১ ইঞ্চি - 390 x 567 px</option>
+                            <option value="two_inch" data-i18n="presetTwoInch">২ ইঞ্চি - 413 x 579 px</option>
+                            <option value="small_two_inch" data-i18n="presetSmallTwoInch">ছোট ২ ইঞ্চি - 413 x 531 px</option>
+                            <option value="china_passport" data-i18n="presetChinaPassport">চীন পাসপোর্ট - 390 x 567 px</option>
+                            <option value="us_passport" data-i18n="presetUsPassport">যুক্তরাষ্ট্র পাসপোর্ট - 600 x 600 px</option>
+                            <option value="visa_square" data-i18n="presetVisaSquare">ভিসা স্কোয়ার - 600 x 600 px</option>
+                            <option value="resume" data-i18n="presetResume">রিজিউম ছবি - 480 x 640 px</option>
+                            <option value="social_profile" data-i18n="presetProfileSquare">প্রোফাইল স্কোয়ার - 512 x 512 px</option>
+                            <option value="custom" data-i18n="presetCustom">কাস্টম সাইজ</option>
+                        </select>
+                        <div id="custom-size" class="mt-3 grid grid-cols-2 gap-3 hidden">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="width" data-i18n="widthLabel">প্রস্থ</label>
+                                <input id="width" type="number" min="120" max="1600" value="295" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="height" data-i18n="heightLabel">উচ্চতা</label>
+                                <input id="height" type="number" min="120" max="2200" value="413" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="mb-2 flex items-center justify-between">
+                            <label class="text-sm font-semibold" data-i18n="bgLabel">পটভূমি</label>
+                            <input id="custom-color" type="text" value="438edb" maxlength="7" class="h-8 w-24 rounded border border-gray-300 px-2 text-xs font-mono dark:border-zinc-700">
+                        </div>
+                        <div id="color-swatches" class="grid grid-cols-4 gap-2">
+                            <button type="button" data-color="ffffff" class="color-swatch h-10 rounded border-2 border-transparent bg-white dark:bg-zinc-900" title="সাদা" aria-label="সাদা" data-i18n-title="colorWhite" data-i18n-aria="colorWhite"></button>
+                            <button type="button" data-color="438edb" class="color-swatch h-10 rounded border-2 border-gray-900 bg-[#438edb]" title="নীল" aria-label="নীল" data-i18n-title="colorBlue" data-i18n-aria="colorBlue"></button>
+                            <button type="button" data-color="d5332e" class="color-swatch h-10 rounded border-2 border-transparent bg-[#d5332e]" title="লাল" aria-label="লাল" data-i18n-title="colorRed" data-i18n-aria="colorRed"></button>
+                            <button type="button" data-color="f3f4f6" class="color-swatch h-10 rounded border-2 border-transparent bg-gray-100 dark:bg-zinc-800" title="ধূসর" aria-label="ধূসর" data-i18n-title="colorGray" data-i18n-aria="colorGray"></button>
+                            <button type="button" data-color="dbeafe" class="color-swatch h-10 rounded border-2 border-transparent bg-blue-100" title="হালকা নীল" aria-label="হালকা নীল" data-i18n-title="colorLightBlue" data-i18n-aria="colorLightBlue"></button>
+                            <button type="button" data-color="1d4ed8" class="color-swatch h-10 rounded border-2 border-transparent bg-blue-700" title="গাঢ় নীল" aria-label="গাঢ় নীল" data-i18n-title="colorDarkBlue" data-i18n-aria="colorDarkBlue"></button>
+                            <button type="button" data-color="fce7f3" class="color-swatch h-10 rounded border-2 border-transparent bg-pink-100" title="গোলাপি" aria-label="গোলাপি" data-i18n-title="colorPink" data-i18n-aria="colorPink"></button>
+                            <button type="button" data-color="111827" class="color-swatch h-10 rounded border-2 border-transparent bg-gray-900" title="কালো" aria-label="কালো" data-i18n-title="colorBlack" data-i18n-aria="colorBlack"></button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="head-ratio" data-i18n="subjectLabel">বিষয়</label>
+                            <input id="head-ratio" type="range" min="55" max="85" value="72" class="w-full">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="top-margin" data-i18n="topLabel">শীর্ষ মার্জিন</label>
+                            <input id="top-margin" type="range" min="3" max="18" value="8" class="w-full">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="target-kb" data-i18n="kbLabel">লক্ষ্য KB</label>
+                            <input id="target-kb" type="number" min="8" max="1024" placeholder="ঐচ্ছিক" data-i18n-ph="optionalPlaceholder" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="profile" data-i18n="qualityLabel">গুণমান</label>
+                            <select id="profile" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
+                                <option value="sharp" data-i18n="qualityFast">দ্রুত</option>
+                                <option value="fur" data-i18n="qualityFineEdges">সূক্ষ্ম প্রান্ত</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label class="flex items-center justify-between rounded border border-gray-200 px-3 py-2 text-sm dark:border-zinc-800">
+                        <span class="font-medium text-gray-700 dark:text-zinc-200" data-i18n="alignLabel">মুখের প্রান্তিককরণ</span>
+                        <input id="face-alignment" type="checkbox" checked class="h-4 w-4">
+                    </label>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="paper" data-i18n="paperLabel">প্রিন্ট পেপার</label>
+                        <select id="paper" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
+                            <option value="6inch" data-i18n="paper6Inch">৬ ইঞ্চি - 1800 x 1200 px</option>
+                            <option value="5inch" data-i18n="paper5Inch">৫ ইঞ্চি - 1500 x 1050 px</option>
+                            <option value="7inch" data-i18n="paper7Inch">৭ ইঞ্চি - 2100 x 1500 px</option>
+                            <option value="a4" data-i18n="paperA4">A4 - 2480 x 3508 px</option>
+                        </select>
+                    </div>
+
+                    <button id="generate" class="flex h-11 w-full items-center justify-center rounded bg-gray-900 px-4 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400" data-i18n="generateBtn">ID ছবি তৈরি করুন</button>
+                    <p id="status" class="min-h-5 text-sm text-gray-500 dark:text-zinc-400"></p>
+                </div>
+            </section>
+
+            <section class="space-y-4">
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+                    <div class="bg-white border border-gray-200 rounded-lg p-5 dark:bg-zinc-900 dark:border-zinc-800">
+                        <div class="mb-4 flex items-center justify-between gap-3">
+                            <h2 class="text-base font-bold" data-i18n="standardTitle">স্ট্যান্ডার্ড</h2>
+                            <button id="download-standard" class="hidden h-9 rounded border border-gray-300 px-3 text-sm font-medium hover:bg-gray-50 dark:border-zinc-700 dark:hover:bg-zinc-800" data-i18n="downloadJpg">JPG ডাউনলোড করুন</button>
+                        </div>
+                        <div class="flex min-h-[360px] items-center justify-center rounded bg-gray-100 p-4 dark:bg-zinc-800">
+                            <img id="standard-preview" alt="Generated standard ID photo preview" class="max-h-[320px] max-w-full rounded border border-gray-200 bg-white object-contain hidden dark:border-zinc-800 dark:bg-zinc-900">
+                            <p id="standard-empty" class="text-sm text-gray-400 dark:text-zinc-500" data-i18n="standardEmpty">স্ট্যান্ডার্ড ফটো এখানে প্রদর্শিত হবে</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-lg p-5 dark:bg-zinc-900 dark:border-zinc-800">
+                        <div class="mb-4 flex items-center justify-between gap-3">
+                            <h2 class="text-base font-bold" data-i18n="hdTitle">HD</h2>
+                            <button id="download-hd" class="hidden h-9 rounded border border-gray-300 px-3 text-sm font-medium hover:bg-gray-50 dark:border-zinc-700 dark:hover:bg-zinc-800" data-i18n="downloadPng">PNG ডাউনলোড করুন</button>
+                        </div>
+                        <div class="flex min-h-[360px] items-center justify-center rounded bg-gray-100 p-4 dark:bg-zinc-800">
+                            <img id="hd-preview" alt="Generated HD ID photo preview" class="max-h-[320px] max-w-full rounded border border-gray-200 bg-white object-contain hidden dark:border-zinc-800 dark:bg-zinc-900">
+                            <p id="hd-empty" class="text-sm text-gray-400 dark:text-zinc-500" data-i18n="hdEmpty">HD স্বচ্ছ ফটো এখানে প্রদর্শিত হবে</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-lg p-5 dark:bg-zinc-900 dark:border-zinc-800">
+                        <div class="mb-4 flex items-center justify-between gap-3">
+                            <h2 class="text-base font-bold" data-i18n="layoutTitle">লেআউট</h2>
+                            <button id="download-layout" class="hidden h-9 rounded border border-gray-300 px-3 text-sm font-medium hover:bg-gray-50 dark:border-zinc-700 dark:hover:bg-zinc-800" data-i18n="downloadLayout">লেআউট ডাউনলোড করুন</button>
+                        </div>
+                        <div class="flex min-h-[360px] items-center justify-center rounded bg-gray-100 p-4 dark:bg-zinc-800">
+                            <img id="layout-preview" alt="Printable ID photo sheet preview" class="max-h-[320px] max-w-full rounded border border-gray-200 bg-white object-contain hidden dark:border-zinc-800 dark:bg-zinc-900">
+                            <p id="layout-empty" class="text-sm text-gray-400 dark:text-zinc-500" data-i18n="layoutEmpty">মুদ্রণযোগ্য বিন্যাস এখানে প্রদর্শিত হবে</p>
+                        </div>
+                        <p id="layout-meta" class="mt-3 text-xs text-gray-500 dark:text-zinc-400"></p>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg p-5 dark:bg-zinc-900 dark:border-zinc-800">
+                    <h2 class="text-xl font-bold mb-3" data-i18n="seoTitle">নথি, জীবনবৃত্তান্ত এবং অনলাইন ফর্মের জন্য ID ফটো তৈরি করুন</h2>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="seoBody">MiaoCut-এর ID ফটো মেকার আপনাকে পাসপোর্ট ফটো, ভিসা ফটো, এক-ইঞ্চি ছবি, দুই-ইঞ্চি ছবি, জীবনবৃত্তান্ত ফটো এবং মুদ্রণযোগ্য ফটো শীট তৈরি করতে সাহায্য করে। একটি পূর্বনির্ধারিত আকার চয়ন করুন, প্রতিকৃতি বসানো সামঞ্জস্য করুন, পটভূমির রঙগুলি স্যুইচ করুন এবং উভয় স্ট্যান্ডার্ড এবং উচ্চ-রেজোলিউশন আউটপুট ডাউনলোড করুন৷</p>
+                    <div class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 dark:text-zinc-300">
+                        <div class="rounded border border-gray-200 p-4 dark:border-zinc-800"><h3 class="font-bold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="seoCard1">সাধারণ মাপ</h3><p data-i18n="seoCard1Body">এক ইঞ্চি, দুই ইঞ্চি, পাসপোর্ট, ভিসা, জীবনবৃত্তান্ত এবং কাস্টম পিক্সেল মাপ।</p></div>
+                        <div class="rounded border border-gray-200 p-4 dark:border-zinc-800"><h3 class="font-bold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="seoCard2">পটভূমি রং</h3><p data-i18n="seoCard2Body">সাদা, নীল, লাল, ধূসর, হালকা নীল, গাঢ় নীল, গোলাপী, কালো এবং কাস্টম HEX রঙ।</p></div>
+                        <div class="rounded border border-gray-200 p-4 dark:border-zinc-800"><h3 class="font-bold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="seoCard3">প্রিন্ট শীট</h3><p data-i18n="seoCard3Body">5-ইঞ্চি, 6-ইঞ্চি, 7-ইঞ্চি, বা A4 মুদ্রণযোগ্য লেআউট তৈরি করুন।</p></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 可见 FAQ：与 head 中的 FAQPage JSON-LD 保持一致；改一处必须同步另一处 + id-photo.js i18n。 -->
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6 dark:bg-zinc-900 dark:border-zinc-800">
+            <h2 class="text-xl font-bold mb-6" data-i18n="faqTitle">প্রায়শই জিজ্ঞাসিত প্রশ্নাবলী</h2>
+            <div class="space-y-4">
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq1Q">কোন ID ছবির আকার MiaoCut সমর্থন করে?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq1A">চায়না 1-ইঞ্চি (295×413), 2-ইঞ্চি (413×579), ছোট/বড় 1-ইঞ্চি এবং 2-ইঞ্চি ভেরিয়েন্ট, চায়না পাসপোর্ট (390×567), ইউএস পাসপোর্ট (600×600), শেনজেন ভিসা (600×600), রেজিউম ফটো (480×el 525 সোশাল), কাস্টম প্রোফাইল (480×el 525), কাস্টম প্রোফাইল আকার</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq2Q">কি পটভূমি রং সমর্থিত?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq2A">সাদা, নীল, লাল, ধূসর, হালকা নীল, গাঢ় নীল, গোলাপী, কালো এবং যেকোনো কাস্টম HEX রঙ।</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq3Q">আমি কি একটি শীটে একাধিক ID ছবি প্রিন্ট করতে পারি?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq3A">হ্যাঁ। 5-ইঞ্চি, 6-ইঞ্চি, 7-ইঞ্চি, বা A4 কাগজ বেছে নিন যাতে কাটার জন্য সাজানো একাধিক কপি সহ একটি মুদ্রণযোগ্য লেআউট শীট তৈরি করা যায়।</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq4Q">আমার ফটো কি অফিসিয়াল নথির প্রয়োজনীয়তা পূরণ করবে?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq4A">MiaoCut নিরপেক্ষ ব্যাকগ্রাউন্ড সহ সঠিক আকারের ফটো তৈরি করে, তবে জমা দেওয়ার আগে সর্বদা আপনার নির্দিষ্ট নথি বা ভিসা অফিসের সর্বশেষ প্রয়োজনীয়তা (মাথার আকার, অভিব্যক্তি, চশমার নিয়ম, ফাইল বিন্যাস) পরীক্ষা করে দেখুন।</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq5Q">MiaoCut কি স্বয়ংক্রিয়ভাবে আমার মুখ সনাক্ত করে?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq5A">হ্যাঁ। MediaPipe Face Mesh আপনার চোখের লাইন এবং মাথার অবস্থান সনাক্ত করে, তারপর ফটোটি স্বয়ংক্রিয়ভাবে কাটা হয় এবং নির্বাচিত আকারের প্রিসেটের সাথে মানানসই হয়। আপনি স্লাইডারগুলির সাহায্যে বিষয়ের আকার এবং শীর্ষ মার্জিন ঠিক করতে পারেন।</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq6Q">আমার ছবি কি ব্যক্তিগত?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq6A">ফটোগুলি সার্ভারে মেমরিতে প্রক্রিয়া করা হয় এবং ফলাফল ফেরত দেওয়ার সাথে সাথেই বাতিল করা হয়। আমরা আপনার ছবি সঞ্চয় করি না, এটি AI প্রশিক্ষণের জন্য ব্যবহার করি না এবং সাইন আপের প্রয়োজন নেই৷</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq7Q">আমি কি অনলাইন ফর্মের জন্য KB-এ সর্বোচ্চ ফাইলের আকার সেট করতে পারি?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq7A">হ্যাঁ। "টার্গেট KB" ইনপুট আপনাকে আউটপুট ফাইলের আকার ক্যাপ করতে দেয় — কঠোর ফাইল আকারের সীমা সহ ভিসা বা চাকরির আবেদন ফর্মের জন্য দরকারী।</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How-to section：对应 head 中的 HowTo JSON-LD -->
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6 dark:bg-zinc-900 dark:border-zinc-800">
+            <h2 class="text-xl font-bold mb-6" data-i18n="howToTitle">কিভাবে একটি পাসপোর্ট বা ID ছবি তৈরি করবেন</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700 dark:text-zinc-200">
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <div class="text-2xl mb-2">📤</div>
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="howStep1Title">1. আপনার প্রতিকৃতি আপলোড করুন৷</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="howStep1Body">JPG, PNG, বা WebP-এ একটি সম্মুখ-মুখী প্রতিকৃতি আপলোড করুন৷ এমনকি, নিরপেক্ষ আলো সবচেয়ে ভাল কাজ করে।</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <div class="text-2xl mb-2">⚙️</div>
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="howStep2Title">2. আকার এবং পটভূমি চয়ন করুন</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="howStep2Body">একটি দেশ প্রিসেট চয়ন করুন (বা কাস্টম মাত্রা লিখুন), একটি পটভূমির রঙ চয়ন করুন এবং প্রয়োজনে বিষয়ের আকার বা শীর্ষ মার্জিন সামঞ্জস্য করুন।</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <div class="text-2xl mb-2">🖼️</div>
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="howStep3Title">3. জেনারেট করুন, KB ফিট করুন, ডাউনলোড করুন</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="howStep3Body">MiaoCut স্বয়ংক্রিয়ভাবে আপনার মুখ সনাক্ত করে এবং একটি আদর্শ ফটো, একটি HD স্বচ্ছ সংস্করণ এবং একটি মুদ্রণযোগ্য বিন্যাস তৈরি করে৷ আপনার ফর্মের জন্য একটি নির্দিষ্ট ফাইলের আকারের প্রয়োজন হলে লক্ষ্য KB সেট করুন৷</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Per-country sub-section（H3 重点）：分国家长尾流量入口。
+             这里列出常见证件规格，未来可拆成独立 landing pages（programmatic SEO）：
+             /id-photo-maker/us-passport/、/id-photo-maker/schengen-visa/ 等。
+             ⚠️ 各国官方规格随政策更新，文案里务必保留"以官方为准"声明。 -->
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6 dark:bg-zinc-900 dark:border-zinc-800">
+            <h2 class="text-xl font-bold mb-2" data-i18n="countryTitle">দেশ এবং নথি দ্বারা ID ফটো স্পেসিক্স</h2>
+            <p class="text-sm text-gray-600 mb-6 max-w-3xl dark:text-zinc-300" data-i18n="countrySubtitle">সাধারণ নথির আকার এবং পটভূমির নিয়ম। জমা দেওয়ার আগে সর্বদা আপনার নির্দিষ্ট কনস্যুলেট, দূতাবাস বা অফিসের সর্বশেষ প্রয়োজনীয়তাগুলি পরীক্ষা করুন — নিয়ম পরিবর্তন।</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-gray-700 dark:text-zinc-200">
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="cnOneInchTitle">চীন 1-ইঞ্চি (一寸)</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="cnOneInchBody">295 × 413 পিক্স · সাদা / নীল / লাল ব্যাকগ্রাউন্ড · ID কার্ড, স্কুলের নথি, সাধারণ আবেদনপত্রের জন্য।</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="cnTwoInchTitle">চীন 2-ইঞ্চি (二寸)</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="cnTwoInchBody">413 × 579 px · সাদা / নীল / লাল পটভূমি · জীবনবৃত্তান্ত, ডিপ্লোমা, কর্মসংস্থান ফর্ম, মেডিকেল রিপোর্টের জন্য।</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="cnPassportTitle">চায়না পাসপোর্ট (中国护照)</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="cnPassportBody">390 × 567 px · সাদা পটভূমি, নিরপেক্ষ অভিব্যক্তি, কোন চশমা সুপারিশ করা হয় না · পাসপোর্টের জন্য, চীনে ভিসা আবেদন জমা দেওয়া।</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="usPassportTitle">মার্কিন পাসপোর্ট</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="usPassportBody">600 × 600 px (2 × 2 ইঞ্চি) · সাদা সাদা বা অফ-হোয়াইট ব্যাকগ্রাউন্ড · কোন চশমা নেই (2016 সাল থেকে), নিরপেক্ষ অভিব্যক্তি, সম্পূর্ণ মুখ দৃশ্যমান।</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="schengenVisaTitle">শেনজেন ভিসা (ইইউ)</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="schengenVisaBody">413 × 531 পিক্স (35 × 45 মিমি) · হালকা ধূসর বা অফ-হোয়াইট ব্যাকগ্রাউন্ড · 70-80% মুখ কভারেজ, নিরপেক্ষ অভিব্যক্তি।</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="japanVisaTitle">জাপান ভিসা</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="japanVisaBody">600 × 600 px (45 × 45 mm) · সাদা বা অফ-হোয়াইট ব্যাকগ্রাউন্ড · সামনের দিকে, কোন মাথা ঢেকে না, 6 মাসের মধ্যে নেওয়া।</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cross-link section（H6） -->
+        <section class="mt-12">
+            <h2 class="text-xl font-bold mb-6 text-gray-900 dark:text-zinc-50" data-i18n="moreTitle">আরও MiaoCut টুল</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <a href="/bn/portrait-background-remover/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                    <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="moreLinkPortraitTitle">পোর্ট্রেট ব্যাকগ্রাউন্ড রিমুভার →</h3>
+                    <p class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="moreLinkPortraitDesc">পরিষ্কার লিঙ্কডইন বা সামাজিক প্রোফাইল ছবি তৈরি করুন।</p>
+                </a>
+                <a href="/bn/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                    <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="moreLinkBgTitle">AI ব্যাকগ্রাউন্ড রিমুভার →</h3>
+                    <p class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="moreLinkBgDesc">যেকোনো ছবির জন্য এক-ক্লিক স্বচ্ছ PNG কাটআউট।</p>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- All Tools footer -->
+    <footer class="w-full bg-gray-900 text-gray-300 mt-0">
+        <div class="max-w-6xl mx-auto px-6 py-12">
+            <h2 class="text-xl font-bold text-white mb-8 text-center" data-i18n="footerToolsTitle">সমস্ত MiaoCut টুল</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatRemove">AI পটভূমি অপসারণ</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/bn/" class="hover:text-white transition-colors" data-i18n="toolBgTitle">পটভূমি সরান</a></li>
+                        <li><a href="/bn/product-photo-background-remover/" class="hover:text-white transition-colors" data-i18n="toolProductTitle">পণ্য</a></li>
+                        <li><a href="/bn/portrait-background-remover/" class="hover:text-white transition-colors" data-i18n="toolPortraitTitle">প্রতিকৃতি</a></li>
+                        <li><a href="/bn/id-photo-maker/" class="hover:text-white transition-colors" data-i18n="toolIdTitle">ID ছবি</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatConvert">ফর্ম্যাট রূপান্তর</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/bn/jpg-to-transparent-png/" class="hover:text-white transition-colors" data-i18n="toolJpgPngTitle">JPG → স্বচ্ছ PNG</a></li>
+                        <li><a href="/bn/png-to-jpg-white-background/" class="hover:text-white transition-colors" data-i18n="toolPngJpgTitle">PNG → JPG</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatRepair">ফটো মেরামত এবং বর্ধন</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/bn/watermark-remover/" class="hover:text-white transition-colors" data-i18n="toolWatermarkTitle">জলছাপ</a></li>
+                        <li><a href="/bn/old-photo-restoration/" class="hover:text-white transition-colors" data-i18n="toolRestoreTitle">পুরানো ছবি</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatGuides">গাইড</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/how-to-remove-background/" class="hover:text-white transition-colors" data-i18n="guideHubTitle">কিভাবে একটি পটভূমি সরান</a></li>
+                        <li><a href="/how-to-remove-background/powerpoint/" class="hover:text-white transition-colors" data-i18n="guidePptTitle">PowerPoint-এ</a></li>
+                        <li><a href="/how-to-remove-background/gimp/" class="hover:text-white transition-colors" data-i18n="guideGimpTitle">জিম্পে</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500 dark:text-zinc-400">
+                <p class="mb-2" data-i18n="footerTagline">MiaoCut · বিনামূল্যে AI ছবি টুল যা আপনার গোপনীয়তাকে সম্মান করে।</p>
+                <p><a href="/privacy/" class="hover:text-white transition-colors" data-i18n="footerPrivacy">গোপনীয়তা</a> · <a href="/terms/" class="hover:text-white transition-colors" data-i18n="footerTerms">শর্তাবলী</a> · <a href="https://github.com/midcodehub/miaoCut" target="_blank" rel="noopener" class="hover:text-white transition-colors">GitHub</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/id-photo-maker/id-photo.js"></script>
+    <script src="/feedback.js"></script>
+</body>
+
+</html>

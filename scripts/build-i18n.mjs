@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * 中英双语 HTML 生成脚本
+ * 多语言 HTML 生成脚本
  * ============================================================
- * 把仓库里 6 个英文 HTML（首页 + 5 个子工具）按 i18n 字典翻译，
- * 输出到 zh/ 目录下，让中英文各有独立 URL 给 Google 索引。
+ * 把仓库里的英文 HTML 按 i18n 字典翻译，输出到各语言目录下，
+ * 让每个语言都有独立 URL 给 Google 索引。
  *
  * 数据来源（两种 pattern）：
  *   - inline   : index.html / product-photo / portrait → <head> 内联 window.MIAOCUT_PAGE_I18N + MIAOCUT_PAGE_TITLES
@@ -21,10 +21,10 @@
  *   6. 改写 <link rel="canonical"> 指向 /zh/... URL（self-canonical）
  *   7. 把内部链接 href="/foo" 改写成 href="/zh/foo"，资源链接（output.css/app.js/og/examples）保持不变
  *   8. 改写 JSON-LD 里的 url / item 字段指向 /zh/... URL
- *   9. 在 </head> 前插入 hreflang 三件套（en / zh-CN / x-default）
- *  10. 写入 zh/<原路径>
+ *   9. 在 </head> 前插入 hreflang 集合（en / 各 locale / x-default）
+ *  10. 写入 <locale>/<原路径>
  *
- * 同时给原 EN HTML 在 </head> 前补上同一组 hreflang，让两边互相引用（必须是双向声明，
+ * 同时给原 EN HTML 在 </head> 前补上同一组 hreflang，让各语言互相引用（必须是双向声明，
  * 否则 Google 会丢弃整个 alternate cluster）。
  *
  * 脚本是幂等的：再次运行会先把已有的 hreflang 块清掉再加，结果不会膨胀。
@@ -42,6 +42,25 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const ORIGIN = 'https://miaocut.app';
+
+// ============================================================
+// 语言注册表
+// ============================================================
+// code 用于 JS 字典 key 和 URL 目录名；htmlLang 写进 <html lang>；
+// hreflang 写进 <link rel="alternate"> / sitemap；prefix 用于内链和 canonical。
+const LOCALES = [
+  { code: 'zh',    htmlLang: 'zh-CN',  hreflang: 'zh-CN',  prefix: '/zh',    dir: 'ltr' },
+  { code: 'hi',    htmlLang: 'hi-IN',  hreflang: 'hi-IN',  prefix: '/hi',    dir: 'ltr' },
+  { code: 'id',    htmlLang: 'id-ID',  hreflang: 'id-ID',  prefix: '/id',    dir: 'ltr' },
+  { code: 'pt-br', htmlLang: 'pt-BR',  hreflang: 'pt-BR',  prefix: '/pt-br', dir: 'ltr' },
+  { code: 'bn',    htmlLang: 'bn-BD',  hreflang: 'bn-BD',  prefix: '/bn',    dir: 'ltr' },
+  { code: 'fil',   htmlLang: 'fil-PH', hreflang: 'fil-PH', prefix: '/fil',   dir: 'ltr' },
+  { code: 'ur',    htmlLang: 'ur-PK',  hreflang: 'ur-PK',  prefix: '/ur',    dir: 'rtl' },
+];
+
+const LOCALE_PREFIXES = LOCALES
+  .map((locale) => locale.prefix)
+  .sort((a, b) => b.length - a.length);
 
 // ============================================================
 // 页面注册表
@@ -216,6 +235,20 @@ function replaceDataI18nPlaceholder(html, dict, missingKeys) {
   );
 }
 
+function replaceDataI18nAttribute(html, dict, missingKeys, attrName, dataAttrName) {
+  const attrRe = new RegExp(
+    `(<[a-zA-Z][a-zA-Z0-9]*\\b[^<>]*?)\\b${attrName}="([^"]*)"([^<>]*?\\b${dataAttrName}="([^"]+)"[^<>]*?>)`,
+    'g'
+  );
+  return html.replace(attrRe, (match, before, _oldValue, after, key) => {
+    if (!Object.prototype.hasOwnProperty.call(dict, key)) {
+      missingKeys.add(key);
+      return match;
+    }
+    return `${before}${attrName}="${escapeAttr(dict[key])}"${after}`;
+  });
+}
+
 // 替换 meta 标签的 content
 //   name 形如 "description" / "og:title"
 function setMetaContent(html, name, value) {
@@ -229,8 +262,9 @@ function setMetaContent(html, name, value) {
   return html.replace(re, (_m, prefix) => prefix + '"' + escapeAttr(value) + '"');
 }
 
-function setHtmlLang(html, lang) {
-  return html.replace(/<html\s+lang="[^"]*"/, `<html lang="${lang}"`);
+function setHtmlLang(html, lang, dir = 'ltr') {
+  const dirAttr = dir === 'rtl' ? ' dir="rtl"' : '';
+  return html.replace(/<html\s+lang="[^"]*"(?:\s+dir="[^"]*")?/, `<html lang="${lang}"${dirAttr}`);
 }
 
 function setTitle(html, title) {
@@ -257,36 +291,82 @@ function rewriteInternalLinks(html, prefix) {
   });
 }
 
-// 把 JSON-LD 里出现的所有本站 URL 改写成 ZH 版本
+function localizePath(path, prefix) {
+  if (!prefix) return path;
+  if (path === '/') return `${prefix}/`;
+  return `${prefix}${path}`;
+}
+
+function stripLocalePrefix(path) {
+  for (const prefix of LOCALE_PREFIXES) {
+    if (path === prefix) return '/';
+    if (path.startsWith(`${prefix}/`)) return path.slice(prefix.length) || '/';
+  }
+  return path;
+}
+
+// 把 JSON-LD 里出现的所有本站 URL 改写成目标语言版本
 // 处理两类字段：
 //   "url": "https://miaocut.app/<path>"     (WebApplication, Organization)
 //   "item": "https://miaocut.app/<path>"    (BreadcrumbList.itemListElement[])
-// 已经是 /zh/ 开头的不重复加；外部域名（github.com 等）不会被匹配到。
-function rewriteJsonLdUrls(html) {
+// 已经是目标语言路径的不重复加；外部域名（github.com 等）不会被匹配到。
+function rewriteJsonLdUrls(html, locale) {
   return html.replace(/(<script\s+type="application\/ld\+json">)([\s\S]*?)(<\/script>)/g, (m, openTag, jsonText, closeTag) => {
     const rewritten = jsonText.replace(
       /("(?:url|item)"\s*:\s*"https:\/\/miaocut\.app)(\/[^"]*)"/g,
       (mm, prefix, path) => {
-        if (path.startsWith('/zh/') || path === '/zh') return mm; // 已经是 zh 路径
-        // 把 miaocut.app/foo 改成 miaocut.app/zh/foo；miaocut.app/ 改成 miaocut.app/zh/
-        const zhPath = path === '/' ? '/zh/' : '/zh' + path;
-        return `${prefix}${zhPath}"`;
+        if (path === locale.prefix || path.startsWith(`${locale.prefix}/`)) return mm;
+        const basePath = stripLocalePrefix(path);
+        return `${prefix}${localizePath(basePath, locale.prefix)}"`;
       }
     );
     return openTag + rewritten + closeTag;
   });
 }
 
-// 在 </head> 前插入 hreflang 三件套；先清掉已有的，保持幂等
+function localizeJsonLdStrings(html, sourceDict, localizedDict) {
+  const replacements = new Map();
+  for (const [key, sourceValue] of Object.entries(sourceDict || {})) {
+    const localizedValue = localizedDict ? localizedDict[key] : null;
+    if (typeof sourceValue === 'string' && typeof localizedValue === 'string' && localizedValue !== sourceValue) {
+      replacements.set(sourceValue, localizedValue);
+    }
+  }
+  if (!replacements.size) return html;
+
+  const walk = (value) => {
+    if (typeof value === 'string') return replacements.get(value) || value;
+    if (Array.isArray(value)) return value.map(walk);
+    if (value && typeof value === 'object') {
+      const out = {};
+      for (const [key, child] of Object.entries(value)) out[key] = walk(child);
+      return out;
+    }
+    return value;
+  };
+
+  return html.replace(/(<script\s+type="application\/ld\+json">)([\s\S]*?)(<\/script>)/g, (match, openTag, jsonText, closeTag) => {
+    try {
+      const parsed = JSON.parse(jsonText);
+      return `${openTag}\n${JSON.stringify(walk(parsed), null, 4)}\n${closeTag}`;
+    } catch (_) {
+      return match;
+    }
+  });
+}
+
+// 在 </head> 前插入 hreflang 集合；先清掉已有的，保持幂等
 //   en       → 英文版 URL
-//   zh-CN    → 中文版 URL
+//   locales  → 各语言 URL
 //   x-default→ 兜底（指向英文版，因为目标是 English-first，未匹配语言用户看英文）
 function setHreflangBlock(html, urlPath) {
   const enUrl = ORIGIN + urlPath;
-  const zhUrl = ORIGIN + '/zh' + urlPath;
   const block = [
     `    <link rel="alternate" hreflang="en" href="${enUrl}">`,
-    `    <link rel="alternate" hreflang="zh-CN" href="${zhUrl}">`,
+    ...LOCALES.map((locale) => {
+      const url = ORIGIN + localizePath(urlPath, locale.prefix);
+      return `    <link rel="alternate" hreflang="${locale.hreflang}" href="${url}">`;
+    }),
     `    <link rel="alternate" hreflang="x-default" href="${enUrl}">`,
   ].join('\n');
   // 先剥掉已有的 hreflang link（幂等）。
@@ -301,12 +381,11 @@ function setHreflangBlock(html, urlPath) {
 // ============================================================
 // 主流程
 // ============================================================
-function generateZhFile(page, dict, zhTitle) {
+function generateLocaleFile(page, locale, dict, localizedTitle, sourceDict) {
   const srcPath = join(ROOT, page.src);
-  const outRel = 'zh/' + page.src;
+  const outRel = `${locale.code}/${page.src}`;
   const outPath = join(ROOT, outRel);
-  const enUrl = ORIGIN + page.urlPath;
-  const zhUrl = ORIGIN + '/zh' + page.urlPath;
+  const localeUrl = ORIGIN + localizePath(page.urlPath, locale.prefix);
 
   let html = readFileSync(srcPath, 'utf8');
   const missingKeys = new Set();
@@ -316,35 +395,38 @@ function generateZhFile(page, dict, zhTitle) {
   html = masked.masked;
 
   // 1. <html lang>
-  html = setHtmlLang(html, 'zh-CN');
+  html = setHtmlLang(html, locale.htmlLang, locale.dir);
 
-  // 2. <title>：优先用 PAGE_TITLES.zh，再 fallback 到 ogTitle / pageTitle
-  const titleText = zhTitle || dict.ogTitle || dict.pageTitle;
+  // 2. <title>：优先用 PAGE_TITLES.<locale>，再 fallback 到 ogTitle / pageTitle
+  const titleText = localizedTitle || dict.ogTitle || dict.pageTitle;
   html = setTitle(html, titleText);
 
   // 3. data-i18n 文本 + placeholder
   html = replaceDataI18nText(html, dict, missingKeys);
   html = replaceDataI18nPlaceholder(html, dict, missingKeys);
+  html = replaceDataI18nAttribute(html, dict, missingKeys, 'title', 'data-i18n-title');
+  html = replaceDataI18nAttribute(html, dict, missingKeys, 'aria-label', 'data-i18n-aria');
 
   // 4. SEO / 分享卡片 meta
   html = setMetaContent(html, 'description', dict.metaDescription);
   html = setMetaContent(html, 'keywords', dict.metaKeywords);
   html = setMetaContent(html, 'og:title', dict.ogTitle || titleText);
   html = setMetaContent(html, 'og:description', dict.ogDescription || dict.metaDescription);
-  html = setMetaContent(html, 'og:locale', dict.ogLocale || 'zh_CN');
-  html = setMetaContent(html, 'og:url', zhUrl);
+  html = setMetaContent(html, 'og:locale', dict.ogLocale);
+  html = setMetaContent(html, 'og:url', localeUrl);
 
-  // 5. canonical → 自指向 ZH URL（每个 locale 自我 canonical，绝不跨 locale canonical，
+  // 5. canonical → 自指向当前 locale URL（每个 locale 自我 canonical，绝不跨 locale canonical，
   //    否则 Google 会忽略 hreflang 集群）
-  html = setCanonical(html, zhUrl);
+  html = setCanonical(html, localeUrl);
 
-  // 6. 内链改写：所有 / 开头的非资源链接加上 /zh 前缀
-  html = rewriteInternalLinks(html, '/zh');
+  // 6. 内链改写：所有 / 开头的非资源链接加上语言前缀
+  html = rewriteInternalLinks(html, locale.prefix);
 
-  // 7. JSON-LD 里所有本站 url/item 改写到 /zh/...
-  html = rewriteJsonLdUrls(html);
+  // 7. JSON-LD 文案按 i18n 字典本地化，再把所有本站 url/item 改写到当前语言路径
+  html = localizeJsonLdStrings(html, sourceDict, dict);
+  html = rewriteJsonLdUrls(html, locale);
 
-  // 8. hreflang 三件套
+  // 8. hreflang 集合
   html = setHreflangBlock(html, page.urlPath);
 
   // 9. 还原 HTML 注释
@@ -370,7 +452,7 @@ function annotateEnFile(page) {
 // ============================================================
 // sitemap.xml 生成
 // ============================================================
-// 对每个页面生成 EN URL + ZH URL 两条 <url>，每条带完整 xhtml:link alternate 集合（含自指）。
+// 对每个页面生成 EN URL + 各语言 URL，每条带完整 xhtml:link alternate 集合（含自指）。
 // 自指是 hreflang 协议要求的 —— 缺了 self-referencing 整组 alternate 都会被 Google 丢弃。
 // changefreq 和 priority 保持和原 sitemap 一致；lastmod 用当天日期。
 // 注意：每次跑都会覆盖 sitemap.xml，所以不要手动维护它。
@@ -397,15 +479,20 @@ function buildSitemap() {
     '        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">',
   ];
 
-  // 对每个页面写 EN + ZH 两条 <url>。两条的 xhtml:link 块完全相同（en、zh-CN、x-default 三件套）。
+  // 对每个页面写 EN + 各语言 <url>。每条的 xhtml:link 块完全相同（en、各 locale、x-default）。
   // 每条 url 同时挂一张 OG 图（image:image），让 Google Images 也能抓到。
   for (const page of PAGES) {
     const meta = META[page.urlPath] || { changefreq: 'weekly', priority: '0.7' };
     const enUrl = ORIGIN + page.urlPath;
-    const zhUrl = ORIGIN + '/zh' + page.urlPath;
+    const localizedUrls = LOCALES.map((locale) => ({
+      hreflang: locale.hreflang,
+      url: ORIGIN + localizePath(page.urlPath, locale.prefix),
+    }));
     const altBlock = [
       `    <xhtml:link rel="alternate" hreflang="en" href="${enUrl}"/>`,
-      `    <xhtml:link rel="alternate" hreflang="zh-CN" href="${zhUrl}"/>`,
+      ...localizedUrls.map((localeUrl) => (
+        `    <xhtml:link rel="alternate" hreflang="${localeUrl.hreflang}" href="${localeUrl.url}"/>`
+      )),
       `    <xhtml:link rel="alternate" hreflang="x-default" href="${enUrl}"/>`,
     ].join('\n');
     const imgBlock = meta.ogImage
@@ -417,7 +504,7 @@ function buildSitemap() {
         ].join('\n')
       : null;
 
-    for (const url of [enUrl, zhUrl]) {
+    for (const url of [enUrl, ...localizedUrls.map((localeUrl) => localeUrl.url)]) {
       lines.push('  <url>');
       lines.push(`    <loc>${url}</loc>`);
       lines.push(`    <lastmod>${today}</lastmod>`);
@@ -443,7 +530,7 @@ function buildSitemap() {
   lines.push(''); // 末尾换行
 
   writeFileSync(join(ROOT, 'sitemap.xml'), lines.join('\n'), 'utf8');
-  return PAGES.length * 2 + EN_ONLY_PAGES.length; // 双语页 ×2 + EN-only 各 1 条
+  return PAGES.length * (LOCALES.length + 1) + EN_ONLY_PAGES.length;
 }
 
 function main() {
@@ -458,57 +545,68 @@ function main() {
 
   for (const page of PAGES) {
     const srcHtml = readFileSync(join(ROOT, page.src), 'utf8');
-    let pageDict = null;
-    let zhTitle = null;
-
-    if (page.dictSource === 'inline') {
-      const inlineDict = extractInlinePageDict(srcHtml, 'zh');
-      if (!inlineDict) {
-        allWarnings.push(`${page.src}: 无法提取 inline MIAOCUT_PAGE_I18N.zh，跳过`);
-        continue;
-      }
-      // 合并 BASE_I18N.zh + PAGE_I18N.zh，page 优先，与 app.js 运行时合并顺序一致
-      pageDict = { ...baseI18n.zh, ...inlineDict };
-      zhTitle = extractInlinePageTitle(srcHtml, 'zh');
-    } else if (page.dictSource === 'js') {
-      const jsContent = readFileSync(join(ROOT, page.jsFile), 'utf8');
-      const jsDict = extractJsObjectLiteral(jsContent, 'i18n');
-      if (!jsDict || !jsDict.zh) {
-        allWarnings.push(`${page.src}: 无法从 ${page.jsFile} 提取 i18n.zh，跳过`);
-        continue;
-      }
-      // js pattern 的页面不依赖 BASE_I18N，自己的 i18n.zh 已经是完整字典
-      pageDict = jsDict.zh;
-      // 这类页面没有 PAGE_TITLES，<title> 走 dict.pageTitle / ogTitle
-      zhTitle = pageDict.pageTitle || pageDict.ogTitle || null;
-    }
-
-    // 警告：必填 SEO key 缺失
-    const requiredSeo = ['metaDescription'];
-    const missingSeo = requiredSeo.filter((k) => !pageDict[k]);
-    if (missingSeo.length) {
-      allWarnings.push(`${page.src}: zh 字典缺少 SEO 关键 key [${missingSeo.join(', ')}]`);
-    }
-
-    const { outRel, missingKeys } = generateZhFile(page, pageDict, zhTitle);
     annotateEnFile(page);
-    generated.push(outRel);
 
-    if (missingKeys.size) {
-      // 只警告页面专属 key 缺失（BASE_I18N 提供的 key 即使页面没用也算"缺失"，
-      // 但这里 missingKeys 只收集真正在 HTML 里出现但字典里没有的 key）
-      allWarnings.push(
-        `${page.src}: 以下 data-i18n key 在 zh 字典里没找到（保持英文）: ${[...missingKeys].sort().join(', ')}`
-      );
+    for (const locale of LOCALES) {
+      let pageDict = null;
+      let sourceDict = null;
+      let localizedTitle = null;
+
+      if (page.dictSource === 'inline') {
+        const sourceInlineDict = extractInlinePageDict(srcHtml, 'en');
+        const inlineDict = extractInlinePageDict(srcHtml, locale.code);
+        if (!sourceInlineDict || !inlineDict) {
+          allWarnings.push(`${page.src}: 无法提取 inline MIAOCUT_PAGE_I18N.en/${locale.code}，跳过`);
+          continue;
+        }
+        if (!baseI18n[locale.code]) {
+          allWarnings.push(`app.js: BASE_I18N.${locale.code} 不存在，跳过 ${page.src}`);
+          continue;
+        }
+        // 合并 BASE_I18N.<locale> + PAGE_I18N.<locale>，page 优先，与 app.js 运行时合并顺序一致
+        sourceDict = { ...baseI18n.en, ...sourceInlineDict };
+        pageDict = { ...baseI18n[locale.code], ...inlineDict };
+        localizedTitle = extractInlinePageTitle(srcHtml, locale.code);
+      } else if (page.dictSource === 'js') {
+        const jsContent = readFileSync(join(ROOT, page.jsFile), 'utf8');
+        const jsDict = extractJsObjectLiteral(jsContent, 'i18n');
+        if (!jsDict || !jsDict.en || !jsDict[locale.code]) {
+          allWarnings.push(`${page.src}: 无法从 ${page.jsFile} 提取 i18n.en/${locale.code}，跳过`);
+          continue;
+        }
+        // js pattern 的页面不依赖 BASE_I18N，自己的 i18n.<locale> 已经是完整字典
+        sourceDict = jsDict.en;
+        pageDict = jsDict[locale.code];
+        // 这类页面没有 PAGE_TITLES，<title> 走 dict.pageTitle / ogTitle
+        localizedTitle = pageDict.pageTitle || pageDict.ogTitle || null;
+      }
+
+      // 警告：必填 SEO key 缺失
+      const requiredSeo = ['metaDescription'];
+      const missingSeo = requiredSeo.filter((k) => !pageDict[k]);
+      if (missingSeo.length) {
+        allWarnings.push(`${page.src}: ${locale.code} 字典缺少 SEO 关键 key [${missingSeo.join(', ')}]`);
+      }
+
+      const { outRel, missingKeys } = generateLocaleFile(page, locale, pageDict, localizedTitle, sourceDict);
+      generated.push(outRel);
+
+      if (missingKeys.size) {
+        // 只警告页面专属 key 缺失（BASE_I18N 提供的 key 即使页面没用也算"缺失"，
+        // 但这里 missingKeys 只收集真正在 HTML 里出现但字典里没有的 key）
+        allWarnings.push(
+          `${page.src}: 以下 data-i18n key 在 ${locale.code} 字典里没找到（保持英文）: ${[...missingKeys].sort().join(', ')}`
+        );
+      }
     }
   }
 
-  console.log(`✓ 生成了 ${generated.length} 个中文页面：`);
+  console.log(`✓ 生成了 ${generated.length} 个多语言页面：`);
   generated.forEach((p) => console.log(`    ${p}`));
 
-  // 生成包含 EN + ZH 两组 URL 的 sitemap，每条 url 都带完整 xhtml:link alternate 集合
+  // 生成包含 EN + 各语言 URL 的 sitemap，每条 url 都带完整 xhtml:link alternate 集合
   const urlCount = buildSitemap();
-  console.log(`\n✓ 生成 sitemap.xml，共 ${urlCount} 个 URL（双语页 EN+ZH 各两条带 hreflang；EN-only 教程页各一条）`);
+  console.log(`\n✓ 生成 sitemap.xml，共 ${urlCount} 个 URL（多语言页 EN+locales 带 hreflang；EN-only 教程页各一条）`);
 
   if (allWarnings.length) {
     console.log(`\n⚠ ${allWarnings.length} 条警告：`);

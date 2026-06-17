@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="hi-IN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="sogou_site_verification" content="lLMMvkZKud" />
+    <meta name="baidu-site-verification" content="codeva-bJiTOFPj58" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 主题（明/暗）：在首屏渲染前同步设好 <html class="dark">，避免闪一下白；并在 DOM ready 后接管切换按钮 -->
+    <script>/* redesign-dark-applied */(function () {
+        try {
+            var s = localStorage.getItem('theme');
+            var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', d);
+        } catch (e) {}
+        document.addEventListener('DOMContentLoaded', function () {
+            var b = document.getElementById('theme-toggle');
+            if (b) b.addEventListener('click', function () {
+                var dark = document.documentElement.classList.toggle('dark');
+                try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+            });
+        });
+    })();</script>
+
+    <!-- Resource hints：在解析 HTML 时就提前对后端 API 和 Umami 做 TLS 握手，
+         用户点上传时直接复用已有连接，省 100~300ms。crossorigin 是因为 Umami 脚本是跨源 CORS 资源。 -->
+    <link rel="preconnect" href="https://api2.miaocut.app">
+    <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
+
+    <!-- 品牌字体 Geist：预加载首屏要用的 sans 可变字体，避免 FOUT 抖动（crossorigin 是 font 预加载的硬性要求）-->
+    <link rel="preload" href="/fonts/geist/geist-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+    <title>मुफ़्त AI बैकग्राउंड रिमूवर ऑनलाइन — MiaoCut</title>
+    <meta name="description"
+        content="MiaoCut AI के साथ तुरंत छवियों से पृष्ठभूमि हटाएं। HD कटआउट, कोई वॉटरमार्क, कोई साइनअप और गोपनीयता-प्रथम प्रसंस्करण के साथ मुफ्त ऑनलाइन बैकग्राउंड रिमूवर।">
+    <!-- 关键词 meta：Google 已忽略，但 Bing/Yandex/百度 仍会参考；切语言时 updateLanguage() 会同步中文版本 -->
+    <meta name="keywords"
+        content="एआई बैकग्राउंड रिमूवर, बैकग्राउंड हटाएं, छवि से बैकग्राउंड हटाएं, फ्री बैकग्राउंड रिमूवर, बैकग्राउंड रिमूवर कोई वॉटरमार्क नहीं, बीजी हटाएं, पारदर्शी बैकग्राउंड">
+    <!-- OpenGraph SEO Tags -->
+    <meta property="og:title" content="MiaoCut - मुफ़्त AI बैकग्राउंड रिमूवर ऑनलाइन | छवि से पृष्ठभूमि हटाएँ">
+    <meta property="og:description"
+        content="MiaoCut AI के साथ तुरंत छवियों से पृष्ठभूमि हटाएं। HD कटआउट, कोई वॉटरमार्क, कोई साइनअप और गोपनीयता-प्रथम प्रसंस्करण के साथ मुफ्त ऑनलाइन बैकग्राउंड रिमूवर।">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://miaocut.app/hi/">
+    <!-- 默认英文 locale；切换语言时 JS 会改成 zh_CN -->
+    <meta property="og:locale" content="hi_IN">
+    <!-- Social card image：1200×630 PNG，由 scripts/og/generate.mjs 用 Playwright 渲染生成。
+         改文案后跑 `npm run og` 重新生成；模板见 scripts/og/template.html，文案见 scripts/og/config.json。 -->
+    <meta property="og:image" content="https://miaocut.app/og/home.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="MiaoCut — Free AI Background Remover Online">
+    <!-- Twitter Card：未单独设置时，X/Twitter 会回退到 OpenGraph，但显式声明 summary_large_image 可拿到大图卡片 -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://miaocut.app/og/home.png">
+    <meta name="twitter:image:alt" content="MiaoCut — Free AI Background Remover Online">
+    <link rel="canonical" href="https://miaocut.app/hi/">
+
+    <!-- 结构化数据（JSON-LD）：让 Google 把首页识别为应用 + 拿到 FAQ Rich Result。
+         注意：单页站，FAQ 内容跟 HTML 里 i18nData.en 的 faqXX 字段必须一致；
+         改 FAQ 文案时记得同步更新这里。 -->
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "MiaoCut",
+    "url": "https://miaocut.app/hi/",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Web",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "description": "Free AI background remover online. Remove background from images and download HD transparent PNG cutouts with no watermark.",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    },
+    "featureList": [
+        "Free AI background remover",
+        "Remove background from image in 1 second",
+        "HD transparent PNG output, no watermark",
+        "Supports JPG, PNG, WebP",
+        "No signup required",
+        "Privacy-first: in-memory processing"
+    ]
+}
+</script>
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "क्या यह AI बैकग्राउंड रिमूवर सचमुच मुफ़्त है?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "हाँ! MiaoCut को remove.bg जैसे महंगे सब्सक्रिप्शन टूल का वास्तविक रूप से मुफ्त विकल्प प्रदान करने के लिए एक स्वतंत्र डेवलपर द्वारा बनाया गया है। यहां कोई वॉटरमार्क नहीं है और कोई सख्त रिज़ॉल्यूशन सीमा नहीं है।"
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "कौन से छवि प्रारूप समर्थित हैं?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "आप JPG, PNG और WebP छवियाँ अपलोड कर सकते हैं। आउटपुट एक पारदर्शी पृष्ठभूमि के साथ एक उच्च गुणवत्ता वाली PNG छवि होगी, जो आपके डिज़ाइन के लिए तैयार होगी।"
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "बालों या फर के लिए किनारे का पता लगाना कितना अच्छा है?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "MiaoCut नवीनतम SOTA AI मॉडल (BiRefNet) का उपयोग करता है जो जटिल किनारों पर उत्कृष्टता प्राप्त करता है। यह मानव बाल, जानवरों के फर और यहां तक ​​कि कांच या शादी के कपड़े जैसी अर्ध-पारदर्शी वस्तुओं को भी पूरी तरह से संभालता है।"
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "क्या मैं किसी छवि से निःशुल्क पृष्ठभूमि हटा सकता हूँ?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "हाँ। MiaoCut एक निःशुल्क AI बैकग्राउंड रिमूवर है। आप छवियां अपलोड कर सकते हैं और वॉटरमार्क के बिना पारदर्शी PNG परिणाम डाउनलोड कर सकते हैं।"
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "क्या MiaoCut वॉटरमार्क जोड़ता है?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "नहीं, MiaoCut वॉटरमार्क के बिना साफ पृष्ठभूमि-हटाई गई छवियां प्रदान करता है।"
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "क्या मुझे साइन अप करने की आवश्यकता है?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "नहीं, आप खाता बनाए बिना छवि पृष्ठभूमि को ऑनलाइन हटा सकते हैं।"
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "क्या मैं इसका उपयोग उत्पाद फ़ोटो के लिए कर सकता हूँ?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "हाँ। MiaoCut उत्पाद छवियों, ई-कॉमर्स फ़ोटो, पोर्ट्रेट, लोगो, पालतू जानवर और बहुत कुछ के लिए अच्छा काम करता है।"
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "आउटपुट स्वरूप क्या है?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "आउटपुट एक पारदर्शी पृष्ठभूमि के साथ एक उच्च गुणवत्ता वाली PNG छवि है।"
+            }
+        }
+    ]
+}
+</script>
+
+    <!-- HowTo schema：对应下方 "How to Remove Background from an Image" 三步段落。
+         给 Google 抓 rich results、给 ChatGPT/Perplexity 抓 step-by-step 引用。
+         text 内容必须和页面上 i18nData.en.uploadDesc / aiDesc / dlDesc 保持一致。 -->
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "किसी इमेज से बैकग्राउंड कैसे हटाएं",
+    "description": "Remove the background from any photo and download a transparent PNG cutout in three steps with MiaoCut's free AI background remover.",
+    "totalTime": "PT5S",
+    "tool": [
+        {
+            "@type": "HowToTool",
+            "name": "MiaoCut AI Background Remover"
+        }
+    ],
+    "step": [
+        {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Upload Your Image",
+            "text": "एक JPG, PNG, या WebP छवि अपलोड करें। कोई साइनअप या क्रेडिट कार्ड की आवश्यकता नहीं है।",
+            "url": "https://miaocut.app/hi/#dropzone"
+        },
+        {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "AI Removes the Background",
+            "text": "MiaoCut का AI बैकग्राउंड रिमूवर विषय का पता लगाता है और बाल, फर और जटिल किनारों सहित पृष्ठभूमि को स्वचालित रूप से हटा देता है।"
+        },
+        {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Download Transparent PNG",
+            "text": "अपने HD कटआउट को बिना वॉटरमार्क वाले पारदर्शी PNG के रूप में डाउनलोड करें।"
+        }
+    ]
+}
+</script>
+
+    <!-- Organization schema：声明发布者身份，给 AI 搜索引擎（ChatGPT/Perplexity）一个可引用的实体。
+         独立开发者 + 透明技术栈是 MiaoCut 的核心信任卖点；这里把它机器可读化。
+         founder 链接到 Hugging Face profile 作为 indie developer 的可验证身份；
+         sameAs 加了 3 个 HF Space 实例的 URL 作为后端身份证明。
+         如果以后开 GitHub repo / Twitter / Product Hunt，把对应 URL 也加进 sameAs。 -->
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "MiaoCut",
+    "url": "https://miaocut.app/hi/",
+    "logo": "https://miaocut.app/og/home.png",
+    "description": "Free, no-signup AI photo toolkit — background remover, watermark eraser, old photo restoration, product photo enhancer, and ID photo maker. Built by an independent developer as a free alternative to subscription tools like remove.bg and PhotoRoom.",
+    "founder": {
+        "@type": "Person",
+        "name": "midcodex",
+        "url": "https://huggingface.co/midcodex",
+        "jobTitle": "Independent Developer",
+        "description": "Independent developer of MiaoCut, a privacy-first AI photo toolkit."
+    },
+    "sameAs": [
+        "https://huggingface.co/midcodex",
+        "https://huggingface.co/spaces/midcodex/miao_cut",
+        "https://huggingface.co/spaces/midcodex/miao_cut2",
+        "https://huggingface.co/spaces/midcodex/miao_cut3"
+    ]
+}
+</script>
+
+    <!--
+      Tailwind CSS - 本地构建
+      源：src/input.css；构建命令：npm run build:css；输出：output.css
+      改动 index.html 的 class 后必须重新跑 build:css 并把 output.css 一起提交。
+    -->
+    <link rel="stylesheet" href="/output.css">
+    <!--
+      Umami Analytics - 隐私友好的流量统计
+    -->
+    <script defer src="https://cloud.umami.is/script.js"
+        data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
+    <link rel="alternate" hreflang="en" href="https://miaocut.app/">
+    <link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/">
+    <link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/">
+    <link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/">
+    <link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/">
+    <link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/">
+    <link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/">
+    <link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/">
+    <link rel="alternate" hreflang="x-default" href="https://miaocut.app/">
+</head>
+
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-brand-100 selection:text-brand-900 dark:bg-zinc-950 dark:text-zinc-200">
+
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
+            <a href="/hi/" class="text-2xl font-black tracking-tight text-gray-900 dark:text-zinc-50">MiaoCut</a>
+            <div class="flex items-center gap-4">
+                <nav class="hidden items-center gap-4 text-sm font-medium text-gray-600 md:flex dark:text-zinc-300">
+                    <a href="/hi/" class="text-gray-900 dark:text-zinc-50" data-i18n="navBg">पृष्ठभूमि हटानेवाला</a>
+                    <a href="/hi/product-photo-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navProduct">उत्पाद</a>
+                    <a href="/hi/portrait-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navPortrait">चित्र</a>
+                    <a href="/hi/watermark-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navWatermark">वाटर-मार्क</a>
+                    <a href="/hi/id-photo-maker/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navId">ID फोटो</a>
+                    <a href="/hi/old-photo-restoration/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navRestore">पुरानी फोटो</a>
+                </nav>
+                <a href="https://github.com/midcodehub/miaoCut" target="_blank" rel="noopener" aria-label="MiaoCut on GitHub (open source)" title="View source on GitHub" class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z" /></svg></a>
+                <button id="theme-toggle" type="button" aria-label="Toggle dark mode"
+                    class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors">
+                    <svg class="h-5 w-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
+                    <svg class="h-5 w-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
+                </button>
+                <select id="lang-switch" aria-label="Language"
+                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors dark:text-zinc-300 dark:hover:text-zinc-100">
+                    <option value="en">English</option>
+                    <option value="zh">简体中文</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="pt-br">Português (BR)</option>
+                    <option value="bn">বাংলা</option>
+                    <option value="fil">Filipino</option>
+                    <option value="ur">اردو</option>
+                </select>
+            </div>
+        </div>
+    </header>
+    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
+        <a href="/hi/" class="shrink-0 text-gray-900 dark:text-zinc-50" data-i18n="navBg">पृष्ठभूमि हटानेवाला</a>
+        <a href="/hi/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">उत्पाद</a>
+        <a href="/hi/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">चित्र</a>
+        <a href="/hi/watermark-remover/" class="shrink-0" data-i18n="navWatermark">वाटर-मार्क</a>
+        <a href="/hi/id-photo-maker/" class="shrink-0" data-i18n="navId">ID फोटो</a>
+        <a href="/hi/old-photo-restoration/" class="shrink-0" data-i18n="navRestore">पुरानी फोटो</a>
+    </nav>
+
+    <!-- 核心区域 -->
+    <main class="mx-auto flex w-full max-w-6xl flex-grow flex-col items-center justify-center px-5 py-12 md:py-16">
+
+        <!-- 标语 -->
+        <div class="text-center mb-10 md:mb-14">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 tracking-[-0.02em] mb-5 text-balance dark:text-zinc-50" data-i18n="title">मुफ़्त AI बैकग्राउंड रिमूवर</h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed text-pretty dark:text-zinc-300" data-i18n="subtitle">1 सेकंड में ऑनलाइन छवियों से पृष्ठभूमि हटाएं। बिना वॉटरमार्क, बिना साइनअप और गोपनीयता-प्रथम प्रसंस्करण के साथ HD पारदर्शी PNG कटआउट प्राप्त करें।</p>
+        </div>
+
+        <!-- Dropzone -->
+        <div class="w-full max-w-3xl">
+
+            <!-- 质量模式切换：sharp 走默认快速通道，fur 触发 alpha matting + 前景色去污染（细腻但慢 ~3s）。
+                 选中态由 JS 切类，不依赖 CSS :checked 选择器（input type=button 没 :checked）。 -->
+            <div id="profile-toggle" class="mb-4 flex items-center justify-center gap-2 text-sm flex-wrap">
+                <span class="text-gray-500 dark:text-zinc-400" data-i18n="profileLabel">गुणवत्ता:</span>
+                <button type="button" data-profile="sharp"
+                    class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors dark:border-zinc-700 dark:text-zinc-200 dark:hover:border-zinc-600">
+                    <span data-i18n="profileSharp">तेज़</span>
+                </button>
+                <button type="button" data-profile="fur"
+                    class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors dark:border-zinc-700 dark:text-zinc-200 dark:hover:border-zinc-600">
+                    <span data-i18n="profileFur">बढ़िया (बाल/फर)</span>
+                </button>
+                <span id="profile-hint" class="text-xs text-gray-500 ml-1 dark:text-zinc-400" data-i18n="profileHintSharp">~1s · रोजमर्रा की तस्वीरें</span>
+            </div>
+
+            <div id="dropzone"
+                class="relative group cursor-pointer bg-white border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center min-h-[320px] transition-colors hover:border-brand-400 hover:bg-brand-50/40 overflow-hidden dark:bg-zinc-900 dark:border-zinc-700 dark:hover:bg-brand-500/10">
+                <input type="file" id="fileInput" class="hidden" accept="image/jpeg, image/png, image/webp">
+
+                <div id="dropzone-content"
+                    class="flex flex-col items-center justify-center text-center p-8 pointer-events-none">
+                    <svg class="w-12 h-12 text-gray-400 mb-4 group-hover:text-brand-600 transition-colors dark:text-zinc-500 dark:group-hover:text-brand-400" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                    </svg>
+                    <p class="text-lg font-medium text-gray-700 mb-1 dark:text-zinc-100" data-i18n="dropzoneTitle">छवि को यहां खींचें और छोड़ें, या अपलोड करने के लिए क्लिक करें</p>
+                    <p class="text-sm text-gray-500 dark:text-zinc-300" data-i18n="dropzoneSub">(JPG / PNG / WebP का समर्थन करता है)</p>
+                </div>
+            </div>
+
+            <!-- 信任背书 -->
+            <div class="mt-6 flex flex-col items-center justify-center text-center text-gray-500 text-sm dark:text-zinc-400">
+                <div class="flex items-center gap-1.5 mb-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                        </path>
+                    </svg>
+                    <span class="font-medium" data-i18n="trustTitle">आपकी छवियां 100% सुरक्षित हैं.</span>
+                </div>
+                <p data-i18n="trustSub">मेमोरी में संसाधित, स्वचालित रूप से नष्ट हो जाता है। AI प्रशिक्षण के लिए कभी भी उपयोग नहीं किया गया।</p>
+            </div>
+
+            <!-- 工具卡片栏：紧贴上传区，给所有子页一个首屏可见的入口。
+                 8 张卡片做 2x4 网格（移动端 1 列、平板 2 列、桌面 4 列）。第一张高亮表示"当前页"。 -->
+            <section class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4" aria-label="MiaoCut tools">
+                <a href="/hi/" class="rounded-lg border border-brand-600 bg-brand-50/60 p-4 text-left shadow-sm dark:border-brand-500 dark:bg-brand-500/10">
+                    <p class="text-sm font-bold text-gray-900 dark:text-zinc-50" data-i18n="toolBgTitle">पृष्ठभूमि निकालें</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500 dark:text-zinc-400" data-i18n="toolBgBody">HD सेकंड में पारदर्शी PNG।</p>
+                </a>
+                <a href="/hi/product-photo-background-remover/" class="rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-brand-400 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                    <p class="text-sm font-bold text-gray-900 dark:text-zinc-50" data-i18n="toolProductTitle">उत्पाद</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500 dark:text-zinc-400" data-i18n="toolProductBody">सफ़ेद पृष्ठभूमि, चौकोर फसलें, और छायाएँ।</p>
+                </a>
+                <a href="/hi/portrait-background-remover/" class="rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-brand-400 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                    <p class="text-sm font-bold text-gray-900 dark:text-zinc-50" data-i18n="toolPortraitTitle">चित्र</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500 dark:text-zinc-400" data-i18n="toolPortraitBody">प्रोफ़ाइल फ़ोटो, बायोडाटा और सामाजिक कटआउट।</p>
+                </a>
+                <a href="/hi/watermark-remover/" class="rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-brand-400 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                    <p class="text-sm font-bold text-gray-900 dark:text-zinc-50" data-i18n="toolWatermarkTitle">वाटर-मार्क</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500 dark:text-zinc-400" data-i18n="toolWatermarkBody">निशान को पेंट करें और उसकी मरम्मत करें।</p>
+                </a>
+                <a href="/hi/id-photo-maker/" class="rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-brand-400 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                    <p class="text-sm font-bold text-gray-900 dark:text-zinc-50" data-i18n="toolIdTitle">ID फोटो</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500 dark:text-zinc-400" data-i18n="toolIdBody">पासपोर्ट, बायोडाटा और परीक्षा ID तस्वीरें।</p>
+                </a>
+                <a href="/hi/old-photo-restoration/" class="rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-brand-400 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                    <p class="text-sm font-bold text-gray-900 dark:text-zinc-50" data-i18n="toolRestoreTitle">पुरानी फोटो</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500 dark:text-zinc-400" data-i18n="toolRestoreBody">फीकी, शोर भरी या धुंधली तस्वीरें पुनर्स्थापित करें।</p>
+                </a>
+                <a href="/hi/jpg-to-transparent-png/" class="rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-brand-400 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                    <p class="text-sm font-bold text-gray-900 dark:text-zinc-50" data-i18n="toolJpgPngTitle">JPG → पारदर्शी PNG</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500 dark:text-zinc-400" data-i18n="toolJpgPngBody">AI-JPG को पारदर्शी PNG में काटें।</p>
+                </a>
+                <a href="/hi/png-to-jpg-white-background/" class="rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-brand-400 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                    <p class="text-sm font-bold text-gray-900 dark:text-zinc-50" data-i18n="toolPngJpgTitle">PNG → JPG</p>
+                    <p class="mt-1 text-xs leading-relaxed text-gray-500 dark:text-zinc-400" data-i18n="toolPngJpgBody">पारदर्शी PNG को सफेद पर चपटा करें।</p>
+                </a>
+            </section>
+
+            <!-- 首屏关键词说明区：紧贴上传区下方，给搜索引擎抓主题词，给用户做一行价值锚定 -->
+            <div class="mt-8 text-center text-sm text-gray-500 leading-relaxed max-w-2xl mx-auto dark:text-zinc-400">
+                <p data-i18n="seoIntro">MiaoCut एक निःशुल्क AI बैकग्राउंड रिमूवर है जो छवियों से पृष्ठभूमि को स्वचालित रूप से हटाने में आपकी सहायता करता है। JPG, PNG, या WebP फ़ोटो अपलोड करें और साफ़ पारदर्शी PNG कटआउट तुरंत डाउनलोड करें।</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- SEO 丰富内容区 (获取谷歌被动流量的引擎) -->
+    <div class="w-full flex justify-center bg-white border-t border-gray-200 mt-12 pt-16 pb-20 px-6 dark:bg-zinc-900 dark:border-zinc-800">
+        <div class="w-full max-w-4xl text-left">
+
+            <!-- How it works -->
+            <section class="mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-10 text-center dark:text-zinc-50" data-i18n="howItWorks">किसी इमेज से बैकग्राउंड कैसे हटाएं</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-gray-600 dark:text-zinc-300">
+                    <div
+                        class="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md transition-shadow text-center dark:bg-zinc-900 dark:border-zinc-800">
+                        <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                            </svg>
+                        </div>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="uploadImg">1. अपनी छवि अपलोड करें</h3>
+                        <p class="text-sm leading-relaxed" data-i18n="uploadDesc">एक JPG, PNG, या WebP छवि अपलोड करें। कोई साइनअप या क्रेडिट कार्ड की आवश्यकता नहीं है।</p>
+                    </div>
+                    <div
+                        class="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md transition-shadow text-center dark:bg-zinc-900 dark:border-zinc-800">
+                        <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" />
+                            </svg>
+                        </div>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="aiProc">2. AI बैकग्राउंड हटाता है</h3>
+                        <p class="text-sm leading-relaxed" data-i18n="aiDesc">MiaoCut का AI बैकग्राउंड रिमूवर विषय का पता लगाता है और बाल, फर और जटिल किनारों सहित पृष्ठभूमि को स्वचालित रूप से हटा देता है।</p>
+                    </div>
+                    <div
+                        class="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md transition-shadow text-center dark:bg-zinc-900 dark:border-zinc-800">
+                        <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                            </svg>
+                        </div>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="dlFree">3. पारदर्शी PNG डाउनलोड करें</h3>
+                        <p class="text-sm leading-relaxed" data-i18n="dlDesc">अपने HD कटआउट को बिना वॉटरमार्क वाले पारदर्शी PNG के रूप में डाउनलोड करें।</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Examples Gallery -->
+            <!-- ⚠️ 图片需放到 examples/ 目录后再提交；推荐 webp 512×512、单张 <60KB。
+                 alt 文案是 SEO 关键词锚点，4 个 alt 各占一类长尾词，不要本地化成中文（目标是英文搜索流量）。
+                 文件未补全时浏览器会显示破图占位，所以最好和图片一起 commit。 -->
+            <section class="mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-10 text-center dark:text-zinc-50" data-i18n="examplesTitle">कार्रवाई में MiaoCut देखें</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200 dark:bg-zinc-800 dark:border-zinc-800">
+                        <img src="/examples/product-cutout.webp"
+                            srcset="/examples/product-cutout-256.webp 256w, /examples/product-cutout.webp 512w"
+                            sizes="(max-width: 768px) 50vw, 200px"
+                            alt="Sneaker product photo with transparent background after AI cutout"
+                            width="512" height="512" loading="lazy" decoding="async"
+                            class="w-full h-auto block">
+                        <figcaption class="text-xs text-gray-600 text-center py-2 dark:text-zinc-300" data-i18n="exampleProduct">उत्पाद फोटो</figcaption>
+                    </figure>
+                    <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200 dark:bg-zinc-800 dark:border-zinc-800">
+                        <img src="/examples/portrait-cutout.webp"
+                            srcset="/examples/portrait-cutout-256.webp 256w, /examples/portrait-cutout.webp 512w"
+                            sizes="(max-width: 768px) 50vw, 200px"
+                            alt="Portrait of curly-haired woman with background removed and hair edges preserved"
+                            width="512" height="512" loading="lazy" decoding="async"
+                            class="w-full h-auto block">
+                        <figcaption class="text-xs text-gray-600 text-center py-2 dark:text-zinc-300" data-i18n="examplePortrait">चित्र</figcaption>
+                    </figure>
+                    <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200 dark:bg-zinc-800 dark:border-zinc-800">
+                        <img src="/examples/logo-cutout.webp"
+                            srcset="/examples/logo-cutout-256.webp 256w, /examples/logo-cutout.webp 512w"
+                            sizes="(max-width: 768px) 50vw, 200px"
+                            alt="MiaoCut brand logo extracted to transparent PNG with clean edges"
+                            width="512" height="512" loading="lazy" decoding="async"
+                            class="w-full h-auto block">
+                        <figcaption class="text-xs text-gray-600 text-center py-2 dark:text-zinc-300" data-i18n="exampleLogo">प्रतीक चिन्ह</figcaption>
+                    </figure>
+                    <figure class="bg-gray-100 rounded-xl overflow-hidden border border-gray-200 dark:bg-zinc-800 dark:border-zinc-800">
+                        <img src="/examples/pet-cutout.webp"
+                            srcset="/examples/pet-cutout-256.webp 256w, /examples/pet-cutout.webp 512w"
+                            sizes="(max-width: 768px) 50vw, 200px"
+                            alt="White Persian cat with fluffy fur edges cleanly cut out by AI"
+                            width="512" height="512" loading="lazy" decoding="async"
+                            class="w-full h-auto block">
+                        <figcaption class="text-xs text-gray-600 text-center py-2 dark:text-zinc-300" data-i18n="examplePet">पालतू</figcaption>
+                    </figure>
+                </div>
+            </section>
+
+            <!-- Why Choose Us -->
+            <section class="mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-10 text-center dark:text-zinc-50" data-i18n="whyChoose">MiaoCut AI बैकग्राउंड रिमूवर क्यों चुनें?</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl border border-gray-100 transition-shadow hover:shadow-sm dark:bg-zinc-900 dark:border-zinc-800">
+                        <svg class="w-6 h-6 text-brand-600 mr-3 shrink-0 dark:text-brand-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="freeLimit">निःशुल्क पृष्ठभूमि हटानेवाला</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="freeDesc">बिना किसी छिपी हुई लागत, बिना किसी सदस्यता जाल और असीमित छवि प्रसंस्करण के 100% मुफ़्त।</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl border border-gray-100 transition-shadow hover:shadow-sm dark:bg-zinc-900 dark:border-zinc-800">
+                        <svg class="w-6 h-6 text-brand-600 mr-3 shrink-0 dark:text-brand-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="hdQuality">HD पारदर्शी PNG</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="hdDesc">मूल रिज़ॉल्यूशन पर उच्च-परिभाषा पारदर्शी PNG कटआउट डाउनलोड करें - कभी संपीड़ित नहीं।</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl border border-gray-100 transition-shadow hover:shadow-sm dark:bg-zinc-900 dark:border-zinc-800">
+                        <svg class="w-6 h-6 text-brand-600 mr-3 shrink-0 dark:text-brand-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="noWatermark">कोई वॉटरमार्क नहीं</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="noWDesc">ई-कॉमर्स, डिज़ाइन या व्यक्तिगत उपयोग के लिए तैयार, बिना वॉटरमार्क वाली पृष्ठभूमि से हटाई गई साफ़ छवियाँ प्राप्त करें।</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl border border-gray-100 transition-shadow hover:shadow-sm dark:bg-zinc-900 dark:border-zinc-800">
+                        <svg class="w-6 h-6 text-brand-600 mr-3 shrink-0 dark:text-brand-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="noSignup">कोई साइनअप आवश्यक नहीं</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="noSignupDesc">पृष्ठभूमि को तुरंत ऑनलाइन हटाएं - कोई खाता नहीं, कोई लॉगिन नहीं, कोई ईमेल की आवश्यकता नहीं है।</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl border border-gray-100 transition-shadow hover:shadow-sm dark:bg-zinc-900 dark:border-zinc-800">
+                        <svg class="w-6 h-6 text-brand-600 mr-3 shrink-0 dark:text-brand-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="privacyFirst">गोपनीयता-प्रथम छवि प्रसंस्करण</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="privacyDesc">छवियाँ मेमोरी में संसाधित होती हैं और स्वचालित रूप से नष्ट हो जाती हैं। हम कभी भी आपके डेटा का उपयोग AI प्रशिक्षण के लिए नहीं करते हैं।</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl border border-gray-100 transition-shadow hover:shadow-sm dark:bg-zinc-900 dark:border-zinc-800">
+                        <svg class="w-6 h-6 text-brand-600 mr-3 shrink-0 dark:text-brand-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="sotaModel">BiRefNet द्वारा संचालित</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="sotaDesc">SOTA AI मॉडल बाल, फर और अर्ध-पारदर्शी वस्तुओं पर सटीक किनारों के साथ JPG, PNG और WebP को संभालता है।</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Use Cases -->
+            <!-- 前两张卡片是独立 landing page 的内链入口（指向 use case 子页，吃精准长尾流量）；
+                 后两张暂留为静态 div，新增子页时再换成 <a>。 -->
+            <section class="mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-10 text-center dark:text-zinc-50" data-i18n="useCasesTitle">लोकप्रिय उपयोग के मामले</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <a href="/hi/product-photo-background-remover/"
+                        class="block bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="useCaseProductTitle">उत्पाद तस्वीरें</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="useCaseProductDesc">ई-कॉमर्स, Amazon, Shopify, Etsy और ऑनलाइन स्टोर के लिए उत्पाद छवियों से पृष्ठभूमि हटाएं।</p>
+                    </a>
+                    <a href="/hi/portrait-background-remover/"
+                        class="block bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="useCasePortraitTitle">पोर्ट्रेट और प्रोफ़ाइल चित्र</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="useCasePortraitDesc">अवतारों, सोशल मीडिया, बायोडाटा और प्रोफ़ाइल फ़ोटो के लिए साफ़ पारदर्शी कटआउट बनाएं।</p>
+                    </a>
+                    <a href="/hi/jpg-to-transparent-png/"
+                        class="block bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="useCaseLogoTitle">लोगो और डिज़ाइन संपत्तियाँ</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="useCaseLogoDesc">लोगो, आइकन और ग्राफ़िक्स से सफ़ेद या गन्दी पृष्ठभूमि हटाएँ।</p>
+                    </a>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md transition-shadow dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="useCasePetsTitle">पालतू जानवर, बाल और फर</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="useCasePetsDesc">बाल, फर और अर्ध-पारदर्शी वस्तुओं जैसे जटिल किनारों को संभालने के लिए AI का उपयोग करें।</p>
+                    </div>
+                    <a href="/hi/old-photo-restoration/"
+                        class="block bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="useCaseOldPhotoTitle">पुरानी फोटो बहाली</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="useCaseOldPhotoDesc">फीकी पारिवारिक तस्वीरों को पुनर्स्थापित करें, शोर कम करें, विवरणों को तेज़ करें और एक साफ़ उच्च-रिज़ॉल्यूशन छवि निर्यात करें।</p>
+                    </a>
+                </div>
+            </section>
+
+            <!-- FAQ -->
+            <section>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-10 text-center dark:text-zinc-50" data-i18n="faqTitle">अक्सर पूछे जाने वाले प्रश्नों</h2>
+                <div class="space-y-4">
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq1Q">क्या यह AI बैकग्राउंड रिमूवर सचमुच मुफ़्त है?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq1A">हाँ! MiaoCut को remove.bg जैसे महंगे सब्सक्रिप्शन टूल का वास्तविक रूप से मुफ्त विकल्प प्रदान करने के लिए एक स्वतंत्र डेवलपर द्वारा बनाया गया है। यहां कोई वॉटरमार्क नहीं है और कोई सख्त रिज़ॉल्यूशन सीमा नहीं है।</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq2Q">कौन से छवि प्रारूप समर्थित हैं?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq2A">आप JPG, PNG और WebP छवियाँ अपलोड कर सकते हैं। आउटपुट एक पारदर्शी पृष्ठभूमि के साथ एक उच्च गुणवत्ता वाली PNG छवि होगी, जो आपके डिज़ाइन के लिए तैयार होगी।</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq3Q">बालों या फर के लिए किनारे का पता लगाना कितना अच्छा है?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq3A">MiaoCut नवीनतम SOTA AI मॉडल (BiRefNet) का उपयोग करता है जो जटिल किनारों पर उत्कृष्टता प्राप्त करता है। यह मानव बाल, जानवरों के फर और यहां तक ​​कि कांच या शादी के कपड़े जैसी अर्ध-पारदर्शी वस्तुओं को भी पूरी तरह से संभालता है।</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq4Q">क्या मैं किसी छवि से निःशुल्क पृष्ठभूमि हटा सकता हूँ?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq4A">हाँ। MiaoCut एक निःशुल्क AI बैकग्राउंड रिमूवर है। आप छवियां अपलोड कर सकते हैं और वॉटरमार्क के बिना पारदर्शी PNG परिणाम डाउनलोड कर सकते हैं।</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq5Q">क्या MiaoCut वॉटरमार्क जोड़ता है?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq5A">नहीं, MiaoCut वॉटरमार्क के बिना साफ पृष्ठभूमि-हटाई गई छवियां प्रदान करता है।</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq6Q">क्या मुझे साइन अप करने की आवश्यकता है?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq6A">नहीं, आप खाता बनाए बिना छवि पृष्ठभूमि को ऑनलाइन हटा सकते हैं।</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq7Q">क्या मैं इसका उपयोग उत्पाद फ़ोटो के लिए कर सकता हूँ?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq7A">हाँ। MiaoCut उत्पाद छवियों, ई-कॉमर्स फ़ोटो, पोर्ट्रेट, लोगो, पालतू जानवर और बहुत कुछ के लिए अच्छा काम करता है।</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq8Q">आउटपुट स्वरूप क्या है?</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq8A">आउटपुट एक पारदर्शी पृष्ठभूमि के साथ एक उच्च गुणवत्ता वाली PNG छवि है।</p>
+                    </div>
+                </div>
+                <p class="mt-8 text-center text-sm text-gray-500 dark:text-zinc-400">
+                    <span data-i18n="guidesPromoText">किसी अन्य ऐप का उपयोग कर रहे हैं? इसके लिए हमारी चरण-दर-चरण मार्गदर्शिकाएँ देखें </span><a href="/how-to-remove-background/" class="text-gray-900 font-medium underline underline-offset-2 hover:text-gray-600 dark:text-zinc-50 dark:hover:text-zinc-300" data-i18n="guidesPromoLink">PowerPoint, GIMP और अन्य में पृष्ठभूमि हटाना</a>.
+                </p>
+            </section>
+        </div>
+    </div>
+
+    <!-- All Tools footer：hub-and-spoke 内链结构，让 Google 在首页就能爬到所有子工具，
+         也给用户一个"完整目录"的位置。改任意一项时记得同步底下 PAGE_I18N 的 footer* / toolX* key。 -->
+    <footer class="w-full bg-gray-900 text-gray-300 mt-0">
+        <div class="max-w-6xl mx-auto px-6 py-12">
+            <h2 class="text-xl font-bold text-white mb-8 text-center" data-i18n="footerToolsTitle">सभी MiaoCut उपकरण</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatRemove">AI पृष्ठभूमि हटाना</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/hi/" class="hover:text-white transition-colors" data-i18n="toolBgTitle">पृष्ठभूमि निकालें</a></li>
+                        <li><a href="/hi/product-photo-background-remover/" class="hover:text-white transition-colors" data-i18n="toolProductTitle">उत्पाद</a></li>
+                        <li><a href="/hi/portrait-background-remover/" class="hover:text-white transition-colors" data-i18n="toolPortraitTitle">चित्र</a></li>
+                        <li><a href="/hi/id-photo-maker/" class="hover:text-white transition-colors" data-i18n="toolIdTitle">ID फोटो</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatConvert">प्रारूप रूपांतरण</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/hi/jpg-to-transparent-png/" class="hover:text-white transition-colors" data-i18n="toolJpgPngTitle">JPG → पारदर्शी PNG</a></li>
+                        <li><a href="/hi/png-to-jpg-white-background/" class="hover:text-white transition-colors" data-i18n="toolPngJpgTitle">PNG → JPG</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatRepair">फोटो मरम्मत एवं संवर्द्धन</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/hi/watermark-remover/" class="hover:text-white transition-colors" data-i18n="toolWatermarkTitle">वाटर-मार्क</a></li>
+                        <li><a href="/hi/old-photo-restoration/" class="hover:text-white transition-colors" data-i18n="toolRestoreTitle">पुरानी फोटो</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatGuides">गाइड</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/how-to-remove-background/" class="hover:text-white transition-colors" data-i18n="guideHubTitle">बैकग्राउंड कैसे हटाएं</a></li>
+                        <li><a href="/how-to-remove-background/powerpoint/" class="hover:text-white transition-colors" data-i18n="guidePptTitle">PowerPoint में</a></li>
+                        <li><a href="/how-to-remove-background/gimp/" class="hover:text-white transition-colors" data-i18n="guideGimpTitle">जीआईएमपी में</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500 dark:text-zinc-400">
+                <p class="mb-2" data-i18n="footerTagline">MiaoCut · मुफ़्त AI छवि उपकरण जो आपकी गोपनीयता का सम्मान करते हैं।</p>
+                <p><a href="/privacy/" class="hover:text-white transition-colors" data-i18n="footerPrivacy">गोपनीयता</a> · <a href="/terms/" class="hover:text-white transition-colors" data-i18n="footerTerms">शर्तें</a> · <a href="https://github.com/midcodehub/miaoCut" target="_blank" rel="noopener" class="hover:text-white transition-colors">GitHub</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bookmark Banner -->
+    <div id="bookmark-banner" class="fixed top-0 left-0 right-0 z-50 bg-gray-900 text-white">
+        <div class="max-w-3xl mx-auto flex items-center justify-between px-6 py-3">
+            <div class="flex items-center gap-3">
+                <span class="text-lg">&#11088;</span>
+                <p class="text-sm"><span data-i18n="bookmarkText">MiaoCut की तरह? प्रेस</span> <kbd id="shortcut-key"
+                        class="px-1.5 py-0.5 bg-gray-700 rounded text-xs font-mono">Ctrl + D</kbd> <span
+                        data-i18n="bookmarkSuffix">बुकमार्क करने के लिए, अगला कटआउट केवल 1 सेकंड दूर है!</span></p>
+            </div>
+            <button id="dismiss-banner" class="text-gray-400 hover:text-white transition-colors ml-4 shrink-0 dark:text-zinc-500"
+                aria-label="close">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script src="/feedback.js"></script>
+
+    <!-- ============================================================
+         页面专属 i18n + 标题，必须在 /app.js 之前执行
+         ============================================================
+         共享 chrome 文案（dropzone 提示、上传状态、反馈表单等）由 app.js 内置 BASE_I18N 提供。
+         这里只声明本页面独有的 SEO/section 文案。新增 use case 子页时复制本块结构即可。
+    -->
+    <script>
+        window.MIAOCUT_PAGE_KEY = 'home';
+        window.MIAOCUT_PAGE_TITLES = {
+    "zh": "免费在线 AI 抠图工具 — MiaoCut",
+    "en": "Free AI Background Remover Online — MiaoCut",
+    "hi": "मुफ़्त AI बैकग्राउंड रिमूवर ऑनलाइन — MiaoCut",
+    "id": "Penghapus Latar Belakang AI Online Gratis — MiaoCut",
+    "pt-br": "Removedor de fundo AI grátis online – MiaoCut",
+    "bn": "বিনামূল্যে AI ব্যাকগ্রাউন্ড রিমুভার অনলাইন — MiaoCut",
+    "fil": "Libreng AI Background Remover Online — MiaoCut",
+    "ur": "مفت AI بیک گراؤنڈ ریموور آن لائن — MiaoCut"
+};
+        window.MIAOCUT_PAGE_I18N = {
+    "zh": {
+        "metaDescription": "MiaoCut 是免费的在线 AI 抠图工具，无需登录注册，1 秒自动识别主体并去除图片背景，输出高清透明 PNG。支持人物、商品、Logo、宠物等各类图片，可一键替换纯色或自定义背景，全程纯内存处理、不留存原图，保护隐私安全。",
+        "metaKeywords": "AI 抠图,在线抠图,免费抠图,去除图片背景,透明背景,免水印抠图,PNG 抠图,商品图抠图",
+        "ogTitle": "MiaoCut — 免费 AI 抠图工具 | 在线一键去除图片背景",
+        "ogLocale": "zh_CN",
+        "title": "免费 AI 抠图工具",
+        "subtitle": "1 秒在线去除图片背景，输出高清透明 PNG，无水印、无需注册、纯内存处理。",
+        "toolBgTitle": "去除背景",
+        "toolBgBody": "几秒生成高清透明 PNG。",
+        "toolProductTitle": "商品图",
+        "toolProductBody": "白底图、方图和商品阴影。",
+        "toolPortraitTitle": "人像",
+        "toolPortraitBody": "头像、简历和社媒人像抠图。",
+        "toolWatermarkTitle": "去水印",
+        "toolWatermarkBody": "涂抹水印区域并智能修复。",
+        "toolIdTitle": "证件照",
+        "toolIdBody": "护照、简历、考试用证件照。",
+        "toolRestoreTitle": "老照片",
+        "toolRestoreBody": "修复褪色、噪点、模糊的老照片。",
+        "toolJpgPngTitle": "JPG → 透明 PNG",
+        "toolJpgPngBody": "AI 把 JPG 抠图转透明 PNG。",
+        "toolPngJpgTitle": "PNG → JPG",
+        "toolPngJpgBody": "透明 PNG 铺白底导出 JPG。",
+        "seoIntro": "MiaoCut 是一款免费的 AI 抠图工具，可以自动去除图片背景。上传 JPG、PNG 或 WebP 照片，立即下载干净的高清透明 PNG。",
+        "howItWorks": "如何在线去除图片背景",
+        "uploadImg": "1. 上传你的图片",
+        "uploadDesc": "上传 JPG、PNG 或 WebP 图片，无需注册，无需信用卡。",
+        "aiProc": "2. AI 自动抠除背景",
+        "aiDesc": "MiaoCut 的 AI 抠图模型会自动识别主体并去除背景，对头发、毛发和复杂边缘也能轻松处理。",
+        "dlFree": "3. 下载透明 PNG",
+        "dlDesc": "下载无水印的高清透明 PNG 抠图。",
+        "whyChoose": "为什么选择 MiaoCut AI 抠图？",
+        "freeLimit": "免费抠图工具",
+        "freeDesc": "100% 免费，没有隐藏收费、没有订阅陷阱，想抠多少张就抠多少张。",
+        "hdQuality": "高清透明 PNG",
+        "hdDesc": "保留原图分辨率，输出高清透明 PNG 抠图，绝不压缩画质。",
+        "noWatermark": "无水印",
+        "noWDesc": "无水印的抠图结果，可直接用于电商、设计或个人项目。",
+        "noSignup": "无需注册",
+        "noSignupDesc": "直接在线抠图，无需账号、无需登录、无需邮箱。",
+        "privacyFirst": "隐私优先处理",
+        "privacyDesc": "图片纯内存处理并自动销毁，我们绝不使用你的数据进行 AI 训练。",
+        "sotaModel": "由 BiRefNet 驱动",
+        "sotaDesc": "SOTA AI 模型支持 JPG、PNG、WebP，对头发、毛发、半透明物体的边缘也能精准还原。",
+        "examplesTitle": "AI 抠图样例",
+        "exampleProduct": "商品图",
+        "examplePortrait": "人像",
+        "exampleLogo": "Logo",
+        "examplePet": "宠物",
+        "useCasesTitle": "热门使用场景",
+        "useCaseProductTitle": "商品图",
+        "useCaseProductDesc": "为电商、亚马逊、Shopify、Etsy 等在线商店去除商品图背景。",
+        "useCasePortraitTitle": "人像与头像",
+        "useCasePortraitDesc": "为头像、社交媒体、简历、个人照片生成干净的透明抠图。",
+        "useCaseLogoTitle": "Logo 与设计素材",
+        "useCaseLogoDesc": "去除 Logo、图标、图形上的白底或杂乱背景。",
+        "useCasePetsTitle": "宠物、毛发与发丝",
+        "useCasePetsDesc": "AI 智能处理头发、毛发、半透明等复杂边缘。",
+        "useCaseOldPhotoTitle": "老照片修复高清",
+        "useCaseOldPhotoDesc": "修复褪色家庭照片，降低噪点、增强细节，并导出更清晰的高分辨率图片。",
+        "faqTitle": "常见问题解答",
+        "faq1Q": "这个 AI 抠图真的是免费的吗？",
+        "faq1A": "是的！MiaoCut 由独立开发者构建，旨在提供昂贵订阅工具的真正免费替代方案。无水印，无严格的分辨率限制。",
+        "faq2Q": "支持哪些图片格式？",
+        "faq2A": "您可以上传 JPG、PNG 和 WebP 图片。输出将是具有透明背景的高质量 PNG 图片。",
+        "faq3Q": "对头发或毛发的边缘处理效果如何？",
+        "faq3A": "MiaoCut 使用了最新的 SOTA AI 模型（BiRefNet），非常擅长处理复杂的边缘。它能完美处理头发、动物毛发，甚至玻璃或婚纱等半透明物体。",
+        "faq4Q": "可以免费在线去除图片背景吗？",
+        "faq4A": "可以。MiaoCut 是一款免费的 AI 抠图工具，您可以上传图片并下载无水印的透明 PNG 结果。",
+        "faq5Q": "MiaoCut 会添加水印吗？",
+        "faq5A": "不会。MiaoCut 输出的抠图结果完全没有水印。",
+        "faq6Q": "需要注册账号吗？",
+        "faq6A": "不需要。您可以直接在线去除图片背景，无需创建账号。",
+        "faq7Q": "可以用于商品图吗？",
+        "faq7A": "可以。MiaoCut 适用于商品图、电商照片、人像、Logo、宠物等多种场景。",
+        "faq8Q": "输出格式是什么？",
+        "faq8A": "输出为高质量的透明背景 PNG 图片。",
+        "footerToolsTitle": "全部 MiaoCut 工具",
+        "footerCatRemove": "AI 抠图",
+        "footerCatConvert": "格式转换",
+        "footerCatRepair": "照片修复与增强",
+        "footerTagline": "MiaoCut · 免费、注重隐私的 AI 图片工具集。"
+    },
+    "en": {
+        "metaDescription": "Remove background from images instantly with MiaoCut AI. Free online background remover with HD cutouts, no watermark, no signup, and privacy-first processing.",
+        "metaKeywords": "ai background remover, remove background, remove background from image, free background remover, background remover no watermark, remove bg, transparent background",
+        "ogTitle": "MiaoCut - Free AI Background Remover Online | Remove Background from Image",
+        "ogLocale": "en_US",
+        "title": "Free AI Background Remover",
+        "subtitle": "Remove background from images online in 1 second. Get HD transparent PNG cutouts with no watermark, no signup, and privacy-first processing.",
+        "toolBgTitle": "Remove Background",
+        "toolBgBody": "HD transparent PNG in seconds.",
+        "toolProductTitle": "Product",
+        "toolProductBody": "White backgrounds, square crops, and shadows.",
+        "toolPortraitTitle": "Portrait",
+        "toolPortraitBody": "Profile photos, resumes, and social cutouts.",
+        "toolWatermarkTitle": "Watermark",
+        "toolWatermarkBody": "Paint the mark and repair it.",
+        "toolIdTitle": "ID Photo",
+        "toolIdBody": "Passport, resume, and exam ID photos.",
+        "toolRestoreTitle": "Old Photo",
+        "toolRestoreBody": "Restore faded, noisy, or blurry photos.",
+        "toolJpgPngTitle": "JPG → Transparent PNG",
+        "toolJpgPngBody": "AI-cut JPG into a transparent PNG.",
+        "toolPngJpgTitle": "PNG → JPG",
+        "toolPngJpgBody": "Flatten transparent PNG onto white.",
+        "seoIntro": "MiaoCut is a free AI background remover that helps you remove background from images automatically. Upload JPG, PNG, or WebP photos and download clean transparent PNG cutouts instantly.",
+        "howItWorks": "How to Remove Background from an Image",
+        "uploadImg": "1. Upload Your Image",
+        "uploadDesc": "Upload a JPG, PNG, or WebP image. No signup or credit card required.",
+        "aiProc": "2. AI Removes the Background",
+        "aiDesc": "MiaoCut's AI background remover detects the subject and removes the background automatically, including hair, fur, and complex edges.",
+        "dlFree": "3. Download Transparent PNG",
+        "dlDesc": "Download your HD cutout as a transparent PNG with no watermark.",
+        "whyChoose": "Why Choose MiaoCut AI Background Remover?",
+        "freeLimit": "Free Background Remover",
+        "freeDesc": "100% free with no hidden costs, no subscription traps, and unlimited image processing.",
+        "hdQuality": "HD Transparent PNG",
+        "hdDesc": "Download high-definition transparent PNG cutouts at original resolution — never compressed.",
+        "noWatermark": "No Watermark",
+        "noWDesc": "Get clean background-removed images with no watermark, ready for e-commerce, design, or personal use.",
+        "noSignup": "No Signup Required",
+        "noSignupDesc": "Remove backgrounds online instantly — no account, no login, no email needed.",
+        "privacyFirst": "Privacy-First Image Processing",
+        "privacyDesc": "Images are processed in-memory and destroyed automatically. We never use your data for AI training.",
+        "sotaModel": "Powered by BiRefNet",
+        "sotaDesc": "SOTA AI model handles JPG, PNG, and WebP with precise edges on hair, fur, and semi-transparent objects.",
+        "examplesTitle": "See MiaoCut in Action",
+        "exampleProduct": "Product photo",
+        "examplePortrait": "Portrait",
+        "exampleLogo": "Logo",
+        "examplePet": "Pet",
+        "useCasesTitle": "Popular Use Cases",
+        "useCaseProductTitle": "Product Photos",
+        "useCaseProductDesc": "Remove backgrounds from product images for e-commerce, Amazon, Shopify, Etsy, and online stores.",
+        "useCasePortraitTitle": "Portraits & Profile Pictures",
+        "useCasePortraitDesc": "Create clean transparent cutouts for avatars, social media, resumes, and profile photos.",
+        "useCaseLogoTitle": "Logos & Design Assets",
+        "useCaseLogoDesc": "Remove white or messy backgrounds from logos, icons, and graphics.",
+        "useCasePetsTitle": "Pets, Hair & Fur",
+        "useCasePetsDesc": "Use AI to handle complex edges like hair, fur, and semi-transparent objects.",
+        "useCaseOldPhotoTitle": "Old Photo Restoration",
+        "useCaseOldPhotoDesc": "Restore faded family photos, reduce noise, sharpen details, and export a cleaner high-resolution image.",
+        "faqTitle": "Frequently Asked Questions",
+        "faq1Q": "Is this AI background remover really free?",
+        "faq1A": "Yes! MiaoCut is built by an independent developer to provide a genuinely free alternative to expensive subscription tools like remove.bg. There are no watermarks and no strict resolution limits.",
+        "faq2Q": "What image formats are supported?",
+        "faq2A": "You can upload JPG, PNG, and WebP images. The output will be a high-quality PNG image with a transparent background, ready for your designs.",
+        "faq3Q": "How good is the edge detection for hair or fur?",
+        "faq3A": "MiaoCut utilizes the latest SOTA AI models (BiRefNet) which excel at complex edges. It perfectly handles human hair, animal fur, and even semi-transparent objects like glass or wedding dresses.",
+        "faq4Q": "Can I remove background from an image for free?",
+        "faq4A": "Yes. MiaoCut is a free AI background remover. You can upload images and download transparent PNG results without watermark.",
+        "faq5Q": "Does MiaoCut add a watermark?",
+        "faq5A": "No. MiaoCut provides clean background-removed images without watermark.",
+        "faq6Q": "Do I need to sign up?",
+        "faq6A": "No. You can remove image backgrounds online without creating an account.",
+        "faq7Q": "Can I use it for product photos?",
+        "faq7A": "Yes. MiaoCut works well for product images, e-commerce photos, portraits, logos, pets, and more.",
+        "faq8Q": "What is the output format?",
+        "faq8A": "The output is a high-quality PNG image with a transparent background.",
+        "footerToolsTitle": "All MiaoCut Tools",
+        "footerCatRemove": "AI Background Removal",
+        "footerCatConvert": "Format Conversion",
+        "footerCatRepair": "Photo Repair & Enhancement",
+        "footerTagline": "MiaoCut · Free AI image tools that respect your privacy."
+    },
+    "hi": {
+        "metaDescription": "MiaoCut AI के साथ तुरंत छवियों से पृष्ठभूमि हटाएं। HD कटआउट, कोई वॉटरमार्क, कोई साइनअप और गोपनीयता-प्रथम प्रसंस्करण के साथ मुफ्त ऑनलाइन बैकग्राउंड रिमूवर।",
+        "metaKeywords": "एआई बैकग्राउंड रिमूवर, बैकग्राउंड हटाएं, छवि से बैकग्राउंड हटाएं, फ्री बैकग्राउंड रिमूवर, बैकग्राउंड रिमूवर कोई वॉटरमार्क नहीं, बीजी हटाएं, पारदर्शी बैकग्राउंड",
+        "ogTitle": "MiaoCut - मुफ़्त AI बैकग्राउंड रिमूवर ऑनलाइन | छवि से पृष्ठभूमि हटाएँ",
+        "ogLocale": "hi_IN",
+        "title": "मुफ़्त AI बैकग्राउंड रिमूवर",
+        "subtitle": "1 सेकंड में ऑनलाइन छवियों से पृष्ठभूमि हटाएं। बिना वॉटरमार्क, बिना साइनअप और गोपनीयता-प्रथम प्रसंस्करण के साथ HD पारदर्शी PNG कटआउट प्राप्त करें।",
+        "toolBgTitle": "पृष्ठभूमि निकालें",
+        "toolBgBody": "HD सेकंड में पारदर्शी PNG।",
+        "toolProductTitle": "उत्पाद",
+        "toolProductBody": "सफ़ेद पृष्ठभूमि, चौकोर फसलें, और छायाएँ।",
+        "toolPortraitTitle": "चित्र",
+        "toolPortraitBody": "प्रोफ़ाइल फ़ोटो, बायोडाटा और सामाजिक कटआउट।",
+        "toolWatermarkTitle": "वाटर-मार्क",
+        "toolWatermarkBody": "निशान को पेंट करें और उसकी मरम्मत करें।",
+        "toolIdTitle": "ID फोटो",
+        "toolIdBody": "पासपोर्ट, बायोडाटा और परीक्षा ID तस्वीरें।",
+        "toolRestoreTitle": "पुरानी फोटो",
+        "toolRestoreBody": "फीकी, शोर भरी या धुंधली तस्वीरें पुनर्स्थापित करें।",
+        "toolJpgPngTitle": "JPG → पारदर्शी PNG",
+        "toolJpgPngBody": "AI-JPG को पारदर्शी PNG में काटें।",
+        "toolPngJpgTitle": "PNG → JPG",
+        "toolPngJpgBody": "पारदर्शी PNG को सफेद पर चपटा करें।",
+        "seoIntro": "MiaoCut एक निःशुल्क AI बैकग्राउंड रिमूवर है जो छवियों से पृष्ठभूमि को स्वचालित रूप से हटाने में आपकी सहायता करता है। JPG, PNG, या WebP फ़ोटो अपलोड करें और साफ़ पारदर्शी PNG कटआउट तुरंत डाउनलोड करें।",
+        "howItWorks": "किसी इमेज से बैकग्राउंड कैसे हटाएं",
+        "uploadImg": "1. अपनी छवि अपलोड करें",
+        "uploadDesc": "एक JPG, PNG, या WebP छवि अपलोड करें। कोई साइनअप या क्रेडिट कार्ड की आवश्यकता नहीं है।",
+        "aiProc": "2. AI बैकग्राउंड हटाता है",
+        "aiDesc": "MiaoCut का AI बैकग्राउंड रिमूवर विषय का पता लगाता है और बाल, फर और जटिल किनारों सहित पृष्ठभूमि को स्वचालित रूप से हटा देता है।",
+        "dlFree": "3. पारदर्शी PNG डाउनलोड करें",
+        "dlDesc": "अपने HD कटआउट को बिना वॉटरमार्क वाले पारदर्शी PNG के रूप में डाउनलोड करें।",
+        "whyChoose": "MiaoCut AI बैकग्राउंड रिमूवर क्यों चुनें?",
+        "freeLimit": "निःशुल्क पृष्ठभूमि हटानेवाला",
+        "freeDesc": "बिना किसी छिपी हुई लागत, बिना किसी सदस्यता जाल और असीमित छवि प्रसंस्करण के 100% मुफ़्त।",
+        "hdQuality": "HD पारदर्शी PNG",
+        "hdDesc": "मूल रिज़ॉल्यूशन पर उच्च-परिभाषा पारदर्शी PNG कटआउट डाउनलोड करें - कभी संपीड़ित नहीं।",
+        "noWatermark": "कोई वॉटरमार्क नहीं",
+        "noWDesc": "ई-कॉमर्स, डिज़ाइन या व्यक्तिगत उपयोग के लिए तैयार, बिना वॉटरमार्क वाली पृष्ठभूमि से हटाई गई साफ़ छवियाँ प्राप्त करें।",
+        "noSignup": "कोई साइनअप आवश्यक नहीं",
+        "noSignupDesc": "पृष्ठभूमि को तुरंत ऑनलाइन हटाएं - कोई खाता नहीं, कोई लॉगिन नहीं, कोई ईमेल की आवश्यकता नहीं है।",
+        "privacyFirst": "गोपनीयता-प्रथम छवि प्रसंस्करण",
+        "privacyDesc": "छवियाँ मेमोरी में संसाधित होती हैं और स्वचालित रूप से नष्ट हो जाती हैं। हम कभी भी आपके डेटा का उपयोग AI प्रशिक्षण के लिए नहीं करते हैं।",
+        "sotaModel": "BiRefNet द्वारा संचालित",
+        "sotaDesc": "SOTA AI मॉडल बाल, फर और अर्ध-पारदर्शी वस्तुओं पर सटीक किनारों के साथ JPG, PNG और WebP को संभालता है।",
+        "examplesTitle": "कार्रवाई में MiaoCut देखें",
+        "exampleProduct": "उत्पाद फोटो",
+        "examplePortrait": "चित्र",
+        "exampleLogo": "प्रतीक चिन्ह",
+        "examplePet": "पालतू",
+        "useCasesTitle": "लोकप्रिय उपयोग के मामले",
+        "useCaseProductTitle": "उत्पाद तस्वीरें",
+        "useCaseProductDesc": "ई-कॉमर्स, Amazon, Shopify, Etsy और ऑनलाइन स्टोर के लिए उत्पाद छवियों से पृष्ठभूमि हटाएं।",
+        "useCasePortraitTitle": "पोर्ट्रेट और प्रोफ़ाइल चित्र",
+        "useCasePortraitDesc": "अवतारों, सोशल मीडिया, बायोडाटा और प्रोफ़ाइल फ़ोटो के लिए साफ़ पारदर्शी कटआउट बनाएं।",
+        "useCaseLogoTitle": "लोगो और डिज़ाइन संपत्तियाँ",
+        "useCaseLogoDesc": "लोगो, आइकन और ग्राफ़िक्स से सफ़ेद या गन्दी पृष्ठभूमि हटाएँ।",
+        "useCasePetsTitle": "पालतू जानवर, बाल और फर",
+        "useCasePetsDesc": "बाल, फर और अर्ध-पारदर्शी वस्तुओं जैसे जटिल किनारों को संभालने के लिए AI का उपयोग करें।",
+        "useCaseOldPhotoTitle": "पुरानी फोटो बहाली",
+        "useCaseOldPhotoDesc": "फीकी पारिवारिक तस्वीरों को पुनर्स्थापित करें, शोर कम करें, विवरणों को तेज़ करें और एक साफ़ उच्च-रिज़ॉल्यूशन छवि निर्यात करें।",
+        "faqTitle": "अक्सर पूछे जाने वाले प्रश्नों",
+        "faq1Q": "क्या यह AI बैकग्राउंड रिमूवर सचमुच मुफ़्त है?",
+        "faq1A": "हाँ! MiaoCut को remove.bg जैसे महंगे सब्सक्रिप्शन टूल का वास्तविक रूप से मुफ्त विकल्प प्रदान करने के लिए एक स्वतंत्र डेवलपर द्वारा बनाया गया है। यहां कोई वॉटरमार्क नहीं है और कोई सख्त रिज़ॉल्यूशन सीमा नहीं है।",
+        "faq2Q": "कौन से छवि प्रारूप समर्थित हैं?",
+        "faq2A": "आप JPG, PNG और WebP छवियाँ अपलोड कर सकते हैं। आउटपुट एक पारदर्शी पृष्ठभूमि के साथ एक उच्च गुणवत्ता वाली PNG छवि होगी, जो आपके डिज़ाइन के लिए तैयार होगी।",
+        "faq3Q": "बालों या फर के लिए किनारे का पता लगाना कितना अच्छा है?",
+        "faq3A": "MiaoCut नवीनतम SOTA AI मॉडल (BiRefNet) का उपयोग करता है जो जटिल किनारों पर उत्कृष्टता प्राप्त करता है। यह मानव बाल, जानवरों के फर और यहां तक ​​कि कांच या शादी के कपड़े जैसी अर्ध-पारदर्शी वस्तुओं को भी पूरी तरह से संभालता है।",
+        "faq4Q": "क्या मैं किसी छवि से निःशुल्क पृष्ठभूमि हटा सकता हूँ?",
+        "faq4A": "हाँ। MiaoCut एक निःशुल्क AI बैकग्राउंड रिमूवर है। आप छवियां अपलोड कर सकते हैं और वॉटरमार्क के बिना पारदर्शी PNG परिणाम डाउनलोड कर सकते हैं।",
+        "faq5Q": "क्या MiaoCut वॉटरमार्क जोड़ता है?",
+        "faq5A": "नहीं, MiaoCut वॉटरमार्क के बिना साफ पृष्ठभूमि-हटाई गई छवियां प्रदान करता है।",
+        "faq6Q": "क्या मुझे साइन अप करने की आवश्यकता है?",
+        "faq6A": "नहीं, आप खाता बनाए बिना छवि पृष्ठभूमि को ऑनलाइन हटा सकते हैं।",
+        "faq7Q": "क्या मैं इसका उपयोग उत्पाद फ़ोटो के लिए कर सकता हूँ?",
+        "faq7A": "हाँ। MiaoCut उत्पाद छवियों, ई-कॉमर्स फ़ोटो, पोर्ट्रेट, लोगो, पालतू जानवर और बहुत कुछ के लिए अच्छा काम करता है।",
+        "faq8Q": "आउटपुट स्वरूप क्या है?",
+        "faq8A": "आउटपुट एक पारदर्शी पृष्ठभूमि के साथ एक उच्च गुणवत्ता वाली PNG छवि है।",
+        "footerToolsTitle": "सभी MiaoCut उपकरण",
+        "footerCatRemove": "AI पृष्ठभूमि हटाना",
+        "footerCatConvert": "प्रारूप रूपांतरण",
+        "footerCatRepair": "फोटो मरम्मत एवं संवर्द्धन",
+        "footerTagline": "MiaoCut · मुफ़्त AI छवि उपकरण जो आपकी गोपनीयता का सम्मान करते हैं।"
+    },
+    "id": {
+        "metaDescription": "Hapus latar belakang dari gambar secara instan dengan MiaoCut AI. Penghapus latar belakang online gratis dengan potongan HD, tanpa tanda air, tanpa pendaftaran, dan pemrosesan yang mengutamakan privasi.",
+        "metaKeywords": "penghapus latar belakang ai, hapus latar belakang, hapus latar belakang dari gambar, penghapus latar belakang gratis, penghapus latar belakang tanpa tanda air, hapus bg, latar belakang transparan",
+        "ogTitle": "MiaoCut - Penghapus Latar Belakang AI Gratis Online | Hapus Latar Belakang dari Gambar",
+        "ogLocale": "id_ID",
+        "title": "Penghapus Latar Belakang AI Gratis",
+        "subtitle": "Hapus latar belakang dari gambar online dalam 1 detik. Dapatkan potongan PNG transparan HD tanpa tanda air, tanpa pendaftaran, dan pemrosesan yang mengutamakan privasi.",
+        "toolBgTitle": "Hapus Latar Belakang",
+        "toolBgBody": "HD transparan PNG dalam hitungan detik.",
+        "toolProductTitle": "Produk",
+        "toolProductBody": "Latar belakang putih, tanaman persegi, dan bayangan.",
+        "toolPortraitTitle": "Potret",
+        "toolPortraitBody": "Foto profil, resume, dan potongan sosial.",
+        "toolWatermarkTitle": "Tanda air",
+        "toolWatermarkBody": "Cat tandanya dan perbaiki.",
+        "toolIdTitle": "Foto ID",
+        "toolIdBody": "Foto paspor, resume, dan ujian ID.",
+        "toolRestoreTitle": "Foto lama",
+        "toolRestoreBody": "Pulihkan foto yang pudar, berisik, atau buram.",
+        "toolJpgPngTitle": "JPG → PNG Transparan",
+        "toolJpgPngBody": "AI-potong JPG menjadi PNG transparan.",
+        "toolPngJpgTitle": "PNG → JPG",
+        "toolPngJpgBody": "Ratakan PNG transparan ke atas warna putih.",
+        "seoIntro": "MiaoCut adalah penghapus latar belakang AI gratis yang membantu Anda menghapus latar belakang dari gambar secara otomatis. Unggah foto JPG, PNG, atau WebP dan unduh potongan PNG yang bersih dan transparan secara instan.",
+        "howItWorks": "Cara Menghapus Latar Belakang dari Gambar",
+        "uploadImg": "1. Unggah Gambar Anda",
+        "uploadDesc": "Unggah gambar JPG, PNG, atau WebP. Tidak diperlukan pendaftaran atau kartu kredit.",
+        "aiProc": "2. AI Menghapus Latar Belakang",
+        "aiDesc": "Penghilang latar belakang MiaoCut AI mendeteksi subjek dan menghapus latar belakang secara otomatis, termasuk rambut, bulu, dan tepi yang rumit.",
+        "dlFree": "3. Unduh PNG Transparan",
+        "dlDesc": "Unduh potongan HD Anda sebagai PNG transparan tanpa tanda air.",
+        "whyChoose": "Mengapa Memilih Penghapus Latar Belakang MiaoCut AI?",
+        "freeLimit": "Penghapus Latar Belakang Gratis",
+        "freeDesc": "100% gratis tanpa biaya tersembunyi, tanpa jebakan berlangganan, dan pemrosesan gambar tanpa batas.",
+        "hdQuality": "HD Transparan PNG",
+        "hdDesc": "Unduh potongan PNG transparan definisi tinggi pada resolusi asli — tidak pernah dikompresi.",
+        "noWatermark": "Tanpa Tanda Air",
+        "noWDesc": "Dapatkan gambar bersih tanpa tanda air di latar belakang, siap untuk e-commerce, desain, atau penggunaan pribadi.",
+        "noSignup": "Tidak Perlu Mendaftar",
+        "noSignupDesc": "Hapus latar belakang online secara instan — tanpa akun, tanpa login, tanpa perlu email.",
+        "privacyFirst": "Pemrosesan Gambar yang Mengutamakan Privasi",
+        "privacyDesc": "Gambar diproses di memori dan dimusnahkan secara otomatis. Kami tidak pernah menggunakan data Anda untuk pelatihan AI.",
+        "sotaModel": "Didukung oleh BiRefNet",
+        "sotaDesc": "Model SOTA AI menangani JPG, PNG, dan WebP dengan tepi presisi pada rambut, bulu, dan objek semi transparan.",
+        "examplesTitle": "Lihat MiaoCut beraksi",
+        "exampleProduct": "Foto produk",
+        "examplePortrait": "Potret",
+        "exampleLogo": "logo",
+        "examplePet": "Peliharaan",
+        "useCasesTitle": "Kasus Penggunaan Populer",
+        "useCaseProductTitle": "Foto Produk",
+        "useCaseProductDesc": "Hapus latar belakang dari gambar produk untuk e-commerce, Amazon, Shopify, Etsy, dan toko online.",
+        "useCasePortraitTitle": "Potret & Gambar Profil",
+        "useCasePortraitDesc": "Buat potongan transparan bersih untuk avatar, media sosial, resume, dan foto profil.",
+        "useCaseLogoTitle": "Logo & Aset Desain",
+        "useCaseLogoDesc": "Hapus latar belakang putih atau berantakan dari logo, ikon, dan grafik.",
+        "useCasePetsTitle": "Hewan Peliharaan, Rambut & Bulu",
+        "useCasePetsDesc": "Gunakan AI untuk menangani bagian tepi yang rumit seperti rambut, bulu, dan objek semi-transparan.",
+        "useCaseOldPhotoTitle": "Restorasi Foto Lama",
+        "useCaseOldPhotoDesc": "Pulihkan foto keluarga yang pudar, kurangi noise, pertajam detail, dan ekspor gambar resolusi tinggi yang lebih bersih.",
+        "faqTitle": "Pertanyaan yang Sering Diajukan",
+        "faq1Q": "Apakah penghapus latar belakang AI ini benar-benar gratis?",
+        "faq1A": "Ya! MiaoCut dibuat oleh pengembang independen untuk memberikan alternatif yang benar-benar gratis dibandingkan alat berlangganan mahal seperti remove.bg. Tidak ada tanda air dan tidak ada batasan resolusi yang ketat.",
+        "faq2Q": "Format gambar apa yang didukung?",
+        "faq2A": "Anda dapat mengunggah gambar JPG, PNG, dan WebP. Outputnya akan berupa gambar PNG berkualitas tinggi dengan latar belakang transparan, siap untuk desain Anda.",
+        "faq3Q": "Seberapa bagus deteksi tepi untuk rambut atau bulu?",
+        "faq3A": "MiaoCut menggunakan model SOTA AI terbaru (BiRefNet) yang unggul pada tepian kompleks. Ini dengan sempurna menangani rambut manusia, bulu binatang, dan bahkan benda semi transparan seperti kaca atau gaun pengantin.",
+        "faq4Q": "Bisakah saya menghapus latar belakang gambar secara gratis?",
+        "faq4A": "Ya. MiaoCut adalah penghapus latar belakang AI gratis. Anda dapat mengunggah gambar dan mengunduh hasil PNG transparan tanpa tanda air.",
+        "faq5Q": "Apakah MiaoCut menambahkan tanda air?",
+        "faq5A": "Tidak. MiaoCut menyediakan gambar bersih dengan latar belakang yang dihapus tanpa tanda air.",
+        "faq6Q": "Apakah saya perlu mendaftar?",
+        "faq6A": "Tidak. Anda dapat menghapus latar belakang gambar secara online tanpa membuat akun.",
+        "faq7Q": "Bisakah saya menggunakannya untuk foto produk?",
+        "faq7A": "Ya. MiaoCut berfungsi dengan baik untuk gambar produk, foto e-commerce, potret, logo, hewan peliharaan, dan banyak lagi.",
+        "faq8Q": "Apa format keluarannya?",
+        "faq8A": "Outputnya adalah gambar PNG berkualitas tinggi dengan latar belakang transparan.",
+        "footerToolsTitle": "Semua Alat MiaoCut",
+        "footerCatRemove": "Penghapusan Latar Belakang AI",
+        "footerCatConvert": "Konversi Format",
+        "footerCatRepair": "Perbaikan & Peningkatan Foto",
+        "footerTagline": "MiaoCut · Alat gambar AI gratis yang menghormati privasi Anda."
+    },
+    "pt-br": {
+        "metaDescription": "Remova o fundo das imagens instantaneamente com MiaoCut AI. Removedor de fundo online gratuito com recortes HD, sem marca d’água, sem inscrição e processamento que prioriza a privacidade.",
+        "metaKeywords": "removedor de fundo ai, remover fundo, remover fundo da imagem, removedor de fundo gratuito, removedor de fundo sem marca d'água, remover bg, fundo transparente",
+        "ogTitle": "MiaoCut - Removedor de fundo AI grátis online | Remover fundo da imagem",
+        "ogLocale": "pt_BR",
+        "title": "Removedor de fundo AI grátis",
+        "subtitle": "Remova o fundo das imagens online em 1 segundo. Obtenha recortes PNG transparentes HD sem marca d'água, sem inscrição e processamento com privacidade em primeiro lugar.",
+        "toolBgTitle": "Remover fundo",
+        "toolBgBody": "HD PNG transparente em segundos.",
+        "toolProductTitle": "Produto",
+        "toolProductBody": "Fundos brancos, cortes quadrados e sombras.",
+        "toolPortraitTitle": "Retrato",
+        "toolPortraitBody": "Fotos de perfil, currículos e recortes sociais.",
+        "toolWatermarkTitle": "Marca d’água",
+        "toolWatermarkBody": "Pinte a marca e repare-a.",
+        "toolIdTitle": "Foto ID",
+        "toolIdBody": "Passaporte, currículo e fotos do exame ID.",
+        "toolRestoreTitle": "Foto antiga",
+        "toolRestoreBody": "Restaure fotos desbotadas, barulhentas ou desfocadas.",
+        "toolJpgPngTitle": "JPG → Transparente PNG",
+        "toolJpgPngBody": "AI cortou JPG em um PNG transparente.",
+        "toolPngJpgTitle": "PNG → JPG",
+        "toolPngJpgBody": "Achate o PNG transparente sobre o branco.",
+        "seoIntro": "MiaoCut é um removedor de fundo AI gratuito que ajuda a remover o fundo das imagens automaticamente. Carregue fotos JPG, PNG ou WebP e baixe recortes PNG transparentes e limpos instantaneamente.",
+        "howItWorks": "Como remover o fundo de uma imagem",
+        "uploadImg": "1. Envie sua imagem",
+        "uploadDesc": "Carregue uma imagem JPG, PNG ou WebP. Não é necessária inscrição ou cartão de crédito.",
+        "aiProc": "2. AI remove o fundo",
+        "aiDesc": "O removedor de fundo AI do MiaoCut detecta o assunto e remove o fundo automaticamente, incluindo cabelos, pelos e bordas complexas.",
+        "dlFree": "3. Baixe PNG transparente",
+        "dlDesc": "Baixe seu recorte HD como um PNG transparente sem marca d'água.",
+        "whyChoose": "Por que escolher o removedor de fundo MiaoCut AI?",
+        "freeLimit": "Removedor de fundo grátis",
+        "freeDesc": "100% gratuito, sem custos ocultos, sem armadilhas de assinatura e processamento de imagens ilimitado.",
+        "hdQuality": "HD Transparente PNG",
+        "hdDesc": "Baixe recortes PNG transparentes de alta definição na resolução original - nunca compactados.",
+        "noWatermark": "Sem marca d’água",
+        "noWDesc": "Obtenha imagens limpas com fundo removido e sem marca d'água, prontas para comércio eletrônico, design ou uso pessoal.",
+        "noSignup": "Não é necessária inscrição",
+        "noSignupDesc": "Remova fundos online instantaneamente - sem necessidade de conta, login ou e-mail.",
+        "privacyFirst": "Processamento de imagem que prioriza a privacidade",
+        "privacyDesc": "As imagens são processadas na memória e destruídas automaticamente. Nunca usamos seus dados para treinamento AI.",
+        "sotaModel": "Desenvolvido por BiRefNet",
+        "sotaDesc": "O modelo SOTA AI lida com JPG, PNG e WebP com bordas precisas em cabelos, peles e objetos semitransparentes.",
+        "examplesTitle": "Veja MiaoCut em ação",
+        "exampleProduct": "Foto do produto",
+        "examplePortrait": "Retrato",
+        "exampleLogo": "Logotipo",
+        "examplePet": "Bicho de estimação",
+        "useCasesTitle": "Casos de uso populares",
+        "useCaseProductTitle": "Fotos do produto",
+        "useCaseProductDesc": "Remova fundos de imagens de produtos para comércio eletrônico, Amazon, Shopify, Etsy e lojas online.",
+        "useCasePortraitTitle": "Retratos e fotos de perfil",
+        "useCasePortraitDesc": "Crie recortes limpos e transparentes para avatares, mídias sociais, currículos e fotos de perfil.",
+        "useCaseLogoTitle": "Logotipos e recursos de design",
+        "useCaseLogoDesc": "Remova fundos brancos ou bagunçados de logotipos, ícones e gráficos.",
+        "useCasePetsTitle": "Animais de estimação, cabelos e peles",
+        "useCasePetsDesc": "Use AI para lidar com arestas complexas como cabelos, pelos e objetos semitransparentes.",
+        "useCaseOldPhotoTitle": "Restauração de fotos antigas",
+        "useCaseOldPhotoDesc": "Restaure fotos de família desbotadas, reduza o ruído, torne os detalhes mais nítidos e exporte uma imagem mais limpa de alta resolução.",
+        "faqTitle": "Perguntas frequentes",
+        "faq1Q": "Este removedor de fundo AI é realmente gratuito?",
+        "faq1A": "Sim! MiaoCut foi desenvolvido por um desenvolvedor independente para fornecer uma alternativa genuinamente gratuita para ferramentas de assinatura caras como remove.bg. Não há marcas d'água nem limites rígidos de resolução.",
+        "faq2Q": "Quais formatos de imagem são suportados?",
+        "faq2A": "Você pode fazer upload de imagens JPG, PNG e WebP. A saída será uma imagem PNG de alta qualidade com fundo transparente, pronta para seus designs.",
+        "faq3Q": "Quão boa é a detecção de bordas para cabelos ou pelos?",
+        "faq3A": "MiaoCut utiliza os mais recentes modelos SOTA AI (BiRefNet) que se destacam em arestas complexas. Ele lida perfeitamente com cabelos humanos, pêlos de animais e até objetos semitransparentes como vidro ou vestidos de noiva.",
+        "faq4Q": "Posso remover o fundo de uma imagem gratuitamente?",
+        "faq4A": "Sim. MiaoCut é um removedor de fundo AI gratuito. Você pode fazer upload de imagens e baixar resultados transparentes do PNG sem marca d’água.",
+        "faq5Q": "MiaoCut adiciona uma marca d’água?",
+        "faq5A": "Não. MiaoCut fornece imagens limpas com fundo removido e sem marca d'água.",
+        "faq6Q": "Preciso me inscrever?",
+        "faq6A": "Não. Você pode remover fundos de imagens online sem criar uma conta.",
+        "faq7Q": "Posso usá-lo para fotos de produtos?",
+        "faq7A": "Sim. MiaoCut funciona bem para imagens de produtos, fotos de comércio eletrônico, retratos, logotipos, animais de estimação e muito mais.",
+        "faq8Q": "Qual é o formato de saída?",
+        "faq8A": "A saída é uma imagem PNG de alta qualidade com fundo transparente.",
+        "footerToolsTitle": "Todas as ferramentas MiaoCut",
+        "footerCatRemove": "Remoção de fundo AI",
+        "footerCatConvert": "Conversão de formato",
+        "footerCatRepair": "Reparo e aprimoramento de fotos",
+        "footerTagline": "MiaoCut · Ferramentas de imagem AI gratuitas que respeitam sua privacidade."
+    },
+    "bn": {
+        "metaDescription": "MiaoCut AI দিয়ে ছবি থেকে তাৎক্ষণিকভাবে পটভূমি সরান। HD কাটআউট সহ বিনামূল্যে অনলাইন ব্যাকগ্রাউন্ড রিমুভার, জলছাপ নেই, সাইনআপ নেই এবং গোপনীয়তা-প্রথম প্রক্রিয়াকরণ।",
+        "metaKeywords": "এআই ব্যাকগ্রাউন্ড রিমুভার, ব্যাকগ্রাউন্ড রিমুভার, ইমেজ থেকে ব্যাকগ্রাউন্ড রিমুভ, ফ্রি ব্যাকগ্রাউন্ড রিমুভার, ব্যাকগ্রাউন্ড রিমুভার নো ওয়াটারমার্ক, রিমুভ বিজি, ট্রান্সপারেন্ট ব্যাকগ্রাউন্ড",
+        "ogTitle": "MiaoCut - বিনামূল্যে AI ব্যাকগ্রাউন্ড রিমুভার অনলাইন | ছবি থেকে পটভূমি সরান",
+        "ogLocale": "bn_BD",
+        "title": "বিনামূল্যে AI ব্যাকগ্রাউন্ড রিমুভার",
+        "subtitle": "1 সেকেন্ডের মধ্যে অনলাইন ছবি থেকে পটভূমি সরান। HD স্বচ্ছ PNG কাটআউটগুলি পান না জলছাপ, সাইনআপ এবং গোপনীয়তা-প্রথম প্রক্রিয়াকরণ ছাড়াই৷",
+        "toolBgTitle": "পটভূমি সরান",
+        "toolBgBody": "HD স্বচ্ছ PNG সেকেন্ডে।",
+        "toolProductTitle": "পণ্য",
+        "toolProductBody": "সাদা ব্যাকগ্রাউন্ড, বর্গাকার ফসল এবং ছায়া।",
+        "toolPortraitTitle": "প্রতিকৃতি",
+        "toolPortraitBody": "প্রোফাইল ফটো, জীবনবৃত্তান্ত, এবং সামাজিক কাটআউট.",
+        "toolWatermarkTitle": "জলছাপ",
+        "toolWatermarkBody": "চিহ্ন আঁকা এবং এটি মেরামত.",
+        "toolIdTitle": "ID ছবি",
+        "toolIdBody": "পাসপোর্ট, জীবনবৃত্তান্ত এবং পরীক্ষার ID ছবি।",
+        "toolRestoreTitle": "পুরানো ছবি",
+        "toolRestoreBody": "বিবর্ণ, কোলাহলপূর্ণ বা ঝাপসা ফটোগুলি পুনরুদ্ধার করুন।",
+        "toolJpgPngTitle": "JPG → স্বচ্ছ PNG",
+        "toolJpgPngBody": "AI-JPG-কে একটি স্বচ্ছ PNG-এ কাটুন।",
+        "toolPngJpgTitle": "PNG → JPG",
+        "toolPngJpgBody": "স্বচ্ছ PNG সাদাতে সমতল করুন।",
+        "seoIntro": "MiaoCut হল একটি বিনামূল্যের AI ব্যাকগ্রাউন্ড রিমুভার যা আপনাকে স্বয়ংক্রিয়ভাবে ছবি থেকে ব্যাকগ্রাউন্ড সরাতে সাহায্য করে। JPG, PNG, বা WebP ফটো আপলোড করুন এবং অবিলম্বে পরিষ্কার স্বচ্ছ PNG কাটআউট ডাউনলোড করুন।",
+        "howItWorks": "কিভাবে একটি ইমেজ থেকে পটভূমি সরান",
+        "uploadImg": "1. আপনার ছবি আপলোড করুন",
+        "uploadDesc": "একটি JPG, PNG, বা WebP ছবি আপলোড করুন৷ কোন সাইন আপ বা ক্রেডিট কার্ড প্রয়োজন.",
+        "aiProc": "2. AI ব্যাকগ্রাউন্ড সরিয়ে দেয়",
+        "aiDesc": "MiaoCut এর AI ব্যাকগ্রাউন্ড রিমুভার বিষয়টি সনাক্ত করে এবং চুল, পশম এবং জটিল প্রান্ত সহ স্বয়ংক্রিয়ভাবে পটভূমি সরিয়ে দেয়।",
+        "dlFree": "3. স্বচ্ছ PNG ডাউনলোড করুন",
+        "dlDesc": "আপনার HD কাটআউট ডাউনলোড করুন একটি স্বচ্ছ PNG হিসাবে কোন জলছাপ ছাড়া।",
+        "whyChoose": "কেন MiaoCut AI ব্যাকগ্রাউন্ড রিমুভার বেছে নিন?",
+        "freeLimit": "বিনামূল্যে ব্যাকগ্রাউন্ড রিমুভার",
+        "freeDesc": "100% বিনামূল্যে কোন লুকানো খরচ, কোন সাবস্ক্রিপশন ফাঁদ, এবং সীমাহীন ছবি প্রক্রিয়াকরণ.",
+        "hdQuality": "HD স্বচ্ছ PNG",
+        "hdDesc": "মূল রেজোলিউশনে হাই-ডেফিনিশন স্বচ্ছ PNG কাটআউট ডাউনলোড করুন — কখনই সংকুচিত হবে না।",
+        "noWatermark": "জলছাপ নেই",
+        "noWDesc": "ই-কমার্স, ডিজাইন বা ব্যক্তিগত ব্যবহারের জন্য প্রস্তুত কোনো ওয়াটারমার্ক ছাড়াই পরিষ্কার ব্যাকগ্রাউন্ড-মুছে ফেলা ছবি পান।",
+        "noSignup": "কোন সাইন আপ প্রয়োজন",
+        "noSignupDesc": "অবিলম্বে অনলাইন ব্যাকগ্রাউন্ডগুলি সরান — কোনও অ্যাকাউন্ট নেই, কোনও লগইন নেই, কোনও ইমেলের প্রয়োজন নেই৷",
+        "privacyFirst": "গোপনীয়তা-প্রথম চিত্র প্রক্রিয়াকরণ",
+        "privacyDesc": "ছবিগুলি মেমরিতে প্রক্রিয়াজাত করা হয় এবং স্বয়ংক্রিয়ভাবে ধ্বংস হয়ে যায়। AI প্রশিক্ষণের জন্য আমরা কখনই আপনার ডেটা ব্যবহার করি না।",
+        "sotaModel": "BiRefNet দ্বারা চালিত",
+        "sotaDesc": "SOTA AI মডেল JPG, PNG, এবং WebP চুল, পশম, এবং আধা-স্বচ্ছ বস্তুর সুনির্দিষ্ট প্রান্ত সহ পরিচালনা করে।",
+        "examplesTitle": "MiaoCut ইন অ্যাকশন দেখুন",
+        "exampleProduct": "পণ্যের ছবি",
+        "examplePortrait": "প্রতিকৃতি",
+        "exampleLogo": "লোগো",
+        "examplePet": "পোষা প্রাণী",
+        "useCasesTitle": "জনপ্রিয় ব্যবহারের ক্ষেত্রে",
+        "useCaseProductTitle": "পণ্য ফটো",
+        "useCaseProductDesc": "ই-কমার্স, Amazon, Shopify, Etsy, এবং অনলাইন স্টোরের জন্য পণ্যের ছবি থেকে ব্যাকগ্রাউন্ড সরান।",
+        "useCasePortraitTitle": "প্রতিকৃতি এবং প্রোফাইল ছবি",
+        "useCasePortraitDesc": "অবতার, সোশ্যাল মিডিয়া, জীবনবৃত্তান্ত এবং প্রোফাইল ফটোগুলির জন্য পরিষ্কার স্বচ্ছ কাটআউট তৈরি করুন।",
+        "useCaseLogoTitle": "লোগো এবং ডিজাইন সম্পদ",
+        "useCaseLogoDesc": "লোগো, আইকন এবং গ্রাফিক্স থেকে সাদা বা অগোছালো ব্যাকগ্রাউন্ড সরান।",
+        "useCasePetsTitle": "পোষা প্রাণী, চুল এবং পশম",
+        "useCasePetsDesc": "চুল, পশম এবং আধা-স্বচ্ছ বস্তুর মতো জটিল প্রান্তগুলি পরিচালনা করতে AI ব্যবহার করুন।",
+        "useCaseOldPhotoTitle": "পুরানো ফটো পুনরুদ্ধার",
+        "useCaseOldPhotoDesc": "ফ্যামিলি ফ্যামিলি ফটো পুনরুদ্ধার করুন, শব্দ কম করুন, বিশদ বিবরণ তীক্ষ্ণ করুন এবং একটি ক্লিনার হাই-রেজোলিউশন ইমেজ রপ্তানি করুন।",
+        "faqTitle": "প্রায়শই জিজ্ঞাসিত প্রশ্নাবলী",
+        "faq1Q": "এই AI ব্যাকগ্রাউন্ড রিমুভার কি সত্যিই বিনামূল্যে?",
+        "faq1A": "হ্যাঁ! MiaoCut একটি স্বাধীন বিকাশকারী দ্বারা নির্মিত হয়েছে remove.bg-এর মতো ব্যয়বহুল সাবস্ক্রিপশন টুলের সত্যিকারের বিনামূল্যের বিকল্প প্রদান করতে। কোন ওয়াটারমার্ক এবং কোন কঠোর রেজোলিউশন সীমা নেই.",
+        "faq2Q": "কি ইমেজ ফরম্যাট সমর্থিত?",
+        "faq2A": "আপনি JPG, PNG, এবং WebP ছবি আপলোড করতে পারেন৷ আউটপুট একটি স্বচ্ছ পটভূমি সহ একটি উচ্চ-মানের PNG চিত্র হবে, আপনার ডিজাইনের জন্য প্রস্তুত৷",
+        "faq3Q": "চুল বা পশম জন্য প্রান্ত সনাক্তকরণ কতটা ভাল?",
+        "faq3A": "MiaoCut লেটেস্ট SOTA AI মডেলগুলি ব্যবহার করে (BiRefNet) যা জটিল প্রান্তে এক্সেল৷ এটি নিখুঁতভাবে মানুষের চুল, পশুর পশম এবং এমনকি কাঁচ বা বিবাহের পোশাকের মতো আধা-স্বচ্ছ বস্তুগুলিকে পুরোপুরি পরিচালনা করে।",
+        "faq4Q": "আমি কি বিনামূল্যে একটি ছবি থেকে ব্যাকগ্রাউন্ড মুছে ফেলতে পারি?",
+        "faq4A": "হ্যাঁ। MiaoCut হল একটি বিনামূল্যের AI ব্যাকগ্রাউন্ড রিমুভার। আপনি ছবি আপলোড করতে পারেন এবং ওয়াটারমার্ক ছাড়াই স্বচ্ছ PNG ফলাফল ডাউনলোড করতে পারেন।",
+        "faq5Q": "MiaoCut একটি ওয়াটারমার্ক যোগ করে?",
+        "faq5A": "নং MiaoCut ওয়াটারমার্ক ছাড়া পরিষ্কার পটভূমি-মুছে ফেলা ছবি প্রদান করে।",
+        "faq6Q": "আমার কি সাইন আপ করতে হবে?",
+        "faq6A": "না। আপনি একটি অ্যাকাউন্ট তৈরি না করেই অনলাইনে ছবির ব্যাকগ্রাউন্ড মুছে ফেলতে পারেন।",
+        "faq7Q": "আমি কি পণ্যের ছবির জন্য এটি ব্যবহার করতে পারি?",
+        "faq7A": "হ্যাঁ। MiaoCut পণ্যের ছবি, ই-কমার্স ফটো, প্রতিকৃতি, লোগো, পোষা প্রাণী এবং আরও অনেক কিছুর জন্য ভাল কাজ করে।",
+        "faq8Q": "আউটপুট বিন্যাস কি?",
+        "faq8A": "আউটপুট একটি স্বচ্ছ পটভূমি সহ একটি উচ্চ-মানের PNG চিত্র।",
+        "footerToolsTitle": "সমস্ত MiaoCut টুল",
+        "footerCatRemove": "AI পটভূমি অপসারণ",
+        "footerCatConvert": "ফর্ম্যাট রূপান্তর",
+        "footerCatRepair": "ফটো মেরামত এবং বর্ধন",
+        "footerTagline": "MiaoCut · বিনামূল্যে AI ছবি টুল যা আপনার গোপনীয়তাকে সম্মান করে।"
+    },
+    "fil": {
+        "metaDescription": "Alisin ang background mula sa mga larawan kaagad gamit ang MiaoCut AI. Libreng online na background remover na may HD cutouts, walang watermark, walang signup, at privacy-first processing.",
+        "metaKeywords": "ai background remover, alisin ang background, alisin ang background mula sa larawan, libreng background remover, background remover walang watermark, alisin ang bg, transparent na background",
+        "ogTitle": "MiaoCut - Libreng AI Background Remover Online | Alisin ang Background mula sa Larawan",
+        "ogLocale": "fil_PH",
+        "title": "Libreng AI Background Remover",
+        "subtitle": "Alisin ang background mula sa mga larawan online sa loob ng 1 segundo. Kumuha ng HD na transparent na PNG na mga cutout na walang watermark, walang pag-signup, at pagpoproseso na una sa privacy.",
+        "toolBgTitle": "Alisin ang Background",
+        "toolBgBody": "HD transparent PNG sa ilang segundo.",
+        "toolProductTitle": "produkto",
+        "toolProductBody": "Mga puting background, mga parisukat na pananim, at mga anino.",
+        "toolPortraitTitle": "Larawan",
+        "toolPortraitBody": "Mga larawan sa profile, resume, at social cutout.",
+        "toolWatermarkTitle": "Watermark",
+        "toolWatermarkBody": "Kulayan ang marka at ayusin ito.",
+        "toolIdTitle": "ID Larawan",
+        "toolIdBody": "Pasaporte, resume, at pagsusulit ID mga larawan.",
+        "toolRestoreTitle": "Lumang Larawan",
+        "toolRestoreBody": "Ibalik ang kupas, maingay, o malabong mga larawan.",
+        "toolJpgPngTitle": "JPG → Transparent na PNG",
+        "toolJpgPngBody": "AI-cut JPG sa isang transparent na PNG.",
+        "toolPngJpgTitle": "PNG → JPG",
+        "toolPngJpgBody": "I-flatte ang transparent na PNG sa puti.",
+        "seoIntro": "Ang MiaoCut ay isang libreng AI background remover na tumutulong sa iyong awtomatikong alisin ang background mula sa mga larawan. Mag-upload ng mga larawan ng JPG, PNG, o WebP at agad na mag-download ng malinis na transparent na mga cutout ng PNG.",
+        "howItWorks": "Paano Mag-alis ng Background mula sa isang Larawan",
+        "uploadImg": "1. I-upload ang Iyong Larawan",
+        "uploadDesc": "Mag-upload ng JPG, PNG, o WebP na larawan. Walang kinakailangang pag-signup o credit card.",
+        "aiProc": "2. Tinatanggal ng AI ang Background",
+        "aiDesc": "Ang MiaoCut na pang-alis ng background ng AI ay nakikita ang paksa at awtomatikong nag-aalis ng background, kabilang ang buhok, balahibo, at kumplikadong mga gilid.",
+        "dlFree": "3. I-download ang Transparent PNG",
+        "dlDesc": "I-download ang iyong HD cutout bilang isang transparent na PNG na walang watermark.",
+        "whyChoose": "Bakit Pumili ng MiaoCut AI Background Remover?",
+        "freeLimit": "Libreng Background Remover",
+        "freeDesc": "100% libre nang walang mga nakatagong gastos, walang mga bitag sa subscription, at walang limitasyong pagpoproseso ng imahe.",
+        "hdQuality": "HD Transparent PNG",
+        "hdDesc": "Mag-download ng mga high-definition na transparent na PNG na mga cutout sa orihinal na resolution — hindi kailanman na-compress.",
+        "noWatermark": "Walang Watermark",
+        "noWDesc": "Kumuha ng malinis na mga larawang inalis sa background na walang watermark, handa para sa e-commerce, disenyo, o personal na paggamit.",
+        "noSignup": "Walang Kinakailangang Pag-signup",
+        "noSignupDesc": "Alisin ang mga background online kaagad — walang account, walang login, walang email na kailangan.",
+        "privacyFirst": "Privacy-Unang Pagproseso ng Larawan",
+        "privacyDesc": "Ang mga imahe ay pinoproseso sa memorya at awtomatikong sinisira. Hindi namin kailanman ginagamit ang iyong data para sa AI na pagsasanay.",
+        "sotaModel": "Pinapatakbo ng BiRefNet",
+        "sotaDesc": "Hinahawakan ng modelong SOTA AI ang JPG, PNG, at WebP na may mga tumpak na gilid sa buhok, balahibo, at mga semi-transparent na bagay.",
+        "examplesTitle": "Tingnan ang MiaoCut sa Aksyon",
+        "exampleProduct": "Larawan ng produkto",
+        "examplePortrait": "Larawan",
+        "exampleLogo": "Logo",
+        "examplePet": "Alagang hayop",
+        "useCasesTitle": "Mga Popular na Use Case",
+        "useCaseProductTitle": "Mga Larawan ng Produkto",
+        "useCaseProductDesc": "Alisin ang mga background sa mga larawan ng produkto para sa e-commerce, Amazon, Shopify, Etsy, at mga online na tindahan.",
+        "useCasePortraitTitle": "Mga Larawan at Larawan sa Profile",
+        "useCasePortraitDesc": "Gumawa ng malinis na transparent na mga cutout para sa mga avatar, social media, resume, at mga larawan sa profile.",
+        "useCaseLogoTitle": "Mga Asset ng Logo at Disenyo",
+        "useCaseLogoDesc": "Alisin ang puti o magulong background mula sa mga logo, icon, at graphics.",
+        "useCasePetsTitle": "Mga Alagang Hayop, Buhok at Balahibo",
+        "useCasePetsDesc": "Gamitin ang AI upang hawakan ang mga kumplikadong gilid tulad ng buhok, balahibo, at mga semi-transparent na bagay.",
+        "useCaseOldPhotoTitle": "Pagpapanumbalik ng Lumang Larawan",
+        "useCaseOldPhotoDesc": "Ibalik ang mga kupas na larawan ng pamilya, bawasan ang ingay, patalasin ang mga detalye, at mag-export ng mas malinis na larawang may mataas na resolution.",
+        "faqTitle": "Mga Madalas Itanong",
+        "faq1Q": "Ang AI background remover ba ay talagang libre?",
+        "faq1A": "Oo! Ang MiaoCut ay binuo ng isang independiyenteng developer upang magbigay ng isang tunay na libreng alternatibo sa mga mamahaling tool sa subscription tulad ng remove.bg. Walang mga watermark at walang mahigpit na limitasyon sa paglutas.",
+        "faq2Q": "Anong mga format ng larawan ang sinusuportahan?",
+        "faq2A": "Maaari kang mag-upload ng JPG, PNG, at WebP na mga larawan. Ang output ay isang mataas na kalidad na PNG na imahe na may transparent na background, na handa para sa iyong mga disenyo.",
+        "faq3Q": "Gaano kahusay ang pagtuklas ng gilid para sa buhok o balahibo?",
+        "faq3A": "Ginagamit ng MiaoCut ang pinakabagong mga modelong SOTA AI (BiRefNet) na mahusay sa kumplikadong mga gilid. Perpektong pinangangasiwaan nito ang buhok ng tao, balahibo ng hayop, at maging ang mga semi-transparent na bagay tulad ng salamin o damit-pangkasal.",
+        "faq4Q": "Maaari ko bang alisin ang background mula sa isang imahe nang libre?",
+        "faq4A": "Oo. Ang MiaoCut ay isang libreng AI background remover. Maaari kang mag-upload ng mga larawan at mag-download ng mga transparent na resulta ng PNG nang walang watermark.",
+        "faq5Q": "Nagdaragdag ba ng watermark ang MiaoCut?",
+        "faq5A": "Hindi. Nagbibigay ang MiaoCut ng malinis na mga larawang inalis sa background na walang watermark.",
+        "faq6Q": "Kailangan ko bang mag-sign up?",
+        "faq6A": "Hindi. Maaari mong alisin ang mga background ng larawan online nang hindi gumagawa ng account.",
+        "faq7Q": "Maaari ko bang gamitin ito para sa mga larawan ng produkto?",
+        "faq7A": "Oo. Gumagana nang maayos ang MiaoCut para sa mga larawan ng produkto, mga larawan sa e-commerce, mga larawan, mga logo, mga alagang hayop, at higit pa.",
+        "faq8Q": "Ano ang format ng output?",
+        "faq8A": "Ang output ay isang mataas na kalidad na PNG na imahe na may transparent na background.",
+        "footerToolsTitle": "Lahat ng MiaoCut Tools",
+        "footerCatRemove": "AI Pag-alis ng Background",
+        "footerCatConvert": "Conversion ng Format",
+        "footerCatRepair": "Pag-aayos at Pagpapahusay ng Larawan",
+        "footerTagline": "MiaoCut · Libreng AI image tool na gumagalang sa iyong privacy."
+    },
+    "ur": {
+        "metaDescription": "MiaoCut AI کے ساتھ فوری طور پر تصاویر سے پس منظر کو ہٹا دیں۔ HD کٹ آؤٹ، کوئی واٹر مارک، کوئی سائن اپ، اور پرائیویسی فرسٹ پروسیسنگ کے ساتھ مفت آن لائن بیک گراؤنڈ ریموور۔",
+        "metaKeywords": "AI پس منظر ہٹانے والا، پس منظر کو ہٹانا، تصویر سے پس منظر کو ہٹانا، مفت پس منظر ہٹانے والا، پس منظر ہٹانے والا کوئی واٹر مارک نہیں، bg کو ہٹا دیں، شفاف پس منظر",
+        "ogTitle": "MiaoCut - مفت AI بیک گراؤنڈ ریموور آن لائن | تصویر سے پس منظر کو ہٹا دیں۔",
+        "ogLocale": "ur_PK",
+        "title": "مفت AI بیک گراؤنڈ ریموور",
+        "subtitle": "1 سیکنڈ میں آن لائن تصاویر سے پس منظر کو ہٹا دیں۔ بغیر واٹر مارک، بغیر سائن اپ، اور پرائیویسی فرسٹ پروسیسنگ کے بغیر HD شفاف PNG کٹ آؤٹس حاصل کریں۔",
+        "toolBgTitle": "پس منظر کو ہٹا دیں۔",
+        "toolBgBody": "HD شفاف PNG سیکنڈوں میں۔",
+        "toolProductTitle": "پروڈکٹ",
+        "toolProductBody": "سفید پس منظر، مربع فصلیں، اور سائے۔",
+        "toolPortraitTitle": "پورٹریٹ",
+        "toolPortraitBody": "پروفائل فوٹوز، ریزیومے اور سوشل کٹ آؤٹ۔",
+        "toolWatermarkTitle": "واٹر مارک",
+        "toolWatermarkBody": "نشان کو پینٹ کریں اور اسے ٹھیک کریں۔",
+        "toolIdTitle": "ID تصویر",
+        "toolIdBody": "پاسپورٹ، دوبارہ شروع، اور امتحان ID تصاویر۔",
+        "toolRestoreTitle": "پرانی تصویر",
+        "toolRestoreBody": "دھندلی، شور والی، یا دھندلی تصاویر کو بحال کریں۔",
+        "toolJpgPngTitle": "JPG → شفاف PNG",
+        "toolJpgPngBody": "AI-JPG کو ایک شفاف PNG میں کاٹ دیں۔",
+        "toolPngJpgTitle": "PNG → JPG",
+        "toolPngJpgBody": "شفاف PNG کو سفید پر چپٹا کریں۔",
+        "seoIntro": "MiaoCut ایک مفت AI پس منظر ہٹانے والا ہے جو آپ کو تصاویر سے پس منظر کو خود بخود ہٹانے میں مدد کرتا ہے۔ JPG، PNG، یا WebP تصاویر اپ لوڈ کریں اور صاف شفاف PNG کٹ آؤٹ فوری طور پر ڈاؤن لوڈ کریں۔",
+        "howItWorks": "کسی تصویر سے پس منظر کو کیسے ہٹایا جائے۔",
+        "uploadImg": "1. اپنی تصویر اپ لوڈ کریں۔",
+        "uploadDesc": "JPG، PNG، یا WebP تصویر اپ لوڈ کریں۔ کوئی سائن اپ یا کریڈٹ کارڈ کی ضرورت نہیں ہے۔",
+        "aiProc": "2. AI پس منظر کو ہٹاتا ہے۔",
+        "aiDesc": "MiaoCut کا AI پس منظر ہٹانے والا موضوع کا پتہ لگاتا ہے اور پس منظر کو خود بخود ہٹا دیتا ہے، بشمول بال، کھال اور پیچیدہ کناروں کو۔",
+        "dlFree": "3. شفاف PNG ڈاؤن لوڈ کریں۔",
+        "dlDesc": "اپنے HD کٹ آؤٹ کو بغیر واٹر مارک کے شفاف PNG کے طور پر ڈاؤن لوڈ کریں۔",
+        "whyChoose": "MiaoCut AI بیک گراؤنڈ ریموور کیوں منتخب کریں؟",
+        "freeLimit": "مفت پس منظر ہٹانے والا",
+        "freeDesc": "100% مفت بغیر کسی پوشیدہ قیمت کے، کوئی سبسکرپشن ٹریپس، اور لامحدود امیج پروسیسنگ۔",
+        "hdQuality": "HD شفاف PNG",
+        "hdDesc": "ہائی ڈیفینیشن شفاف PNG کٹ آؤٹ کو اصل ریزولوشن پر ڈاؤن لوڈ کریں — کبھی کمپریس نہ ہوں۔",
+        "noWatermark": "کوئی واٹر مارک نہیں۔",
+        "noWDesc": "بغیر واٹر مارک کے صاف پس منظر سے ہٹائی گئی تصاویر حاصل کریں، ای کامرس، ڈیزائن، یا ذاتی استعمال کے لیے تیار ہوں۔",
+        "noSignup": "سائن اپ کی ضرورت نہیں ہے۔",
+        "noSignupDesc": "آن لائن پس منظر کو فوری طور پر ہٹا دیں — کوئی اکاؤنٹ، کوئی لاگ ان، کوئی ای میل کی ضرورت نہیں۔",
+        "privacyFirst": "پرائیویسی-پہلی تصویری کارروائی",
+        "privacyDesc": "تصاویر کو میموری میں پروسیس کیا جاتا ہے اور خود بخود تباہ ہوجاتا ہے۔ ہم کبھی بھی آپ کا ڈیٹا AI ٹریننگ کے لیے استعمال نہیں کرتے۔",
+        "sotaModel": "BiRefNet کے ذریعے تقویت یافتہ",
+        "sotaDesc": "SOTA AI ماڈل JPG، PNG، اور WebP بالوں، کھال اور نیم شفاف اشیاء پر عین کناروں کے ساتھ ہینڈل کرتا ہے۔",
+        "examplesTitle": "MiaoCut ان ایکشن دیکھیں",
+        "exampleProduct": "پروڈکٹ کی تصویر",
+        "examplePortrait": "پورٹریٹ",
+        "exampleLogo": "لوگو",
+        "examplePet": "پالتو جانور",
+        "useCasesTitle": "استعمال کے مشہور کیسز",
+        "useCaseProductTitle": "مصنوعات کی تصاویر",
+        "useCaseProductDesc": "ای کامرس، Amazon، Shopify، Etsy، اور آن لائن اسٹورز کے لیے پروڈکٹ کی تصاویر سے پس منظر ہٹا دیں۔",
+        "useCasePortraitTitle": "پورٹریٹ اور پروفائل پکچرز",
+        "useCasePortraitDesc": "اوتار، سوشل میڈیا، ریزیومز اور پروفائل فوٹوز کے لیے صاف شفاف کٹ آؤٹ بنائیں۔",
+        "useCaseLogoTitle": "لوگو اور ڈیزائن کے اثاثے۔",
+        "useCaseLogoDesc": "لوگو، شبیہیں اور گرافکس سے سفید یا گندے پس منظر کو ہٹا دیں۔",
+        "useCasePetsTitle": "پالتو جانور، بال اور کھال",
+        "useCasePetsDesc": "بال، کھال اور نیم شفاف اشیاء جیسے پیچیدہ کناروں کو سنبھالنے کے لیے AI استعمال کریں۔",
+        "useCaseOldPhotoTitle": "پرانی تصویر کی بحالی",
+        "useCaseOldPhotoDesc": "دھندلی خاندانی تصاویر کو بحال کریں، شور کم کریں، تفصیلات کو تیز کریں، اور ایک کلینر ہائی ریزولوشن امیج برآمد کریں۔",
+        "faqTitle": "اکثر پوچھے گئے سوالات",
+        "faq1Q": "کیا یہ AI پس منظر ہٹانے والا واقعی مفت ہے؟",
+        "faq1A": "جی ہاں! MiaoCut کو ایک آزاد ڈویلپر نے remove.bg جیسے مہنگے سبسکرپشن ٹولز کا حقیقی طور پر مفت متبادل فراہم کرنے کے لیے بنایا ہے۔ کوئی واٹر مارکس نہیں ہیں اور کوئی سخت ریزولوشن کی حد نہیں ہے۔",
+        "faq2Q": "کون سے تصویری فارمیٹس کی حمایت کی جاتی ہے؟",
+        "faq2A": "آپ JPG، PNG، اور WebP تصاویر اپ لوڈ کر سکتے ہیں۔ آؤٹ پٹ ایک شفاف پس منظر کے ساتھ ایک اعلی معیار کی PNG تصویر ہوگی، جو آپ کے ڈیزائن کے لیے تیار ہے۔",
+        "faq3Q": "بالوں یا کھال کے لیے کنارے کا پتہ لگانا کتنا اچھا ہے؟",
+        "faq3A": "MiaoCut جدید ترین SOTA AI ماڈلز (BiRefNet) کا استعمال کرتا ہے جو پیچیدہ کناروں پر سبقت لے جاتا ہے۔ یہ انسانی بالوں، جانوروں کی کھال، اور یہاں تک کہ نیم شفاف اشیاء جیسے شیشے یا شادی کے لباس کو بالکل ہینڈل کرتا ہے۔",
+        "faq4Q": "کیا میں کسی تصویر سے پس منظر کو مفت میں ہٹا سکتا ہوں؟",
+        "faq4A": "جی ہاں MiaoCut ایک مفت AI پس منظر ہٹانے والا ہے۔ آپ تصاویر اپ لوڈ کر سکتے ہیں اور واٹر مارک کے بغیر شفاف PNG نتائج ڈاؤن لوڈ کر سکتے ہیں۔",
+        "faq5Q": "کیا MiaoCut واٹر مارک کا اضافہ کرتا ہے؟",
+        "faq5A": "نمبر MiaoCut بغیر واٹر مارک کے صاف پس منظر سے ہٹائی گئی تصاویر فراہم کرتا ہے۔",
+        "faq6Q": "کیا مجھے سائن اپ کرنے کی ضرورت ہے؟",
+        "faq6A": "نہیں، آپ اکاؤنٹ بنائے بغیر تصویری پس منظر کو آن لائن ہٹا سکتے ہیں۔",
+        "faq7Q": "کیا میں اسے مصنوعات کی تصاویر کے لیے استعمال کر سکتا ہوں؟",
+        "faq7A": "جی ہاں MiaoCut پروڈکٹ امیجز، ای کامرس فوٹوز، پورٹریٹ، لوگو، پالتو جانور وغیرہ کے لیے اچھی طرح کام کرتا ہے۔",
+        "faq8Q": "آؤٹ پٹ فارمیٹ کیا ہے؟",
+        "faq8A": "آؤٹ پٹ ایک شفاف پس منظر کے ساتھ ایک اعلی معیار کی PNG تصویر ہے۔",
+        "footerToolsTitle": "تمام MiaoCut ٹولز",
+        "footerCatRemove": "AI پس منظر کو ہٹانا",
+        "footerCatConvert": "فارمیٹ کنورژن",
+        "footerCatRepair": "تصویر کی مرمت اور اضافہ",
+        "footerTagline": "MiaoCut · مفت AI تصویری ٹولز جو آپ کی رازداری کا احترام کرتے ہیں۔"
+    }
+};
+    </script>
+    <script src="/app.js"></script>
+
+</body>
+
+</html>

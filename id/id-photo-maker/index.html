@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="id-ID">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 品牌字体 Geist：预加载首屏 sans 可变字体（crossorigin 是 font preload 的硬性要求）-->
+    <link rel="preload" href="/fonts/geist/geist-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- 主题（明/暗）：在首屏渲染前同步设好 <html class="dark">，避免闪一下白；并在 DOM ready 后接管切换按钮 -->
+    <script>/* redesign-dark-applied */(function () {
+        try {
+            var s = localStorage.getItem('theme');
+            var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', d);
+        } catch (e) {}
+        document.addEventListener('DOMContentLoaded', function () {
+            var b = document.getElementById('theme-toggle');
+            if (b) b.addEventListener('click', function () {
+                var dark = document.documentElement.classList.toggle('dark');
+                try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+            });
+        });
+    })();</script>
+    <!-- Resource hints：见 index.html 同段注释 -->
+    <link rel="preconnect" href="https://api2.miaocut.app">
+    <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
+    <title>Paspor Gratis &amp; Pembuat Foto ID Online | MiaoCut</title>
+    <meta name="description"
+        content="Gratis paspor AI, visa, dan pembuat foto ID online. Preset ukuran khusus negara (Tiongkok 1 inci/2 inci, paspor AS, visa Schengen, visa Jepang). Pilih warna latar belakang, target KB, tata letak cetak. Tidak ada pendaftaran.">
+    <meta name="keywords"
+        content="pembuat foto id, pembuat foto paspor, pembuat foto visa, foto satu inci, foto dua inci, foto id ai, foto paspor cina, foto paspor AS, foto visa schengen, foto visa jepang, ubah latar belakang foto, lembar foto id yang dapat dicetak">
+    <meta property="og:title" content="Paspor AI Gratis &amp; Pembuat Foto ID | MiaoCut">
+    <meta property="og:description"
+        content="Preset foto ID khusus negara: Tiongkok 1 inci / 2 inci, paspor AS, visa Schengen, visa Jepang. Gratis, tidak perlu mendaftar.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://miaocut.app/id/id-photo-maker/">
+    <meta property="og:locale" content="id_ID">
+    <meta property="og:image" content="https://miaocut.app/og/id-photo.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="AI Passport & ID Photo Maker by MiaoCut">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://miaocut.app/og/id-photo.png">
+    <meta name="twitter:image:alt" content="AI Passport & ID Photo Maker by MiaoCut">
+    <link rel="canonical" href="https://miaocut.app/id/id-photo-maker/">
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "MiaoCut AI Passport & ID Photo Maker",
+    "url": "https://miaocut.app/id/id-photo-maker/",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Web",
+    "description": "Free AI passport, visa, and ID photo maker. Country-specific size presets, custom background colors, target KB control, printable layout sheets.",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    }
+}
+</script>
+    <!-- BreadcrumbList：让搜索结果出 breadcrumb rich snippet -->
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "MiaoCut",
+            "item": "https://miaocut.app/id/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Pembuat Foto ID",
+            "item": "https://miaocut.app/id/id-photo-maker/"
+        }
+    ]
+}
+</script>
+    <!-- HowTo schema：对应下方 "How to Make a Passport or ID Photo" 段落 -->
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Make a Passport or ID Photo Online",
+    "description": "Create a country-compliant passport, visa, or ID photo in three steps with MiaoCut's free AI ID photo maker.",
+    "totalTime": "PT20S",
+    "tool": [
+        {
+            "@type": "HowToTool",
+            "name": "MiaoCut AI ID Photo Maker"
+        }
+    ],
+    "step": [
+        {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Upload your portrait",
+            "text": "Unggah potret menghadap ke depan dalam format JPG, PNG, atau WebP. Bahkan pencahayaan netral bekerja paling baik."
+        },
+        {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Pick size and background",
+            "text": "Pilih preset negara (atau masukkan dimensi khusus), pilih warna latar belakang, dan sesuaikan ukuran subjek atau margin atas jika diperlukan."
+        },
+        {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Generate, fit KB, download",
+            "text": "MiaoCut mendeteksi wajah Anda secara otomatis dan menghasilkan foto standar, versi transparan HD, dan tata letak yang dapat dicetak. Tetapkan Target KB jika formulir Anda memerlukan ukuran file tertentu."
+        }
+    ]
+}
+</script>
+    <!-- FAQPage schema 必须与下方可见 FAQ section（data-i18n=faqTitle 那一段）保持一致。
+         Google 政策要求 schema 内的 Q&A 在页面上对用户可见，否则可能被判结构化数据违规。
+         改 FAQ 时请同步修改下方 HTML + id-photo.js 里 i18n.en.faqXX / i18n.zh.faqXX。 -->
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "Berapa ukuran foto ID yang didukung MiaoCut?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "China 1 inci (295×413), 2 inci (413×579), varian kecil/besar 1 inci dan 2 inci, paspor Tiongkok (390×567), paspor AS (600×600), visa Schengen (600×600), foto resume (480×640), profil sosial (512×512), ditambah ukuran piksel khusus apa pun."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Warna latar belakang apa yang didukung?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Putih, biru, merah, abu-abu, biru muda, biru tua, merah muda, hitam, dan warna HEX khusus apa pun."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Bisakah saya mencetak beberapa foto ID dalam satu lembar?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ya. Pilih kertas 5 inci, 6 inci, 7 inci, atau A4 untuk menghasilkan lembar tata letak yang dapat dicetak dengan banyak salinan yang disusun untuk dipotong."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Apakah foto saya akan memenuhi persyaratan dokumen resmi?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "MiaoCut menghasilkan foto berukuran tepat dengan latar belakang netral, namun selalu periksa dokumen spesifik Anda atau persyaratan terbaru kantor visa (ukuran kepala, ekspresi, aturan kacamata, format file) sebelum mengirimkannya."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Apakah MiaoCut mendeteksi wajah saya secara otomatis?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ya. MediaPipe Face Mesh mendeteksi garis mata dan posisi kepala Anda, lalu foto dipotong secara otomatis dan disejajarkan agar sesuai dengan ukuran preset yang dipilih. Anda dapat menyempurnakan ukuran subjek dan margin atas dengan penggeser."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Apakah foto saya pribadi?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Foto diproses dalam memori di server dan segera dibuang setelah hasilnya dikembalikan. Kami tidak menyimpan gambar Anda, tidak menggunakannya untuk pelatihan AI, dan tidak perlu mendaftar."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Bisakah saya mengatur ukuran file maksimal di KB untuk formulir online?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. The 'Target KB' input lets you cap the output file size — useful for visa or job application forms with strict file size limits."
+            }
+        }
+    ]
+}
+</script>
+    <link rel="stylesheet" href="/output.css">
+    <script defer src="https://cloud.umami.is/script.js"
+        data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
+    <link rel="alternate" hreflang="en" href="https://miaocut.app/id-photo-maker/">
+    <link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/id-photo-maker/">
+    <link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/id-photo-maker/">
+    <link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/id-photo-maker/">
+    <link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/id-photo-maker/">
+    <link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/id-photo-maker/">
+    <link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/id-photo-maker/">
+    <link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/id-photo-maker/">
+    <link rel="alternate" hreflang="x-default" href="https://miaocut.app/id-photo-maker/">
+</head>
+
+<body class="bg-gray-50 min-h-screen font-sans text-gray-900 selection:bg-brand-100 selection:text-brand-900 dark:bg-zinc-950 dark:text-zinc-200">
+    <!-- Sticky header：与首页统一为同一种实现（M5） -->
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
+        <div class="mx-auto max-w-6xl px-5 py-4 flex items-center justify-between gap-4">
+            <a href="/id/" class="text-2xl font-black tracking-tight text-gray-900 dark:text-zinc-50">MiaoCut</a>
+            <div class="flex items-center gap-4">
+                <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600 dark:text-zinc-300">
+                    <a href="/id/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navBg">Penghapus Latar Belakang</a>
+                    <a href="/id/product-photo-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navProduct">Produk</a>
+                    <a href="/id/portrait-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navPortrait">Potret</a>
+                    <a href="/id/watermark-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navWatermark">Tanda air</a>
+                    <a href="/id/id-photo-maker/" class="text-gray-900 dark:text-zinc-50" data-i18n="navId">Foto ID</a>
+                    <a href="/id/old-photo-restoration/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navRestore">Foto lama</a>
+                </nav>
+                <a href="https://github.com/midcodehub/miaoCut" target="_blank" rel="noopener" aria-label="MiaoCut on GitHub (open source)" title="View source on GitHub" class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z" /></svg></a>
+                <button id="theme-toggle" type="button" aria-label="Toggle dark mode"
+                    class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors">
+                    <svg class="h-5 w-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
+                    <svg class="h-5 w-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
+                </button>
+                <select id="lang-switch"
+                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors dark:text-zinc-300 dark:hover:text-zinc-100">
+                    <option value="en">English</option>
+                    <option value="zh">简体中文</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="pt-br">Português (BR)</option>
+                    <option value="bn">বাংলা</option>
+                    <option value="fil">Filipino</option>
+                    <option value="ur">اردو</option>
+                </select>
+            </div>
+        </div>
+    </header>
+    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
+        <a href="/id/" class="shrink-0" data-i18n="navBg">Penghapus Latar Belakang</a>
+        <a href="/id/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">Produk</a>
+        <a href="/id/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">Potret</a>
+        <a href="/id/watermark-remover/" class="shrink-0" data-i18n="navWatermark">Tanda air</a>
+        <a href="/id/id-photo-maker/" class="shrink-0 text-gray-900 dark:text-zinc-50" data-i18n="navId">Foto ID</a>
+        <a href="/id/old-photo-restoration/" class="shrink-0" data-i18n="navRestore">Foto lama</a>
+    </nav>
+
+    <main class="mx-auto max-w-6xl px-5 py-8">
+        <!-- 面包屑 -->
+        <nav class="mb-5 text-sm text-gray-500 dark:text-zinc-400" aria-label="Breadcrumb">
+            <ol class="flex items-center gap-2">
+                <li><a href="/id/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-i18n="breadcrumbHome">MiaoCut</a></li>
+                <li class="text-gray-300">/</li>
+                <li class="text-gray-700 dark:text-zinc-200" data-i18n="breadcrumbCurrent">Pembuat Foto ID</li>
+            </ol>
+        </nav>
+
+        <section class="mb-7 flex flex-col gap-2">
+            <p class="text-sm font-semibold text-gray-500 dark:text-zinc-400" data-i18n="eyebrow">Foto paspor · Foto visa · Satu inci · Dua inci · Tata letak cetak</p>
+            <h1 class="text-3xl md:text-4xl font-bold tracking-tight" data-i18n="heroTitle">Paspor AI &amp; Pembuat Foto ID</h1>
+            <p class="max-w-3xl text-sm md:text-base text-gray-500 leading-relaxed dark:text-zinc-400" data-i18n="heroSub">Unggah potret, pilih prasetel ukuran spesifik negara, atur warna latar belakang dan target KB, lalu unduh foto standar, HD, atau foto tata letak yang dapat dicetak.</p>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start">
+            <section class="bg-white border border-gray-200 rounded-lg p-5 dark:bg-zinc-900 dark:border-zinc-800">
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-semibold mb-2" for="id-file" data-i18n="portraitLabel">Potret</label>
+                        <label id="upload-card"
+                            class="flex min-h-40 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center hover:bg-gray-100 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+                            for="id-file">
+                            <svg id="upload-icon" class="mb-3 h-9 w-9 text-gray-400 dark:text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M8 8l4-4m0 0l4 4m-4-4v12" />
+                            </svg>
+                            <img id="upload-preview" alt="Selected portrait preview" class="mb-3 hidden max-h-56 w-full rounded border border-gray-200 bg-white object-contain dark:border-zinc-800 dark:bg-zinc-900">
+                            <span id="file-name" class="text-sm font-medium text-gray-700 dark:text-zinc-200" data-i18n="uploadText">Klik untuk mengunggah JPG, PNG, atau WebP</span>
+                            <span id="upload-hint" class="mt-1 text-xs text-gray-400 dark:text-zinc-300" data-i18n="uploadHint">Potret menghadap ke depan berfungsi paling baik</span>
+                        </label>
+                        <input id="id-file" type="file" class="hidden" accept="image/jpeg,image/png,image/webp">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-2" for="preset" data-i18n="sizeLabel">Ukuran foto</label>
+                        <select id="preset" class="h-11 w-full rounded border border-gray-300 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-gray-300 dark:border-zinc-700 dark:bg-zinc-900">
+                            <option value="one_inch" data-i18n="presetOneInch">1 inci - 295 x 413 px</option>
+                            <option value="small_one_inch" data-i18n="presetSmallOneInch">Kecil 1 inci - 260 x 378 px</option>
+                            <option value="large_one_inch" data-i18n="presetLargeOneInch">Besar 1 inci - 390 x 567 px</option>
+                            <option value="two_inch" data-i18n="presetTwoInch">2 inci - 413 x 579 px</option>
+                            <option value="small_two_inch" data-i18n="presetSmallTwoInch">Kecil 2 inci - 413 x 531 px</option>
+                            <option value="china_passport" data-i18n="presetChinaPassport">Paspor Tiongkok - 390 x 567 px</option>
+                            <option value="us_passport" data-i18n="presetUsPassport">Paspor AS - 600 x 600 px</option>
+                            <option value="visa_square" data-i18n="presetVisaSquare">Visa persegi - 600 x 600 px</option>
+                            <option value="resume" data-i18n="presetResume">Foto resume - 480 x 640 px</option>
+                            <option value="social_profile" data-i18n="presetProfileSquare">Profil persegi - 512 x 512 px</option>
+                            <option value="custom" data-i18n="presetCustom">Ukuran khusus</option>
+                        </select>
+                        <div id="custom-size" class="mt-3 grid grid-cols-2 gap-3 hidden">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="width" data-i18n="widthLabel">Lebar</label>
+                                <input id="width" type="number" min="120" max="1600" value="295" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="height" data-i18n="heightLabel">Tinggi</label>
+                                <input id="height" type="number" min="120" max="2200" value="413" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="mb-2 flex items-center justify-between">
+                            <label class="text-sm font-semibold" data-i18n="bgLabel">Latar belakang</label>
+                            <input id="custom-color" type="text" value="438edb" maxlength="7" class="h-8 w-24 rounded border border-gray-300 px-2 text-xs font-mono dark:border-zinc-700">
+                        </div>
+                        <div id="color-swatches" class="grid grid-cols-4 gap-2">
+                            <button type="button" data-color="ffffff" class="color-swatch h-10 rounded border-2 border-transparent bg-white dark:bg-zinc-900" title="Putih" aria-label="Putih" data-i18n-title="colorWhite" data-i18n-aria="colorWhite"></button>
+                            <button type="button" data-color="438edb" class="color-swatch h-10 rounded border-2 border-gray-900 bg-[#438edb]" title="Biru" aria-label="Biru" data-i18n-title="colorBlue" data-i18n-aria="colorBlue"></button>
+                            <button type="button" data-color="d5332e" class="color-swatch h-10 rounded border-2 border-transparent bg-[#d5332e]" title="Merah" aria-label="Merah" data-i18n-title="colorRed" data-i18n-aria="colorRed"></button>
+                            <button type="button" data-color="f3f4f6" class="color-swatch h-10 rounded border-2 border-transparent bg-gray-100 dark:bg-zinc-800" title="Abu-abu" aria-label="Abu-abu" data-i18n-title="colorGray" data-i18n-aria="colorGray"></button>
+                            <button type="button" data-color="dbeafe" class="color-swatch h-10 rounded border-2 border-transparent bg-blue-100" title="Biru muda" aria-label="Biru muda" data-i18n-title="colorLightBlue" data-i18n-aria="colorLightBlue"></button>
+                            <button type="button" data-color="1d4ed8" class="color-swatch h-10 rounded border-2 border-transparent bg-blue-700" title="Biru tua" aria-label="Biru tua" data-i18n-title="colorDarkBlue" data-i18n-aria="colorDarkBlue"></button>
+                            <button type="button" data-color="fce7f3" class="color-swatch h-10 rounded border-2 border-transparent bg-pink-100" title="Merah muda" aria-label="Merah muda" data-i18n-title="colorPink" data-i18n-aria="colorPink"></button>
+                            <button type="button" data-color="111827" class="color-swatch h-10 rounded border-2 border-transparent bg-gray-900" title="Hitam" aria-label="Hitam" data-i18n-title="colorBlack" data-i18n-aria="colorBlack"></button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="head-ratio" data-i18n="subjectLabel">Subjek</label>
+                            <input id="head-ratio" type="range" min="55" max="85" value="72" class="w-full">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="top-margin" data-i18n="topLabel">Margin atas</label>
+                            <input id="top-margin" type="range" min="3" max="18" value="8" class="w-full">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="target-kb" data-i18n="kbLabel">Targetkan KB</label>
+                            <input id="target-kb" type="number" min="8" max="1024" placeholder="Opsional" data-i18n-ph="optionalPlaceholder" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="profile" data-i18n="qualityLabel">Kualitas</label>
+                            <select id="profile" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
+                                <option value="sharp" data-i18n="qualityFast">Cepat</option>
+                                <option value="fur" data-i18n="qualityFineEdges">Tepi halus</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label class="flex items-center justify-between rounded border border-gray-200 px-3 py-2 text-sm dark:border-zinc-800">
+                        <span class="font-medium text-gray-700 dark:text-zinc-200" data-i18n="alignLabel">Penjajaran wajah</span>
+                        <input id="face-alignment" type="checkbox" checked class="h-4 w-4">
+                    </label>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="paper" data-i18n="paperLabel">Kertas cetak</label>
+                        <select id="paper" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
+                            <option value="6inch" data-i18n="paper6Inch">6 inci - 1800 x 1200 px</option>
+                            <option value="5inch" data-i18n="paper5Inch">5 inci - 1500 x 1050 px</option>
+                            <option value="7inch" data-i18n="paper7Inch">7 inci - 2100 x 1500 px</option>
+                            <option value="a4" data-i18n="paperA4">A4 - 2480 x 3508 px</option>
+                        </select>
+                    </div>
+
+                    <button id="generate" class="flex h-11 w-full items-center justify-center rounded bg-gray-900 px-4 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400" data-i18n="generateBtn">Hasilkan Foto ID</button>
+                    <p id="status" class="min-h-5 text-sm text-gray-500 dark:text-zinc-400"></p>
+                </div>
+            </section>
+
+            <section class="space-y-4">
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+                    <div class="bg-white border border-gray-200 rounded-lg p-5 dark:bg-zinc-900 dark:border-zinc-800">
+                        <div class="mb-4 flex items-center justify-between gap-3">
+                            <h2 class="text-base font-bold" data-i18n="standardTitle">Standar</h2>
+                            <button id="download-standard" class="hidden h-9 rounded border border-gray-300 px-3 text-sm font-medium hover:bg-gray-50 dark:border-zinc-700 dark:hover:bg-zinc-800" data-i18n="downloadJpg">Unduh JPG</button>
+                        </div>
+                        <div class="flex min-h-[360px] items-center justify-center rounded bg-gray-100 p-4 dark:bg-zinc-800">
+                            <img id="standard-preview" alt="Generated standard ID photo preview" class="max-h-[320px] max-w-full rounded border border-gray-200 bg-white object-contain hidden dark:border-zinc-800 dark:bg-zinc-900">
+                            <p id="standard-empty" class="text-sm text-gray-400 dark:text-zinc-500" data-i18n="standardEmpty">Foto standar akan muncul di sini</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-lg p-5 dark:bg-zinc-900 dark:border-zinc-800">
+                        <div class="mb-4 flex items-center justify-between gap-3">
+                            <h2 class="text-base font-bold" data-i18n="hdTitle">HD</h2>
+                            <button id="download-hd" class="hidden h-9 rounded border border-gray-300 px-3 text-sm font-medium hover:bg-gray-50 dark:border-zinc-700 dark:hover:bg-zinc-800" data-i18n="downloadPng">Unduh PNG</button>
+                        </div>
+                        <div class="flex min-h-[360px] items-center justify-center rounded bg-gray-100 p-4 dark:bg-zinc-800">
+                            <img id="hd-preview" alt="Generated HD ID photo preview" class="max-h-[320px] max-w-full rounded border border-gray-200 bg-white object-contain hidden dark:border-zinc-800 dark:bg-zinc-900">
+                            <p id="hd-empty" class="text-sm text-gray-400 dark:text-zinc-500" data-i18n="hdEmpty">Foto transparan HD akan muncul di sini</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-lg p-5 dark:bg-zinc-900 dark:border-zinc-800">
+                        <div class="mb-4 flex items-center justify-between gap-3">
+                            <h2 class="text-base font-bold" data-i18n="layoutTitle">Tata Letak</h2>
+                            <button id="download-layout" class="hidden h-9 rounded border border-gray-300 px-3 text-sm font-medium hover:bg-gray-50 dark:border-zinc-700 dark:hover:bg-zinc-800" data-i18n="downloadLayout">Unduh Tata Letak</button>
+                        </div>
+                        <div class="flex min-h-[360px] items-center justify-center rounded bg-gray-100 p-4 dark:bg-zinc-800">
+                            <img id="layout-preview" alt="Printable ID photo sheet preview" class="max-h-[320px] max-w-full rounded border border-gray-200 bg-white object-contain hidden dark:border-zinc-800 dark:bg-zinc-900">
+                            <p id="layout-empty" class="text-sm text-gray-400 dark:text-zinc-500" data-i18n="layoutEmpty">Tata letak yang dapat dicetak akan muncul di sini</p>
+                        </div>
+                        <p id="layout-meta" class="mt-3 text-xs text-gray-500 dark:text-zinc-400"></p>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg p-5 dark:bg-zinc-900 dark:border-zinc-800">
+                    <h2 class="text-xl font-bold mb-3" data-i18n="seoTitle">Buat foto ID untuk dokumen, resume, dan formulir online</h2>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="seoBody">Pembuat foto MiaoCut ID membantu Anda membuat foto paspor, foto visa, foto satu inci, foto dua inci, foto resume, dan lembar foto yang dapat dicetak. Pilih ukuran preset, sesuaikan penempatan potret, ganti warna latar belakang, dan unduh output standar dan resolusi tinggi.</p>
+                    <div class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 dark:text-zinc-300">
+                        <div class="rounded border border-gray-200 p-4 dark:border-zinc-800"><h3 class="font-bold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="seoCard1">Ukuran umum</h3><p data-i18n="seoCard1Body">Satu inci, dua inci, paspor, visa, resume, dan ukuran piksel khusus.</p></div>
+                        <div class="rounded border border-gray-200 p-4 dark:border-zinc-800"><h3 class="font-bold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="seoCard2">Warna latar belakang</h3><p data-i18n="seoCard2Body">Putih, biru, merah, abu-abu, biru muda, biru tua, pink, hitam, dan warna HEX khusus.</p></div>
+                        <div class="rounded border border-gray-200 p-4 dark:border-zinc-800"><h3 class="font-bold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="seoCard3">Cetak lembaran</h3><p data-i18n="seoCard3Body">Hasilkan tata letak 5 inci, 6 inci, 7 inci, atau A4 yang dapat dicetak.</p></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 可见 FAQ：与 head 中的 FAQPage JSON-LD 保持一致；改一处必须同步另一处 + id-photo.js i18n。 -->
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6 dark:bg-zinc-900 dark:border-zinc-800">
+            <h2 class="text-xl font-bold mb-6" data-i18n="faqTitle">Pertanyaan yang Sering Diajukan</h2>
+            <div class="space-y-4">
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq1Q">Berapa ukuran foto ID yang didukung MiaoCut?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq1A">China 1 inci (295×413), 2 inci (413×579), varian kecil/besar 1 inci dan 2 inci, paspor Tiongkok (390×567), paspor AS (600×600), visa Schengen (600×600), foto resume (480×640), profil sosial (512×512), ditambah ukuran piksel khusus apa pun.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq2Q">Warna latar belakang apa yang didukung?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq2A">Putih, biru, merah, abu-abu, biru muda, biru tua, merah muda, hitam, dan warna HEX khusus apa pun.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq3Q">Bisakah saya mencetak beberapa foto ID dalam satu lembar?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq3A">Ya. Pilih kertas 5 inci, 6 inci, 7 inci, atau A4 untuk menghasilkan lembar tata letak yang dapat dicetak dengan banyak salinan yang disusun untuk dipotong.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq4Q">Apakah foto saya akan memenuhi persyaratan dokumen resmi?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq4A">MiaoCut menghasilkan foto berukuran tepat dengan latar belakang netral, namun selalu periksa dokumen spesifik Anda atau persyaratan terbaru kantor visa (ukuran kepala, ekspresi, aturan kacamata, format file) sebelum mengirimkannya.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq5Q">Apakah MiaoCut mendeteksi wajah saya secara otomatis?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq5A">Ya. MediaPipe Face Mesh mendeteksi garis mata dan posisi kepala Anda, lalu foto dipotong secara otomatis dan disejajarkan agar sesuai dengan ukuran preset yang dipilih. Anda dapat menyempurnakan ukuran subjek dan margin atas dengan penggeser.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq6Q">Apakah foto saya pribadi?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq6A">Foto diproses dalam memori di server dan segera dibuang setelah hasilnya dikembalikan. Kami tidak menyimpan gambar Anda, tidak menggunakannya untuk pelatihan AI, dan tidak perlu mendaftar.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq7Q">Bisakah saya mengatur ukuran file maksimal di KB untuk formulir online?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq7A">Ya. Masukan "Target KB" memungkinkan Anda membatasi ukuran file keluaran — berguna untuk formulir lamaran visa atau pekerjaan dengan batasan ukuran file yang ketat.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How-to section：对应 head 中的 HowTo JSON-LD -->
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6 dark:bg-zinc-900 dark:border-zinc-800">
+            <h2 class="text-xl font-bold mb-6" data-i18n="howToTitle">Cara Membuat Foto Paspor atau ID</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700 dark:text-zinc-200">
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <div class="text-2xl mb-2">📤</div>
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="howStep1Title">1. Unggah potret Anda</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="howStep1Body">Unggah potret menghadap ke depan dalam format JPG, PNG, atau WebP. Bahkan pencahayaan netral bekerja paling baik.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <div class="text-2xl mb-2">⚙️</div>
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="howStep2Title">2. Pilih ukuran dan latar belakang</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="howStep2Body">Pilih preset negara (atau masukkan dimensi khusus), pilih warna latar belakang, dan sesuaikan ukuran subjek atau margin atas jika diperlukan.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <div class="text-2xl mb-2">🖼️</div>
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="howStep3Title">3. Hasilkan, sesuaikan KB, unduh</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="howStep3Body">MiaoCut mendeteksi wajah Anda secara otomatis dan menghasilkan foto standar, versi transparan HD, dan tata letak yang dapat dicetak. Tetapkan Target KB jika formulir Anda memerlukan ukuran file tertentu.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Per-country sub-section（H3 重点）：分国家长尾流量入口。
+             这里列出常见证件规格，未来可拆成独立 landing pages（programmatic SEO）：
+             /id-photo-maker/us-passport/、/id-photo-maker/schengen-visa/ 等。
+             ⚠️ 各国官方规格随政策更新，文案里务必保留"以官方为准"声明。 -->
+        <section class="mt-12 bg-white border border-gray-200 rounded-lg p-6 dark:bg-zinc-900 dark:border-zinc-800">
+            <h2 class="text-xl font-bold mb-2" data-i18n="countryTitle">Spesifikasi Foto ID berdasarkan Negara &amp; Dokumen</h2>
+            <p class="text-sm text-gray-600 mb-6 max-w-3xl dark:text-zinc-300" data-i18n="countrySubtitle">Ukuran dokumen umum dan aturan latar belakang. Selalu periksa persyaratan terbaru konsulat, kedutaan, atau kantor Anda sebelum mengirimkan — peraturan berubah.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-gray-700 dark:text-zinc-200">
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="cnOneInchTitle">Cina 1 inci (一寸)</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="cnOneInchBody">295 × 413 px · Latar belakang putih / biru / merah · Untuk kartu ID, dokumen sekolah, formulir aplikasi sederhana.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="cnTwoInchTitle">Cina 2 inci (二寸)</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="cnTwoInchBody">413 × 579 px · Latar belakang putih / biru / merah · Untuk resume, diploma, formulir pekerjaan, laporan medis.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="cnPassportTitle">Paspor Tiongkok (中国护照)</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="cnPassportBody">390 × 567 piksel · Latar belakang putih, ekspresi netral, tidak disarankan memakai kacamata · Untuk paspor, permohonan visa diajukan di Tiongkok.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="usPassportTitle">Paspor AS</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="usPassportBody">600 × 600 px (2 × 2 inci) · Latar belakang putih polos atau putih pucat · Tanpa kacamata (sejak 2016), ekspresi netral, wajah penuh terlihat.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="schengenVisaTitle">Visa Schengen (UE)</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="schengenVisaBody">413 × 531 piksel (35 × 45 mm) · Latar belakang abu-abu muda atau putih pucat · Cakupan wajah 70-80%, ekspresi netral.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-5 dark:border-zinc-800">
+                    <h3 class="font-bold text-gray-900 mb-2 dark:text-zinc-50" data-i18n="japanVisaTitle">Visa Jepang</h3>
+                    <p class="leading-relaxed text-gray-600 dark:text-zinc-300" data-i18n="japanVisaBody">600 × 600 px (45 × 45 mm) · Latar belakang putih atau putih pucat · Menghadap ke depan, tanpa penutup kepala, diambil dalam waktu 6 bulan.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cross-link section（H6） -->
+        <section class="mt-12">
+            <h2 class="text-xl font-bold mb-6 text-gray-900 dark:text-zinc-50" data-i18n="moreTitle">Alat MiaoCut Lainnya</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <a href="/id/portrait-background-remover/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                    <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="moreLinkPortraitTitle">Penghapus Latar Belakang Potret →</h3>
+                    <p class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="moreLinkPortraitDesc">Buat gambar LinkedIn atau profil sosial yang bersih.</p>
+                </a>
+                <a href="/id/" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-400 hover:shadow-sm transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                    <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="moreLinkBgTitle">Penghapus Latar Belakang AI →</h3>
+                    <p class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="moreLinkBgDesc">Potongan PNG transparan sekali klik untuk foto apa pun.</p>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- All Tools footer -->
+    <footer class="w-full bg-gray-900 text-gray-300 mt-0">
+        <div class="max-w-6xl mx-auto px-6 py-12">
+            <h2 class="text-xl font-bold text-white mb-8 text-center" data-i18n="footerToolsTitle">Semua Alat MiaoCut</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatRemove">Penghapusan Latar Belakang AI</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/id/" class="hover:text-white transition-colors" data-i18n="toolBgTitle">Hapus Latar Belakang</a></li>
+                        <li><a href="/id/product-photo-background-remover/" class="hover:text-white transition-colors" data-i18n="toolProductTitle">Produk</a></li>
+                        <li><a href="/id/portrait-background-remover/" class="hover:text-white transition-colors" data-i18n="toolPortraitTitle">Potret</a></li>
+                        <li><a href="/id/id-photo-maker/" class="hover:text-white transition-colors" data-i18n="toolIdTitle">Foto ID</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatConvert">Konversi Format</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/id/jpg-to-transparent-png/" class="hover:text-white transition-colors" data-i18n="toolJpgPngTitle">JPG → PNG Transparan</a></li>
+                        <li><a href="/id/png-to-jpg-white-background/" class="hover:text-white transition-colors" data-i18n="toolPngJpgTitle">PNG → JPG</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatRepair">Perbaikan &amp; Peningkatan Foto</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/id/watermark-remover/" class="hover:text-white transition-colors" data-i18n="toolWatermarkTitle">Tanda air</a></li>
+                        <li><a href="/id/old-photo-restoration/" class="hover:text-white transition-colors" data-i18n="toolRestoreTitle">Foto lama</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatGuides">Panduan</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/how-to-remove-background/" class="hover:text-white transition-colors" data-i18n="guideHubTitle">Cara Menghapus Latar Belakang</a></li>
+                        <li><a href="/how-to-remove-background/powerpoint/" class="hover:text-white transition-colors" data-i18n="guidePptTitle">Di PowerPoint</a></li>
+                        <li><a href="/how-to-remove-background/gimp/" class="hover:text-white transition-colors" data-i18n="guideGimpTitle">Di GIMP</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500 dark:text-zinc-400">
+                <p class="mb-2" data-i18n="footerTagline">MiaoCut · Alat gambar AI gratis yang menghormati privasi Anda.</p>
+                <p><a href="/privacy/" class="hover:text-white transition-colors" data-i18n="footerPrivacy">Pribadi</a> · <a href="/terms/" class="hover:text-white transition-colors" data-i18n="footerTerms">Ketentuan</a> · <a href="https://github.com/midcodehub/miaoCut" target="_blank" rel="noopener" class="hover:text-white transition-colors">GitHub</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/id-photo-maker/id-photo.js"></script>
+    <script src="/feedback.js"></script>
+</body>
+
+</html>

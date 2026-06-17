@@ -4,27 +4,87 @@
 
     // Translations for the feedback widget
     const I18N = {
-        zh: {
-            fbTitle: "☕ 提出建议",
-            fbPlaceholder: "有什么想法？",
-            fbEmail: "邮箱（选填，方便我们回复你）",
-            fbSend: "发送",
-            fbThanks: "感谢你的建议！",
-            fbThanksSub: "我们会认真对待每一条反馈"
+        "zh": {
+                "fbTitle": "☕ 提出建议",
+                "fbPlaceholder": "有什么想法？",
+                "fbEmail": "邮箱（选填，方便我们回复你）",
+                "fbSend": "发送",
+                "fbThanks": "感谢你的建议！",
+                "fbThanksSub": "我们会认真对待每一条反馈"
         },
-        en: {
-            fbTitle: "☕ Feedback",
-            fbPlaceholder: "What's on your mind?",
-            fbEmail: "Email (Optional)",
-            fbSend: "Send",
-            fbThanks: "Thanks for your feedback!",
-            fbThanksSub: "We read every single message."
+        "en": {
+                "fbTitle": "☕ Feedback",
+                "fbPlaceholder": "What's on your mind?",
+                "fbEmail": "Email (Optional)",
+                "fbSend": "Send",
+                "fbThanks": "Thanks for your feedback!",
+                "fbThanksSub": "We read every single message."
+        },
+        "hi": {
+                "fbTitle": "☕ प्रतिक्रिया",
+                "fbPlaceholder": "आपके दिमाग में क्या है?",
+                "fbEmail": "ईमेल वैकल्पिक)",
+                "fbSend": "भेजना",
+                "fbThanks": "आपकी प्रतिक्रिया के लिए धन्यवाद!",
+                "fbThanksSub": "हम हर एक संदेश पढ़ते हैं."
+        },
+        "id": {
+                "fbTitle": "☕ Umpan balik",
+                "fbPlaceholder": "Apa yang ada di pikiranmu?",
+                "fbEmail": "Email (Opsional)",
+                "fbSend": "Mengirim",
+                "fbThanks": "Terima kasih atas tanggapan Anda!",
+                "fbThanksSub": "Kami membaca setiap pesan."
+        },
+        "pt-br": {
+                "fbTitle": "☕ Feedback",
+                "fbPlaceholder": "O que está em sua mente?",
+                "fbEmail": "E-mail (opcional)",
+                "fbSend": "Enviar",
+                "fbThanks": "Obrigado pelo seu feedback!",
+                "fbThanksSub": "Lemos cada mensagem."
+        },
+        "bn": {
+                "fbTitle": "☕ প্রতিক্রিয়া",
+                "fbPlaceholder": "আপনার মনে কি আছে?",
+                "fbEmail": "ইমেল (ঐচ্ছিক)",
+                "fbSend": "পাঠান",
+                "fbThanks": "আপনার প্রতিক্রিয়া জন্য ধন্যবাদ!",
+                "fbThanksSub": "আমরা প্রতিটি একক বার্তা পড়ি।"
+        },
+        "fil": {
+                "fbTitle": "☕ Feedback",
+                "fbPlaceholder": "Ano ang nasa isip mo?",
+                "fbEmail": "Email (Opsyonal)",
+                "fbSend": "Ipadala",
+                "fbThanks": "Salamat sa iyong feedback!",
+                "fbThanksSub": "Binabasa namin ang bawat mensahe."
+        },
+        "ur": {
+                "fbTitle": "☕ تاثرات",
+                "fbPlaceholder": "آپ کے دماغ میں کیا ہے؟",
+                "fbEmail": "ای میل (اختیاری)",
+                "fbSend": "بھیجیں۔",
+                "fbThanks": "آپ کی رائے کا شکریہ!",
+                "fbThanksSub": "ہم ایک ایک پیغام پڑھتے ہیں۔"
         }
-    };
+};
 
-    let currentLang = localStorage.getItem('lang') || ((navigator.language && navigator.language.startsWith('zh')) ? 'zh' : 'en');
+    function localeFromHtmlLang(lang) {
+        const normalized = (lang || 'en').toLowerCase();
+        if (normalized.startsWith('pt')) return 'pt-br';
+        if (normalized.startsWith('zh')) return 'zh';
+        if (normalized.startsWith('hi')) return 'hi';
+        if (normalized.startsWith('id')) return 'id';
+        if (normalized.startsWith('bn')) return 'bn';
+        if (normalized.startsWith('fil') || normalized.startsWith('tl')) return 'fil';
+        if (normalized.startsWith('ur')) return 'ur';
+        return 'en';
+    }
+
+    let currentLang = localeFromHtmlLang(document.documentElement.lang || localStorage.getItem('lang') || navigator.language);
     function t(key) {
-        return I18N[currentLang][key] || key;
+        return (I18N[currentLang] && I18N[currentLang][key]) || (I18N.en && I18N.en[key]) || key;
     }
 
     // Inject HTML

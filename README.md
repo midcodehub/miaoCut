@@ -76,7 +76,7 @@ The background-removal pipeline picks one of two profiles per request:
 └─────────────────────────────────┘      └────────────────────────────────────┘
 ```
 
-- **Frontend** — single-file SPA (`index.html` + compiled `output.css`), built-in EN/ZH i18n, client-side image compression, XHR upload with real progress. Served by Cloudflare Pages.
+- **Frontend** — static HTML pages (`index.html` + compiled `output.css`) with EN/ZH/HI/ID/PT-BR/BN/FIL/UR i18n, client-side image compression, XHR upload with real progress. Served by Cloudflare Pages.
 - **Backend** — FastAPI (single worker). AI models: **BiRefNet-General-Lite** (INT8 quantized) via rembg for cutouts, **MediaPipe Face Mesh** for ID-photo cropping, **LaMa** inpainting for watermark removal. Rate limiting (SlowAPI) and concurrency control live in process memory — **no Redis or external state**.
 
 ## 🚀 Run it yourself

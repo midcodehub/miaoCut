@@ -49,114 +49,139 @@
     <link rel="canonical" href="https://miaocut.app/zh/portrait-background-remover/">
 
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "MiaoCut Portrait Background Remover",
-      "url": "https://miaocut.app/zh/portrait-background-remover/",
-      "applicationCategory": "MultimediaApplication",
-      "operatingSystem": "Web",
-      "description": "Free AI portrait background remover and profile picture maker. Remove portrait backgrounds, choose professional backgrounds, and export square avatars, circular profile pictures, or resume photos.",
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+{
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "MiaoCut Portrait Background Remover",
+    "url": "https://miaocut.app/zh/portrait-background-remover/",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Web",
+    "description": "Free AI portrait background remover and profile picture maker. Remove portrait backgrounds, choose professional backgrounds, and export square avatars, circular profile pictures, or resume photos.",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
     }
-    </script>
+}
+</script>
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "MiaoCut", "item": "https://miaocut.app/zh/" },
-        { "@type": "ListItem", "position": 2, "name": "Portrait Background Remover", "item": "https://miaocut.app/zh/portrait-background-remover/" }
-      ]
-    }
-    </script>
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "MiaoCut",
+            "item": "https://miaocut.app/zh/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "人像背景去除",
+            "item": "https://miaocut.app/zh/portrait-background-remover/"
+        }
+    ]
+}
+</script>
     <!-- FAQPage schema 必须与下方可见 FAQ section（data-i18n=faqTitle 那一段）保持一致。
          Google 政策要求 schema 内的 Q&A 在页面上对用户可见，否则可能被判结构化数据违规。
          改 FAQ 时请同步修改下方 HTML + index.html 内联的 PAGE_I18N.en.faqXX / PAGE_I18N.zh.faqXX。 -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
         {
-          "@type": "Question",
-          "name": "Will it handle long hair, curly hair, or flyaways properly?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. Switch the quality toggle to \"Fine (hair / fur)\" mode. MiaoCut uses BiRefNet plus alpha matting to preserve individual hair strands and minimize the green/grey halo that simpler tools leave behind."
-          }
+            "@type": "Question",
+            "name": "能正确处理长发、卷发或飞发吗？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "可以。把质量切到 \"Fine（毛发/发丝）\" 模式。MiaoCut 使用 BiRefNet + alpha matting 保留每根发丝，最大限度减少其他工具会留下的绿色/灰色光晕。"
+            }
         },
         {
-          "@type": "Question",
-          "name": "Can I make a LinkedIn or profile picture directly?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. Choose a neutral or branded background, select a 512px or 1024px avatar size, and download either a square or circular profile picture."
-          }
+            "@type": "Question",
+            "name": "可以直接制作 LinkedIn 或社交头像吗？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "可以。选择中性或品牌背景，设置 512px 或 1024px 头像尺寸，并下载方形或圆形头像。"
+            }
         },
         {
-          "@type": "Question",
-          "name": "Can I create a resume photo?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. Use the resume portrait preset, choose a simple white or light gray background, and export a clean portrait for CVs and professional profiles."
-          }
+            "@type": "Question",
+            "name": "可以制作简历照片吗？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "可以。使用简历人像预设，选择白色或浅灰背景，即可导出适合 CV 和职业资料页的人像照片。"
+            }
         },
         {
-          "@type": "Question",
-          "name": "Is my photo private and safe?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. Photos are processed in-memory on the server and discarded immediately after the cutout is returned. We never store your image, never use it for AI training, and there is no signup required."
-          }
+            "@type": "Question",
+            "name": "我的照片安全吗？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "安全。照片纯内存处理，抠图返回后立即销毁。我们绝不存储您的图片，绝不用于 AI 训练，无需注册账号。"
+            }
         },
         {
-          "@type": "Question",
-          "name": "Does it work on group photos with multiple people?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes, but works best with a clear primary subject. For tight group shots where everyone is the foreground, all people are kept and the background is removed together."
-          }
+            "@type": "Question",
+            "name": "能处理多人合影吗？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "可以，但单一主体效果最好。对于所有人都属于前景的紧凑合影，会保留所有人物，整体去除背景。"
+            }
         }
-      ]
-    }
-    </script>
+    ]
+}
+</script>
     <!-- HowTo schema：对应下方 "How to Make a Profile Picture from a Portrait" 三步段落 -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "HowTo",
-      "name": "How to Make a Profile Picture from a Portrait",
-      "description": "Turn any portrait into a clean LinkedIn headshot, resume photo, or social avatar in three steps with MiaoCut's free AI portrait background remover.",
-      "totalTime": "PT5S",
-      "tool": [{ "@type": "HowToTool", "name": "MiaoCut Portrait Background Remover" }],
-      "step": [
+{
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "如何把人像制作成头像",
+    "description": "Turn any portrait into a clean LinkedIn headshot, resume photo, or social avatar in three steps with MiaoCut's free AI portrait background remover.",
+    "totalTime": "PT5S",
+    "tool": [
         {
-          "@type": "HowToStep",
-          "position": 1,
-          "name": "Upload Your Portrait",
-          "text": "Upload a headshot, selfie, or full-body portrait in JPG, PNG, or WebP. No signup required."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 2,
-          "name": "AI Cuts You Out",
-          "text": "MiaoCut detects the person and removes the background, preserving hair strands, glasses, and accessories."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 3,
-          "name": "Choose Background and Size",
-          "text": "Pick a neutral, blue, gradient, or blurred background, then export a 512px or 1024px avatar, circular profile picture, or resume photo."
+            "@type": "HowToTool",
+            "name": "MiaoCut Portrait Background Remover"
         }
-      ]
-    }
-    </script>
+    ],
+    "step": [
+        {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Upload Your Portrait",
+            "text": "上传头像、自拍或全身照（JPG / PNG / WebP），无需注册。"
+        },
+        {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "AI Cuts You Out",
+            "text": "MiaoCut 自动识别人物并去除背景，保留发丝、眼镜和配饰。"
+        },
+        {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Choose Background and Size",
+            "text": "选择中性、蓝色、渐变或虚化背景，并导出 512px / 1024px 头像、圆形头像或简历照片。"
+        }
+    ]
+}
+</script>
     <link rel="stylesheet" href="/output.css">
     <script defer src="https://cloud.umami.is/script.js"
         data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
     <link rel="alternate" hreflang="en" href="https://miaocut.app/portrait-background-remover/">
     <link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/portrait-background-remover/">
+    <link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/portrait-background-remover/">
+    <link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/portrait-background-remover/">
+    <link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/portrait-background-remover/">
+    <link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/portrait-background-remover/">
+    <link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/portrait-background-remover/">
+    <link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/portrait-background-remover/">
     <link rel="alternate" hreflang="x-default" href="https://miaocut.app/portrait-background-remover/">
 </head>
 
@@ -185,6 +210,12 @@
                     class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors dark:text-zinc-300 dark:hover:text-zinc-100">
                     <option value="en">English</option>
                     <option value="zh">简体中文</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="pt-br">Português (BR)</option>
+                    <option value="bn">বাংলা</option>
+                    <option value="fil">Filipino</option>
+                    <option value="ur">اردو</option>
                 </select>
             </div>
         </div>
@@ -461,107 +492,401 @@
     <script>
         window.MIAOCUT_PAGE_KEY = 'portrait';
         window.MIAOCUT_PAGE_TITLES = {
-            zh: "人像抠图与头像背景工具 — 免费 AI 头像制作 | MiaoCut",
-            en: "Portrait Background Remover & Profile Picture Maker | MiaoCut"
-        };
+    "zh": "人像抠图与头像背景工具 — 免费 AI 头像制作 | MiaoCut",
+    "en": "Portrait Background Remover & Profile Picture Maker | MiaoCut",
+    "hi": "पोर्ट्रेट बैकग्राउंड रिमूवर और प्रोफ़ाइल चित्र निर्माता | MiaoCut",
+    "id": "Penghapus Latar Belakang Potret & Pembuat Gambar Profil | MiaoCut",
+    "pt-br": "Removedor de fundo de retrato e criador de imagem de perfil | MiaoCut",
+    "bn": "পোর্ট্রেট ব্যাকগ্রাউন্ড রিমুভার এবং প্রোফাইল পিকচার মেকার | MiaoCut",
+    "fil": "Portrait Background Remover at Profile Picture Maker | MiaoCut",
+    "ur": "پورٹریٹ بیک گراؤنڈ ریموور اور پروفائل پکچر میکر | MiaoCut"
+};
         window.MIAOCUT_PAGE_I18N = {
-            zh: {
-                metaDescription: "免费在线人像抠图工具，一键去除或替换证件照、写真和自拍的背景，自动生成 LinkedIn 职业头像、简历证件照、方形头像和圆形社交头像。AI 精准识别发丝边缘，输出高清透明 PNG，支持纯色或自定义背景，无水印、无需注册、即用即走。",
-                metaKeywords: "人像抠图,头像制作,头像换背景,LinkedIn 头像,简历照片,圆形头像,人像背景去除,免费人像抠图",
-                ogTitle: "人像抠图与头像背景工具 — 免费 AI 头像制作 | MiaoCut",
-                ogLocale: "zh_CN",
-                breadcrumbHome: "MiaoCut",
-                breadcrumbCurrent: "人像背景去除",
-                title: "人像抠图与头像背景工具",
-                subtitle: "去除人像背景，选择职业头像背景，并导出方形头像、圆形社交头像或简历照片。",
-                seoIntro: "MiaoCut 的 AI 抠图能处理人像中的发丝、眼镜、耳饰和头像照片。上传 JPG、PNG 或 WebP，去除背景后可选择浅灰、白色、蓝色、渐变或虚化原图背景，适合 LinkedIn、简历、头像和社交媒体。",
-                howItWorks: "如何把人像制作成头像",
-                howStep1Title: "1. 上传你的人像",
-                howStep1Desc: "上传头像、自拍或全身照（JPG / PNG / WebP），无需注册。",
-                howStep2Title: "2. AI 抠出人像",
-                howStep2Desc: "MiaoCut 自动识别人物并去除背景，保留发丝、眼镜和配饰。",
-                howStep3Title: "3. 选择背景和尺寸",
-                howStep3Desc: "选择中性、蓝色、渐变或虚化背景，并导出 512px / 1024px 头像、圆形头像或简历照片。",
-                whyTitle: "为什么用 MiaoCut 处理人像",
-                why1Title: "发丝级精细度",
-                why1Desc: "BiRefNet + alpha matting 保留每根发丝和飞发，长发、卷发、毛躁头发都干净 — 没有灰色光晕。",
-                why2Title: "内置头像背景",
-                why2Desc: "上传后可选择浅灰、白色、蓝色、渐变、自定义色、透明或虚化原图背景。",
-                why3Title: "头像和简历尺寸",
-                why3Desc: "可导出 512px / 1024px 方形头像、圆形头像，或 480×640 简历人像。",
-                why4Title: "隐私优先，无水印",
-                why4Desc: "图片纯内存处理，绝不用于 AI 训练，并且导出结果不带水印。",
-                tipsTitle: "拍出最干净人像抠图的小技巧",
-                tip1: "正面对镜头，使用均匀的正面光。逆光会让发丝边缘更难分离。",
-                tip2: "避免背景颜色与头发或衣服相近 — 这是大多数 AI 工具最容易模糊边界的地方。",
-                tip3: "长发、卷发、多层次发型请切到 Fine（毛发/发丝）模式。多花一点时间值得。",
-                tip4: "单人照效果最好。支持合影，但裁紧画面后效果更干净。",
-                faqTitle: "常见问题",
-                faq1Q: "能正确处理长发、卷发或飞发吗？",
-                faq1A: "可以。把质量切到 \"Fine（毛发/发丝）\" 模式。MiaoCut 使用 BiRefNet + alpha matting 保留每根发丝，最大限度减少其他工具会留下的绿色/灰色光晕。",
-                faq2Q: "可以直接制作 LinkedIn 或社交头像吗？",
-                faq2A: "可以。选择中性或品牌背景，设置 512px 或 1024px 头像尺寸，并下载方形或圆形头像。",
-                faq3Q: "可以制作简历照片吗？",
-                faq3A: "可以。使用简历人像预设，选择白色或浅灰背景，即可导出适合 CV 和职业资料页的人像照片。",
-                faq4Q: "我的照片安全吗？",
-                faq4A: "安全。照片纯内存处理，抠图返回后立即销毁。我们绝不存储您的图片，绝不用于 AI 训练，无需注册账号。",
-                faq5Q: "能处理多人合影吗？",
-                faq5A: "可以，但单一主体效果最好。对于所有人都属于前景的紧凑合影，会保留所有人物，整体去除背景。",
-                moreTitle: "更多 MiaoCut 工具",
-                moreLinkProductTitle: "商品图抠图 →",
-                moreLinkProductDesc: "适合亚马逊、Shopify、Etsy、eBay 卖家。",
-                moreLinkHomeTitle: "通用背景去除 →",
-                moreLinkHomeDesc: "Logo、宠物、复杂边缘等任何场景。"
-            },
-            en: {
-                metaDescription: "Remove or replace portrait backgrounds free. Create LinkedIn headshots, resume photos, square avatars, and circular profile pictures with HD PNG output.",
-                metaKeywords: "portrait background remover, profile picture maker, profile picture background remover, headshot background changer, linkedin headshot background, resume photo maker, circular profile picture",
-                ogTitle: "Portrait Background Remover & Profile Picture Maker | MiaoCut",
-                ogLocale: "en_US",
-                breadcrumbHome: "MiaoCut",
-                breadcrumbCurrent: "Portrait Background Remover",
-                title: "Portrait Background Remover & Profile Picture Maker",
-                subtitle: "Remove portrait backgrounds, choose a professional background, and export square avatars, circular profile pictures, or resume photos.",
-                seoIntro: "MiaoCut's AI background remover handles hair, glasses, earrings, and headshots. Upload a JPG, PNG, or WebP portrait, remove the background, then choose light gray, white, blue, gradient, or blurred backgrounds for LinkedIn, resumes, avatars, and social media.",
-                howItWorks: "How to Make a Profile Picture from a Portrait",
-                howStep1Title: "1. Upload Your Portrait",
-                howStep1Desc: "Upload a headshot, selfie, or full-body portrait in JPG, PNG, or WebP. No signup required.",
-                howStep2Title: "2. AI Cuts You Out",
-                howStep2Desc: "MiaoCut detects the person and removes the background, preserving hair strands, glasses, and accessories.",
-                howStep3Title: "3. Choose Background & Size",
-                howStep3Desc: "Pick a neutral, blue, gradient, or blurred background, then export a 512px or 1024px avatar, circular profile picture, or resume photo.",
-                whyTitle: "Why Use MiaoCut for Portraits",
-                why1Title: "Strand-Level Hair Detail",
-                why1Desc: "BiRefNet plus alpha matting preserves individual hair strands and flyaways. Long, curly, and frizzy hair come out clean — no grey halo.",
-                why2Title: "Profile Backgrounds Built In",
-                why2Desc: "Choose light gray, white, blue, gradient, custom color, transparent, or blurred original backgrounds after upload.",
-                why3Title: "Avatar and Resume Sizes",
-                why3Desc: "Export 512px and 1024px square avatars, circular profile pictures, or a 480×640 resume portrait.",
-                why4Title: "Private, No Watermark",
-                why4Desc: "Photos are processed in-memory, never used for AI training, and exported without watermarks.",
-                tipsTitle: "Tips for the Cleanest Portrait Cutouts",
-                tip1: "Face the camera with even, front-facing lighting. Backlit photos make hair edges harder to separate.",
-                tip2: "Avoid backgrounds that match your hair or clothing color — that's where most AI tools blur the boundary.",
-                tip3: "For long, curly, or layered hair, switch to Fine (hair / fur) mode. The extra time is worth it.",
-                tip4: "Single-subject photos work best. Group shots are supported but tighter crops give cleaner results.",
-                faqTitle: "Frequently Asked Questions",
-                faq1Q: "Will it handle long hair, curly hair, or flyaways properly?",
-                faq1A: "Yes. Switch the quality toggle to \"Fine (hair / fur)\" mode. MiaoCut uses BiRefNet plus alpha matting to preserve individual hair strands and minimize the green/grey halo that simpler tools leave behind.",
-                faq2Q: "Can I make a LinkedIn or profile picture directly?",
-                faq2A: "Yes. Choose a neutral or branded background, select a 512px or 1024px avatar size, and download either a square or circular profile picture.",
-                faq3Q: "Can I create a resume photo?",
-                faq3A: "Yes. Use the resume portrait preset, choose a simple white or light gray background, and export a clean portrait for CVs and professional profiles.",
-                faq4Q: "Is my photo private and safe?",
-                faq4A: "Yes. Photos are processed in-memory on the server and discarded immediately after the cutout is returned. We never store your image, never use it for AI training, and there is no signup required.",
-                faq5Q: "Does it work on group photos with multiple people?",
-                faq5A: "Yes, but works best with a clear primary subject. For tight group shots where everyone is the foreground, all people are kept and the background is removed together.",
-                moreTitle: "More MiaoCut Tools",
-                moreLinkProductTitle: "Product Photo Background Remover →",
-                moreLinkProductDesc: "For Amazon, Shopify, Etsy, and eBay sellers.",
-                moreLinkHomeTitle: "All-Purpose Background Remover →",
-                moreLinkHomeDesc: "Logos, pets, complex edges, anything else."
-            }
-        };
+    "zh": {
+        "metaDescription": "免费在线人像抠图工具，一键去除或替换证件照、写真和自拍的背景，自动生成 LinkedIn 职业头像、简历证件照、方形头像和圆形社交头像。AI 精准识别发丝边缘，输出高清透明 PNG，支持纯色或自定义背景，无水印、无需注册、即用即走。",
+        "metaKeywords": "人像抠图,头像制作,头像换背景,LinkedIn 头像,简历照片,圆形头像,人像背景去除,免费人像抠图",
+        "ogTitle": "人像抠图与头像背景工具 — 免费 AI 头像制作 | MiaoCut",
+        "ogLocale": "zh_CN",
+        "breadcrumbHome": "MiaoCut",
+        "breadcrumbCurrent": "人像背景去除",
+        "title": "人像抠图与头像背景工具",
+        "subtitle": "去除人像背景，选择职业头像背景，并导出方形头像、圆形社交头像或简历照片。",
+        "seoIntro": "MiaoCut 的 AI 抠图能处理人像中的发丝、眼镜、耳饰和头像照片。上传 JPG、PNG 或 WebP，去除背景后可选择浅灰、白色、蓝色、渐变或虚化原图背景，适合 LinkedIn、简历、头像和社交媒体。",
+        "howItWorks": "如何把人像制作成头像",
+        "howStep1Title": "1. 上传你的人像",
+        "howStep1Desc": "上传头像、自拍或全身照（JPG / PNG / WebP），无需注册。",
+        "howStep2Title": "2. AI 抠出人像",
+        "howStep2Desc": "MiaoCut 自动识别人物并去除背景，保留发丝、眼镜和配饰。",
+        "howStep3Title": "3. 选择背景和尺寸",
+        "howStep3Desc": "选择中性、蓝色、渐变或虚化背景，并导出 512px / 1024px 头像、圆形头像或简历照片。",
+        "whyTitle": "为什么用 MiaoCut 处理人像",
+        "why1Title": "发丝级精细度",
+        "why1Desc": "BiRefNet + alpha matting 保留每根发丝和飞发，长发、卷发、毛躁头发都干净 — 没有灰色光晕。",
+        "why2Title": "内置头像背景",
+        "why2Desc": "上传后可选择浅灰、白色、蓝色、渐变、自定义色、透明或虚化原图背景。",
+        "why3Title": "头像和简历尺寸",
+        "why3Desc": "可导出 512px / 1024px 方形头像、圆形头像，或 480×640 简历人像。",
+        "why4Title": "隐私优先，无水印",
+        "why4Desc": "图片纯内存处理，绝不用于 AI 训练，并且导出结果不带水印。",
+        "tipsTitle": "拍出最干净人像抠图的小技巧",
+        "tip1": "正面对镜头，使用均匀的正面光。逆光会让发丝边缘更难分离。",
+        "tip2": "避免背景颜色与头发或衣服相近 — 这是大多数 AI 工具最容易模糊边界的地方。",
+        "tip3": "长发、卷发、多层次发型请切到 Fine（毛发/发丝）模式。多花一点时间值得。",
+        "tip4": "单人照效果最好。支持合影，但裁紧画面后效果更干净。",
+        "faqTitle": "常见问题",
+        "faq1Q": "能正确处理长发、卷发或飞发吗？",
+        "faq1A": "可以。把质量切到 \"Fine（毛发/发丝）\" 模式。MiaoCut 使用 BiRefNet + alpha matting 保留每根发丝，最大限度减少其他工具会留下的绿色/灰色光晕。",
+        "faq2Q": "可以直接制作 LinkedIn 或社交头像吗？",
+        "faq2A": "可以。选择中性或品牌背景，设置 512px 或 1024px 头像尺寸，并下载方形或圆形头像。",
+        "faq3Q": "可以制作简历照片吗？",
+        "faq3A": "可以。使用简历人像预设，选择白色或浅灰背景，即可导出适合 CV 和职业资料页的人像照片。",
+        "faq4Q": "我的照片安全吗？",
+        "faq4A": "安全。照片纯内存处理，抠图返回后立即销毁。我们绝不存储您的图片，绝不用于 AI 训练，无需注册账号。",
+        "faq5Q": "能处理多人合影吗？",
+        "faq5A": "可以，但单一主体效果最好。对于所有人都属于前景的紧凑合影，会保留所有人物，整体去除背景。",
+        "moreTitle": "更多 MiaoCut 工具",
+        "moreLinkProductTitle": "商品图抠图 →",
+        "moreLinkProductDesc": "适合亚马逊、Shopify、Etsy、eBay 卖家。",
+        "moreLinkHomeTitle": "通用背景去除 →",
+        "moreLinkHomeDesc": "Logo、宠物、复杂边缘等任何场景。"
+    },
+    "en": {
+        "metaDescription": "Remove or replace portrait backgrounds free. Create LinkedIn headshots, resume photos, square avatars, and circular profile pictures with HD PNG output.",
+        "metaKeywords": "portrait background remover, profile picture maker, profile picture background remover, headshot background changer, linkedin headshot background, resume photo maker, circular profile picture",
+        "ogTitle": "Portrait Background Remover & Profile Picture Maker | MiaoCut",
+        "ogLocale": "en_US",
+        "breadcrumbHome": "MiaoCut",
+        "breadcrumbCurrent": "Portrait Background Remover",
+        "title": "Portrait Background Remover & Profile Picture Maker",
+        "subtitle": "Remove portrait backgrounds, choose a professional background, and export square avatars, circular profile pictures, or resume photos.",
+        "seoIntro": "MiaoCut's AI background remover handles hair, glasses, earrings, and headshots. Upload a JPG, PNG, or WebP portrait, remove the background, then choose light gray, white, blue, gradient, or blurred backgrounds for LinkedIn, resumes, avatars, and social media.",
+        "howItWorks": "How to Make a Profile Picture from a Portrait",
+        "howStep1Title": "1. Upload Your Portrait",
+        "howStep1Desc": "Upload a headshot, selfie, or full-body portrait in JPG, PNG, or WebP. No signup required.",
+        "howStep2Title": "2. AI Cuts You Out",
+        "howStep2Desc": "MiaoCut detects the person and removes the background, preserving hair strands, glasses, and accessories.",
+        "howStep3Title": "3. Choose Background & Size",
+        "howStep3Desc": "Pick a neutral, blue, gradient, or blurred background, then export a 512px or 1024px avatar, circular profile picture, or resume photo.",
+        "whyTitle": "Why Use MiaoCut for Portraits",
+        "why1Title": "Strand-Level Hair Detail",
+        "why1Desc": "BiRefNet plus alpha matting preserves individual hair strands and flyaways. Long, curly, and frizzy hair come out clean — no grey halo.",
+        "why2Title": "Profile Backgrounds Built In",
+        "why2Desc": "Choose light gray, white, blue, gradient, custom color, transparent, or blurred original backgrounds after upload.",
+        "why3Title": "Avatar and Resume Sizes",
+        "why3Desc": "Export 512px and 1024px square avatars, circular profile pictures, or a 480×640 resume portrait.",
+        "why4Title": "Private, No Watermark",
+        "why4Desc": "Photos are processed in-memory, never used for AI training, and exported without watermarks.",
+        "tipsTitle": "Tips for the Cleanest Portrait Cutouts",
+        "tip1": "Face the camera with even, front-facing lighting. Backlit photos make hair edges harder to separate.",
+        "tip2": "Avoid backgrounds that match your hair or clothing color — that's where most AI tools blur the boundary.",
+        "tip3": "For long, curly, or layered hair, switch to Fine (hair / fur) mode. The extra time is worth it.",
+        "tip4": "Single-subject photos work best. Group shots are supported but tighter crops give cleaner results.",
+        "faqTitle": "Frequently Asked Questions",
+        "faq1Q": "Will it handle long hair, curly hair, or flyaways properly?",
+        "faq1A": "Yes. Switch the quality toggle to \"Fine (hair / fur)\" mode. MiaoCut uses BiRefNet plus alpha matting to preserve individual hair strands and minimize the green/grey halo that simpler tools leave behind.",
+        "faq2Q": "Can I make a LinkedIn or profile picture directly?",
+        "faq2A": "Yes. Choose a neutral or branded background, select a 512px or 1024px avatar size, and download either a square or circular profile picture.",
+        "faq3Q": "Can I create a resume photo?",
+        "faq3A": "Yes. Use the resume portrait preset, choose a simple white or light gray background, and export a clean portrait for CVs and professional profiles.",
+        "faq4Q": "Is my photo private and safe?",
+        "faq4A": "Yes. Photos are processed in-memory on the server and discarded immediately after the cutout is returned. We never store your image, never use it for AI training, and there is no signup required.",
+        "faq5Q": "Does it work on group photos with multiple people?",
+        "faq5A": "Yes, but works best with a clear primary subject. For tight group shots where everyone is the foreground, all people are kept and the background is removed together.",
+        "moreTitle": "More MiaoCut Tools",
+        "moreLinkProductTitle": "Product Photo Background Remover →",
+        "moreLinkProductDesc": "For Amazon, Shopify, Etsy, and eBay sellers.",
+        "moreLinkHomeTitle": "All-Purpose Background Remover →",
+        "moreLinkHomeDesc": "Logos, pets, complex edges, anything else."
+    },
+    "hi": {
+        "metaDescription": "पोर्ट्रेट पृष्ठभूमि निःशुल्क हटाएँ या बदलें। HD PNG आउटपुट के साथ लिंक्डइन हेडशॉट्स, रिज्यूमे फोटो, चौकोर अवतार और गोलाकार प्रोफ़ाइल चित्र बनाएं।",
+        "metaKeywords": "पोर्ट्रेट बैकग्राउंड रिमूवर, प्रोफाइल पिक्चर मेकर, प्रोफाइल पिक्चर बैकग्राउंड रिमूवर, हेडशॉट बैकग्राउंड चेंजर, लिंक्डइन हेडशॉट बैकग्राउंड, बायोडाटा फोटो मेकर, सर्कुलर प्रोफाइल पिक्चर",
+        "ogTitle": "पोर्ट्रेट बैकग्राउंड रिमूवर और प्रोफ़ाइल चित्र निर्माता | MiaoCut",
+        "ogLocale": "hi_IN",
+        "breadcrumbHome": "MiaoCut",
+        "breadcrumbCurrent": "पोर्ट्रेट बैकग्राउंड रिमूवर",
+        "title": "पोर्ट्रेट बैकग्राउंड रिमूवर और प्रोफ़ाइल चित्र निर्माता",
+        "subtitle": "पोर्ट्रेट पृष्ठभूमि हटाएं, एक पेशेवर पृष्ठभूमि चुनें, और वर्गाकार अवतार, गोलाकार प्रोफ़ाइल चित्र या फिर से शुरू की गई फ़ोटो निर्यात करें।",
+        "seoIntro": "MiaoCut का AI बैकग्राउंड रिमूवर बाल, चश्मा, झुमके और हेडशॉट्स को संभालता है। JPG, PNG, या WebP पोर्ट्रेट अपलोड करें, पृष्ठभूमि हटाएं, फिर लिंक्डइन, रिज्यूमे, अवतार और सोशल मीडिया के लिए हल्के भूरे, सफेद, नीले, ग्रेडिएंट, या धुंधली पृष्ठभूमि चुनें।",
+        "howItWorks": "पोर्ट्रेट से प्रोफ़ाइल चित्र कैसे बनाएं",
+        "howStep1Title": "1. अपना पोर्ट्रेट अपलोड करें",
+        "howStep1Desc": "JPG, PNG, या WebP में हेडशॉट, सेल्फी या फुल-बॉडी पोर्ट्रेट अपलोड करें। कोई साइनअप आवश्यक नहीं है.",
+        "howStep2Title": "2. AI आपको बाहर कर देता है",
+        "howStep2Desc": "MiaoCut व्यक्ति का पता लगाता है और पृष्ठभूमि को हटा देता है, बालों के ताले, चश्मे और सहायक उपकरण को संरक्षित करता है।",
+        "howStep3Title": "3. पृष्ठभूमि और आकार चुनें",
+        "howStep3Desc": "एक तटस्थ, नीला, ढाल, या धुंधला पृष्ठभूमि चुनें, फिर 512px या 1024px अवतार, गोलाकार प्रोफ़ाइल चित्र, या फिर से शुरू की गई तस्वीर निर्यात करें।",
+        "whyTitle": "पोर्ट्रेट के लिए MiaoCut का उपयोग क्यों करें",
+        "why1Title": "स्ट्रैंड-लेवल बालों का विवरण",
+        "why1Desc": "BiRefNet प्लस अल्फा मैटिंग अलग-अलग बालों के स्ट्रैंड और फ्लाईअवे को सुरक्षित रखता है। लंबे, घुंघराले और घुंघराले बाल साफ़ निकलते हैं - कोई सफ़ेद प्रभामंडल नहीं।",
+        "why2Title": "प्रोफ़ाइल पृष्ठभूमि निर्मित",
+        "why2Desc": "अपलोड करने के बाद हल्के भूरे, सफेद, नीले, ढाल, कस्टम रंग, पारदर्शी, या धुंधली मूल पृष्ठभूमि चुनें।",
+        "why3Title": "अवतार और बायोडाटा आकार",
+        "why3Desc": "512px और 1024px वर्गाकार अवतार, गोलाकार प्रोफ़ाइल चित्र, या 480×640 रेज़्युमे पोर्ट्रेट निर्यात करें।",
+        "why4Title": "निजी, कोई वॉटरमार्क नहीं",
+        "why4Desc": "फ़ोटो को मेमोरी में संसाधित किया जाता है, AI प्रशिक्षण के लिए कभी उपयोग नहीं किया जाता है, और वॉटरमार्क के बिना निर्यात किया जाता है।",
+        "tipsTitle": "सबसे स्वच्छ पोर्ट्रेट कटआउट के लिए युक्तियाँ",
+        "tip1": "सम, सामने की ओर प्रकाश के साथ कैमरे का सामना करें। बैकलिट फ़ोटो से बालों के किनारों को अलग करना कठिन हो जाता है।",
+        "tip2": "ऐसी पृष्ठभूमि से बचें जो आपके बालों या कपड़ों के रंग से मेल खाती हो - यहीं पर अधिकांश AI उपकरण सीमा को धुंधला कर देते हैं।",
+        "tip3": "लंबे, घुंघराले या परतदार बालों के लिए, फाइन (बाल/फर) मोड पर स्विच करें। अतिरिक्त समय इसके लायक है.",
+        "tip4": "एकल-विषय तस्वीरें सबसे अच्छा काम करती हैं। समूह शॉट्स समर्थित हैं लेकिन सघन फसलें स्वच्छ परिणाम देती हैं।",
+        "faqTitle": "अक्सर पूछे जाने वाले प्रश्नों",
+        "faq1Q": "क्या यह लंबे बालों, घुंघराले बालों या उड़ते बालों को ठीक से संभाल पाएगा?",
+        "faq1A": "हाँ। गुणवत्ता टॉगल को \"ठीक (बाल/फर)\" मोड पर स्विच करें। MiaoCut व्यक्तिगत बालों को संरक्षित करने और सरल उपकरणों द्वारा छोड़े गए हरे/ग्रे प्रभामंडल को कम करने के लिए BiRefNet प्लस अल्फा मैटिंग का उपयोग करता है।",
+        "faq2Q": "क्या मैं सीधे लिंक्डइन या प्रोफ़ाइल चित्र बना सकता हूँ?",
+        "faq2A": "हाँ। एक तटस्थ या ब्रांडेड पृष्ठभूमि चुनें, 512px या 1024px अवतार आकार चुनें, और एक चौकोर या गोलाकार प्रोफ़ाइल चित्र डाउनलोड करें।",
+        "faq3Q": "क्या मैं बायोडाटा फोटो बना सकता हूँ?",
+        "faq3A": "हाँ। रेज़्यूमे पोर्ट्रेट प्रीसेट का उपयोग करें, एक साधारण सफेद या हल्के भूरे रंग की पृष्ठभूमि चुनें, और सीवी और पेशेवर प्रोफाइल के लिए एक साफ पोर्ट्रेट निर्यात करें।",
+        "faq4Q": "क्या मेरी फ़ोटो निजी और सुरक्षित है?",
+        "faq4A": "हाँ। फ़ोटो को सर्वर पर मेमोरी में संसाधित किया जाता है और कटआउट वापस आने के तुरंत बाद हटा दिया जाता है। हम कभी भी आपकी छवि संग्रहीत नहीं करते हैं, इसे AI प्रशिक्षण के लिए कभी उपयोग नहीं करते हैं, और कोई साइनअप आवश्यक नहीं है।",
+        "faq5Q": "क्या यह एकाधिक लोगों के साथ समूह फ़ोटो पर काम करता है?",
+        "faq5A": "हाँ, लेकिन स्पष्ट प्राथमिक विषय के साथ सबसे अच्छा काम करता है। चुस्त समूह शॉट्स के लिए जहां हर कोई अग्रभूमि है, सभी लोगों को रखा जाता है और पृष्ठभूमि को एक साथ हटा दिया जाता है।",
+        "moreTitle": "अधिक MiaoCut उपकरण",
+        "moreLinkProductTitle": "उत्पाद फोटो पृष्ठभूमि रिमूवर →",
+        "moreLinkProductDesc": "Amazon, Shopify, Etsy और eBay विक्रेताओं के लिए।",
+        "moreLinkHomeTitle": "ऑल-पर्पस बैकग्राउंड रिमूवर →",
+        "moreLinkHomeDesc": "लोगो, पालतू जानवर, जटिल किनारे, और कुछ भी।"
+    },
+    "id": {
+        "metaDescription": "Hapus atau ganti latar belakang potret gratis. Buat foto kepala LinkedIn, foto resume, avatar persegi, dan gambar profil melingkar dengan keluaran HD PNG.",
+        "metaKeywords": "penghapus latar belakang potret, pembuat gambar profil, penghapus latar belakang gambar profil, pengubah latar belakang headshot, latar belakang headshot linkedin, pembuat foto resume, gambar profil melingkar",
+        "ogTitle": "Penghapus Latar Belakang Potret & Pembuat Gambar Profil | MiaoCut",
+        "ogLocale": "id_ID",
+        "breadcrumbHome": "MiaoCut",
+        "breadcrumbCurrent": "Penghapus Latar Belakang Potret",
+        "title": "Penghapus Latar Belakang Potret & Pembuat Gambar Profil",
+        "subtitle": "Hapus latar belakang potret, pilih latar belakang profesional, dan ekspor avatar persegi, gambar profil melingkar, atau lanjutkan foto.",
+        "seoIntro": "Penghilang latar belakang MiaoCut AI menangani rambut, kacamata, anting-anting, dan foto kepala. Unggah potret JPG, PNG, atau WebP, hapus latar belakang, lalu pilih latar belakang abu-abu muda, putih, biru, gradien, atau buram untuk LinkedIn, resume, avatar, dan media sosial.",
+        "howItWorks": "Cara Membuat Gambar Profil dari Potret",
+        "howStep1Title": "1. Unggah Potret Anda",
+        "howStep1Desc": "Unggah foto kepala, selfie, atau potret seluruh tubuh dalam JPG, PNG, atau WebP. Tidak perlu mendaftar.",
+        "howStep2Title": "2. AI Memotong Anda",
+        "howStep2Desc": "MiaoCut mendeteksi orang tersebut dan menghilangkan latar belakang, menjaga helai rambut, kacamata, dan aksesori.",
+        "howStep3Title": "3. Pilih Latar Belakang & Ukuran",
+        "howStep3Desc": "Pilih latar belakang netral, biru, gradien, atau buram, lalu ekspor avatar 512 piksel atau 1024 piksel, gambar profil melingkar, atau foto resume.",
+        "whyTitle": "Mengapa Menggunakan MiaoCut untuk Potret",
+        "why1Title": "Detail Rambut Setingkat Untai",
+        "why1Desc": "BiRefNet plus anyaman alfa menjaga setiap helai rambut dan kusut. Rambut panjang, keriting, dan keriting tampak bersih - tidak ada lingkaran abu-abu.",
+        "why2Title": "Latar Belakang Profil Terpasang",
+        "why2Desc": "Pilih latar belakang asli abu-abu muda, putih, biru, gradien, warna khusus, transparan, atau buram setelah diunggah.",
+        "why3Title": "Ukuran Avatar dan Resume",
+        "why3Desc": "Ekspor avatar persegi 512px dan 1024px, gambar profil melingkar, atau potret resume 480×640.",
+        "why4Title": "Pribadi, Tanpa Tanda Air",
+        "why4Desc": "Foto diproses di memori, tidak pernah digunakan untuk pelatihan AI, dan diekspor tanpa tanda air.",
+        "tipsTitle": "Tip untuk Potongan Potret Paling Bersih",
+        "tip1": "Hadapi kamera dengan pencahayaan menghadap ke depan yang merata. Foto dengan cahaya latar membuat bagian tepi rambut lebih sulit dipisahkan.",
+        "tip2": "Hindari latar belakang yang cocok dengan warna rambut atau pakaian Anda — di situlah sebagian besar alat AI mengaburkan batasnya.",
+        "tip3": "Untuk rambut panjang, keriting, atau berlapis, alihkan ke mode Halus (rambut/bulu). Waktu ekstra tidak sia-sia.",
+        "tip4": "Foto dengan subjek tunggal berfungsi paling baik. Pemotretan kelompok didukung tetapi pemotongan yang lebih ketat memberikan hasil yang lebih bersih.",
+        "faqTitle": "Pertanyaan yang Sering Diajukan",
+        "faq1Q": "Apakah akan menangani rambut panjang, rambut keriting, atau rambut kusut dengan benar?",
+        "faq1A": "Ya. Alihkan tombol kualitas ke mode \"Halus (rambut / bulu)\". MiaoCut menggunakan BiRefNet plus anyaman alfa untuk menjaga setiap helai rambut dan meminimalkan lingkaran cahaya hijau/abu-abu yang ditinggalkan oleh alat sederhana.",
+        "faq2Q": "Bisakah saya membuat LinkedIn atau gambar profil secara langsung?",
+        "faq2A": "Ya. Pilih latar belakang netral atau bermerek, pilih ukuran avatar 512px atau 1024px, dan unduh gambar profil persegi atau lingkaran.",
+        "faq3Q": "Bisakah saya membuat foto resume?",
+        "faq3A": "Ya. Gunakan preset potret resume, pilih latar belakang putih sederhana atau abu-abu terang, dan ekspor potret bersih untuk CV dan profil profesional.",
+        "faq4Q": "Apakah foto saya pribadi dan aman?",
+        "faq4A": "Ya. Foto diproses dalam memori di server dan segera dibuang setelah potongannya dikembalikan. Kami tidak pernah menyimpan gambar Anda, tidak pernah menggunakannya untuk pelatihan AI, dan tidak perlu mendaftar.",
+        "faq5Q": "Apakah ini berfungsi pada foto grup dengan banyak orang?",
+        "faq5A": "Ya, tapi berfungsi paling baik dengan subjek utama yang jelas. Untuk pemotretan grup ketat yang semua orang berada di latar depan, semua orang dipertahankan dan latar belakang dihapus bersama-sama.",
+        "moreTitle": "Alat MiaoCut Lainnya",
+        "moreLinkProductTitle": "Penghapus Latar Belakang Foto Produk →",
+        "moreLinkProductDesc": "Untuk penjual Amazon, Shopify, Etsy, dan eBay.",
+        "moreLinkHomeTitle": "Penghapus Latar Belakang Serbaguna →",
+        "moreLinkHomeDesc": "Logo, hewan peliharaan, tepian yang rumit, apa pun."
+    },
+    "pt-br": {
+        "metaDescription": "Remova ou substitua fundos de retratos gratuitamente. Crie fotos de rosto, fotos de currículo, avatares quadrados e fotos de perfil circulares no LinkedIn com a saída HD PNG.",
+        "metaKeywords": "removedor de fundo de retrato, criador de imagem de perfil, removedor de fundo de imagem de perfil, trocador de fundo de headshot, fundo de headshot do LinkedIn, criador de foto de currículo, foto de perfil circular",
+        "ogTitle": "Removedor de fundo de retrato e criador de imagem de perfil | MiaoCut",
+        "ogLocale": "pt_BR",
+        "breadcrumbHome": "MiaoCut",
+        "breadcrumbCurrent": "Removedor de fundo de retrato",
+        "title": "Removedor de fundo de retrato e criador de imagem de perfil",
+        "subtitle": "Remova planos de fundo de retratos, escolha um plano de fundo profissional e exporte avatares quadrados, fotos circulares de perfil ou fotos de currículo.",
+        "seoIntro": "O removedor de fundo AI da MiaoCut lida com cabelos, óculos, brincos e fotos na cabeça. Carregue um retrato JPG, PNG ou WebP, remova o fundo e escolha fundos cinza claro, branco, azul, gradiente ou desfocado para LinkedIn, currículos, avatares e mídias sociais.",
+        "howItWorks": "Como fazer uma foto de perfil a partir de um retrato",
+        "howStep1Title": "1. Envie seu retrato",
+        "howStep1Desc": "Carregue uma foto de rosto, selfie ou retrato de corpo inteiro em JPG, PNG ou WebP. Não é necessária inscrição.",
+        "howStep2Title": "2. AI elimina você",
+        "howStep2Desc": "MiaoCut detecta a pessoa e remove o fundo, preservando fios de cabelo, óculos e acessórios.",
+        "howStep3Title": "3. Escolha o plano de fundo e o tamanho",
+        "howStep3Desc": "Escolha um fundo neutro, azul, gradiente ou desfocado e exporte um avatar de 512px ou 1024px, uma foto de perfil circular ou uma foto de currículo.",
+        "whyTitle": "Por que usar MiaoCut para retratos",
+        "why1Title": "Detalhe do cabelo no nível do fio",
+        "why1Desc": "BiRefNet plus alfa matting preserva fios de cabelo individuais e rebeldes. Cabelos longos, cacheados e crespos ficam limpos – sem halo cinza.",
+        "why2Title": "Fundos de perfil integrados",
+        "why2Desc": "Escolha fundos originais cinza claro, branco, azul, gradiente, cor personalizada, transparentes ou desfocados após o upload.",
+        "why3Title": "Tamanhos de avatar e currículo",
+        "why3Desc": "Exporte avatares quadrados de 512px e 1024px, fotos de perfil circulares ou um retrato de currículo de 480×640.",
+        "why4Title": "Privado, sem marca d’água",
+        "why4Desc": "As fotos são processadas na memória, nunca usadas para treinamento do AI e exportadas sem marcas d'água.",
+        "tipsTitle": "Dicas para recortes de retratos mais limpos",
+        "tip1": "Fique de frente para a câmera com iluminação frontal uniforme. Fotos retroiluminadas tornam as pontas do cabelo mais difíceis de separar.",
+        "tip2": "Evite fundos que combinem com a cor do seu cabelo ou roupa - é aí que a maioria das ferramentas AI desfocam os limites.",
+        "tip3": "Para cabelos longos, cacheados ou em camadas, mude para o modo Fino (cabelo/pele). O tempo extra vale a pena.",
+        "tip4": "Fotos de assunto único funcionam melhor. Fotos de grupo são suportadas, mas cortes mais precisos fornecem resultados mais limpos.",
+        "faqTitle": "Perguntas frequentes",
+        "faq1Q": "Ele lidará adequadamente com cabelos longos, cacheados ou rebeldes?",
+        "faq1A": "Sim. Mude o botão de qualidade para o modo \"Fino (cabelo/pele)\". MiaoCut usa BiRefNet mais alfa matting para preservar fios de cabelo individuais e minimizar o halo verde/cinza que ferramentas mais simples deixam para trás.",
+        "faq2Q": "Posso criar uma foto do LinkedIn ou do perfil diretamente?",
+        "faq2A": "Sim. Escolha um fundo neutro ou de marca, selecione um tamanho de avatar de 512px ou 1024px e baixe uma imagem de perfil quadrada ou circular.",
+        "faq3Q": "Posso criar uma foto de currículo?",
+        "faq3A": "Sim. Use a predefinição de retrato de currículo, escolha um fundo simples branco ou cinza claro e exporte um retrato limpo para currículos e perfis profissionais.",
+        "faq4Q": "Minha foto é privada e segura?",
+        "faq4A": "Sim. As fotos são processadas na memória do servidor e descartadas imediatamente após o recorte ser retornado. Nunca armazenamos sua imagem, nunca a usamos para treinamento AI e não é necessária inscrição.",
+        "faq5Q": "Funciona em fotos de grupo com várias pessoas?",
+        "faq5A": "Sim, mas funciona melhor com um assunto principal claro. Para fotos de grupos restritos em que todos estão em primeiro plano, todas as pessoas são mantidas e o fundo é removido em conjunto.",
+        "moreTitle": "Mais ferramentas MiaoCut",
+        "moreLinkProductTitle": "Removedor de fundo de foto de produto →",
+        "moreLinkProductDesc": "Para Amazon, Shopify, Etsy e vendedores do eBay.",
+        "moreLinkHomeTitle": "Removedor de fundo multifuncional →",
+        "moreLinkHomeDesc": "Logotipos, animais de estimação, bordas complexas, qualquer outra coisa."
+    },
+    "bn": {
+        "metaDescription": "পোর্ট্রেট ব্যাকগ্রাউন্ড বিনামূল্যে সরান বা প্রতিস্থাপন করুন। HD PNG আউটপুট সহ LinkedIn হেডশট, পুনঃসূচনা ফটো, বর্গাকার অবতার এবং সার্কুলার প্রোফাইল ছবি তৈরি করুন।",
+        "metaKeywords": "পোর্ট্রেট ব্যাকগ্রাউন্ড রিমুভার, প্রোফাইল পিকচার মেকার, প্রোফাইল পিকচার ব্যাকগ্রাউন্ড রিমুভার, হেডশট ব্যাকগ্রাউন্ড চেঞ্জার, লিঙ্কডইন হেডশট ব্যাকগ্রাউন্ড, রিজিউম ফটো মেকার, সার্কুলার প্রোফাইল পিকচার",
+        "ogTitle": "পোর্ট্রেট ব্যাকগ্রাউন্ড রিমুভার এবং প্রোফাইল পিকচার মেকার | MiaoCut",
+        "ogLocale": "bn_BD",
+        "breadcrumbHome": "MiaoCut",
+        "breadcrumbCurrent": "পোর্ট্রেট ব্যাকগ্রাউন্ড রিমুভার",
+        "title": "পোর্ট্রেট ব্যাকগ্রাউন্ড রিমুভার এবং প্রোফাইল পিকচার মেকার",
+        "subtitle": "পোর্ট্রেট ব্যাকগ্রাউন্ড সরান, পেশাদার ব্যাকগ্রাউন্ড বেছে নিন এবং বর্গাকার অবতার, সার্কুলার প্রোফাইল পিকচার, বা ফটো রিজিউম করুন।",
+        "seoIntro": "MiaoCut এর AI ব্যাকগ্রাউন্ড রিমুভার চুল, চশমা, কানের দুল এবং হেডশট পরিচালনা করে। একটি JPG, PNG, বা WebP প্রতিকৃতি আপলোড করুন, পটভূমি সরান, তারপর LinkedIn, জীবনবৃত্তান্ত, অবতার এবং সামাজিক মিডিয়ার জন্য হালকা ধূসর, সাদা, নীল, গ্রেডিয়েন্ট বা ঝাপসা ব্যাকগ্রাউন্ড বেছে নিন।",
+        "howItWorks": "কীভাবে একটি প্রতিকৃতি থেকে একটি প্রোফাইল ছবি তৈরি করবেন",
+        "howStep1Title": "1. আপনার প্রতিকৃতি আপলোড করুন",
+        "howStep1Desc": "JPG, PNG, বা WebP-এ হেডশট, সেলফি বা ফুল-বডি পোর্ট্রেট আপলোড করুন। কোন সাইন আপ প্রয়োজন.",
+        "howStep2Title": "2. AI আপনাকে কেটে ফেলেছে",
+        "howStep2Desc": "MiaoCut ব্যক্তিটিকে সনাক্ত করে এবং পটভূমি সরিয়ে দেয়, চুলের স্ট্র্যান্ড, চশমা এবং আনুষাঙ্গিক সংরক্ষণ করে।",
+        "howStep3Title": "3. পটভূমি এবং আকার চয়ন করুন৷",
+        "howStep3Desc": "একটি নিরপেক্ষ, নীল, গ্রেডিয়েন্ট, বা অস্পষ্ট পটভূমি চয়ন করুন, তারপরে একটি 512px বা 1024px অবতার, বৃত্তাকার প্রোফাইল ছবি, বা পুনঃসূচনা ফটো রপ্তানি করুন৷",
+        "whyTitle": "পোর্ট্রেটের জন্য কেন MiaoCut ব্যবহার করুন",
+        "why1Title": "স্ট্র্যান্ড-লেভেলের চুলের বিবরণ",
+        "why1Desc": "BiRefNet প্লাস আলফা ম্যাটিং পৃথক চুলের স্ট্র্যান্ড এবং ফ্লাইওয়ে সংরক্ষণ করে। লম্বা, কোঁকড়া, এবং কুঁকড়ে যাওয়া চুল পরিষ্কার হয়ে আসে — ধূসর হ্যালো নেই।",
+        "why2Title": "প্রোফাইল পটভূমি অন্তর্নির্মিত",
+        "why2Desc": "আপলোড করার পরে হালকা ধূসর, সাদা, নীল, গ্রেডিয়েন্ট, কাস্টম রঙ, স্বচ্ছ বা অস্পষ্ট মূল ব্যাকগ্রাউন্ড বেছে নিন।",
+        "why3Title": "অবতার এবং পুনরায় শুরু মাপ",
+        "why3Desc": "512px এবং 1024px বর্গাকার অবতার, বৃত্তাকার প্রোফাইল ছবি, বা একটি 480×640 রিজিউম পোর্ট্রেট এক্সপোর্ট করুন৷",
+        "why4Title": "ব্যক্তিগত, কোন জলছাপ",
+        "why4Desc": "ফটোগুলি মেমরিতে প্রক্রিয়া করা হয়, AI প্রশিক্ষণের জন্য কখনও ব্যবহার করা হয় না এবং জলছাপ ছাড়াই রপ্তানি করা হয়৷",
+        "tipsTitle": "ক্লিনেস্ট পোর্ট্রেট কাটআউটের জন্য টিপস",
+        "tip1": "সমান, সামনের দিকে আলোর সাথে ক্যামেরার মুখোমুখি হন। ব্যাকলিট ফটো চুলের প্রান্ত আলাদা করা কঠিন করে তোলে।",
+        "tip2": "আপনার চুল বা পোশাকের রঙের সাথে মেলে এমন ব্যাকগ্রাউন্ড এড়িয়ে চলুন — সেখানেই বেশিরভাগ AI টুল সীমানাকে অস্পষ্ট করে।",
+        "tip3": "লম্বা, কোঁকড়া বা স্তরযুক্ত চুলের জন্য, ফাইন (চুল / পশম) মোডে স্যুইচ করুন। অতিরিক্ত সময় এটা মূল্য.",
+        "tip4": "একক-বিষয় ফটো সবচেয়ে ভাল কাজ করে। গ্রুপ শট সমর্থিত কিন্তু শক্ত ফসল পরিষ্কার ফলাফল দেয়।",
+        "faqTitle": "প্রায়শই জিজ্ঞাসিত প্রশ্নাবলী",
+        "faq1Q": "এটি কি লম্বা চুল, কোঁকড়ানো চুল, বা উড়ন্ত পথগুলি সঠিকভাবে পরিচালনা করবে?",
+        "faq1A": "হ্যাঁ। গুণমান টগলটিকে \"ফাইন (চুল / পশম)\" মোডে স্যুইচ করুন। MiaoCut BiRefNet প্লাস আলফা ম্যাটিং ব্যবহার করে পৃথক চুলের স্ট্র্যান্ডগুলিকে সংরক্ষণ করতে এবং সবুজ/ধূসর হ্যালোকে ছোট করে যা সহজ টুলগুলি পিছনে ফেলে দেয়।",
+        "faq2Q": "আমি কি সরাসরি লিঙ্কডইন বা প্রোফাইল ছবি তৈরি করতে পারি?",
+        "faq2A": "হ্যাঁ। একটি নিরপেক্ষ বা ব্র্যান্ডেড পটভূমি চয়ন করুন, একটি 512px বা 1024px অবতার আকার নির্বাচন করুন এবং একটি বর্গাকার বা বৃত্তাকার প্রোফাইল ছবি ডাউনলোড করুন৷",
+        "faq3Q": "আমি একটি জীবনবৃত্তান্ত ছবি তৈরি করতে পারি?",
+        "faq3A": "হ্যাঁ। জীবনবৃত্তান্ত পোর্ট্রেট প্রিসেট ব্যবহার করুন, একটি সাধারণ সাদা বা হালকা ধূসর পটভূমি চয়ন করুন এবং CV এবং পেশাদার প্রোফাইলের জন্য একটি পরিষ্কার প্রতিকৃতি রপ্তানি করুন৷",
+        "faq4Q": "আমার ছবি কি ব্যক্তিগত এবং নিরাপদ?",
+        "faq4A": "হ্যাঁ। ফটোগুলি সার্ভারে মেমরিতে প্রক্রিয়া করা হয় এবং কাটআউট ফেরত দেওয়ার সাথে সাথেই বাতিল করা হয়। আমরা কখনই আপনার ছবি সঞ্চয় করি না, AI প্রশিক্ষণের জন্য এটি ব্যবহার করি না এবং সাইন আপের প্রয়োজন নেই।",
+        "faq5Q": "এটা কি একাধিক লোকের সাথে গ্রুপ ফটোতে কাজ করে?",
+        "faq5A": "হ্যাঁ, তবে একটি পরিষ্কার প্রাথমিক বিষয়ের সাথে সবচেয়ে ভাল কাজ করে। আঁটসাঁট গ্রুপ শটগুলির জন্য যেখানে প্রত্যেকেই অগ্রভাগ, সমস্ত লোককে রাখা হয় এবং ব্যাকগ্রাউন্ড একসাথে সরিয়ে ফেলা হয়।",
+        "moreTitle": "আরও MiaoCut টুল",
+        "moreLinkProductTitle": "পণ্য ফটো পটভূমি রিমুভার →",
+        "moreLinkProductDesc": "Amazon, Shopify, Etsy, এবং eBay বিক্রেতাদের জন্য।",
+        "moreLinkHomeTitle": "সর্ব-উদ্দেশ্য ব্যাকগ্রাউন্ড রিমুভার →",
+        "moreLinkHomeDesc": "লোগো, পোষা প্রাণী, জটিল প্রান্ত, অন্য কিছু।"
+    },
+    "fil": {
+        "metaDescription": "Alisin o palitan ang mga portrait na background nang libre. Lumikha ng mga headshot ng LinkedIn, mga resume na larawan, mga parisukat na avatar, at mga pabilog na larawan sa profile na may HD PNG na output.",
+        "metaKeywords": "portrait background remover, profile picture maker, profile picture background remover, headshot background changer, linkedin headshot background, resume photo maker, circular profile picture",
+        "ogTitle": "Portrait Background Remover at Profile Picture Maker | MiaoCut",
+        "ogLocale": "fil_PH",
+        "breadcrumbHome": "MiaoCut",
+        "breadcrumbCurrent": "Portrait Background Remover",
+        "title": "Portrait Background Remover at Profile Picture Maker",
+        "subtitle": "Alisin ang mga portrait na background, pumili ng isang propesyonal na background, at i-export ang mga parisukat na avatar, pabilog na mga larawan sa profile, o ipagpatuloy ang mga larawan.",
+        "seoIntro": "Pinangangasiwaan ng MiaoCut ang background remover ng AI ng buhok, salamin, hikaw, at mga headshot. Mag-upload ng JPG, PNG, o WebP na portrait, alisin ang background, pagkatapos ay pumili ng mapusyaw na gray, puti, asul, gradient, o blur na mga background para sa LinkedIn, resume, avatar, at social media.",
+        "howItWorks": "Paano Gumawa ng Larawan sa Profile mula sa isang Portrait",
+        "howStep1Title": "1. I-upload ang Iyong Portrait",
+        "howStep1Desc": "Mag-upload ng headshot, selfie, o full-body portrait sa JPG, PNG, o WebP. Walang kinakailangang pag-signup.",
+        "howStep2Title": "2. Pinutol ka ng AI",
+        "howStep2Desc": "Nakikita ng MiaoCut ang tao at inaalis ang background, pinapanatili ang mga hibla ng buhok, salamin, at accessories.",
+        "howStep3Title": "3. Piliin ang Background at Sukat",
+        "howStep3Desc": "Pumili ng neutral, asul, gradient, o blur na background, pagkatapos ay mag-export ng 512px o 1024px na avatar, pabilog na larawan sa profile, o resume na larawan.",
+        "whyTitle": "Bakit Gumamit ng MiaoCut para sa Mga Portraits",
+        "why1Title": "Strand-Level na Detalye ng Buhok",
+        "why1Desc": "Ang BiRefNet plus alpha matting ay nagpapanatili ng mga indibidwal na hibla ng buhok at mga flyaway. Malinis ang mahaba, kulot, at kulot na buhok — walang kulay abong halo.",
+        "why2Title": "Mga Background ng Profile Built In",
+        "why2Desc": "Pumili ng mapusyaw na kulay abo, puti, asul, gradient, custom na kulay, transparent, o blur na orihinal na mga background pagkatapos mag-upload.",
+        "why3Title": "Mga Sukat ng Avatar at Resume",
+        "why3Desc": "I-export ang 512px at 1024px na mga parisukat na avatar, mga pabilog na larawan sa profile, o isang 480x640 na resume portrait.",
+        "why4Title": "Pribado, Walang Watermark",
+        "why4Desc": "Ang mga larawan ay pinoproseso sa memorya, hindi kailanman ginamit para sa AI na pagsasanay, at na-export nang walang mga watermark.",
+        "tipsTitle": "Mga Tip para sa Pinakamalinis na Mga Gupit na Portrait",
+        "tip1": "Harapin ang camera na may pantay na ilaw na nakaharap sa harap. Ang mga backlit na larawan ay nagpapahirap sa mga gilid ng buhok na paghiwalayin.",
+        "tip2": "Iwasan ang mga background na tumutugma sa iyong buhok o kulay ng pananamit — kung saan pinapalabo ng karamihan sa mga tool ng AI ang hangganan.",
+        "tip3": "Para sa mahaba, kulot, o layered na buhok, lumipat sa Fine (buhok / balahibo) mode. Sulit ang dagdag na oras.",
+        "tip4": "Pinakamahusay na gumagana ang mga larawan sa isang paksa. Ang mga group shot ay sinusuportahan ngunit ang mas mahigpit na pananim ay nagbibigay ng mas malinis na mga resulta.",
+        "faqTitle": "Mga Madalas Itanong",
+        "faq1Q": "Hahawakan ba nito nang maayos ang mahabang buhok, kulot na buhok, o flyaways?",
+        "faq1A": "Oo. Ilipat ang quality toggle sa \"Fine (hair / fur)\" mode. Gumagamit ang MiaoCut ng BiRefNet at alpha matting para mapanatili ang mga indibidwal na hibla ng buhok at mabawasan ang berde/kulay-abong halo na iniiwan ng mga simpleng tool.",
+        "faq2Q": "Maaari ba akong gumawa ng LinkedIn o larawan sa profile nang direkta?",
+        "faq2A": "Oo. Pumili ng neutral o may brand na background, pumili ng 512px o 1024px na laki ng avatar, at mag-download ng parisukat o pabilog na larawan sa profile.",
+        "faq3Q": "Maaari ba akong gumawa ng resume photo?",
+        "faq3A": "Oo. Gamitin ang resume portrait preset, pumili ng simpleng puti o light grey na background, at mag-export ng malinis na portrait para sa mga CV at propesyonal na profile.",
+        "faq4Q": "Pribado at ligtas ba ang aking larawan?",
+        "faq4A": "Oo. Ang mga larawan ay pinoproseso sa memorya sa server at itinatapon kaagad pagkatapos maibalik ang cutout. Hindi namin iniimbak ang iyong larawan, hindi kailanman ginagamit ito para sa pagsasanay sa AI, at walang kinakailangang pag-signup.",
+        "faq5Q": "Gumagana ba ito sa mga larawan ng pangkat na may maraming tao?",
+        "faq5A": "Oo, ngunit pinakamahusay na gumagana sa isang malinaw na pangunahing paksa. Para sa mahigpit na mga kuha ng grupo kung saan ang lahat ay nasa harapan, lahat ng tao ay pinananatili at ang background ay sabay-sabay na tinanggal.",
+        "moreTitle": "Higit pang MiaoCut Tools",
+        "moreLinkProductTitle": "Pang-alis ng Background ng Larawan ng Produkto →",
+        "moreLinkProductDesc": "Para sa mga nagbebenta ng Amazon, Shopify, Etsy, at eBay.",
+        "moreLinkHomeTitle": "All-Purpose Background Remover →",
+        "moreLinkHomeDesc": "Mga logo, alagang hayop, kumplikadong mga gilid, anupaman."
+    },
+    "ur": {
+        "metaDescription": "پورٹریٹ کے پس منظر کو ہٹائیں یا تبدیل کریں۔ HD PNG آؤٹ پٹ کے ساتھ LinkedIn ہیڈ شاٹس، تصویریں دوبارہ شروع کریں، مربع اوتار، اور سرکلر پروفائل تصویریں بنائیں۔",
+        "metaKeywords": "پورٹریٹ بیک گراؤنڈ ریموور، پروفائل پکچر میکر، پروفائل پکچر بیک گراؤنڈ ریموور، ہیڈ شاٹ بیک گراؤنڈ چینجر، لنکڈن ہیڈ شاٹ بیک گراؤنڈ، ریزیوم فوٹو میکر، سرکلر پروفائل پکچر",
+        "ogTitle": "پورٹریٹ بیک گراؤنڈ ریموور اور پروفائل پکچر میکر | MiaoCut",
+        "ogLocale": "ur_PK",
+        "breadcrumbHome": "MiaoCut",
+        "breadcrumbCurrent": "پورٹریٹ بیک گراؤنڈ ریموور",
+        "title": "پورٹریٹ بیک گراؤنڈ ریموور اور پروفائل پکچر میکر",
+        "subtitle": "پورٹریٹ پس منظر ہٹائیں، پیشہ ورانہ پس منظر کا انتخاب کریں، اور مربع اوتار، سرکلر پروفائل پکچرز، یا فوٹو دوبارہ شروع کریں۔",
+        "seoIntro": "MiaoCut کا AI پس منظر ہٹانے والا بالوں، شیشے، بالیاں اور ہیڈ شاٹس کو ہینڈل کرتا ہے۔ JPG، PNG، یا WebP پورٹریٹ اپ لوڈ کریں، پس منظر کو ہٹا دیں، پھر LinkedIn، ریزیوم، اوتار، اور سوشل میڈیا کے لیے ہلکے سرمئی، سفید، نیلے، میلان، یا دھندلے پس منظر کا انتخاب کریں۔",
+        "howItWorks": "پورٹریٹ سے پروفائل پکچر کیسے بنائیں",
+        "howStep1Title": "1. اپنا پورٹریٹ اپ لوڈ کریں۔",
+        "howStep1Desc": "JPG، PNG، یا WebP میں ہیڈ شاٹ، سیلفی، یا فل باڈی پورٹریٹ اپ لوڈ کریں۔ سائن اپ کی ضرورت نہیں ہے۔",
+        "howStep2Title": "2. AI آپ کو کاٹتا ہے۔",
+        "howStep2Desc": "MiaoCut اس شخص کا پتہ لگاتا ہے اور پس منظر کو ہٹاتا ہے، بالوں کے تاروں، چشموں اور لوازمات کو محفوظ رکھتا ہے۔",
+        "howStep3Title": "3. پس منظر اور سائز کا انتخاب کریں۔",
+        "howStep3Desc": "ایک غیر جانبدار، نیلا، میلان، یا دھندلا ہوا پس منظر چنیں، پھر 512px یا 1024px کا اوتار، سرکلر پروفائل تصویر، یا تصویر دوبارہ شروع کریں۔",
+        "whyTitle": "پورٹریٹ کے لیے MiaoCut کیوں استعمال کریں۔",
+        "why1Title": "اسٹرینڈ لیول کے بالوں کی تفصیل",
+        "why1Desc": "BiRefNet پلس الفا میٹنگ بالوں کے انفرادی تاروں اور فلائی ویز کو محفوظ رکھتی ہے۔ لمبے، گھوبگھرالی اور گھنگھریالے بال صاف نکلتے ہیں — کوئی سرمئی ہالہ نہیں۔",
+        "why2Title": "پروفائل کا پس منظر بلٹ ان",
+        "why2Desc": "اپ لوڈ کرنے کے بعد ہلکے سرمئی، سفید، نیلے، میلان، حسب ضرورت رنگ، شفاف، یا دھندلے اصل پس منظر کا انتخاب کریں۔",
+        "why3Title": "اوتار اور دوبارہ شروع سائز",
+        "why3Desc": "512px اور 1024px مربع اوتار، سرکلر پروفائل تصویریں، یا 480×640 ریزیوم پورٹریٹ برآمد کریں۔",
+        "why4Title": "نجی، کوئی واٹر مارک نہیں۔",
+        "why4Desc": "تصاویر کو میموری میں پروسیس کیا جاتا ہے، کبھی بھی AI ٹریننگ کے لیے استعمال نہیں کیا جاتا، اور بغیر واٹر مارکس کے ایکسپورٹ کیا جاتا ہے۔",
+        "tipsTitle": "صاف ستھرے پورٹریٹ کٹ آؤٹ کے لیے نکات",
+        "tip1": "یکساں، سامنے کی روشنی کے ساتھ کیمرے کا سامنا کریں۔ بیک لِٹ فوٹو بالوں کے کناروں کو الگ کرنا مشکل بنا دیتے ہیں۔",
+        "tip2": "ایسے پس منظر سے پرہیز کریں جو آپ کے بالوں یا کپڑوں کے رنگ سے مماثل ہوں — یہی وہ جگہ ہے جہاں زیادہ تر AI ٹولز حد کو دھندلا دیتے ہیں۔",
+        "tip3": "لمبے، گھوبگھرالی یا تہہ دار بالوں کے لیے، فائن (بال/فر) موڈ پر جائیں۔ اضافی وقت اس کے قابل ہے۔",
+        "tip4": "سنگل سبجیکٹ تصاویر بہترین کام کرتی ہیں۔ گروپ شاٹس کی حمایت کی جاتی ہے لیکن سخت فصلیں صاف نتائج دیتی ہیں۔",
+        "faqTitle": "اکثر پوچھے گئے سوالات",
+        "faq1Q": "کیا یہ لمبے بالوں، گھوبگھرالی بالوں، یا فلائی ویز کو صحیح طریقے سے سنبھالے گا؟",
+        "faq1A": "جی ہاں کوالٹی ٹوگل کو \"فائن (بال / کھال)\" موڈ پر سوئچ کریں۔ MiaoCut BiRefNet پلس الفا میٹنگ کا استعمال کرتا ہے تاکہ بالوں کے انفرادی تاروں کو محفوظ رکھا جا سکے اور سبز/گرے ہالہ کو کم سے کم کیا جا سکے جسے آسان ٹولز پیچھے چھوڑ دیتے ہیں۔",
+        "faq2Q": "کیا میں براہ راست لنکڈ ان یا پروفائل تصویر بنا سکتا ہوں؟",
+        "faq2A": "جی ہاں ایک غیر جانبدار یا برانڈڈ پس منظر کا انتخاب کریں، 512px یا 1024px اوتار کا سائز منتخب کریں، اور مربع یا سرکلر پروفائل تصویر ڈاؤن لوڈ کریں۔",
+        "faq3Q": "کیا میں دوبارہ شروع کی تصویر بنا سکتا ہوں؟",
+        "faq3A": "جی ہاں ریزیومے پورٹریٹ پیش سیٹ استعمال کریں، ایک سادہ سفید یا ہلکے سرمئی پس منظر کا انتخاب کریں، اور CVs اور پیشہ ورانہ پروفائلز کے لیے ایک صاف پورٹریٹ برآمد کریں۔",
+        "faq4Q": "کیا میری تصویر نجی اور محفوظ ہے؟",
+        "faq4A": "جی ہاں تصاویر کو سرور پر میموری میں پروسیس کیا جاتا ہے اور کٹ آؤٹ واپس آنے کے فوراً بعد ضائع کر دیا جاتا ہے۔ ہم کبھی بھی آپ کی تصویر کو اسٹور نہیں کرتے، اسے AI ٹریننگ کے لیے کبھی استعمال نہیں کرتے، اور اس کے لیے سائن اپ کی ضرورت نہیں ہے۔",
+        "faq5Q": "کیا یہ ایک سے زیادہ لوگوں کے ساتھ گروپ فوٹوز پر کام کرتا ہے؟",
+        "faq5A": "ہاں، لیکن واضح بنیادی مضمون کے ساتھ بہترین کام کرتا ہے۔ سخت گروپ شاٹس کے لیے جہاں ہر کوئی پیش منظر ہے، تمام لوگوں کو رکھا جاتا ہے اور بیک گراؤنڈ کو ایک ساتھ ہٹا دیا جاتا ہے۔",
+        "moreTitle": "مزید MiaoCut ٹولز",
+        "moreLinkProductTitle": "پروڈکٹ فوٹو بیک گراؤنڈ ریموور →",
+        "moreLinkProductDesc": "Amazon، Shopify، Etsy، اور eBay فروخت کنندگان کے لیے۔",
+        "moreLinkHomeTitle": "تمام مقصدی پس منظر ہٹانے والا →",
+        "moreLinkHomeDesc": "لوگو، پالتو جانور، پیچیدہ کنارے، کچھ اور۔"
+    }
+};
     </script>
     <script src="/app.js"></script>
 

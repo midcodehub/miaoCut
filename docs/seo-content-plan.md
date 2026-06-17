@@ -96,11 +96,11 @@ URL 用目录式（匹配 Cloudflare Pages 路由），Hub 在 `/how-to-remove-b
 3. **canonical / hreflang**：EN-only 页**自指 canonical**，**不发 hreflang**（只有一种语言版本时不应声明 alternate）。
 4. **sitemap 接入**：教程页注册到 [scripts/build-i18n.mjs](../scripts/build-i18n.mjs) 新增的 `EN_ONLY_PAGES`，
    `buildSitemap()` 会把它们作为单条 `<loc>`（无 `xhtml:link` alternate）写进 `sitemap.xml`。
-   **不要**把它们加进 `PAGES`（那会触发 zh 生成并要求 zh 字典）。
+   **不要**把它们加进 `PAGES`（那会触发多语言生成并要求完整 locale 字典）。
 5. **Tailwind**：[tailwind.config.js](../tailwind.config.js) 的 `content` 加 `./how-to-remove-background/**/*.html`，
    然后 `npm run build:css` 重新生成并提交 `output.css`。
 6. **构建**：跑 `npm run build`（CSS + i18n 一把梭）并提交 `output.css` 与 `sitemap.xml`。
-   禁止手改 `zh/*` 和 `sitemap.xml`。
+   禁止手改 `zh/*`、`hi/*`、`id/*`、`pt-br/*`、`bn/*`、`fil/*`、`ur/*` 和 `sitemap.xml`。
 
 ---
 

@@ -45,82 +45,156 @@
     <meta name="twitter:image:alt" content="AI Passport & ID Photo Maker by MiaoCut">
     <link rel="canonical" href="https://miaocut.app/zh/id-photo-maker/">
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "MiaoCut AI Passport & ID Photo Maker",
-      "url": "https://miaocut.app/zh/id-photo-maker/",
-      "applicationCategory": "MultimediaApplication",
-      "operatingSystem": "Web",
-      "description": "Free AI passport, visa, and ID photo maker. Country-specific size presets, custom background colors, target KB control, printable layout sheets.",
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+{
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "MiaoCut AI Passport & ID Photo Maker",
+    "url": "https://miaocut.app/zh/id-photo-maker/",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Web",
+    "description": "Free AI passport, visa, and ID photo maker. Country-specific size presets, custom background colors, target KB control, printable layout sheets.",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
     }
-    </script>
+}
+</script>
     <!-- BreadcrumbList：让搜索结果出 breadcrumb rich snippet -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "MiaoCut", "item": "https://miaocut.app/zh/" },
-        { "@type": "ListItem", "position": 2, "name": "ID Photo Maker", "item": "https://miaocut.app/zh/id-photo-maker/" }
-      ]
-    }
-    </script>
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "MiaoCut",
+            "item": "https://miaocut.app/zh/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "证件照制作",
+            "item": "https://miaocut.app/zh/id-photo-maker/"
+        }
+    ]
+}
+</script>
     <!-- HowTo schema：对应下方 "How to Make a Passport or ID Photo" 段落 -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "HowTo",
-      "name": "How to Make a Passport or ID Photo Online",
-      "description": "Create a country-compliant passport, visa, or ID photo in three steps with MiaoCut's free AI ID photo maker.",
-      "totalTime": "PT20S",
-      "tool": [{ "@type": "HowToTool", "name": "MiaoCut AI ID Photo Maker" }],
-      "step": [
+{
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Make a Passport or ID Photo Online",
+    "description": "Create a country-compliant passport, visa, or ID photo in three steps with MiaoCut's free AI ID photo maker.",
+    "totalTime": "PT20S",
+    "tool": [
         {
-          "@type": "HowToStep",
-          "position": 1,
-          "name": "Upload your portrait",
-          "text": "Upload a front-facing portrait in JPG, PNG, or WebP. Even, neutral lighting works best."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 2,
-          "name": "Pick size and background",
-          "text": "Choose a country preset (or enter custom dimensions), pick a background color, and adjust subject size or top margin if needed."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 3,
-          "name": "Generate, fit KB, download",
-          "text": "MiaoCut auto-detects your face and produces a standard photo, an HD transparent version, and a printable layout. Set Target KB if your form requires a specific file size."
+            "@type": "HowToTool",
+            "name": "MiaoCut AI ID Photo Maker"
         }
-      ]
-    }
-    </script>
+    ],
+    "step": [
+        {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Upload your portrait",
+            "text": "上传 JPG / PNG / WebP 正面人像，光线均匀、表情自然效果最好。"
+        },
+        {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Pick size and background",
+            "text": "从国家预设里选（或自定义像素尺寸），挑选背景色，必要时微调主体大小和顶部留白。"
+        },
+        {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Generate, fit KB, download",
+            "text": "MiaoCut 自动识别人脸，生成标准照、HD 透明底版本和打印排版照。需要严格文件大小时设置\"目标 KB\"。"
+        }
+    ]
+}
+</script>
     <!-- FAQPage schema 必须与下方可见 FAQ section（data-i18n=faqTitle 那一段）保持一致。
          Google 政策要求 schema 内的 Q&A 在页面上对用户可见，否则可能被判结构化数据违规。
          改 FAQ 时请同步修改下方 HTML + id-photo.js 里 i18n.en.faqXX / i18n.zh.faqXX。 -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        { "@type": "Question", "name": "What ID photo sizes does MiaoCut support?", "acceptedAnswer": { "@type": "Answer", "text": "China 1-inch (295×413), 2-inch (413×579), small/large 1-inch and 2-inch variants, China passport (390×567), US passport (600×600), Schengen visa (600×600), resume photo (480×640), social profile (512×512), plus any custom pixel size." } },
-        { "@type": "Question", "name": "What background colors are supported?", "acceptedAnswer": { "@type": "Answer", "text": "White, blue, red, gray, light blue, dark blue, pink, black, and any custom HEX color." } },
-        { "@type": "Question", "name": "Can I print multiple ID photos on one sheet?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Choose 5-inch, 6-inch, 7-inch, or A4 paper to generate a printable layout sheet with multiple copies arranged for cutting." } },
-        { "@type": "Question", "name": "Will my photo meet official document requirements?", "acceptedAnswer": { "@type": "Answer", "text": "MiaoCut produces correctly sized photos with neutral backgrounds, but always check your specific document or visa office's latest requirements (head size, expression, glasses rules, file format) before submitting." } },
-        { "@type": "Question", "name": "Does MiaoCut detect my face automatically?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. MediaPipe Face Mesh detects your eye line and head position, then the photo is auto-cropped and aligned to fit the chosen size preset. You can fine-tune subject size and top margin with the sliders." } },
-        { "@type": "Question", "name": "Is my photo private?", "acceptedAnswer": { "@type": "Answer", "text": "Photos are processed in-memory on the server and discarded immediately after the result is returned. We don't store your image, don't use it for AI training, and there is no signup required." } },
-        { "@type": "Question", "name": "Can I set a max file size in KB for online forms?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The 'Target KB' input lets you cap the output file size — useful for visa or job application forms with strict file size limits." } }
-      ]
-    }
-    </script>
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "MiaoCut 支持哪些证件照尺寸？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "一寸（295×413）、二寸（413×579）、小一寸、大一寸、小二寸、中国护照（390×567）、美国护照（600×600）、申根签证（600×600）、简历照（480×640）、社交头像（512×512），以及任意自定义像素尺寸。"
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "支持哪些背景颜色？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "白、蓝、红、灰、浅蓝、深蓝、粉、黑，也支持自定义任意 HEX 颜色。"
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "可以把多张证件照排在一张相纸上打印吗？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "可以。选择 5 寸、6 寸、7 寸或 A4 相纸即可生成包含多张证件照的可打印排版照，方便冲印后裁切。"
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "生成的照片符合官方证件要求吗？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "MiaoCut 生成尺寸准确、背景纯净的证件照，但提交前请务必核对你具体证件或签证机构的最新要求（头部比例、表情、眼镜规定、文件格式）。"
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "MiaoCut 会自动识别人脸吗？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "会。MediaPipe Face Mesh 自动识别双眼连线和头部位置，并按选定尺寸预设自动裁切对齐。你也可以用滑杆微调主体大小和顶部留白。"
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "我的照片安全吗？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "照片在服务器内存里处理，结果返回后立即销毁。我们绝不存储你的图片、绝不用于 AI 训练，也无需注册账号。"
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "可以设置文件大小（KB）以满足线上表单要求吗？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. The 'Target KB' input lets you cap the output file size — useful for visa or job application forms with strict file size limits."
+            }
+        }
+    ]
+}
+</script>
     <link rel="stylesheet" href="/output.css">
     <script defer src="https://cloud.umami.is/script.js"
         data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
     <link rel="alternate" hreflang="en" href="https://miaocut.app/id-photo-maker/">
     <link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/id-photo-maker/">
+    <link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/id-photo-maker/">
+    <link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/id-photo-maker/">
+    <link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/id-photo-maker/">
+    <link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/id-photo-maker/">
+    <link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/id-photo-maker/">
+    <link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/id-photo-maker/">
     <link rel="alternate" hreflang="x-default" href="https://miaocut.app/id-photo-maker/">
 </head>
 
@@ -148,6 +222,12 @@
                     class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors dark:text-zinc-300 dark:hover:text-zinc-100">
                     <option value="en">English</option>
                     <option value="zh">简体中文</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="pt-br">Português (BR)</option>
+                    <option value="bn">বাংলা</option>
+                    <option value="fil">Filipino</option>
+                    <option value="ur">اردو</option>
                 </select>
             </div>
         </div>
@@ -198,17 +278,17 @@
                     <div>
                         <label class="block text-sm font-semibold mb-2" for="preset" data-i18n="sizeLabel">证件照尺寸</label>
                         <select id="preset" class="h-11 w-full rounded border border-gray-300 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-gray-300 dark:border-zinc-700 dark:bg-zinc-900">
-                            <option value="one_inch">1 inch - 295 x 413 px</option>
-                            <option value="small_one_inch">Small 1 inch - 260 x 378 px</option>
-                            <option value="large_one_inch">Large 1 inch - 390 x 567 px</option>
-                            <option value="two_inch">2 inch - 413 x 579 px</option>
-                            <option value="small_two_inch">Small 2 inch - 413 x 531 px</option>
-                            <option value="china_passport">China passport - 390 x 567 px</option>
-                            <option value="us_passport">US passport - 600 x 600 px</option>
-                            <option value="visa_square">Visa square - 600 x 600 px</option>
-                            <option value="resume">Resume photo - 480 x 640 px</option>
-                            <option value="social_profile">Profile square - 512 x 512 px</option>
-                            <option value="custom">Custom size</option>
+                            <option value="one_inch" data-i18n="presetOneInch">一寸 - 295 x 413 px</option>
+                            <option value="small_one_inch" data-i18n="presetSmallOneInch">小一寸 - 260 x 378 px</option>
+                            <option value="large_one_inch" data-i18n="presetLargeOneInch">大一寸 - 390 x 567 px</option>
+                            <option value="two_inch" data-i18n="presetTwoInch">二寸 - 413 x 579 px</option>
+                            <option value="small_two_inch" data-i18n="presetSmallTwoInch">小二寸 - 413 x 531 px</option>
+                            <option value="china_passport" data-i18n="presetChinaPassport">中国护照 - 390 x 567 px</option>
+                            <option value="us_passport" data-i18n="presetUsPassport">美国护照 - 600 x 600 px</option>
+                            <option value="visa_square" data-i18n="presetVisaSquare">签证方图 - 600 x 600 px</option>
+                            <option value="resume" data-i18n="presetResume">简历照片 - 480 x 640 px</option>
+                            <option value="social_profile" data-i18n="presetProfileSquare">头像方图 - 512 x 512 px</option>
+                            <option value="custom" data-i18n="presetCustom">自定义尺寸</option>
                         </select>
                         <div id="custom-size" class="mt-3 grid grid-cols-2 gap-3 hidden">
                             <div>
@@ -228,14 +308,14 @@
                             <input id="custom-color" type="text" value="438edb" maxlength="7" class="h-8 w-24 rounded border border-gray-300 px-2 text-xs font-mono dark:border-zinc-700">
                         </div>
                         <div id="color-swatches" class="grid grid-cols-4 gap-2">
-                            <button type="button" data-color="ffffff" class="color-swatch h-10 rounded border-2 border-transparent bg-white dark:bg-zinc-900" title="White"></button>
-                            <button type="button" data-color="438edb" class="color-swatch h-10 rounded border-2 border-gray-900 bg-[#438edb]" title="Blue"></button>
-                            <button type="button" data-color="d5332e" class="color-swatch h-10 rounded border-2 border-transparent bg-[#d5332e]" title="Red"></button>
-                            <button type="button" data-color="f3f4f6" class="color-swatch h-10 rounded border-2 border-transparent bg-gray-100 dark:bg-zinc-800" title="Gray"></button>
-                            <button type="button" data-color="dbeafe" class="color-swatch h-10 rounded border-2 border-transparent bg-blue-100" title="Light blue"></button>
-                            <button type="button" data-color="1d4ed8" class="color-swatch h-10 rounded border-2 border-transparent bg-blue-700" title="Dark blue"></button>
-                            <button type="button" data-color="fce7f3" class="color-swatch h-10 rounded border-2 border-transparent bg-pink-100" title="Pink"></button>
-                            <button type="button" data-color="111827" class="color-swatch h-10 rounded border-2 border-transparent bg-gray-900" title="Black"></button>
+                            <button type="button" data-color="ffffff" class="color-swatch h-10 rounded border-2 border-transparent bg-white dark:bg-zinc-900" title="白色" aria-label="白色" data-i18n-title="colorWhite" data-i18n-aria="colorWhite"></button>
+                            <button type="button" data-color="438edb" class="color-swatch h-10 rounded border-2 border-gray-900 bg-[#438edb]" title="蓝色" aria-label="蓝色" data-i18n-title="colorBlue" data-i18n-aria="colorBlue"></button>
+                            <button type="button" data-color="d5332e" class="color-swatch h-10 rounded border-2 border-transparent bg-[#d5332e]" title="红色" aria-label="红色" data-i18n-title="colorRed" data-i18n-aria="colorRed"></button>
+                            <button type="button" data-color="f3f4f6" class="color-swatch h-10 rounded border-2 border-transparent bg-gray-100 dark:bg-zinc-800" title="灰色" aria-label="灰色" data-i18n-title="colorGray" data-i18n-aria="colorGray"></button>
+                            <button type="button" data-color="dbeafe" class="color-swatch h-10 rounded border-2 border-transparent bg-blue-100" title="浅蓝色" aria-label="浅蓝色" data-i18n-title="colorLightBlue" data-i18n-aria="colorLightBlue"></button>
+                            <button type="button" data-color="1d4ed8" class="color-swatch h-10 rounded border-2 border-transparent bg-blue-700" title="深蓝色" aria-label="深蓝色" data-i18n-title="colorDarkBlue" data-i18n-aria="colorDarkBlue"></button>
+                            <button type="button" data-color="fce7f3" class="color-swatch h-10 rounded border-2 border-transparent bg-pink-100" title="粉色" aria-label="粉色" data-i18n-title="colorPink" data-i18n-aria="colorPink"></button>
+                            <button type="button" data-color="111827" class="color-swatch h-10 rounded border-2 border-transparent bg-gray-900" title="黑色" aria-label="黑色" data-i18n-title="colorBlack" data-i18n-aria="colorBlack"></button>
                         </div>
                     </div>
 
@@ -253,13 +333,13 @@
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="target-kb" data-i18n="kbLabel">目标 KB</label>
-                            <input id="target-kb" type="number" min="8" max="1024" placeholder="Optional" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
+                            <input id="target-kb" type="number" min="8" max="1024" placeholder="选填" data-i18n-ph="optionalPlaceholder" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="profile" data-i18n="qualityLabel">质量</label>
                             <select id="profile" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
-                                <option value="sharp">Fast</option>
-                                <option value="fur">Fine edges</option>
+                                <option value="sharp" data-i18n="qualityFast">快速</option>
+                                <option value="fur" data-i18n="qualityFineEdges">精细边缘</option>
                             </select>
                         </div>
                     </div>
@@ -272,10 +352,10 @@
                     <div>
                         <label class="block text-xs font-medium text-gray-500 mb-1 dark:text-zinc-400" for="paper" data-i18n="paperLabel">打印相纸</label>
                         <select id="paper" class="h-10 w-full rounded border border-gray-300 px-3 text-sm dark:border-zinc-700">
-                            <option value="6inch">6 inch - 1800 x 1200 px</option>
-                            <option value="5inch">5 inch - 1500 x 1050 px</option>
-                            <option value="7inch">7 inch - 2100 x 1500 px</option>
-                            <option value="a4">A4 - 2480 x 3508 px</option>
+                            <option value="6inch" data-i18n="paper6Inch">6 寸 - 1800 x 1200 px</option>
+                            <option value="5inch" data-i18n="paper5Inch">5 寸 - 1500 x 1050 px</option>
+                            <option value="7inch" data-i18n="paper7Inch">7 寸 - 2100 x 1500 px</option>
+                            <option value="a4" data-i18n="paperA4">A4 - 2480 x 3508 px</option>
                         </select>
                     </div>
 

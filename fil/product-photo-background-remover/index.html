@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="fil-PH">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="sogou_site_verification" content="lLMMvkZKud" />
+    <meta name="baidu-site-verification" content="codeva-bJiTOFPj58" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 品牌字体 Geist：预加载首屏 sans 可变字体（crossorigin 是 font preload 的硬性要求）-->
+    <link rel="preload" href="/fonts/geist/geist-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- 主题（明/暗）：在首屏渲染前同步设好 <html class="dark">，避免闪一下白；并在 DOM ready 后接管切换按钮 -->
+    <script>/* redesign-dark-applied */(function () {
+        try {
+            var s = localStorage.getItem('theme');
+            var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', d);
+        } catch (e) {}
+        document.addEventListener('DOMContentLoaded', function () {
+            var b = document.getElementById('theme-toggle');
+            if (b) b.addEventListener('click', function () {
+                var dark = document.documentElement.classList.toggle('dark');
+                try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+            });
+        });
+    })();</script>
+    <!-- Resource hints：在解析 HTML 时就提前对后端 API 和 Umami 做 TLS 握手，
+         用户点上传时直接复用已有连接，省 100~300ms。crossorigin 是因为 Umami 脚本是跨源 CORS 资源。 -->
+    <link rel="preconnect" href="https://api2.miaocut.app">
+    <link rel="preconnect" href="https://cloud.umami.is" crossorigin>
+    <title>Pang-alis ng Background ng Larawan ng Produkto + Puting Background | MiaoCut</title>
+    <meta name="description"
+        content="Alisin o palitan ang mga background ng larawan ng produkto nang libre. Gumawa ng white-background, square-canvas, at shadowed na mga larawan ng produkto para sa Amazon, Shopify, Etsy, at eBay.">
+    <meta name="keywords"
+        content="pangtanggal ng background ng larawan ng produkto, mga larawan ng produkto na may puting background, tagapalit ng background ng produkto, background ng imahe ng produkto ng amazon, editor ng larawan ng produkto ng shopify, pangtanggal ng background ng ecommerce, anino ng larawan ng produkto">
+    <meta property="og:title"
+        content="Pang-alis ng Background ng Larawan ng Produkto + Puting Background | MiaoCut">
+    <meta property="og:description"
+        content="Alisin o palitan ang mga background ng larawan ng produkto nang libre. Gumawa ng white-background, square-canvas, at shadowed na mga larawan ng produkto para sa Amazon, Shopify, Etsy, at eBay.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://miaocut.app/fil/product-photo-background-remover/">
+    <meta property="og:locale" content="fil_PH">
+    <meta property="og:image" content="https://miaocut.app/og/product.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Product Photo Background Remover by MiaoCut AI">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://miaocut.app/og/product.png">
+    <meta name="twitter:image:alt" content="Product Photo Background Remover by MiaoCut AI">
+    <link rel="canonical" href="https://miaocut.app/fil/product-photo-background-remover/">
+
+    <!-- WebApplication schema：复用首页的同一个工具，但 description 锚定子页主题词 -->
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "MiaoCut Product Photo Background Remover",
+    "url": "https://miaocut.app/fil/product-photo-background-remover/",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Web",
+    "description": "Free AI product photo background remover and white background tool. Cut out products, choose transparent, white, or custom backgrounds, add a soft shadow, and export square images for e-commerce listings.",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    }
+}
+</script>
+    <!-- BreadcrumbList：让搜索结果出 breadcrumb rich snippet，CTR 提升 -->
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "MiaoCut",
+            "item": "https://miaocut.app/fil/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Pang-alis ng Background ng Larawan ng Produkto",
+            "item": "https://miaocut.app/fil/product-photo-background-remover/"
+        }
+    ]
+}
+</script>
+    <!-- FAQPage schema 必须与下方可见 FAQ section（data-i18n=faqTitle 那一段）保持一致。
+         Google 政策要求 schema 内的 Q&A 在页面上对用户可见，否则可能被判结构化数据违规。
+         改 FAQ 时请同步修改下方 HTML + index.html 内联的 PAGE_I18N.en.faqXX / PAGE_I18N.zh.faqXX。 -->
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "Maaari ba akong lumikha ng Amazon-ready na puting background na mga larawan ng produkto?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Oo. Pagkatapos mabuo ang cutout, piliin ang opsyon sa puting background at mag-export ng isang parisukat na larawan ng produkto. Palaging suriin ang pinakabagong mga panuntunan sa imahe ng marketplace bago i-publish."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Maaari ba akong mag-export ng mga parisukat na larawan ng produkto para sa Shopify at Etsy?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Oo. Kasama sa page ng Produkto ang 1080px, 2000px, at 2048px na square preset, kasama ang mga kontrol sa padding ng paksa para sa pare-parehong mga thumbnail sa storefront."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Maaari ba akong magdagdag ng anino sa ilalim ng produkto?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Oo. Gamitin ang shadow control para i-export ang alinman sa malinis na no-shadow cutout, soft grounded shadow, o mas malakas na floating product shadow."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Pinangangasiwaan ba nito ang mga bagay na mapanimdim, alahas, salamin, o plastik?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Oo. Ilipat ang quality toggle sa \"Fine (hair / fur)\" mode para sa mga produktong may malambot, reflective, o semi-transparent na mga gilid. Gumagamit ito ng alpha matting para sa mas malinis na mga resulta sa mga nakakalito na materyales."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Maaari ko bang iproseso ang mga larawan ng produkto nang maramihan?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ang unang bersyon na ito ay nagpoproseso ng isang larawan sa isang pagkakataon. Ito ay libre para sa normal na indibidwal na paggamit, na may mga limitasyon sa patas na paggamit upang mapanatiling matatag ang serbisyo."
+            }
+        }
+    ]
+}
+</script>
+    <!-- HowTo schema：对应下方 "How to Make Product Photos with a White Background" 三步段落 -->
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "Paano Gumawa ng Mga Larawan ng Produkto na may Puting Background",
+    "description": "Turn raw product shots into Amazon/Shopify/Etsy-ready listing photos in three steps with MiaoCut's free AI product photo editor.",
+    "totalTime": "PT10S",
+    "tool": [
+        {
+            "@type": "HowToTool",
+            "name": "MiaoCut Product Photo Background Remover"
+        }
+    ],
+    "step": [
+        {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Upload Your Product Image",
+            "text": "Mag-upload ng JPG, PNG, o WebP na larawan ng iyong produkto. Walang kinakailangang pag-signup o credit card."
+        },
+        {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "AI Cuts Out the Product",
+            "text": "Nakikita ng AI ng MiaoCut ang balangkas ng produkto at inaalis ang background, kasama ang reflective at semi-transparent na mga gilid."
+        },
+        {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Choose Canvas and Shadow",
+            "text": "Pumili ng transparent, puti, light grey, o custom na background, ayusin ang padding, magdagdag ng malambot na anino, at mag-export ng mga parisukat na larawan ng produkto."
+        }
+    ]
+}
+</script>
+    <link rel="stylesheet" href="/output.css">
+    <script defer src="https://cloud.umami.is/script.js"
+        data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
+    <link rel="alternate" hreflang="en" href="https://miaocut.app/product-photo-background-remover/">
+    <link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/product-photo-background-remover/">
+    <link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/product-photo-background-remover/">
+    <link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/product-photo-background-remover/">
+    <link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/product-photo-background-remover/">
+    <link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/product-photo-background-remover/">
+    <link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/product-photo-background-remover/">
+    <link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/product-photo-background-remover/">
+    <link rel="alternate" hreflang="x-default" href="https://miaocut.app/product-photo-background-remover/">
+</head>
+
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-brand-100 selection:text-brand-900 dark:bg-zinc-950 dark:text-zinc-200">
+
+    <!-- 顶部导航 -->
+    <!-- Sticky header：与首页统一为同一种实现（M5）。
+         sticky top-0 + bg-white/95 + backdrop-blur 让用户长页面下滚时导航持续可见，
+         z-30 比 bookmark-banner 的 z-50 低，确保横幅可以覆盖在 header 之上。 -->
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
+            <a href="/fil/" class="text-2xl font-black tracking-tight text-gray-900 dark:text-zinc-50">MiaoCut</a>
+            <div class="flex items-center gap-4">
+                <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600 dark:text-zinc-300">
+                    <a href="/fil/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navBg">Background Remover</a>
+                    <a href="/fil/product-photo-background-remover/" class="text-gray-900 dark:text-zinc-50" data-i18n="navProduct">produkto</a>
+                    <a href="/fil/portrait-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navPortrait">Larawan</a>
+                    <a href="/fil/watermark-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navWatermark">Watermark</a>
+                    <a href="/fil/id-photo-maker/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navId">ID Larawan</a>
+                    <a href="/fil/old-photo-restoration/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-i18n="navRestore">Lumang Larawan</a>
+                </nav>
+                <a href="https://github.com/midcodehub/miaoCut" target="_blank" rel="noopener" aria-label="MiaoCut on GitHub (open source)" title="View source on GitHub" class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z" /></svg></a>
+                <button id="theme-toggle" type="button" aria-label="Toggle dark mode"
+                    class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors">
+                    <svg class="h-5 w-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
+                    <svg class="h-5 w-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
+                </button>
+                <select id="lang-switch" aria-label="Language"
+                    class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors dark:text-zinc-300 dark:hover:text-zinc-100">
+                    <option value="en">English</option>
+                    <option value="zh">简体中文</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="pt-br">Português (BR)</option>
+                    <option value="bn">বাংলা</option>
+                    <option value="fil">Filipino</option>
+                    <option value="ur">اردو</option>
+                </select>
+            </div>
+        </div>
+    </header>
+    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
+        <a href="/fil/" class="shrink-0" data-i18n="navBg">Background Remover</a>
+        <a href="/fil/product-photo-background-remover/" class="shrink-0 text-gray-900 dark:text-zinc-50" data-i18n="navProduct">produkto</a>
+        <a href="/fil/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">Larawan</a>
+        <a href="/fil/watermark-remover/" class="shrink-0" data-i18n="navWatermark">Watermark</a>
+        <a href="/fil/id-photo-maker/" class="shrink-0" data-i18n="navId">ID Larawan</a>
+        <a href="/fil/old-photo-restoration/" class="shrink-0" data-i18n="navRestore">Lumang Larawan</a>
+    </nav>
+
+    <!-- 面包屑：辅助 SEO + 用户导航 -->
+    <nav class="w-full max-w-3xl mx-auto px-4 mb-4 text-sm text-gray-500 dark:text-zinc-400" aria-label="Breadcrumb">
+        <ol class="flex items-center gap-2">
+            <li><a href="/fil/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-i18n="breadcrumbHome">MiaoCut</a></li>
+            <li class="text-gray-300">/</li>
+            <li class="text-gray-700 dark:text-zinc-200" data-i18n="breadcrumbCurrent">Pang-alis ng Background ng Larawan ng Produkto</li>
+        </ol>
+    </nav>
+
+    <!-- 核心区域 -->
+    <main class="flex-grow flex flex-col items-center justify-center px-4">
+
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight mb-4 dark:text-zinc-50" data-i18n="title">Pang-alis ng Background ng Larawan ng Produkto + Tool ng White Background</h1>
+            <p class="text-lg text-gray-500 max-w-2xl mx-auto dark:text-zinc-400" data-i18n="subtitle">Alisin ang background, pumili ng puti o custom na canvas, ayusin ang padding, magdagdag ng malambot na anino, at mag-download ng mga larawan ng produkto para sa Amazon, Shopify, Etsy, o eBay.</p>
+        </div>
+
+        <div class="w-full max-w-3xl">
+
+            <div id="profile-toggle" class="mb-4 flex items-center justify-center gap-2 text-sm flex-wrap">
+                <span class="text-gray-500 dark:text-zinc-400" data-i18n="profileLabel">Kalidad:</span>
+                <button type="button" data-profile="sharp"
+                    class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors dark:border-zinc-700 dark:text-zinc-200 dark:hover:border-zinc-600">
+                    <span data-i18n="profileSharp">Mabilis</span>
+                </button>
+                <button type="button" data-profile="fur"
+                    class="profile-btn px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors dark:border-zinc-700 dark:text-zinc-200 dark:hover:border-zinc-600">
+                    <span data-i18n="profileFur">Fine (buhok / balahibo)</span>
+                </button>
+                <span id="profile-hint" class="text-xs text-gray-400 ml-1 dark:text-zinc-500" data-i18n="profileHintSharp">~1s · araw-araw na mga larawan</span>
+            </div>
+
+            <div id="dropzone"
+                class="relative group cursor-pointer bg-white border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center min-h-[320px] hover:border-gray-400 hover:bg-gray-50 overflow-hidden dark:bg-zinc-900 dark:border-zinc-700 dark:hover:border-zinc-600 dark:hover:bg-zinc-800">
+                <input type="file" id="fileInput" class="hidden" accept="image/jpeg, image/png, image/webp">
+                <div id="dropzone-content"
+                    class="flex flex-col items-center justify-center text-center p-8 pointer-events-none">
+                    <svg class="w-12 h-12 text-gray-400 mb-4 group-hover:text-gray-500 transition-colors dark:text-zinc-500" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                    </svg>
+                    <p class="text-lg font-medium text-gray-700 mb-1 dark:text-zinc-100" data-i18n="dropzoneTitle">I-drag at i-drop ang larawan dito, o i-click para mag-upload</p>
+                    <p class="text-sm text-gray-400 dark:text-zinc-500" data-i18n="dropzoneSub">(Sinusuportahan ang JPG / PNG / WebP)</p>
+                </div>
+            </div>
+
+            <div class="mt-6 flex flex-col items-center justify-center text-center text-gray-500 text-sm dark:text-zinc-400">
+                <div class="flex items-center gap-1.5 mb-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                        </path>
+                    </svg>
+                    <span class="font-medium" data-i18n="trustTitle">Ang iyong mga larawan ay 100% ligtas.</span>
+                </div>
+                <p data-i18n="trustSub">Naproseso sa memorya, awtomatikong nawasak. Hindi kailanman ginamit para sa AI na pagsasanay.</p>
+            </div>
+
+            <div class="mt-8 text-center text-sm text-gray-500 leading-relaxed max-w-2xl mx-auto dark:text-zinc-400">
+                <p data-i18n="seoIntro">Ang MiaoCut ng AI ay tumutulong sa mga online na nagbebenta na gawing mga larawang handa na sa listahan. Mag-upload ng mga larawan ng JPG, PNG, o WebP, alisin ang background, pagkatapos ay i-export ang mga transparent na PNG, mga larawan ng produkto na may puting background, mga square canvase, o mga shadowed na larawan para sa iyong tindahan.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- SEO 内容区 -->
+    <div class="w-full flex justify-center bg-white border-t border-gray-200 mt-12 pt-16 pb-20 px-6 dark:bg-zinc-900 dark:border-zinc-800">
+        <div class="w-full max-w-4xl text-left">
+
+            <!-- How to -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center dark:text-zinc-50" data-i18n="howItWorks">Paano Gumawa ng Mga Larawan ng Produkto na may Puting Background</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-gray-600 dark:text-zinc-300">
+                    <div
+                        class="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md transition-shadow text-center dark:bg-zinc-900 dark:border-zinc-800">
+                        <div class="text-4xl mb-4">📤</div>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="howStep1Title">1. I-upload ang Iyong Larawan ng Produkto</h3>
+                        <p class="text-sm leading-relaxed" data-i18n="howStep1Desc">Mag-upload ng JPG, PNG, o WebP na larawan ng iyong produkto. Walang kinakailangang pag-signup o credit card.</p>
+                    </div>
+                    <div
+                        class="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md transition-shadow text-center dark:bg-zinc-900 dark:border-zinc-800">
+                        <div class="text-4xl mb-4">🤖</div>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="howStep2Title">2. Pinutol ng AI ang Produkto</h3>
+                        <p class="text-sm leading-relaxed" data-i18n="howStep2Desc">Nakikita ng AI ng MiaoCut ang balangkas ng produkto at inaalis ang background, kasama ang reflective at semi-transparent na mga gilid.</p>
+                    </div>
+                    <div
+                        class="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-md transition-shadow text-center dark:bg-zinc-900 dark:border-zinc-800">
+                        <div class="text-4xl mb-4">🛒</div>
+                        <h3 class="font-bold text-gray-900 mb-2 text-lg dark:text-zinc-50" data-i18n="howStep3Title">3. Piliin ang Canvas &amp; Shadow</h3>
+                        <p class="text-sm leading-relaxed" data-i18n="howStep3Desc">Pumili ng transparent, puti, light grey, o custom na background, ayusin ang padding, magdagdag ng malambot na anino, at mag-export ng mga parisukat na larawan ng produkto.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Why MiaoCut for product photos -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center dark:text-zinc-50" data-i18n="whyTitle">Bakit Pinipili ng Mga Nagbebenta ang MiaoCut para sa Mga Larawan ng Produkto</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl dark:bg-zinc-900">
+                        <svg class="w-6 h-6 text-brand-500 mr-3 shrink-0" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="why1Title">White Background Built In</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="why1Desc">Pumili ng malinis na puting canvas pagkatapos ng cutout, o panatilihing transparent ang resulta para sa mga ad, banner, at asset ng disenyo.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl dark:bg-zinc-900">
+                        <svg class="w-6 h-6 text-brand-500 mr-3 shrink-0" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="why2Title">Square E-commerce Canvas</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="why2Desc">I-export ang 1080, 2000, o 2048 pixel square na mga larawan ng produkto na may adjustable subject padding.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl dark:bg-zinc-900">
+                        <svg class="w-6 h-6 text-brand-500 mr-3 shrink-0" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="why3Title">Malambot na Mga anino ng Produkto</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="why3Desc">Magdagdag ng banayad na anino upang ang mga produkto ay makaramdam ng grounded sa puti o mapusyaw na kulay-abo na background sa halip na lumulutang nang hindi natural.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start bg-gray-50 p-5 rounded-xl dark:bg-zinc-900">
+                        <svg class="w-6 h-6 text-brand-500 mr-3 shrink-0" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <div>
+                            <strong class="block text-gray-900 mb-1 dark:text-zinc-50" data-i18n="why4Title">Hinahawakan ang Mapanlinlang na Materyal</strong>
+                            <span class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="why4Desc">Lumipat sa Fine mode upang malinis na gupitin ang mga alahas, salamin, plastik, at mga bagay na sumasalamin kung saan ang mga karaniwang tool ay nag-iiwan ng halos lahat.</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tips -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center dark:text-zinc-50" data-i18n="tipsTitle">Mga Tip para sa Pinakamalinis na Gupitin ng Produkto</h2>
+                <ul class="space-y-3 text-gray-700 text-sm md:text-base list-disc list-inside max-w-3xl mx-auto dark:text-zinc-200">
+                    <li data-i18n="tip1">Mag-shoot gamit ang pantay, nagkakalat na ilaw — nalilito ng malupit na anino ang edge detector.</li>
+                    <li data-i18n="tip2">Panatilihing patayo ang camera sa produkto upang maiwasan ang pagbaluktot na maaaring maling nabasa ang AI bilang isang hiwalay na bagay.</li>
+                    <li data-i18n="tip3">Gamitin ang 2000px o 2048px square canvas kapag kailangan mo ng malinis na imahe ng produkto ng e-commerce na may pare-parehong margin.</li>
+                    <li data-i18n="tip4">Para sa alahas, salamin, plastik na bote, o anumang bagay na sumasalamin, gamitin ang Fine (buhok / balahibo) mode. Mas mahusay na pinangangasiwaan ng Alpha matting ang malambot na mga gilid.</li>
+                </ul>
+            </section>
+
+            <!-- FAQ -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center dark:text-zinc-50" data-i18n="faqTitle">Mga Madalas Itanong</h2>
+                <div class="space-y-4">
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h4 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq1Q">Maaari ba akong lumikha ng Amazon-ready na puting background na mga larawan ng produkto?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq1A">Oo. Pagkatapos mabuo ang cutout, piliin ang opsyon sa puting background at mag-export ng isang parisukat na larawan ng produkto. Palaging suriin ang pinakabagong mga panuntunan sa imahe ng marketplace bago i-publish.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h4 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq2Q">Maaari ba akong mag-export ng mga parisukat na larawan ng produkto para sa Shopify at Etsy?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq2A">Oo. Kasama sa page ng Produkto ang 1080px, 2000px, at 2048px na square preset, kasama ang mga kontrol sa padding ng paksa para sa pare-parehong mga thumbnail sa storefront.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h4 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq3Q">Maaari ba akong magdagdag ng anino sa ilalim ng produkto?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq3A">Oo. Gamitin ang shadow control para i-export ang alinman sa malinis na no-shadow cutout, soft grounded shadow, o mas malakas na floating product shadow.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h4 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq4Q">Pinangangasiwaan ba nito ang mga bagay na mapanimdim, alahas, salamin, o plastik?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq4A">Oo. Ilipat ang quality toggle sa "Fine (hair / fur)" mode para sa mga produktong may malambot, reflective, o semi-transparent na mga gilid. Gumagamit ito ng alpha matting para sa mas malinis na mga resulta sa mga nakakalito na materyales.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 dark:bg-zinc-900 dark:border-zinc-800">
+                        <h4 class="font-bold text-gray-900 text-base mb-2 dark:text-zinc-50" data-i18n="faq5Q">Maaari ko bang iproseso ang mga larawan ng produkto nang maramihan?</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed dark:text-zinc-300" data-i18n="faq5A">Ang unang bersyon na ito ay nagpoproseso ng isang larawan sa isang pagkakataon. Ito ay libre para sa normal na indibidwal na paggamit, na may mga limitasyon sa patas na paggamit upang mapanatiling matatag ang serbisyo.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cross-link -->
+            <section>
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center dark:text-zinc-50" data-i18n="moreTitle">Higit pang MiaoCut Tools</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <a href="/fil/portrait-background-remover/"
+                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="moreLinkPortraitTitle">Portrait Background Remover →</h3>
+                        <p class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="moreLinkPortraitDesc">Mga headshot, larawan sa profile, at mga cutout sa social media.</p>
+                    </a>
+                    <a href="/fil/"
+                        class="block bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-300 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600">
+                        <h3 class="font-semibold text-gray-900 mb-1 dark:text-zinc-50" data-i18n="moreLinkHomeTitle">All-Purpose Background Remover →</h3>
+                        <p class="text-sm text-gray-600 dark:text-zinc-300" data-i18n="moreLinkHomeDesc">Mga logo, alagang hayop, kumplikadong mga gilid, anupaman.</p>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- All Tools footer -->
+    <footer class="w-full bg-gray-900 text-gray-300 mt-0">
+        <div class="max-w-6xl mx-auto px-6 py-12">
+            <h2 class="text-xl font-bold text-white mb-8 text-center" data-i18n="footerToolsTitle">Lahat ng MiaoCut Tools</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatRemove">AI Pag-alis ng Background</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/fil/" class="hover:text-white transition-colors" data-i18n="toolBgTitle">Alisin ang Background</a></li>
+                        <li><a href="/fil/product-photo-background-remover/" class="hover:text-white transition-colors" data-i18n="toolProductTitle">produkto</a></li>
+                        <li><a href="/fil/portrait-background-remover/" class="hover:text-white transition-colors" data-i18n="toolPortraitTitle">Larawan</a></li>
+                        <li><a href="/fil/id-photo-maker/" class="hover:text-white transition-colors" data-i18n="toolIdTitle">ID Larawan</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatConvert">Conversion ng Format</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/fil/jpg-to-transparent-png/" class="hover:text-white transition-colors" data-i18n="toolJpgPngTitle">JPG → Transparent na PNG</a></li>
+                        <li><a href="/fil/png-to-jpg-white-background/" class="hover:text-white transition-colors" data-i18n="toolPngJpgTitle">PNG → JPG</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatRepair">Pag-aayos at Pagpapahusay ng Larawan</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/fil/watermark-remover/" class="hover:text-white transition-colors" data-i18n="toolWatermarkTitle">Watermark</a></li>
+                        <li><a href="/fil/old-photo-restoration/" class="hover:text-white transition-colors" data-i18n="toolRestoreTitle">Lumang Larawan</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4" data-i18n="footerCatGuides">Mga gabay</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/how-to-remove-background/" class="hover:text-white transition-colors" data-i18n="guideHubTitle">Paano Mag-alis ng Background</a></li>
+                        <li><a href="/how-to-remove-background/powerpoint/" class="hover:text-white transition-colors" data-i18n="guidePptTitle">Sa PowerPoint</a></li>
+                        <li><a href="/how-to-remove-background/gimp/" class="hover:text-white transition-colors" data-i18n="guideGimpTitle">Sa GIMP</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-500 dark:text-zinc-400">
+                <p class="mb-2" data-i18n="footerTagline">MiaoCut · Libreng AI image tool na gumagalang sa iyong privacy.</p>
+                <p><a href="/privacy/" class="hover:text-white transition-colors" data-i18n="footerPrivacy">Pagkapribado</a> · <a href="/terms/" class="hover:text-white transition-colors" data-i18n="footerTerms">Mga tuntunin</a> · <a href="https://github.com/midcodehub/miaoCut" target="_blank" rel="noopener" class="hover:text-white transition-colors">GitHub</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bookmark Banner -->
+    <div id="bookmark-banner" class="fixed top-0 left-0 right-0 z-50 bg-gray-900 text-white">
+        <div class="max-w-3xl mx-auto flex items-center justify-between px-6 py-3">
+            <div class="flex items-center gap-3">
+                <span class="text-lg">&#11088;</span>
+                <p class="text-sm"><span data-i18n="bookmarkText">Tulad ng MiaoCut? Pindutin</span> <kbd id="shortcut-key"
+                        class="px-1.5 py-0.5 bg-gray-700 rounded text-xs font-mono">Ctrl + D</kbd> <span
+                        data-i18n="bookmarkSuffix">para i-bookmark, ang susunod na cutout ay 1 segundo lang ang layo!</span></p>
+            </div>
+            <button id="dismiss-banner" class="text-gray-400 hover:text-white transition-colors ml-4 shrink-0 dark:text-zinc-500"
+                aria-label="close">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    
+
+    <!-- 页面专属 i18n + 标题，必须在 /app.js 之前执行 -->
+    <script>
+        window.MIAOCUT_PAGE_KEY = 'product-photo';
+        window.MIAOCUT_PAGE_TITLES = {
+    "zh": "商品图抠图与白底图工具 — 免费电商图片背景处理 | MiaoCut",
+    "en": "Product Photo Background Remover + White Background | MiaoCut",
+    "hi": "उत्पाद फोटो बैकग्राउंड रिमूवर + सफेद बैकग्राउंड | MiaoCut",
+    "id": "Penghapus Background Foto Produk + Background Putih | MiaoCut",
+    "pt-br": "Removedor de fundo de foto do produto + fundo branco | MiaoCut",
+    "bn": "প্রোডাক্ট ফটো ব্যাকগ্রাউন্ড রিমুভার + সাদা ব্যাকগ্রাউন্ড | MiaoCut",
+    "fil": "Pang-alis ng Background ng Larawan ng Produkto + Puting Background | MiaoCut",
+    "ur": "پروڈکٹ فوٹو بیک گراؤنڈ ریموور + وائٹ بیک گراؤنڈ | MiaoCut"
+};
+        window.MIAOCUT_PAGE_I18N = {
+    "zh": {
+        "metaDescription": "免费在线商品图抠图工具，一键去除或替换电商产品照片背景，自动生成纯白底、方形画布和带阴影的商品主图，完美适配亚马逊、Shopify、Etsy、eBay 等平台的上架规范。AI 精准抠出商品边缘，输出高清透明 PNG，无水印、无需注册、即开即用。",
+        "metaKeywords": "商品图抠图,商品图白底图,商品图换背景,电商图片编辑,亚马逊白底图,Shopify 商品图,Etsy 商品图,商品阴影",
+        "ogTitle": "商品图抠图与白底图工具 — 免费电商图片背景处理 | MiaoCut",
+        "ogLocale": "zh_CN",
+        "breadcrumbHome": "MiaoCut",
+        "breadcrumbCurrent": "商品图抠图",
+        "title": "商品图抠图与白底图工具",
+        "subtitle": "去除商品图背景，选择白底或自定义画布，调整边距，添加柔和阴影，下载适合亚马逊、Shopify、Etsy、eBay 的商品图。",
+        "seoIntro": "MiaoCut 帮助电商卖家把普通商品照片变成可上架图片。上传 JPG、PNG 或 WebP，去除背景后可导出透明 PNG、白底商品图、方形画布或带阴影的商品图。",
+        "howItWorks": "如何制作白底商品图",
+        "howStep1Title": "1. 上传商品图",
+        "howStep1Desc": "上传 JPG、PNG 或 WebP 商品照片，无需注册，无需信用卡。",
+        "howStep2Title": "2. AI 抠出商品",
+        "howStep2Desc": "MiaoCut 的 AI 自动识别商品轮廓并去除背景，包括反光和半透明边缘。",
+        "howStep3Title": "3. 选择画布和阴影",
+        "howStep3Desc": "选择透明、白色、浅灰或自定义背景，调整主体边距，添加柔和阴影，并导出方形商品图。",
+        "whyTitle": "为什么卖家选择 MiaoCut 处理商品图",
+        "why1Title": "内置白底图",
+        "why1Desc": "抠图完成后可直接选择白色画布，也可以保留透明背景，用于广告、横幅和设计素材。",
+        "why2Title": "方形电商画布",
+        "why2Desc": "可导出 1080、2000 或 2048 像素方形商品图，并用边距控件统一主体大小。",
+        "why3Title": "柔和商品阴影",
+        "why3Desc": "给白底或浅灰底商品图添加轻微阴影，让商品自然落地，不像漂浮在画面里。",
+        "why4Title": "处理棘手材质",
+        "why4Desc": "切换到 Fine 模式，可干净抠出珠宝、玻璃、塑料、反光物品，告别毛边和光晕。",
+        "tipsTitle": "拍出最干净商品抠图的小技巧",
+        "tip1": "使用均匀柔光拍摄 — 强烈阴影会干扰 AI 边缘识别。",
+        "tip2": "镜头与商品保持垂直，避免畸变被识别为额外物体。",
+        "tip3": "需要统一边距的电商商品图时，优先使用 2000px 或 2048px 方形画布。",
+        "tip4": "珠宝、玻璃、塑料瓶等反光物品请使用 Fine（毛发/发丝）模式，alpha matting 处理软边效果更好。",
+        "faqTitle": "常见问题",
+        "faq1Q": "可以生成亚马逊白底商品图吗？",
+        "faq1A": "可以。抠图生成后选择白色背景，并导出方形商品图即可。发布前仍建议核对目标平台最新图片规范。",
+        "faq2Q": "可以导出 Shopify 和 Etsy 常用的方形商品图吗？",
+        "faq2A": "可以。Product 页提供 1080px、2000px、2048px 方形预设，并支持调整主体边距，方便统一店铺缩略图。",
+        "faq3Q": "可以给商品添加阴影吗？",
+        "faq3A": "可以。阴影控件支持无阴影、柔和阴影和悬浮阴影，适合白底或浅灰底商品图。",
+        "faq4Q": "能处理反光、珠宝、玻璃、塑料吗？",
+        "faq4A": "可以。把质量切换到 \"Fine（毛发/发丝）\" 模式，对软边、反光、半透明商品效果更好，使用 alpha matting 算法清理棘手材质。",
+        "faq5Q": "可以批量处理商品图吗？",
+        "faq5A": "第一版目前一次处理一张图。普通个人使用免费，但会有公平使用限制，以保证服务稳定。",
+        "moreTitle": "更多 MiaoCut 工具",
+        "moreLinkPortraitTitle": "人像背景去除 →",
+        "moreLinkPortraitDesc": "头像、证件照、社交媒体抠图。",
+        "moreLinkHomeTitle": "通用背景去除 →",
+        "moreLinkHomeDesc": "Logo、宠物、复杂边缘等任何场景。"
+    },
+    "en": {
+        "metaDescription": "Remove or replace product photo backgrounds free. Make white-background, square-canvas, and shadowed product images for Amazon, Shopify, Etsy, and eBay.",
+        "metaKeywords": "product photo background remover, white background product photos, product background changer, amazon product image background, shopify product photo editor, ecommerce background remover, product photo shadow",
+        "ogTitle": "Product Photo Background Remover + White Background | MiaoCut",
+        "ogLocale": "en_US",
+        "breadcrumbHome": "MiaoCut",
+        "breadcrumbCurrent": "Product Photo Background Remover",
+        "title": "Product Photo Background Remover + White Background Tool",
+        "subtitle": "Remove the background, choose a white or custom canvas, adjust padding, add a soft shadow, and download product images for Amazon, Shopify, Etsy, or eBay.",
+        "seoIntro": "MiaoCut's AI helps online sellers turn raw product shots into listing-ready images. Upload JPG, PNG, or WebP photos, remove the background, then export transparent PNGs, white-background product photos, square canvases, or shadowed images for your store.",
+        "howItWorks": "How to Make Product Photos with a White Background",
+        "howStep1Title": "1. Upload Your Product Image",
+        "howStep1Desc": "Upload a JPG, PNG, or WebP photo of your product. No signup or credit card required.",
+        "howStep2Title": "2. AI Cuts Out the Product",
+        "howStep2Desc": "MiaoCut's AI detects the product outline and removes the background, including reflective and semi-transparent edges.",
+        "howStep3Title": "3. Choose Canvas & Shadow",
+        "howStep3Desc": "Pick transparent, white, light gray, or custom backgrounds, adjust padding, add a soft shadow, and export square product images.",
+        "whyTitle": "Why Sellers Choose MiaoCut for Product Photos",
+        "why1Title": "White Background Built In",
+        "why1Desc": "Choose a clean white canvas after the cutout, or keep the result transparent for ads, banners, and design assets.",
+        "why2Title": "Square E-commerce Canvas",
+        "why2Desc": "Export 1080, 2000, or 2048 pixel square product images with adjustable subject padding.",
+        "why3Title": "Soft Product Shadows",
+        "why3Desc": "Add a subtle shadow so products feel grounded on white or light gray backgrounds instead of floating unnaturally.",
+        "why4Title": "Handles Tricky Materials",
+        "why4Desc": "Switch to Fine mode to cleanly cut out jewelry, glass, plastic, and reflective items where standard tools leave halos.",
+        "tipsTitle": "Tips for the Cleanest Product Cutouts",
+        "tip1": "Shoot with even, diffuse lighting — harsh shadows confuse the edge detector.",
+        "tip2": "Keep the camera roughly perpendicular to the product to avoid distortion the AI may misread as a separate object.",
+        "tip3": "Use the 2000px or 2048px square canvas when you need a clean e-commerce product image with consistent margins.",
+        "tip4": "For jewelry, glass, plastic bottles, or anything reflective, use Fine (hair / fur) mode. Alpha matting handles soft edges much better.",
+        "faqTitle": "Frequently Asked Questions",
+        "faq1Q": "Can I create Amazon-ready white background product photos?",
+        "faq1A": "Yes. After the cutout is generated, choose the white background option and export a square product image. Always check the latest marketplace image rules before publishing.",
+        "faq2Q": "Can I export square product images for Shopify and Etsy?",
+        "faq2A": "Yes. The Product page includes 1080px, 2000px, and 2048px square presets, plus subject padding controls for consistent storefront thumbnails.",
+        "faq3Q": "Can I add a shadow under the product?",
+        "faq3A": "Yes. Use the shadow control to export either a clean no-shadow cutout, a soft grounded shadow, or a stronger floating product shadow.",
+        "faq4Q": "Does it handle reflective items, jewelry, glass, or plastic?",
+        "faq4A": "Yes. Switch the quality toggle to \"Fine (hair / fur)\" mode for products with soft, reflective, or semi-transparent edges. It uses alpha matting for cleaner results on tricky materials.",
+        "faq5Q": "Can I process product photos in bulk?",
+        "faq5A": "This first version processes one image at a time. It is free for normal individual use, with fair-use limits to keep the service stable.",
+        "moreTitle": "More MiaoCut Tools",
+        "moreLinkPortraitTitle": "Portrait Background Remover →",
+        "moreLinkPortraitDesc": "Headshots, profile pictures, and social media cutouts.",
+        "moreLinkHomeTitle": "All-Purpose Background Remover →",
+        "moreLinkHomeDesc": "Logos, pets, complex edges, anything else."
+    },
+    "hi": {
+        "metaDescription": "उत्पाद फोटो पृष्ठभूमि निःशुल्क हटाएं या बदलें। Amazon, Shopify, Etsy और eBay के लिए सफेद-पृष्ठभूमि, चौकोर-कैनवास और छायांकित उत्पाद चित्र बनाएं।",
+        "metaKeywords": "उत्पाद फोटो पृष्ठभूमि रिमूवर, सफेद पृष्ठभूमि उत्पाद तस्वीरें, उत्पाद पृष्ठभूमि परिवर्तक, अमेज़ॅन उत्पाद छवि पृष्ठभूमि, शॉपिफाई उत्पाद फोटो संपादक, ईकॉमर्स पृष्ठभूमि रिमूवर, उत्पाद फोटो छाया",
+        "ogTitle": "उत्पाद फोटो बैकग्राउंड रिमूवर + सफेद बैकग्राउंड | MiaoCut",
+        "ogLocale": "hi_IN",
+        "breadcrumbHome": "MiaoCut",
+        "breadcrumbCurrent": "उत्पाद फोटो पृष्ठभूमि हटानेवाला",
+        "title": "उत्पाद फोटो बैकग्राउंड रिमूवर + व्हाइट बैकग्राउंड टूल",
+        "subtitle": "पृष्ठभूमि हटाएं, एक सफेद या कस्टम कैनवास चुनें, पैडिंग समायोजित करें, एक नरम छाया जोड़ें, और Amazon, Shopify, Etsy, या eBay के लिए उत्पाद छवियां डाउनलोड करें।",
+        "seoIntro": "MiaoCut का AI ऑनलाइन विक्रेताओं को कच्चे उत्पाद शॉट्स को लिस्टिंग के लिए तैयार छवियों में बदलने में मदद करता है। JPG, PNG, या WebP फ़ोटो अपलोड करें, पृष्ठभूमि हटाएँ, फिर अपने स्टोर के लिए पारदर्शी PNGs, सफ़ेद-पृष्ठभूमि उत्पाद फ़ोटो, चौकोर कैनवस, या छायांकित चित्र निर्यात करें।",
+        "howItWorks": "सफेद पृष्ठभूमि के साथ उत्पाद की तस्वीरें कैसे बनाएं",
+        "howStep1Title": "1. अपने उत्पाद की छवि अपलोड करें",
+        "howStep1Desc": "अपने उत्पाद का JPG, PNG, या WebP फोटो अपलोड करें। कोई साइनअप या क्रेडिट कार्ड की आवश्यकता नहीं है।",
+        "howStep2Title": "2. AI उत्पाद को काट देता है",
+        "howStep2Desc": "MiaoCut का AI उत्पाद की रूपरेखा का पता लगाता है और परावर्तक और अर्ध-पारदर्शी किनारों सहित पृष्ठभूमि को हटा देता है।",
+        "howStep3Title": "3. कैनवास और छाया चुनें",
+        "howStep3Desc": "पारदर्शी, सफ़ेद, हल्का भूरा या कस्टम पृष्ठभूमि चुनें, पैडिंग समायोजित करें, एक नरम छाया जोड़ें और वर्गाकार उत्पाद छवियां निर्यात करें।",
+        "whyTitle": "विक्रेता उत्पाद फ़ोटो के लिए MiaoCut क्यों चुनते हैं",
+        "why1Title": "सफेद पृष्ठभूमि निर्मित",
+        "why1Desc": "कटआउट के बाद एक साफ़ सफ़ेद कैनवास चुनें, या विज्ञापनों, बैनरों और डिज़ाइन संपत्तियों के लिए परिणाम को पारदर्शी रखें।",
+        "why2Title": "स्क्वायर ई-कॉमर्स कैनवास",
+        "why2Desc": "समायोज्य विषय पैडिंग के साथ 1080, 2000, या 2048 पिक्सेल वर्ग उत्पाद छवियां निर्यात करें।",
+        "why3Title": "नरम उत्पाद छाया",
+        "why3Desc": "एक सूक्ष्म छाया जोड़ें ताकि उत्पाद अप्राकृतिक रूप से तैरने के बजाय सफेद या हल्के भूरे रंग की पृष्ठभूमि पर टिके हुए महसूस हों।",
+        "why4Title": "पेचीदा सामग्रियों को संभालता है",
+        "why4Desc": "आभूषण, कांच, प्लास्टिक और परावर्तक वस्तुओं को साफ-सुथरा काटने के लिए फाइन मोड पर स्विच करें जहां मानक उपकरण प्रभामंडल छोड़ते हैं।",
+        "tipsTitle": "सबसे स्वच्छ उत्पाद कटआउट के लिए युक्तियाँ",
+        "tip1": "सम, विसरित प्रकाश के साथ शूट करें - कठोर छायाएं किनारे डिटेक्टर को भ्रमित करती हैं।",
+        "tip2": "विरूपण से बचने के लिए कैमरे को उत्पाद के लगभग लंबवत रखें, AI एक अलग वस्तु के रूप में गलत पढ़ा जा सकता है।",
+        "tip3": "जब आपको सुसंगत मार्जिन के साथ एक साफ ई-कॉमर्स उत्पाद छवि की आवश्यकता हो तो 2000px या 2048px वर्ग कैनवास का उपयोग करें।",
+        "tip4": "आभूषण, कांच, प्लास्टिक की बोतलें, या किसी भी प्रतिबिंबित वस्तु के लिए, फाइन (बाल/फर) मोड का उपयोग करें। अल्फ़ा मैटिंग नरम किनारों को बेहतर ढंग से संभालती है।",
+        "faqTitle": "अक्सर पूछे जाने वाले प्रश्नों",
+        "faq1Q": "क्या मैं Amazon-तैयार सफेद पृष्ठभूमि उत्पाद फ़ोटो बना सकता हूँ?",
+        "faq1A": "हाँ। कटआउट उत्पन्न होने के बाद, सफेद पृष्ठभूमि विकल्प चुनें और एक वर्गाकार उत्पाद छवि निर्यात करें। प्रकाशन से पहले हमेशा नवीनतम बाज़ार छवि नियमों की जाँच करें।",
+        "faq2Q": "क्या मैं Shopify और Etsy के लिए वर्गाकार उत्पाद छवियाँ निर्यात कर सकता हूँ?",
+        "faq2A": "हाँ। उत्पाद पृष्ठ में 1080px, 2000px और 2048px वर्ग प्रीसेट, साथ ही सुसंगत स्टोरफ्रंट थंबनेल के लिए विषय पैडिंग नियंत्रण शामिल हैं।",
+        "faq3Q": "क्या मैं उत्पाद के नीचे छाया जोड़ सकता हूँ?",
+        "faq3A": "हाँ। एक साफ बिना-छाया कटआउट, एक नरम ग्राउंडेड छाया, या एक मजबूत फ्लोटिंग उत्पाद छाया निर्यात करने के लिए छाया नियंत्रण का उपयोग करें।",
+        "faq4Q": "क्या यह परावर्तक वस्तुओं, आभूषणों, कांच या प्लास्टिक को संभालता है?",
+        "faq4A": "हाँ। नरम, परावर्तक, या अर्ध-पारदर्शी किनारों वाले उत्पादों के लिए गुणवत्ता टॉगल को \"ठीक (बाल / फर)\" मोड पर स्विच करें। यह पेचीदा सामग्रियों पर क्लीनर परिणामों के लिए अल्फा मैटिंग का उपयोग करता है।",
+        "faq5Q": "क्या मैं उत्पाद फ़ोटो को थोक में संसाधित कर सकता हूँ?",
+        "faq5A": "यह पहला संस्करण एक समय में एक छवि को संसाधित करता है। यह सामान्य व्यक्तिगत उपयोग के लिए मुफ़्त है, सेवा को स्थिर रखने के लिए उचित उपयोग की सीमाएँ हैं।",
+        "moreTitle": "अधिक MiaoCut उपकरण",
+        "moreLinkPortraitTitle": "पोर्ट्रेट बैकग्राउंड रिमूवर →",
+        "moreLinkPortraitDesc": "हेडशॉट्स, प्रोफ़ाइल चित्र और सोशल मीडिया कटआउट।",
+        "moreLinkHomeTitle": "ऑल-पर्पस बैकग्राउंड रिमूवर →",
+        "moreLinkHomeDesc": "लोगो, पालतू जानवर, जटिल किनारे, और कुछ भी।"
+    },
+    "id": {
+        "metaDescription": "Hapus atau ganti background foto produk gratis. Buat gambar produk berlatar belakang putih, kanvas persegi, dan berbayang untuk Amazon, Shopify, Etsy, dan eBay.",
+        "metaKeywords": "penghapus latar belakang foto produk, foto produk latar belakang putih, pengubah latar belakang produk, latar belakang gambar produk amazon, editor foto produk shopify, penghapus latar belakang e-niaga, bayangan foto produk",
+        "ogTitle": "Penghapus Background Foto Produk + Background Putih | MiaoCut",
+        "ogLocale": "id_ID",
+        "breadcrumbHome": "MiaoCut",
+        "breadcrumbCurrent": "Penghapus Latar Belakang Foto Produk",
+        "title": "Penghapus Latar Belakang Foto Produk + Alat Latar Belakang Putih",
+        "subtitle": "Hapus latar belakang, pilih kanvas putih atau khusus, sesuaikan bantalan, tambahkan bayangan lembut, dan unduh gambar produk untuk Amazon, Shopify, Etsy, atau eBay.",
+        "seoIntro": "AI dari MiaoCut membantu penjual online mengubah foto produk mentah menjadi gambar yang siap dicantumkan. Unggah foto JPG, PNG, atau WebP, hapus latar belakangnya, lalu ekspor PNG transparan, foto produk berlatar belakang putih, kanvas persegi, atau gambar berbayang untuk toko Anda.",
+        "howItWorks": "Cara Membuat Foto Produk dengan Background Putih",
+        "howStep1Title": "1. Unggah Gambar Produk Anda",
+        "howStep1Desc": "Unggah foto JPG, PNG, atau WebP produk Anda. Tidak diperlukan pendaftaran atau kartu kredit.",
+        "howStep2Title": "2. AI Memotong Produk",
+        "howStep2Desc": "MiaoCut AI mendeteksi garis luar produk dan menghilangkan latar belakang, termasuk tepi reflektif dan semi-transparan.",
+        "howStep3Title": "3. Pilih Kanvas & Bayangan",
+        "howStep3Desc": "Pilih latar belakang transparan, putih, abu-abu muda, atau khusus, sesuaikan padding, tambahkan bayangan lembut, dan ekspor gambar produk persegi.",
+        "whyTitle": "Mengapa Penjual Memilih MiaoCut untuk Foto Produk",
+        "why1Title": "Latar Belakang Putih Terpasang",
+        "why1Desc": "Pilih kanvas putih bersih setelah potongan, atau biarkan hasilnya transparan untuk iklan, spanduk, dan aset desain.",
+        "why2Title": "Kanvas E-niaga Persegi",
+        "why2Desc": "Ekspor gambar produk persegi berukuran 1080, 2000, atau 2048 piksel dengan bantalan subjek yang dapat disesuaikan.",
+        "why3Title": "Bayangan Produk Lembut",
+        "why3Desc": "Tambahkan bayangan halus sehingga produk terasa berlatar belakang putih atau abu-abu terang dan bukannya mengambang secara tidak wajar.",
+        "why4Title": "Menangani Bahan Rumit",
+        "why4Desc": "Beralih ke mode Halus untuk memotong perhiasan, kaca, plastik, dan benda reflektif dengan rapi di mana alat standar meninggalkan lingkaran cahaya.",
+        "tipsTitle": "Tip untuk Potongan Produk Paling Bersih",
+        "tip1": "Bidik dengan pencahayaan yang merata dan tersebar — bayangan yang tajam membingungkan detektor tepi.",
+        "tip2": "Jaga agar kamera kira-kira tegak lurus terhadap produk untuk menghindari distorsi, AI mungkin salah dibaca sebagai objek terpisah.",
+        "tip3": "Gunakan kanvas persegi 2000px atau 2048px saat Anda membutuhkan gambar produk e-niaga yang bersih dengan margin yang konsisten.",
+        "tip4": "Untuk perhiasan, kaca, botol plastik, atau apa pun yang memantulkan cahaya, gunakan mode Halus (rambut/bulu). Anyaman alfa menangani tepi lembut dengan lebih baik.",
+        "faqTitle": "Pertanyaan yang Sering Diajukan",
+        "faq1Q": "Bisakah saya membuat foto produk berlatar belakang putih siap pakai Amazon?",
+        "faq1A": "Ya. Setelah potongan dibuat, pilih opsi latar belakang putih dan ekspor gambar produk persegi. Selalu periksa aturan gambar pasar terbaru sebelum dipublikasikan.",
+        "faq2Q": "Bisakah saya mengekspor gambar produk persegi untuk Shopify dan Etsy?",
+        "faq2A": "Ya. Halaman Produk mencakup preset persegi 1080px, 2000px, dan 2048px, ditambah kontrol padding subjek untuk thumbnail etalase yang konsisten.",
+        "faq3Q": "Bisakah saya menambahkan bayangan di bawah produk?",
+        "faq3A": "Ya. Gunakan kontrol bayangan untuk mengekspor potongan tanpa bayangan yang bersih, bayangan yang membumi lembut, atau bayangan produk mengambang yang lebih kuat.",
+        "faq4Q": "Apakah itu menangani benda-benda reflektif, perhiasan, kaca, atau plastik?",
+        "faq4A": "Ya. Alihkan tombol kualitas ke mode \"Halus (rambut / bulu)\" untuk produk dengan tepi lembut, reflektif, atau semi transparan. Ini menggunakan anyaman alfa untuk hasil yang lebih bersih pada material yang rumit.",
+        "faq5Q": "Bisakah saya memproses foto produk secara massal?",
+        "faq5A": "Versi pertama ini memproses satu gambar dalam satu waktu. Ini gratis untuk penggunaan individu normal, dengan batasan penggunaan wajar untuk menjaga layanan tetap stabil.",
+        "moreTitle": "Alat MiaoCut Lainnya",
+        "moreLinkPortraitTitle": "Penghapus Latar Belakang Potret →",
+        "moreLinkPortraitDesc": "Foto kepala, gambar profil, dan potongan media sosial.",
+        "moreLinkHomeTitle": "Penghapus Latar Belakang Serbaguna →",
+        "moreLinkHomeDesc": "Logo, hewan peliharaan, tepian yang rumit, apa pun."
+    },
+    "pt-br": {
+        "metaDescription": "Remova ou substitua fundos de fotos de produtos gratuitamente. Crie imagens de produtos com fundo branco, tela quadrada e sombreadas para Amazon, Shopify, Etsy e eBay.",
+        "metaKeywords": "removedor de fundo de foto de produto, fotos de produto com fundo branco, trocador de fundo de produto, fundo de imagem de produto amazon, editor de fotos de produto shopify, removedor de fundo de comércio eletrônico, sombra de foto de produto",
+        "ogTitle": "Removedor de fundo de foto do produto + fundo branco | MiaoCut",
+        "ogLocale": "pt_BR",
+        "breadcrumbHome": "MiaoCut",
+        "breadcrumbCurrent": "Removedor de fundo de foto de produto",
+        "title": "Removedor de fundo de foto de produto + ferramenta de fundo branco",
+        "subtitle": "Remova o fundo, escolha uma tela branca ou personalizada, ajuste o preenchimento, adicione uma sombra suave e baixe imagens de produtos para Amazon, Shopify, Etsy ou eBay.",
+        "seoIntro": "O AI da MiaoCut ajuda os vendedores on-line a transformar fotos de produtos brutos em imagens prontas para listagem. Carregue fotos JPG, PNG ou WebP, remova o fundo e exporte PNGs transparentes, fotos de produtos com fundo branco, telas quadradas ou imagens sombreadas para sua loja.",
+        "howItWorks": "Como fazer fotos de produtos com fundo branco",
+        "howStep1Title": "1. Faça upload da imagem do seu produto",
+        "howStep1Desc": "Carregue uma foto JPG, PNG ou WebP do seu produto. Não é necessária inscrição ou cartão de crédito.",
+        "howStep2Title": "2. AI corta o produto",
+        "howStep2Desc": "O AI do MiaoCut detecta o contorno do produto e remove o fundo, incluindo bordas reflexivas e semitransparentes.",
+        "howStep3Title": "3. Escolha Tela e Sombra",
+        "howStep3Desc": "Escolha fundos transparentes, brancos, cinza claro ou personalizados, ajuste o preenchimento, adicione uma sombra suave e exporte imagens quadradas de produtos.",
+        "whyTitle": "Por que os vendedores escolhem MiaoCut para fotos de produtos",
+        "why1Title": "Fundo branco integrado",
+        "why1Desc": "Escolha uma tela branca e limpa após o recorte ou mantenha o resultado transparente para anúncios, banners e recursos de design.",
+        "why2Title": "Tela quadrada de comércio eletrônico",
+        "why2Desc": "Exporte imagens quadradas de produtos de 1.080, 2.000 ou 2.048 pixels com preenchimento de assunto ajustável.",
+        "why3Title": "Sombras suaves de produtos",
+        "why3Desc": "Adicione uma sombra sutil para que os produtos pareçam baseados em fundos brancos ou cinza claro, em vez de flutuarem de forma não natural.",
+        "why4Title": "Lida com materiais complicados",
+        "why4Desc": "Mude para o modo Fino para cortar joias, vidro, plástico e itens refletivos de maneira limpa, onde ferramentas padrão deixam halos.",
+        "tipsTitle": "Dicas para recortes de produtos mais limpos",
+        "tip1": "Fotografe com iluminação uniforme e difusa – sombras fortes confundem o detector de bordas.",
+        "tip2": "Mantenha a câmera aproximadamente perpendicular ao produto para evitar distorção que o AI pode interpretar erroneamente como um objeto separado.",
+        "tip3": "Use a tela quadrada de 2.000 px ou 2.048 px quando precisar de uma imagem limpa de produto de comércio eletrônico com margens consistentes.",
+        "tip4": "Para joias, vidros, garrafas plásticas ou qualquer coisa refletiva, use o modo Fino (cabelo/pele). O tapete Alpha lida muito melhor com bordas suaves.",
+        "faqTitle": "Perguntas frequentes",
+        "faq1Q": "Posso criar fotos de produtos com fundo branco prontas para Amazon?",
+        "faq1A": "Sim. Após a geração do recorte, escolha a opção de fundo branco e exporte uma imagem quadrada do produto. Sempre verifique as regras de imagem do mercado mais recentes antes de publicar.",
+        "faq2Q": "Posso exportar imagens quadradas de produtos para Shopify e Etsy?",
+        "faq2A": "Sim. A página do produto inclui predefinições quadradas de 1080px, 2000px e 2048px, além de controles de preenchimento de assunto para miniaturas consistentes de vitrines.",
+        "faq3Q": "Posso adicionar uma sombra sob o produto?",
+        "faq3A": "Sim. Use o controle de sombra para exportar um recorte limpo e sem sombra, uma sombra suave ou uma sombra de produto flutuante mais forte.",
+        "faq4Q": "Ele lida com itens refletivos, joias, vidro ou plástico?",
+        "faq4A": "Sim. Mude o botão de qualidade para o modo \"Fino (cabelo/pele)\" para produtos com bordas suaves, reflexivas ou semitransparentes. Ele usa fosco alfa para resultados mais limpos em materiais complicados.",
+        "faq5Q": "Posso processar fotos de produtos em massa?",
+        "faq5A": "Esta primeira versão processa uma imagem por vez. É gratuito para uso individual normal, com limites de uso justo para manter o serviço estável.",
+        "moreTitle": "Mais ferramentas MiaoCut",
+        "moreLinkPortraitTitle": "Removedor de fundo de retrato →",
+        "moreLinkPortraitDesc": "Fotos de rosto, fotos de perfil e recortes de mídias sociais.",
+        "moreLinkHomeTitle": "Removedor de fundo multifuncional →",
+        "moreLinkHomeDesc": "Logotipos, animais de estimação, bordas complexas, qualquer outra coisa."
+    },
+    "bn": {
+        "metaDescription": "পণ্য ফটো ব্যাকগ্রাউন্ড বিনামূল্যে সরান বা প্রতিস্থাপন. Amazon, Shopify, Etsy, এবং eBay-এর জন্য সাদা-পটভূমি, বর্গাকার-ক্যানভাস এবং ছায়াযুক্ত পণ্যের ছবি তৈরি করুন।",
+        "metaKeywords": "প্রোডাক্ট ফটো ব্যাকগ্রাউন্ড রিমুভার, সাদা ব্যাকগ্রাউন্ড প্রোডাক্ট ফটো, প্রোডাক্ট ব্যাকগ্রাউন্ড চেঞ্জার, আমাজন প্রোডাক্ট ইমেজ ব্যাকগ্রাউন্ড, Shopify প্রোডাক্ট ফটো এডিটর, ইকমার্স ব্যাকগ্রাউন্ড রিমুভার, প্রোডাক্ট ফটো শ্যাডো",
+        "ogTitle": "প্রোডাক্ট ফটো ব্যাকগ্রাউন্ড রিমুভার + সাদা ব্যাকগ্রাউন্ড | MiaoCut",
+        "ogLocale": "bn_BD",
+        "breadcrumbHome": "MiaoCut",
+        "breadcrumbCurrent": "পণ্য ছবির পটভূমি রিমুভার",
+        "title": "পণ্যের ফটো ব্যাকগ্রাউন্ড রিমুভার + সাদা ব্যাকগ্রাউন্ড টুল",
+        "subtitle": "পটভূমি সরান, একটি সাদা বা কাস্টম ক্যানভাস চয়ন করুন, প্যাডিং সামঞ্জস্য করুন, একটি নরম ছায়া যোগ করুন এবং Amazon, Shopify, Etsy, বা eBay-এর জন্য পণ্যের ছবি ডাউনলোড করুন৷",
+        "seoIntro": "MiaoCut-এর AI অনলাইন বিক্রেতাদের কাঁচা পণ্যের শটগুলিকে তালিকা-প্রস্তুত ছবিতে পরিণত করতে সহায়তা করে৷ JPG, PNG, বা WebP ফটোগুলি আপলোড করুন, পটভূমি সরান, তারপর স্বচ্ছ PNG, সাদা-পটভূমি পণ্যের ফটো, বর্গাকার ক্যানভাস, বা আপনার দোকানের জন্য ছায়াযুক্ত ছবি রপ্তানি করুন৷",
+        "howItWorks": "কিভাবে একটি সাদা ব্যাকগ্রাউন্ড দিয়ে পণ্যের ছবি বানাতে হয়",
+        "howStep1Title": "1. আপনার পণ্যের ছবি আপলোড করুন",
+        "howStep1Desc": "আপনার পণ্যের একটি JPG, PNG, বা WebP ফটো আপলোড করুন৷ কোন সাইন আপ বা ক্রেডিট কার্ড প্রয়োজন.",
+        "howStep2Title": "2. AI পণ্যটি কেটে ফেলে",
+        "howStep2Desc": "MiaoCut-এর AI পণ্যের রূপরেখা সনাক্ত করে এবং প্রতিফলিত এবং আধা-স্বচ্ছ প্রান্ত সহ পটভূমি সরিয়ে দেয়।",
+        "howStep3Title": "3. ক্যানভাস এবং ছায়া চয়ন করুন",
+        "howStep3Desc": "স্বচ্ছ, সাদা, হালকা ধূসর বা কাস্টম ব্যাকগ্রাউন্ড বেছে নিন, প্যাডিং সামঞ্জস্য করুন, একটি নরম ছায়া যোগ করুন এবং বর্গাকার পণ্যের ছবি রপ্তানি করুন।",
+        "whyTitle": "কেন বিক্রেতারা পণ্যের ফটোগুলির জন্য MiaoCut চয়ন করেন৷",
+        "why1Title": "সাদা ব্যাকগ্রাউন্ড বিল্ট ইন",
+        "why1Desc": "কাটআউটের পরে একটি পরিষ্কার সাদা ক্যানভাস বেছে নিন বা বিজ্ঞাপন, ব্যানার এবং ডিজাইন সম্পদের জন্য ফলাফলটিকে স্বচ্ছ রাখুন।",
+        "why2Title": "স্কয়ার ই-কমার্স ক্যানভাস",
+        "why2Desc": "সামঞ্জস্যযোগ্য বিষয় প্যাডিং সহ 1080, 2000, বা 2048 পিক্সেল বর্গাকার পণ্যের ছবি রপ্তানি করুন।",
+        "why3Title": "নরম পণ্য ছায়া",
+        "why3Desc": "একটি সূক্ষ্ম ছায়া যোগ করুন যাতে পণ্যগুলি অস্বাভাবিকভাবে ভাসানোর পরিবর্তে সাদা বা হালকা ধূসর ব্যাকগ্রাউন্ডের উপর ভিত্তি করে থাকে।",
+        "why4Title": "চতুর উপকরণ হ্যান্ডেল",
+        "why4Desc": "সূক্ষ্ম মোডে স্যুইচ করুন পরিষ্কারভাবে গয়না, কাচ, প্লাস্টিক এবং প্রতিফলিত আইটেমগুলি যেখানে স্ট্যান্ডার্ড টুলগুলি হ্যালোস ছেড়ে যায়।",
+        "tipsTitle": "সবচেয়ে পরিষ্কার পণ্য কাটআউটের জন্য টিপস",
+        "tip1": "সমান, বিচ্ছুরিত আলোর সাথে অঙ্কুর করুন — কঠোর ছায়াগুলি প্রান্ত সনাক্তকারীকে বিভ্রান্ত করে।",
+        "tip2": "AI একটি পৃথক অবজেক্ট হিসাবে ভুল পড়া হতে পারে বিকৃতি এড়াতে ক্যামেরাটিকে পণ্যের সাথে মোটামুটিভাবে লম্ব রাখুন।",
+        "tip3": "2000px বা 2048px বর্গাকার ক্যানভাস ব্যবহার করুন যখন আপনার সুসংগত মার্জিন সহ একটি পরিষ্কার ই-কমার্স পণ্যের চিত্র প্রয়োজন।",
+        "tip4": "গয়না, কাচ, প্লাস্টিকের বোতল বা প্রতিফলিত কিছুর জন্য, ফাইন (চুল / পশম) মোড ব্যবহার করুন। আলফা ম্যাটিং নরম প্রান্তগুলিকে আরও ভালভাবে পরিচালনা করে।",
+        "faqTitle": "প্রায়শই জিজ্ঞাসিত প্রশ্নাবলী",
+        "faq1Q": "আমি কি Amazon-প্রস্তুত সাদা ব্যাকগ্রাউন্ড পণ্যের ছবি তৈরি করতে পারি?",
+        "faq1A": "হ্যাঁ। কাটআউট তৈরি হওয়ার পরে, সাদা ব্যাকগ্রাউন্ড বিকল্পটি চয়ন করুন এবং একটি বর্গাকার পণ্য চিত্র রপ্তানি করুন। প্রকাশ করার আগে সর্বদা সর্বশেষ মার্কেটপ্লেস ইমেজ নিয়ম চেক করুন.",
+        "faq2Q": "আমি কি Shopify এবং Etsy এর জন্য বর্গাকার পণ্যের ছবি রপ্তানি করতে পারি?",
+        "faq2A": "হ্যাঁ। পণ্য পৃষ্ঠায় 1080px, 2000px, এবং 2048px বর্গাকার প্রিসেট, এবং সামঞ্জস্যপূর্ণ স্টোরফ্রন্ট থাম্বনেইলের জন্য বিষয় প্যাডিং নিয়ন্ত্রণ রয়েছে।",
+        "faq3Q": "আমি কি পণ্যের নিচে একটি ছায়া যোগ করতে পারি?",
+        "faq3A": "হ্যাঁ। একটি পরিষ্কার নো-শ্যাডো কাটআউট, একটি নরম গ্রাউন্ডেড ছায়া, বা একটি শক্তিশালী ভাসমান পণ্য ছায়া রপ্তানি করতে ছায়া নিয়ন্ত্রণ ব্যবহার করুন।",
+        "faq4Q": "এটি কি প্রতিফলিত আইটেম, গয়না, গ্লাস বা প্লাস্টিক পরিচালনা করে?",
+        "faq4A": "হ্যাঁ। নরম, প্রতিফলিত, বা আধা-স্বচ্ছ প্রান্ত সহ পণ্যগুলির জন্য গুণমান টগলটিকে \"ফাইন (চুল / পশম)\" মোডে স্যুইচ করুন৷ এটি চতুর উপকরণগুলিতে পরিষ্কার ফলাফলের জন্য আলফা ম্যাটিং ব্যবহার করে।",
+        "faq5Q": "আমি কি বাল্ক পণ্য ফটো প্রক্রিয়া করতে পারি?",
+        "faq5A": "এই প্রথম সংস্করণটি একবারে একটি চিত্র প্রক্রিয়া করে। এটি স্বাভাবিক ব্যক্তিগত ব্যবহারের জন্য বিনামূল্যে, পরিষেবা স্থিতিশীল রাখতে ন্যায্য-ব্যবহারের সীমা সহ।",
+        "moreTitle": "আরও MiaoCut টুল",
+        "moreLinkPortraitTitle": "পোর্ট্রেট ব্যাকগ্রাউন্ড রিমুভার →",
+        "moreLinkPortraitDesc": "হেডশট, প্রোফাইল ছবি এবং সোশ্যাল মিডিয়া কাটআউট।",
+        "moreLinkHomeTitle": "সর্ব-উদ্দেশ্য ব্যাকগ্রাউন্ড রিমুভার →",
+        "moreLinkHomeDesc": "লোগো, পোষা প্রাণী, জটিল প্রান্ত, অন্য কিছু।"
+    },
+    "fil": {
+        "metaDescription": "Alisin o palitan ang mga background ng larawan ng produkto nang libre. Gumawa ng white-background, square-canvas, at shadowed na mga larawan ng produkto para sa Amazon, Shopify, Etsy, at eBay.",
+        "metaKeywords": "pangtanggal ng background ng larawan ng produkto, mga larawan ng produkto na may puting background, tagapalit ng background ng produkto, background ng imahe ng produkto ng amazon, editor ng larawan ng produkto ng shopify, pangtanggal ng background ng ecommerce, anino ng larawan ng produkto",
+        "ogTitle": "Pang-alis ng Background ng Larawan ng Produkto + Puting Background | MiaoCut",
+        "ogLocale": "fil_PH",
+        "breadcrumbHome": "MiaoCut",
+        "breadcrumbCurrent": "Pang-alis ng Background ng Larawan ng Produkto",
+        "title": "Pang-alis ng Background ng Larawan ng Produkto + Tool ng White Background",
+        "subtitle": "Alisin ang background, pumili ng puti o custom na canvas, ayusin ang padding, magdagdag ng malambot na anino, at mag-download ng mga larawan ng produkto para sa Amazon, Shopify, Etsy, o eBay.",
+        "seoIntro": "Ang MiaoCut ng AI ay tumutulong sa mga online na nagbebenta na gawing mga larawang handa na sa listahan. Mag-upload ng mga larawan ng JPG, PNG, o WebP, alisin ang background, pagkatapos ay i-export ang mga transparent na PNG, mga larawan ng produkto na may puting background, mga square canvase, o mga shadowed na larawan para sa iyong tindahan.",
+        "howItWorks": "Paano Gumawa ng Mga Larawan ng Produkto na may Puting Background",
+        "howStep1Title": "1. I-upload ang Iyong Larawan ng Produkto",
+        "howStep1Desc": "Mag-upload ng JPG, PNG, o WebP na larawan ng iyong produkto. Walang kinakailangang pag-signup o credit card.",
+        "howStep2Title": "2. Pinutol ng AI ang Produkto",
+        "howStep2Desc": "Nakikita ng AI ng MiaoCut ang balangkas ng produkto at inaalis ang background, kasama ang reflective at semi-transparent na mga gilid.",
+        "howStep3Title": "3. Piliin ang Canvas & Shadow",
+        "howStep3Desc": "Pumili ng transparent, puti, light grey, o custom na background, ayusin ang padding, magdagdag ng malambot na anino, at mag-export ng mga parisukat na larawan ng produkto.",
+        "whyTitle": "Bakit Pinipili ng Mga Nagbebenta ang MiaoCut para sa Mga Larawan ng Produkto",
+        "why1Title": "White Background Built In",
+        "why1Desc": "Pumili ng malinis na puting canvas pagkatapos ng cutout, o panatilihing transparent ang resulta para sa mga ad, banner, at asset ng disenyo.",
+        "why2Title": "Square E-commerce Canvas",
+        "why2Desc": "I-export ang 1080, 2000, o 2048 pixel square na mga larawan ng produkto na may adjustable subject padding.",
+        "why3Title": "Malambot na Mga anino ng Produkto",
+        "why3Desc": "Magdagdag ng banayad na anino upang ang mga produkto ay makaramdam ng grounded sa puti o mapusyaw na kulay-abo na background sa halip na lumulutang nang hindi natural.",
+        "why4Title": "Hinahawakan ang Mapanlinlang na Materyal",
+        "why4Desc": "Lumipat sa Fine mode upang malinis na gupitin ang mga alahas, salamin, plastik, at mga bagay na sumasalamin kung saan ang mga karaniwang tool ay nag-iiwan ng halos lahat.",
+        "tipsTitle": "Mga Tip para sa Pinakamalinis na Gupitin ng Produkto",
+        "tip1": "Mag-shoot gamit ang pantay, nagkakalat na ilaw — nalilito ng malupit na anino ang edge detector.",
+        "tip2": "Panatilihing patayo ang camera sa produkto upang maiwasan ang pagbaluktot na maaaring maling nabasa ang AI bilang isang hiwalay na bagay.",
+        "tip3": "Gamitin ang 2000px o 2048px square canvas kapag kailangan mo ng malinis na imahe ng produkto ng e-commerce na may pare-parehong margin.",
+        "tip4": "Para sa alahas, salamin, plastik na bote, o anumang bagay na sumasalamin, gamitin ang Fine (buhok / balahibo) mode. Mas mahusay na pinangangasiwaan ng Alpha matting ang malambot na mga gilid.",
+        "faqTitle": "Mga Madalas Itanong",
+        "faq1Q": "Maaari ba akong lumikha ng Amazon-ready na puting background na mga larawan ng produkto?",
+        "faq1A": "Oo. Pagkatapos mabuo ang cutout, piliin ang opsyon sa puting background at mag-export ng isang parisukat na larawan ng produkto. Palaging suriin ang pinakabagong mga panuntunan sa imahe ng marketplace bago i-publish.",
+        "faq2Q": "Maaari ba akong mag-export ng mga parisukat na larawan ng produkto para sa Shopify at Etsy?",
+        "faq2A": "Oo. Kasama sa page ng Produkto ang 1080px, 2000px, at 2048px na square preset, kasama ang mga kontrol sa padding ng paksa para sa pare-parehong mga thumbnail sa storefront.",
+        "faq3Q": "Maaari ba akong magdagdag ng anino sa ilalim ng produkto?",
+        "faq3A": "Oo. Gamitin ang shadow control para i-export ang alinman sa malinis na no-shadow cutout, soft grounded shadow, o mas malakas na floating product shadow.",
+        "faq4Q": "Pinangangasiwaan ba nito ang mga bagay na mapanimdim, alahas, salamin, o plastik?",
+        "faq4A": "Oo. Ilipat ang quality toggle sa \"Fine (hair / fur)\" mode para sa mga produktong may malambot, reflective, o semi-transparent na mga gilid. Gumagamit ito ng alpha matting para sa mas malinis na mga resulta sa mga nakakalito na materyales.",
+        "faq5Q": "Maaari ko bang iproseso ang mga larawan ng produkto nang maramihan?",
+        "faq5A": "Ang unang bersyon na ito ay nagpoproseso ng isang larawan sa isang pagkakataon. Ito ay libre para sa normal na indibidwal na paggamit, na may mga limitasyon sa patas na paggamit upang mapanatiling matatag ang serbisyo.",
+        "moreTitle": "Higit pang MiaoCut Tools",
+        "moreLinkPortraitTitle": "Portrait Background Remover →",
+        "moreLinkPortraitDesc": "Mga headshot, larawan sa profile, at mga cutout sa social media.",
+        "moreLinkHomeTitle": "All-Purpose Background Remover →",
+        "moreLinkHomeDesc": "Mga logo, alagang hayop, kumplikadong mga gilid, anupaman."
+    },
+    "ur": {
+        "metaDescription": "پروڈکٹ فوٹو بیک گراؤنڈز کو مفت ہٹائیں یا تبدیل کریں۔ Amazon، Shopify، Etsy، اور eBay کے لیے سفید پس منظر، مربع کینوس، اور شیڈو والی مصنوعات کی تصاویر بنائیں۔",
+        "metaKeywords": "پروڈکٹ فوٹو بیک گراؤنڈ ریموور، سفید بیک گراؤنڈ پروڈکٹ فوٹو، پروڈکٹ بیک گراؤنڈ چینجر، ایمیزون پروڈکٹ امیج بیک گراؤنڈ، شاپائف پروڈکٹ فوٹو ایڈیٹر، ای کامرس بیک گراؤنڈ ریموور، پروڈکٹ فوٹو شیڈو",
+        "ogTitle": "پروڈکٹ فوٹو بیک گراؤنڈ ریموور + وائٹ بیک گراؤنڈ | MiaoCut",
+        "ogLocale": "ur_PK",
+        "breadcrumbHome": "MiaoCut",
+        "breadcrumbCurrent": "پروڈکٹ فوٹو بیک گراؤنڈ ریموور",
+        "title": "پروڈکٹ فوٹو بیک گراؤنڈ ریموور + وائٹ بیک گراؤنڈ ٹول",
+        "subtitle": "پس منظر کو ہٹائیں، سفید یا حسب ضرورت کینوس کا انتخاب کریں، پیڈنگ کو ایڈجسٹ کریں، نرم سایہ شامل کریں، اور Amazon، Shopify، Etsy، یا eBay کے لیے پروڈکٹ کی تصاویر ڈاؤن لوڈ کریں۔",
+        "seoIntro": "MiaoCut کا AI آن لائن فروخت کنندگان کو خام پروڈکٹ شاٹس کو فہرست سازی کے لیے تیار تصاویر میں تبدیل کرنے میں مدد کرتا ہے۔ JPG، PNG، یا WebP تصاویر اپ لوڈ کریں، پس منظر کو ہٹائیں، پھر اپنے اسٹور کے لیے شفاف PNGs، سفید پس منظر کی مصنوعات کی تصاویر، مربع کینوس، یا سایہ دار تصاویر برآمد کریں۔",
+        "howItWorks": "سفید پس منظر کے ساتھ پروڈکٹ کی تصاویر کیسے بنائیں",
+        "howStep1Title": "1. اپنی پروڈکٹ کی تصویر اپ لوڈ کریں۔",
+        "howStep1Desc": "اپنے پروڈکٹ کی JPG، PNG، یا WebP تصویر اپ لوڈ کریں۔ کوئی سائن اپ یا کریڈٹ کارڈ کی ضرورت نہیں ہے۔",
+        "howStep2Title": "2. AI مصنوعات کو کاٹتا ہے۔",
+        "howStep2Desc": "MiaoCut's AI مصنوعات کی خاکہ کا پتہ لگاتا ہے اور پس منظر کو ہٹاتا ہے، بشمول عکاس اور نیم شفاف کناروں کو۔",
+        "howStep3Title": "3. کینوس اور شیڈو کا انتخاب کریں۔",
+        "howStep3Desc": "شفاف، سفید، ہلکے سرمئی، یا حسب ضرورت پس منظر کا انتخاب کریں، پیڈنگ کو ایڈجسٹ کریں، نرم سایہ شامل کریں، اور مربع مصنوعات کی تصاویر برآمد کریں۔",
+        "whyTitle": "بیچنے والے پروڈکٹ کی تصاویر کے لیے MiaoCut کا انتخاب کیوں کرتے ہیں۔",
+        "why1Title": "سفید پس منظر بلٹ ان",
+        "why1Desc": "کٹ آؤٹ کے بعد ایک صاف سفید کینوس کا انتخاب کریں، یا اشتہارات، بینرز اور ڈیزائن کے اثاثوں کے لیے نتیجہ کو شفاف رکھیں۔",
+        "why2Title": "اسکوائر ای کامرس کینوس",
+        "why2Desc": "1080، 2000، یا 2048 پکسل اسکوائر پروڈکٹ کی تصاویر کو ایڈجسٹ سبجیکٹ پیڈنگ کے ساتھ برآمد کریں۔",
+        "why3Title": "نرم پروڈکٹ شیڈو",
+        "why3Desc": "ایک لطیف سایہ شامل کریں تاکہ مصنوعات غیر فطری طور پر تیرنے کے بجائے سفید یا ہلکے سرمئی پس منظر پر گراؤنڈ محسوس کریں۔",
+        "why4Title": "مشکل مواد کو ہینڈل کرتا ہے۔",
+        "why4Desc": "زیورات، شیشے، پلاسٹک اور عکاس اشیاء کو صاف طور پر کاٹنے کے لیے فائن موڈ پر سوئچ کریں جہاں معیاری ٹولز ہالوز چھوڑ دیتے ہیں۔",
+        "tipsTitle": "صاف ستھرے پروڈکٹ کٹ آؤٹ کے لیے تجاویز",
+        "tip1": "یکساں، پھیلی ہوئی روشنی کے ساتھ شوٹ کریں — سخت سائے کنارے پکڑنے والے کو الجھا دیتے ہیں۔",
+        "tip2": "AI کو مسخ ہونے سے بچنے کے لیے کیمرہ کو پروڈکٹ کے لیے تقریباً کھڑا رکھیں۔",
+        "tip3": "2000px یا 2048px مربع کینوس استعمال کریں جب آپ کو مستقل مارجن کے ساتھ صاف ای کامرس پروڈکٹ امیج کی ضرورت ہو۔",
+        "tip4": "زیورات، شیشے، پلاسٹک کی بوتلیں، یا عکاسی کرنے والی کسی بھی چیز کے لیے، فائن (بال / کھال) موڈ استعمال کریں۔ الفا میٹنگ نرم کناروں کو بہت بہتر طریقے سے ہینڈل کرتی ہے۔",
+        "faqTitle": "اکثر پوچھے گئے سوالات",
+        "faq1Q": "کیا میں Amazon کے لیے تیار سفید پس منظر کی مصنوعات کی تصاویر بنا سکتا ہوں؟",
+        "faq1A": "جی ہاں کٹ آؤٹ تیار ہونے کے بعد، سفید پس منظر کا اختیار منتخب کریں اور ایک مربع مصنوعات کی تصویر برآمد کریں۔ شائع کرنے سے پہلے ہمیشہ تازہ ترین مارکیٹ پلیس امیج رولز کو چیک کریں۔",
+        "faq2Q": "کیا میں Shopify اور Etsy کے لیے مربع مصنوعات کی تصاویر برآمد کر سکتا ہوں؟",
+        "faq2A": "جی ہاں پروڈکٹ کے صفحہ میں 1080px، 2000px، اور 2048px مربع پیش سیٹس کے علاوہ مسلسل اسٹور فرنٹ تھمب نیلز کے لیے سبجیکٹ پیڈنگ کنٹرولز شامل ہیں۔",
+        "faq3Q": "کیا میں پروڈکٹ کے نیچے سایہ ڈال سکتا ہوں؟",
+        "faq3A": "جی ہاں شیڈو کنٹرول کا استعمال کریں یا تو ایک صاف سائے بغیر کٹ آؤٹ، نرم گراؤنڈ شیڈو، یا ایک مضبوط تیرتا ہوا پروڈکٹ شیڈو برآمد کریں۔",
+        "faq4Q": "کیا یہ عکاس اشیاء، زیورات، شیشہ، یا پلاسٹک کو سنبھالتا ہے؟",
+        "faq4A": "جی ہاں نرم، عکاس، یا نیم شفاف کناروں والی مصنوعات کے لیے کوالٹی ٹوگل کو \"فائن (بال/فر)\" موڈ میں تبدیل کریں۔ یہ مشکل مواد پر کلینر نتائج کے لیے الفا میٹنگ کا استعمال کرتا ہے۔",
+        "faq5Q": "کیا میں پروڈکٹ کی تصاویر کو بڑی تعداد میں پروسیس کر سکتا ہوں؟",
+        "faq5A": "یہ پہلا ورژن ایک وقت میں ایک تصویر پر کارروائی کرتا ہے۔ یہ عام انفرادی استعمال کے لیے مفت ہے، سروس کو مستحکم رکھنے کے لیے مناسب استعمال کی حدود کے ساتھ۔",
+        "moreTitle": "مزید MiaoCut ٹولز",
+        "moreLinkPortraitTitle": "پورٹریٹ بیک گراؤنڈ ریموور →",
+        "moreLinkPortraitDesc": "ہیڈ شاٹس، پروفائل پکچرز، اور سوشل میڈیا کٹ آؤٹ۔",
+        "moreLinkHomeTitle": "تمام مقصدی پس منظر ہٹانے والا →",
+        "moreLinkHomeDesc": "لوگو، پالتو جانور، پیچیدہ کنارے، کچھ اور۔"
+    }
+};
+    </script>
+    <script src="/app.js"></script>
+
+    <script src="/feedback.js"></script>
+</body>
+
+</html>

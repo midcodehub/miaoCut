@@ -44,123 +44,148 @@
     <meta name="twitter:image:alt" content="AI Old Photo Restoration by MiaoCut">
     <link rel="canonical" href="https://miaocut.app/zh/old-photo-restoration/">
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "MiaoCut AI Old Photo Restoration & Upscaler",
-      "url": "https://miaocut.app/zh/old-photo-restoration/",
-      "applicationCategory": "MultimediaApplication",
-      "operatingSystem": "Web",
-      "description": "Free AI old photo restoration and upscaling tool. Reduce noise, recover faded contrast, sharpen soft details, and upscale vintage family photos.",
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+{
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "MiaoCut AI Old Photo Restoration & Upscaler",
+    "url": "https://miaocut.app/zh/old-photo-restoration/",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Web",
+    "description": "Free AI old photo restoration and upscaling tool. Reduce noise, recover faded contrast, sharpen soft details, and upscale vintage family photos.",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
     }
-    </script>
+}
+</script>
     <!-- BreadcrumbList：让搜索结果出 breadcrumb rich snippet -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "MiaoCut", "item": "https://miaocut.app/zh/" },
-        { "@type": "ListItem", "position": 2, "name": "Old Photo Restoration", "item": "https://miaocut.app/zh/old-photo-restoration/" }
-      ]
-    }
-    </script>
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "MiaoCut",
+            "item": "https://miaocut.app/zh/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "老照片修复",
+            "item": "https://miaocut.app/zh/old-photo-restoration/"
+        }
+    ]
+}
+</script>
     <!-- HowTo schema：对应下方 "How to Restore an Old Photo" 段落 -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "HowTo",
-      "name": "How to Restore an Old Photo with AI",
-      "description": "Restore faded, noisy, or damaged old photos in three steps with MiaoCut's free AI photo restoration tool.",
-      "totalTime": "PT15S",
-      "tool": [{ "@type": "HowToTool", "name": "MiaoCut AI Old Photo Restoration" }],
-      "step": [
+{
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Restore an Old Photo with AI",
+    "description": "Restore faded, noisy, or damaged old photos in three steps with MiaoCut's free AI photo restoration tool.",
+    "totalTime": "PT15S",
+    "tool": [
         {
-          "@type": "HowToStep",
-          "position": 1,
-          "name": "Upload your old photo",
-          "text": "Upload a scanned print or phone capture in JPG, PNG, or WebP. Both work — though scanned originals usually give the best result."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 2,
-          "name": "Choose repair strength and scale",
-          "text": "Pick a repair strength (gentle, balanced, or strong) based on how damaged the photo is, plus an output scale (1x, 2x, or 4x) for prints or screen display."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 3,
-          "name": "Compare before/after and download",
-          "text": "Side-by-side preview shows the original and restored result. If you like it, download the restored image."
+            "@type": "HowToTool",
+            "name": "MiaoCut AI Old Photo Restoration"
         }
-      ]
-    }
-    </script>
+    ],
+    "step": [
+        {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Upload your old photo",
+            "text": "扫描件或手机翻拍照片均可，支持 JPG、PNG、WebP。一般来说扫描原件效果更好。"
+        },
+        {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Choose repair strength and scale",
+            "text": "Pick a repair strength (gentle, balanced, or strong) based on how damaged the photo is, plus an output scale (1x, 2x, or 4x) for prints or screen display."
+        },
+        {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Compare before/after and download",
+            "text": "左右对比预览原图与修复后效果，满意后下载修复版本。"
+        }
+    ]
+}
+</script>
     <!-- FAQPage schema 必须与下方可见 FAQ section（data-i18n=faqTitle 那一段）保持一致。
          Google 政策要求 schema 内的 Q&A 在页面上对用户可见，否则可能被判结构化数据违规。
          改 FAQ 时请同步修改下方 HTML + old-photo.js 里 i18n.en.faqXX / i18n.zh.faqXX。 -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
         {
-          "@type": "Question",
-          "name": "How does AI old photo restoration work?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Upload your old photo, choose a repair strength (gentle, balanced, or strong), and select an output scale. MiaoCut applies AI denoising, contrast recovery, and detail sharpening to bring faded or noisy photos back to a cleaner state."
-          }
+            "@type": "Question",
+            "name": "AI 老照片修复是怎么工作的？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "上传你的老照片，选择修复强度（轻柔 / 均衡 / 强力）和输出倍率，MiaoCut 会用 AI 自动降噪、还原对比度、增强细节，让褪色或噪点严重的老照片更清晰。"
+            }
         },
         {
-          "@type": "Question",
-          "name": "Will it modify or damage my original photo?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No. Your original is never modified. MiaoCut processes a copy on the server, shows you a before/after preview, and you decide whether to download the restored version."
-          }
+            "@type": "Question",
+            "name": "会修改或损坏我的原图吗？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "不会。原图永远不会被修改。MiaoCut 在服务器上处理一份副本，给你看修复前后对比，由你决定是否下载修复版本。"
+            }
         },
         {
-          "@type": "Question",
-          "name": "Is my photo private and safe?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. Photos are processed in-memory on the server and discarded immediately after the restored result is returned. We never store your image, never use it for AI training, and there is no signup required. Your family memories never leave your control."
-          }
+            "@type": "Question",
+            "name": "我的照片安全吗？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "安全。照片纯内存处理，修复结果返回后立即销毁。我们绝不存储你的图片、绝不用于 AI 训练，也无需注册账号。你的家庭回忆始终在你掌控之中。"
+            }
         },
         {
-          "@type": "Question",
-          "name": "Can it restore heavily damaged or torn photos?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "MiaoCut works best on faded, noisy, or low-contrast photos. For very heavy damage (large tears or missing areas), results are limited — for filling small damaged areas you can try the watermark remover (paint-and-fill)."
-          }
+            "@type": "Question",
+            "name": "能修复严重破损或撕裂的老照片吗？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "MiaoCut 最适合处理褪色、噪点、低对比度的老照片。如果损伤特别严重（大面积撕裂或缺失），效果会受限 —— 小范围破损可以试试去水印工具的\"涂抹修复\"。"
+            }
         },
         {
-          "@type": "Question",
-          "name": "Can I print the restored photo?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. The restored output is exported at your chosen scale (1x, 2x, or 4x). Use 2x or 4x if you plan to print at larger sizes or display on high-resolution screens."
-          }
+            "@type": "Question",
+            "name": "修复后的照片可以打印吗？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "可以。修复结果按你选择的倍率（1x / 2x / 4x）导出。打印大尺寸照片或在高分辨率屏幕显示时建议用 2x 或 4x。"
+            }
         },
         {
-          "@type": "Question",
-          "name": "Does it colorize black-and-white photos?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Not yet. The current MiaoCut focus is denoising, sharpening, and contrast recovery. If colorization would be useful for you, let us know via the feedback widget."
-          }
+            "@type": "Question",
+            "name": "可以给黑白老照片上色吗？",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "暂时不支持。当前老照片修复聚焦在降噪、增强、还原对比度。如果需要照片上色，欢迎通过反馈组件告诉我们。"
+            }
         }
-      ]
-    }
-    </script>
+    ]
+}
+</script>
     <link rel="stylesheet" href="/output.css">
     <script defer src="https://cloud.umami.is/script.js"
         data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
     <link rel="alternate" hreflang="en" href="https://miaocut.app/old-photo-restoration/">
     <link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/old-photo-restoration/">
+    <link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/old-photo-restoration/">
+    <link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/old-photo-restoration/">
+    <link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/old-photo-restoration/">
+    <link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/old-photo-restoration/">
+    <link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/old-photo-restoration/">
+    <link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/old-photo-restoration/">
     <link rel="alternate" hreflang="x-default" href="https://miaocut.app/old-photo-restoration/">
 </head>
 
@@ -188,6 +213,12 @@
                     class="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer hover:text-gray-900 transition-colors dark:text-zinc-300 dark:hover:text-zinc-100">
                     <option value="en">English</option>
                     <option value="zh">简体中文</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="pt-br">Português (BR)</option>
+                    <option value="bn">বাংলা</option>
+                    <option value="fil">Filipino</option>
+                    <option value="ur">اردو</option>
                 </select>
             </div>
         </div>

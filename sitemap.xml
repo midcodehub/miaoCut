@@ -4,11 +4,17 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://miaocut.app/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/"/>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/"/>
     <image:image>
       <image:loc>https://miaocut.app/og/home.png</image:loc>
@@ -17,11 +23,131 @@
   </url>
   <url>
     <loc>https://miaocut.app/zh/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/"/>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/home.png</image:loc>
+      <image:title>MiaoCut — Free AI Background Remover Online</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/hi/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/home.png</image:loc>
+      <image:title>MiaoCut — Free AI Background Remover Online</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/id/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/home.png</image:loc>
+      <image:title>MiaoCut — Free AI Background Remover Online</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/pt-br/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/home.png</image:loc>
+      <image:title>MiaoCut — Free AI Background Remover Online</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/bn/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/home.png</image:loc>
+      <image:title>MiaoCut — Free AI Background Remover Online</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/fil/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/home.png</image:loc>
+      <image:title>MiaoCut — Free AI Background Remover Online</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/ur/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/"/>
     <image:image>
       <image:loc>https://miaocut.app/og/home.png</image:loc>
@@ -30,11 +156,17 @@
   </url>
   <url>
     <loc>https://miaocut.app/product-photo-background-remover/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/product-photo-background-remover/"/>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/product-photo-background-remover/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/product-photo-background-remover/"/>
     <image:image>
       <image:loc>https://miaocut.app/og/product.png</image:loc>
@@ -43,11 +175,131 @@
   </url>
   <url>
     <loc>https://miaocut.app/zh/product-photo-background-remover/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/product-photo-background-remover/"/>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/product-photo-background-remover/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/product.png</image:loc>
+      <image:title>Product Photo Background Remover by MiaoCut AI</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/hi/product-photo-background-remover/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/product-photo-background-remover/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/product.png</image:loc>
+      <image:title>Product Photo Background Remover by MiaoCut AI</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/id/product-photo-background-remover/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/product-photo-background-remover/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/product.png</image:loc>
+      <image:title>Product Photo Background Remover by MiaoCut AI</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/pt-br/product-photo-background-remover/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/product-photo-background-remover/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/product.png</image:loc>
+      <image:title>Product Photo Background Remover by MiaoCut AI</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/bn/product-photo-background-remover/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/product-photo-background-remover/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/product.png</image:loc>
+      <image:title>Product Photo Background Remover by MiaoCut AI</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/fil/product-photo-background-remover/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/product-photo-background-remover/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/product.png</image:loc>
+      <image:title>Product Photo Background Remover by MiaoCut AI</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/ur/product-photo-background-remover/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/product-photo-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/product-photo-background-remover/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/product-photo-background-remover/"/>
     <image:image>
       <image:loc>https://miaocut.app/og/product.png</image:loc>
@@ -56,11 +308,17 @@
   </url>
   <url>
     <loc>https://miaocut.app/portrait-background-remover/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/portrait-background-remover/"/>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/portrait-background-remover/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/portrait-background-remover/"/>
     <image:image>
       <image:loc>https://miaocut.app/og/portrait.png</image:loc>
@@ -69,11 +327,131 @@
   </url>
   <url>
     <loc>https://miaocut.app/zh/portrait-background-remover/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/portrait-background-remover/"/>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/portrait-background-remover/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/portrait.png</image:loc>
+      <image:title>Portrait Background Remover by MiaoCut AI</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/hi/portrait-background-remover/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/portrait-background-remover/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/portrait.png</image:loc>
+      <image:title>Portrait Background Remover by MiaoCut AI</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/id/portrait-background-remover/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/portrait-background-remover/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/portrait.png</image:loc>
+      <image:title>Portrait Background Remover by MiaoCut AI</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/pt-br/portrait-background-remover/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/portrait-background-remover/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/portrait.png</image:loc>
+      <image:title>Portrait Background Remover by MiaoCut AI</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/bn/portrait-background-remover/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/portrait-background-remover/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/portrait.png</image:loc>
+      <image:title>Portrait Background Remover by MiaoCut AI</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/fil/portrait-background-remover/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/portrait-background-remover/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/portrait.png</image:loc>
+      <image:title>Portrait Background Remover by MiaoCut AI</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/ur/portrait-background-remover/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/portrait-background-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/portrait-background-remover/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/portrait-background-remover/"/>
     <image:image>
       <image:loc>https://miaocut.app/og/portrait.png</image:loc>
@@ -82,11 +460,17 @@
   </url>
   <url>
     <loc>https://miaocut.app/jpg-to-transparent-png/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/jpg-to-transparent-png/"/>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/jpg-to-transparent-png/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/jpg-to-transparent-png/"/>
     <image:image>
       <image:loc>https://miaocut.app/og/home.png</image:loc>
@@ -95,11 +479,131 @@
   </url>
   <url>
     <loc>https://miaocut.app/zh/jpg-to-transparent-png/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/jpg-to-transparent-png/"/>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/jpg-to-transparent-png/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/home.png</image:loc>
+      <image:title>JPG to Transparent PNG Converter by MiaoCut AI</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/hi/jpg-to-transparent-png/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/jpg-to-transparent-png/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/home.png</image:loc>
+      <image:title>JPG to Transparent PNG Converter by MiaoCut AI</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/id/jpg-to-transparent-png/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/jpg-to-transparent-png/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/home.png</image:loc>
+      <image:title>JPG to Transparent PNG Converter by MiaoCut AI</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/pt-br/jpg-to-transparent-png/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/jpg-to-transparent-png/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/home.png</image:loc>
+      <image:title>JPG to Transparent PNG Converter by MiaoCut AI</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/bn/jpg-to-transparent-png/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/jpg-to-transparent-png/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/home.png</image:loc>
+      <image:title>JPG to Transparent PNG Converter by MiaoCut AI</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/fil/jpg-to-transparent-png/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/jpg-to-transparent-png/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/home.png</image:loc>
+      <image:title>JPG to Transparent PNG Converter by MiaoCut AI</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/ur/jpg-to-transparent-png/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/jpg-to-transparent-png/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/jpg-to-transparent-png/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/jpg-to-transparent-png/"/>
     <image:image>
       <image:loc>https://miaocut.app/og/home.png</image:loc>
@@ -108,11 +612,17 @@
   </url>
   <url>
     <loc>https://miaocut.app/watermark-remover/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/watermark-remover/"/>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/watermark-remover/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/watermark-remover/"/>
     <image:image>
       <image:loc>https://miaocut.app/og/watermark.png</image:loc>
@@ -121,11 +631,131 @@
   </url>
   <url>
     <loc>https://miaocut.app/zh/watermark-remover/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/watermark-remover/"/>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/watermark-remover/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/watermark.png</image:loc>
+      <image:title>AI Object Eraser and Watermark Remover by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/hi/watermark-remover/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/watermark-remover/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/watermark.png</image:loc>
+      <image:title>AI Object Eraser and Watermark Remover by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/id/watermark-remover/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/watermark-remover/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/watermark.png</image:loc>
+      <image:title>AI Object Eraser and Watermark Remover by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/pt-br/watermark-remover/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/watermark-remover/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/watermark.png</image:loc>
+      <image:title>AI Object Eraser and Watermark Remover by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/bn/watermark-remover/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/watermark-remover/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/watermark.png</image:loc>
+      <image:title>AI Object Eraser and Watermark Remover by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/fil/watermark-remover/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/watermark-remover/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/watermark.png</image:loc>
+      <image:title>AI Object Eraser and Watermark Remover by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/ur/watermark-remover/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/watermark-remover/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/watermark-remover/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/watermark-remover/"/>
     <image:image>
       <image:loc>https://miaocut.app/og/watermark.png</image:loc>
@@ -134,11 +764,17 @@
   </url>
   <url>
     <loc>https://miaocut.app/old-photo-restoration/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/old-photo-restoration/"/>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/old-photo-restoration/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/old-photo-restoration/"/>
     <image:image>
       <image:loc>https://miaocut.app/og/old-photo.png</image:loc>
@@ -147,11 +783,131 @@
   </url>
   <url>
     <loc>https://miaocut.app/zh/old-photo-restoration/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/old-photo-restoration/"/>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/old-photo-restoration/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/old-photo.png</image:loc>
+      <image:title>AI Old Photo Restoration by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/hi/old-photo-restoration/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/old-photo-restoration/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/old-photo.png</image:loc>
+      <image:title>AI Old Photo Restoration by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/id/old-photo-restoration/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/old-photo-restoration/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/old-photo.png</image:loc>
+      <image:title>AI Old Photo Restoration by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/pt-br/old-photo-restoration/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/old-photo-restoration/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/old-photo.png</image:loc>
+      <image:title>AI Old Photo Restoration by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/bn/old-photo-restoration/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/old-photo-restoration/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/old-photo.png</image:loc>
+      <image:title>AI Old Photo Restoration by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/fil/old-photo-restoration/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/old-photo-restoration/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/old-photo.png</image:loc>
+      <image:title>AI Old Photo Restoration by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/ur/old-photo-restoration/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/old-photo-restoration/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/old-photo-restoration/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/old-photo-restoration/"/>
     <image:image>
       <image:loc>https://miaocut.app/og/old-photo.png</image:loc>
@@ -160,11 +916,17 @@
   </url>
   <url>
     <loc>https://miaocut.app/id-photo-maker/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/id-photo-maker/"/>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/id-photo-maker/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/id-photo-maker/"/>
     <image:image>
       <image:loc>https://miaocut.app/og/id-photo.png</image:loc>
@@ -173,11 +935,131 @@
   </url>
   <url>
     <loc>https://miaocut.app/zh/id-photo-maker/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/id-photo-maker/"/>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/id-photo-maker/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/id-photo.png</image:loc>
+      <image:title>AI Passport &amp; ID Photo Maker by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/hi/id-photo-maker/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/id-photo-maker/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/id-photo.png</image:loc>
+      <image:title>AI Passport &amp; ID Photo Maker by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/id/id-photo-maker/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/id-photo-maker/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/id-photo.png</image:loc>
+      <image:title>AI Passport &amp; ID Photo Maker by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/pt-br/id-photo-maker/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/id-photo-maker/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/id-photo.png</image:loc>
+      <image:title>AI Passport &amp; ID Photo Maker by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/bn/id-photo-maker/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/id-photo-maker/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/id-photo.png</image:loc>
+      <image:title>AI Passport &amp; ID Photo Maker by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/fil/id-photo-maker/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/id-photo-maker/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/id-photo.png</image:loc>
+      <image:title>AI Passport &amp; ID Photo Maker by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/ur/id-photo-maker/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/id-photo-maker/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/id-photo-maker/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/id-photo-maker/"/>
     <image:image>
       <image:loc>https://miaocut.app/og/id-photo.png</image:loc>
@@ -186,11 +1068,17 @@
   </url>
   <url>
     <loc>https://miaocut.app/png-to-jpg-white-background/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/png-to-jpg-white-background/"/>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/png-to-jpg-white-background/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/png-to-jpg-white-background/"/>
     <image:image>
       <image:loc>https://miaocut.app/og/home.png</image:loc>
@@ -199,11 +1087,131 @@
   </url>
   <url>
     <loc>https://miaocut.app/zh/png-to-jpg-white-background/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/png-to-jpg-white-background/"/>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/png-to-jpg-white-background/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/home.png</image:loc>
+      <image:title>PNG to JPG Converter with Smart White Background by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/hi/png-to-jpg-white-background/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/png-to-jpg-white-background/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/home.png</image:loc>
+      <image:title>PNG to JPG Converter with Smart White Background by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/id/png-to-jpg-white-background/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/png-to-jpg-white-background/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/home.png</image:loc>
+      <image:title>PNG to JPG Converter with Smart White Background by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/pt-br/png-to-jpg-white-background/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/png-to-jpg-white-background/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/home.png</image:loc>
+      <image:title>PNG to JPG Converter with Smart White Background by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/bn/png-to-jpg-white-background/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/png-to-jpg-white-background/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/home.png</image:loc>
+      <image:title>PNG to JPG Converter with Smart White Background by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/fil/png-to-jpg-white-background/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/png-to-jpg-white-background/"/>
+    <image:image>
+      <image:loc>https://miaocut.app/og/home.png</image:loc>
+      <image:title>PNG to JPG Converter with Smart White Background by MiaoCut</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://miaocut.app/ur/png-to-jpg-white-background/</loc>
+    <lastmod>2026-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://miaocut.app/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://miaocut.app/zh/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="hi-IN" href="https://miaocut.app/hi/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="id-ID" href="https://miaocut.app/id/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://miaocut.app/pt-br/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://miaocut.app/bn/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="fil-PH" href="https://miaocut.app/fil/png-to-jpg-white-background/"/>
+    <xhtml:link rel="alternate" hreflang="ur-PK" href="https://miaocut.app/ur/png-to-jpg-white-background/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://miaocut.app/png-to-jpg-white-background/"/>
     <image:image>
       <image:loc>https://miaocut.app/og/home.png</image:loc>
@@ -212,37 +1220,37 @@
   </url>
   <url>
     <loc>https://miaocut.app/how-to-remove-background/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://miaocut.app/how-to-remove-background/powerpoint/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://miaocut.app/how-to-remove-background/gimp/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://miaocut.app/alternatives/remove-bg/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://miaocut.app/privacy/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://miaocut.app/terms/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-06-17</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
