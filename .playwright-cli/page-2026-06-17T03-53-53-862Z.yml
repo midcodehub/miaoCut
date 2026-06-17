@@ -1,0 +1,286 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "MiaoCut" [ref=e4] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e5]:
+        - navigation [ref=e6]:
+          - link "Background Remover" [ref=e7] [cursor=pointer]:
+            - /url: /
+          - link "Product" [ref=e8] [cursor=pointer]:
+            - /url: /product-photo-background-remover/
+          - link "Portrait" [ref=e9] [cursor=pointer]:
+            - /url: /portrait-background-remover/
+          - link "Watermark" [ref=e10] [cursor=pointer]:
+            - /url: /watermark-remover/
+          - link "ID Photo" [ref=e11] [cursor=pointer]:
+            - /url: /id-photo-maker/
+          - link "Old Photo" [ref=e12] [cursor=pointer]:
+            - /url: /old-photo-restoration/
+        - link "MiaoCut on GitHub (open source)" [ref=e13] [cursor=pointer]:
+          - /url: https://github.com/midcodehub/miaoCut
+          - img [ref=e14]
+        - button "Toggle dark mode" [ref=e16] [cursor=pointer]:
+          - img [ref=e17]
+        - generic [ref=e19]:
+          - button "Language" [expanded] [ref=e20] [cursor=pointer]:
+            - img
+            - generic [ref=e21]: English
+            - img
+          - listbox "Language options" [ref=e230]:
+            - option "✓ English" [active] [selected] [ref=e231] [cursor=pointer]
+            - option "简体中文" [ref=e232] [cursor=pointer]
+            - option "हिन्दी" [ref=e233] [cursor=pointer]
+            - option "Bahasa Indonesia" [ref=e234] [cursor=pointer]
+            - option "Português (BR)" [ref=e235] [cursor=pointer]
+            - option "বাংলা" [ref=e236] [cursor=pointer]
+            - option "Filipino" [ref=e237] [cursor=pointer]
+            - option "اردو" [ref=e238] [cursor=pointer]
+  - main [ref=e22]:
+    - generic [ref=e23]:
+      - heading "Free AI Background Remover" [level=1] [ref=e24]
+      - paragraph [ref=e25]: Remove background from images online in 1 second. Get HD transparent PNG cutouts with no watermark, no signup, and privacy-first processing.
+    - generic [ref=e26]:
+      - generic [ref=e27]:
+        - generic [ref=e28]: "Quality:"
+        - button "Fast" [ref=e29] [cursor=pointer]
+        - button "Fine (hair / fur)" [ref=e30] [cursor=pointer]
+        - generic [ref=e31]: ~1s · everyday photos
+      - generic [ref=e32] [cursor=pointer]:
+        - generic:
+          - img
+          - paragraph: Drag & drop image here, or click to upload
+          - paragraph: (Supports JPG / PNG / WebP)
+      - generic [ref=e33]:
+        - generic [ref=e34]:
+          - img [ref=e35]
+          - generic [ref=e36]: Your images are 100% safe.
+        - paragraph [ref=e37]: Processed in-memory, destroyed automatically. Never used for AI training.
+      - region "MiaoCut tools" [ref=e38]:
+        - link "Remove Background HD transparent PNG in seconds." [ref=e39] [cursor=pointer]:
+          - /url: /
+          - paragraph [ref=e40]: Remove Background
+          - paragraph [ref=e41]: HD transparent PNG in seconds.
+        - link "Product White backgrounds, square crops, and shadows." [ref=e42] [cursor=pointer]:
+          - /url: /product-photo-background-remover/
+          - paragraph [ref=e43]: Product
+          - paragraph [ref=e44]: White backgrounds, square crops, and shadows.
+        - link "Portrait Profile photos, resumes, and social cutouts." [ref=e45] [cursor=pointer]:
+          - /url: /portrait-background-remover/
+          - paragraph [ref=e46]: Portrait
+          - paragraph [ref=e47]: Profile photos, resumes, and social cutouts.
+        - link "Watermark Paint the mark and repair it." [ref=e48] [cursor=pointer]:
+          - /url: /watermark-remover/
+          - paragraph [ref=e49]: Watermark
+          - paragraph [ref=e50]: Paint the mark and repair it.
+        - link "ID Photo Passport, resume, and exam ID photos." [ref=e51] [cursor=pointer]:
+          - /url: /id-photo-maker/
+          - paragraph [ref=e52]: ID Photo
+          - paragraph [ref=e53]: Passport, resume, and exam ID photos.
+        - link "Old Photo Restore faded, noisy, or blurry photos." [ref=e54] [cursor=pointer]:
+          - /url: /old-photo-restoration/
+          - paragraph [ref=e55]: Old Photo
+          - paragraph [ref=e56]: Restore faded, noisy, or blurry photos.
+        - link "JPG → Transparent PNG AI-cut JPG into a transparent PNG." [ref=e57] [cursor=pointer]:
+          - /url: /jpg-to-transparent-png/
+          - paragraph [ref=e58]: JPG → Transparent PNG
+          - paragraph [ref=e59]: AI-cut JPG into a transparent PNG.
+        - link "PNG → JPG Flatten transparent PNG onto white." [ref=e60] [cursor=pointer]:
+          - /url: /png-to-jpg-white-background/
+          - paragraph [ref=e61]: PNG → JPG
+          - paragraph [ref=e62]: Flatten transparent PNG onto white.
+      - paragraph [ref=e64]: MiaoCut is a free AI background remover that helps you remove background from images automatically. Upload JPG, PNG, or WebP photos and download clean transparent PNG cutouts instantly.
+  - generic [ref=e66]:
+    - generic [ref=e67]:
+      - heading "How to Remove Background from an Image" [level=2] [ref=e68]
+      - generic [ref=e69]:
+        - generic [ref=e70]:
+          - img [ref=e72]
+          - heading "1. Upload Your Image" [level=3] [ref=e74]
+          - paragraph [ref=e75]: Upload a JPG, PNG, or WebP image. No signup or credit card required.
+        - generic [ref=e76]:
+          - img [ref=e78]
+          - heading "2. AI Removes the Background" [level=3] [ref=e80]
+          - paragraph [ref=e81]: MiaoCut's AI background remover detects the subject and removes the background automatically, including hair, fur, and complex edges.
+        - generic [ref=e82]:
+          - img [ref=e84]
+          - heading "3. Download Transparent PNG" [level=3] [ref=e86]
+          - paragraph [ref=e87]: Download your HD cutout as a transparent PNG with no watermark.
+    - generic [ref=e88]:
+      - heading "See MiaoCut in Action" [level=2] [ref=e89]
+      - generic [ref=e90]:
+        - figure "Product photo" [ref=e91]:
+          - img "Sneaker product photo with transparent background after AI cutout" [ref=e92]
+          - generic [ref=e93]: Product photo
+        - figure "Portrait" [ref=e94]:
+          - img "Portrait of curly-haired woman with background removed and hair edges preserved" [ref=e95]
+          - generic [ref=e96]: Portrait
+        - figure "Logo" [ref=e97]:
+          - img "MiaoCut brand logo extracted to transparent PNG with clean edges" [ref=e98]
+          - generic [ref=e99]: Logo
+        - figure "Pet" [ref=e100]:
+          - img "White Persian cat with fluffy fur edges cleanly cut out by AI" [ref=e101]
+          - generic [ref=e102]: Pet
+    - generic [ref=e103]:
+      - heading "Why Choose MiaoCut AI Background Remover?" [level=2] [ref=e104]
+      - generic [ref=e105]:
+        - generic [ref=e106]:
+          - img [ref=e107]
+          - generic [ref=e108]:
+            - strong [ref=e109]: Free Background Remover
+            - text: 100% free with no hidden costs, no subscription traps, and unlimited image processing.
+        - generic [ref=e110]:
+          - img [ref=e111]
+          - generic [ref=e112]:
+            - strong [ref=e113]: HD Transparent PNG
+            - text: Download high-definition transparent PNG cutouts at original resolution — never compressed.
+        - generic [ref=e114]:
+          - img [ref=e115]
+          - generic [ref=e116]:
+            - strong [ref=e117]: No Watermark
+            - text: Get clean background-removed images with no watermark, ready for e-commerce, design, or personal use.
+        - generic [ref=e118]:
+          - img [ref=e119]
+          - generic [ref=e120]:
+            - strong [ref=e121]: No Signup Required
+            - text: Remove backgrounds online instantly — no account, no login, no email needed.
+        - generic [ref=e122]:
+          - img [ref=e123]
+          - generic [ref=e124]:
+            - strong [ref=e125]: Privacy-First Image Processing
+            - text: Images are processed in-memory and destroyed automatically. We never use your data for AI training.
+        - generic [ref=e126]:
+          - img [ref=e127]
+          - generic [ref=e128]:
+            - strong [ref=e129]: Powered by BiRefNet
+            - text: SOTA AI model handles JPG, PNG, and WebP with precise edges on hair, fur, and semi-transparent objects.
+    - generic [ref=e130]:
+      - heading "Popular Use Cases" [level=2] [ref=e131]
+      - generic [ref=e132]:
+        - link "Product Photos Remove backgrounds from product images for e-commerce, Amazon, Shopify, Etsy, and online stores." [ref=e133] [cursor=pointer]:
+          - /url: /product-photo-background-remover/
+          - heading "Product Photos" [level=3] [ref=e134]
+          - paragraph [ref=e135]: Remove backgrounds from product images for e-commerce, Amazon, Shopify, Etsy, and online stores.
+        - link "Portraits & Profile Pictures Create clean transparent cutouts for avatars, social media, resumes, and profile photos." [ref=e136] [cursor=pointer]:
+          - /url: /portrait-background-remover/
+          - heading "Portraits & Profile Pictures" [level=3] [ref=e137]
+          - paragraph [ref=e138]: Create clean transparent cutouts for avatars, social media, resumes, and profile photos.
+        - link "Logos & Design Assets Remove white or messy backgrounds from logos, icons, and graphics." [ref=e139] [cursor=pointer]:
+          - /url: /jpg-to-transparent-png/
+          - heading "Logos & Design Assets" [level=3] [ref=e140]
+          - paragraph [ref=e141]: Remove white or messy backgrounds from logos, icons, and graphics.
+        - generic [ref=e142]:
+          - heading "Pets, Hair & Fur" [level=3] [ref=e143]
+          - paragraph [ref=e144]: Use AI to handle complex edges like hair, fur, and semi-transparent objects.
+        - link "Old Photo Restoration Restore faded family photos, reduce noise, sharpen details, and export a cleaner high-resolution image." [ref=e145] [cursor=pointer]:
+          - /url: /old-photo-restoration/
+          - heading "Old Photo Restoration" [level=3] [ref=e146]
+          - paragraph [ref=e147]: Restore faded family photos, reduce noise, sharpen details, and export a cleaner high-resolution image.
+    - generic [ref=e148]:
+      - heading "Frequently Asked Questions" [level=2] [ref=e149]
+      - generic [ref=e150]:
+        - generic [ref=e151]:
+          - heading "Is this AI background remover really free?" [level=3] [ref=e152]
+          - paragraph [ref=e153]: Yes! MiaoCut is built by an independent developer to provide a genuinely free alternative to expensive subscription tools like remove.bg. There are no watermarks and no strict resolution limits.
+        - generic [ref=e154]:
+          - heading "What image formats are supported?" [level=3] [ref=e155]
+          - paragraph [ref=e156]: You can upload JPG, PNG, and WebP images. The output will be a high-quality PNG image with a transparent background, ready for your designs.
+        - generic [ref=e157]:
+          - heading "How good is the edge detection for hair or fur?" [level=3] [ref=e158]
+          - paragraph [ref=e159]: MiaoCut utilizes the latest SOTA AI models (BiRefNet) which excel at complex edges. It perfectly handles human hair, animal fur, and even semi-transparent objects like glass or wedding dresses.
+        - generic [ref=e160]:
+          - heading "Can I remove background from an image for free?" [level=3] [ref=e161]
+          - paragraph [ref=e162]: Yes. MiaoCut is a free AI background remover. You can upload images and download transparent PNG results without watermark.
+        - generic [ref=e163]:
+          - heading "Does MiaoCut add a watermark?" [level=3] [ref=e164]
+          - paragraph [ref=e165]: No. MiaoCut provides clean background-removed images without watermark.
+        - generic [ref=e166]:
+          - heading "Do I need to sign up?" [level=3] [ref=e167]
+          - paragraph [ref=e168]: No. You can remove image backgrounds online without creating an account.
+        - generic [ref=e169]:
+          - heading "Can I use it for product photos?" [level=3] [ref=e170]
+          - paragraph [ref=e171]: Yes. MiaoCut works well for product images, e-commerce photos, portraits, logos, pets, and more.
+        - generic [ref=e172]:
+          - heading "What is the output format?" [level=3] [ref=e173]
+          - paragraph [ref=e174]: The output is a high-quality PNG image with a transparent background.
+      - paragraph [ref=e175]:
+        - text: Using another app? See our step-by-step guides for
+        - link "removing backgrounds in PowerPoint, GIMP, and more" [ref=e176] [cursor=pointer]:
+          - /url: /how-to-remove-background/
+        - text: .
+  - contentinfo [ref=e177]:
+    - generic [ref=e178]:
+      - heading "All MiaoCut Tools" [level=2] [ref=e179]
+      - generic [ref=e180]:
+        - generic [ref=e181]:
+          - heading "AI Background Removal" [level=3] [ref=e182]
+          - list [ref=e183]:
+            - listitem [ref=e184]:
+              - link "Remove Background" [ref=e185] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=e186]:
+              - link "Product" [ref=e187] [cursor=pointer]:
+                - /url: /product-photo-background-remover/
+            - listitem [ref=e188]:
+              - link "Portrait" [ref=e189] [cursor=pointer]:
+                - /url: /portrait-background-remover/
+            - listitem [ref=e190]:
+              - link "ID Photo" [ref=e191] [cursor=pointer]:
+                - /url: /id-photo-maker/
+        - generic [ref=e192]:
+          - heading "Format Conversion" [level=3] [ref=e193]
+          - list [ref=e194]:
+            - listitem [ref=e195]:
+              - link "JPG → Transparent PNG" [ref=e196] [cursor=pointer]:
+                - /url: /jpg-to-transparent-png/
+            - listitem [ref=e197]:
+              - link "PNG → JPG" [ref=e198] [cursor=pointer]:
+                - /url: /png-to-jpg-white-background/
+        - generic [ref=e199]:
+          - heading "Photo Repair & Enhancement" [level=3] [ref=e200]
+          - list [ref=e201]:
+            - listitem [ref=e202]:
+              - link "Watermark" [ref=e203] [cursor=pointer]:
+                - /url: /watermark-remover/
+            - listitem [ref=e204]:
+              - link "Old Photo" [ref=e205] [cursor=pointer]:
+                - /url: /old-photo-restoration/
+        - generic [ref=e206]:
+          - heading "Guides" [level=3] [ref=e207]
+          - list [ref=e208]:
+            - listitem [ref=e209]:
+              - link "How to Remove a Background" [ref=e210] [cursor=pointer]:
+                - /url: /how-to-remove-background/
+            - listitem [ref=e211]:
+              - link "In PowerPoint" [ref=e212] [cursor=pointer]:
+                - /url: /how-to-remove-background/powerpoint/
+            - listitem [ref=e213]:
+              - link "In GIMP" [ref=e214] [cursor=pointer]:
+                - /url: /how-to-remove-background/gimp/
+      - generic [ref=e215]:
+        - paragraph [ref=e216]: MiaoCut · Free AI image tools that respect your privacy.
+        - paragraph [ref=e217]:
+          - link "Privacy" [ref=e218] [cursor=pointer]:
+            - /url: /privacy/
+          - text: ·
+          - link "Terms" [ref=e219] [cursor=pointer]:
+            - /url: /terms/
+          - text: ·
+          - link "GitHub" [ref=e220] [cursor=pointer]:
+            - /url: https://github.com/midcodehub/miaoCut
+  - generic [ref=e222]:
+    - generic [ref=e223]:
+      - generic [ref=e224]: ⭐
+      - paragraph [ref=e225]: Like MiaoCut? Press Ctrl + D to bookmark, next cutout is just 1 sec away!
+    - button "close" [ref=e226] [cursor=pointer]:
+      - img [ref=e227]
+  - generic [ref=e228]:
+    - generic:
+      - heading "☕ Feedback" [level=3]
+      - generic:
+        - textbox "Feedback message":
+          - /placeholder: What's on your mind?
+        - textbox "Email (optional)":
+          - /placeholder: Email (Optional)
+        - button "Send"
+    - button "☕" [ref=e229] [cursor=pointer]

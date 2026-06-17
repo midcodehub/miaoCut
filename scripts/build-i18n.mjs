@@ -103,6 +103,7 @@ const EN_ONLY_PAGES = [
 const ASSET_PATH_PREFIXES = [
   '/output.css',
   '/app.js',
+  '/language-menu.js',
   '/feedback.js',
   '/examples/',
   '/og/',
