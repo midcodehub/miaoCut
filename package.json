@@ -7,7 +7,8 @@
     "build:css": "tailwindcss -i ./src/input.css -o ./output.css --minify",
     "watch:css": "tailwindcss -i ./src/input.css -o ./output.css --watch",
     "build:i18n": "node scripts/build-i18n.mjs",
-    "build": "npm run build:css && npm run build:i18n",
+    "build:assets": "node scripts/stamp-assets.mjs",
+    "build": "npm run build:css && npm run build:i18n && npm run build:assets",
     "og": "node scripts/og/generate.mjs"
   },
   "devDependencies": {

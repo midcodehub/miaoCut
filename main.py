@@ -1551,6 +1551,13 @@ if SERVE_STATIC:
         return FileResponse("feedback.js", media_type="application/javascript")
 
 
+    @app.get("/language-menu.js")
+    async def language_menu_js():
+        # 所有页面右上角的语言切换菜单逻辑都在 /language-menu.js。
+        # 同 app.js / feedback.js：生产走 Cloudflare Pages，本地 dev 后端兜底，否则下拉菜单失效。
+        return FileResponse("language-menu.js", media_type="application/javascript")
+
+
     @app.get("/product-photo-background-remover/")
     async def product_photo_background_remover():
         return FileResponse("product-photo-background-remover/index.html")

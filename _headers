@@ -1,14 +1,15 @@
 # Cloudflare Pages 自定义响应头
 # 文档：https://developers.cloudflare.com/pages/configuration/headers/
 
-# 静态资源：长缓存
-# output.css 和 app.js 没带 hash，所以不能用 immutable + 1 年缓存（更新后用户拿不到新版）。
-# 折中：1 天 + must-revalidate，PSI "Use efficient cache lifetimes" 不再报错。
-# 如果将来给文件名加上 hash（比如 output.<hash>.css），再换成 max-age=31536000, immutable。
+# 静态资源：长缓存 + immutable
+# output.css / app.js 的引用现在由 scripts/stamp-assets.mjs 加了内容 hash 查询串
+# （href="/output.css?v=<hash>"），改了内容 → hash 变 → URL 变 → 浏览器/CDN 自动拉新版。
+# URL 既然带版本号，就能放心用 1 年 immutable：同一版本永远命中缓存，更新走新 URL。
+# ⚠️ 不要手动改 HTML 里的 ?v=，它是 npm run build:assets 的产物；详见该脚本顶部注释。
 /output.css
-  Cache-Control: public, max-age=86400, must-revalidate
+  Cache-Control: public, max-age=31536000, immutable
 /app.js
-  Cache-Control: public, max-age=86400, must-revalidate
+  Cache-Control: public, max-age=31536000, immutable
 
 # 字体：文件名稳定（内容不变），可长缓存 + immutable
 /fonts/*
