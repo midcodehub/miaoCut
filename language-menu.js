@@ -152,6 +152,12 @@
             if (!panel.hidden && !root.contains(event.target)) setOpen(false);
         });
 
+        document.addEventListener('keydown', (event) => {
+            if (event.key !== 'Escape' || panel.hidden) return;
+            setOpen(false);
+            trigger.focus({ preventScroll: true });
+        });
+
         window.addEventListener('resize', () => {
             if (!panel.hidden) setOpen(false);
         });

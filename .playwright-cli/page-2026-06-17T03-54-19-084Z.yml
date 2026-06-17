@@ -1,0 +1,280 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "MiaoCut" [ref=e4] [cursor=pointer]:
+        - /url: /id/
+      - generic [ref=e5]:
+        - navigation [ref=e6]:
+          - link "Penghapus Latar Belakang" [ref=e7] [cursor=pointer]:
+            - /url: /id/
+          - link "Produk" [ref=e8] [cursor=pointer]:
+            - /url: /id/product-photo-background-remover/
+          - link "Potret" [ref=e9] [cursor=pointer]:
+            - /url: /id/portrait-background-remover/
+          - link "Tanda air" [ref=e10] [cursor=pointer]:
+            - /url: /id/watermark-remover/
+          - link "Foto ID" [ref=e11] [cursor=pointer]:
+            - /url: /id/id-photo-maker/
+          - link "Foto lama" [ref=e12] [cursor=pointer]:
+            - /url: /id/old-photo-restoration/
+        - link "MiaoCut on GitHub (open source)" [ref=e13] [cursor=pointer]:
+          - /url: https://github.com/midcodehub/miaoCut
+          - img [ref=e14]
+        - button "Toggle dark mode" [ref=e16] [cursor=pointer]:
+          - img [ref=e17]
+        - generic [ref=e19]:
+          - button "Language" [expanded] [ref=e20] [cursor=pointer]:
+            - img
+            - generic [ref=e21]: Bahasa Indonesia
+            - img
+          - listbox "Language options" [ref=e227]:
+            - option "English" [ref=e228] [cursor=pointer]
+            - option "简体中文" [ref=e229] [cursor=pointer]
+            - option "हिन्दी" [ref=e230] [cursor=pointer]
+            - option "✓ Bahasa Indonesia" [active] [selected] [ref=e231] [cursor=pointer]
+            - option "Português (BR)" [ref=e232] [cursor=pointer]
+            - option "বাংলা" [ref=e233] [cursor=pointer]
+            - option "Filipino" [ref=e234] [cursor=pointer]
+            - option "اردو" [ref=e235] [cursor=pointer]
+  - main [ref=e22]:
+    - navigation "Breadcrumb" [ref=e23]:
+      - list [ref=e24]:
+        - listitem [ref=e25]:
+          - link "MiaoCut" [ref=e26] [cursor=pointer]:
+            - /url: /id/
+        - listitem [ref=e27]: /
+        - listitem [ref=e28]: Pembuat Foto ID
+    - generic [ref=e29]:
+      - paragraph [ref=e30]: Foto paspor · Foto visa · Satu inci · Dua inci · Tata letak cetak
+      - heading "Paspor AI & Pembuat Foto ID" [level=1] [ref=e31]
+      - paragraph [ref=e32]: Unggah potret, pilih prasetel ukuran spesifik negara, atur warna latar belakang dan target KB, lalu unduh foto standar, HD, atau foto tata letak yang dapat dicetak.
+    - generic [ref=e33]:
+      - generic [ref=e35]:
+        - generic [ref=e36]:
+          - generic [ref=e37]: Potret
+          - generic [ref=e38] [cursor=pointer]:
+            - img [ref=e39]
+            - generic [ref=e41]: Klik untuk mengunggah JPG, PNG, atau WebP
+            - generic [ref=e42]: Potret menghadap ke depan berfungsi paling baik
+        - generic [ref=e43]:
+          - generic [ref=e44]: Ukuran foto
+          - combobox "Ukuran foto" [ref=e45]:
+            - option "1 inci - 295 x 413 px" [selected]
+            - option "Kecil 1 inci - 260 x 378 px"
+            - option "Besar 1 inci - 390 x 567 px"
+            - option "2 inci - 413 x 579 px"
+            - option "Kecil 2 inci - 413 x 531 px"
+            - option "Paspor Tiongkok - 390 x 567 px"
+            - option "Paspor AS - 600 x 600 px"
+            - option "Visa persegi - 600 x 600 px"
+            - option "Foto resume - 480 x 640 px"
+            - option "Profil persegi - 512 x 512 px"
+            - option "Ukuran khusus"
+        - generic [ref=e46]:
+          - generic [ref=e47]:
+            - generic [ref=e48]: Latar belakang
+            - textbox [ref=e49]: 438edb
+          - generic [ref=e50]:
+            - button "Putih" [ref=e51] [cursor=pointer]
+            - button "Biru" [ref=e52] [cursor=pointer]
+            - button "Merah" [ref=e53] [cursor=pointer]
+            - button "Abu-abu" [ref=e54] [cursor=pointer]
+            - button "Biru muda" [ref=e55] [cursor=pointer]
+            - button "Biru tua" [ref=e56] [cursor=pointer]
+            - button "Merah muda" [ref=e57] [cursor=pointer]
+            - button "Hitam" [ref=e58] [cursor=pointer]
+        - generic [ref=e59]:
+          - generic [ref=e60]:
+            - generic [ref=e61]: Subjek
+            - slider "Subjek" [ref=e62]: "72"
+          - generic [ref=e63]:
+            - generic [ref=e64]: Margin atas
+            - slider "Margin atas" [ref=e65]: "8"
+        - generic [ref=e66]:
+          - generic [ref=e67]:
+            - generic [ref=e68]: Targetkan KB
+            - spinbutton "Targetkan KB" [ref=e69]
+          - generic [ref=e70]:
+            - generic [ref=e71]: Kualitas
+            - combobox "Kualitas" [ref=e72]:
+              - option "Cepat" [selected]
+              - option "Tepi halus"
+        - generic [ref=e73]:
+          - generic [ref=e74]: Penjajaran wajah
+          - checkbox "Penjajaran wajah" [checked] [ref=e75]
+        - generic [ref=e76]:
+          - generic [ref=e77]: Kertas cetak
+          - combobox "Kertas cetak" [ref=e78]:
+            - option "6 inci - 1800 x 1200 px" [selected]
+            - option "5 inci - 1500 x 1050 px"
+            - option "7 inci - 2100 x 1500 px"
+            - option "A4 - 2480 x 3508 px"
+        - button "Hasilkan Foto ID" [ref=e79] [cursor=pointer]
+        - paragraph [ref=e80]
+      - generic [ref=e81]:
+        - generic [ref=e82]:
+          - generic [ref=e83]:
+            - heading "Standar" [level=2] [ref=e85]
+            - paragraph [ref=e87]: Foto standar akan muncul di sini
+          - generic [ref=e88]:
+            - heading "HD" [level=2] [ref=e90]
+            - paragraph [ref=e92]: Foto transparan HD akan muncul di sini
+          - generic [ref=e93]:
+            - heading "Tata Letak" [level=2] [ref=e95]
+            - paragraph [ref=e97]: Tata letak yang dapat dicetak akan muncul di sini
+            - paragraph
+        - generic [ref=e98]:
+          - heading "Buat foto ID untuk dokumen, resume, dan formulir online" [level=2] [ref=e99]
+          - paragraph [ref=e100]: Pembuat foto MiaoCut ID membantu Anda membuat foto paspor, foto visa, foto satu inci, foto dua inci, foto resume, dan lembar foto yang dapat dicetak. Pilih ukuran preset, sesuaikan penempatan potret, ganti warna latar belakang, dan unduh output standar dan resolusi tinggi.
+          - generic [ref=e101]:
+            - generic [ref=e102]:
+              - heading "Ukuran umum" [level=3] [ref=e103]
+              - paragraph [ref=e104]: Satu inci, dua inci, paspor, visa, resume, dan ukuran piksel khusus.
+            - generic [ref=e105]:
+              - heading "Warna latar belakang" [level=3] [ref=e106]
+              - paragraph [ref=e107]: Putih, biru, merah, abu-abu, biru muda, biru tua, pink, hitam, dan warna HEX khusus.
+            - generic [ref=e108]:
+              - heading "Cetak lembaran" [level=3] [ref=e109]
+              - paragraph [ref=e110]: Hasilkan tata letak 5 inci, 6 inci, 7 inci, atau A4 yang dapat dicetak.
+    - generic [ref=e111]:
+      - heading "Pertanyaan yang Sering Diajukan" [level=2] [ref=e112]
+      - generic [ref=e113]:
+        - generic [ref=e114]:
+          - heading "Berapa ukuran foto ID yang didukung MiaoCut?" [level=3] [ref=e115]
+          - paragraph [ref=e116]: China 1 inci (295×413), 2 inci (413×579), varian kecil/besar 1 inci dan 2 inci, paspor Tiongkok (390×567), paspor AS (600×600), visa Schengen (600×600), foto resume (480×640), profil sosial (512×512), ditambah ukuran piksel khusus apa pun.
+        - generic [ref=e117]:
+          - heading "Warna latar belakang apa yang didukung?" [level=3] [ref=e118]
+          - paragraph [ref=e119]: Putih, biru, merah, abu-abu, biru muda, biru tua, merah muda, hitam, dan warna HEX khusus apa pun.
+        - generic [ref=e120]:
+          - heading "Bisakah saya mencetak beberapa foto ID dalam satu lembar?" [level=3] [ref=e121]
+          - paragraph [ref=e122]: Ya. Pilih kertas 5 inci, 6 inci, 7 inci, atau A4 untuk menghasilkan lembar tata letak yang dapat dicetak dengan banyak salinan yang disusun untuk dipotong.
+        - generic [ref=e123]:
+          - heading "Apakah foto saya akan memenuhi persyaratan dokumen resmi?" [level=3] [ref=e124]
+          - paragraph [ref=e125]: MiaoCut menghasilkan foto berukuran tepat dengan latar belakang netral, namun selalu periksa dokumen spesifik Anda atau persyaratan terbaru kantor visa (ukuran kepala, ekspresi, aturan kacamata, format file) sebelum mengirimkannya.
+        - generic [ref=e126]:
+          - heading "Apakah MiaoCut mendeteksi wajah saya secara otomatis?" [level=3] [ref=e127]
+          - paragraph [ref=e128]: Ya. MediaPipe Face Mesh mendeteksi garis mata dan posisi kepala Anda, lalu foto dipotong secara otomatis dan disejajarkan agar sesuai dengan ukuran preset yang dipilih. Anda dapat menyempurnakan ukuran subjek dan margin atas dengan penggeser.
+        - generic [ref=e129]:
+          - heading "Apakah foto saya pribadi?" [level=3] [ref=e130]
+          - paragraph [ref=e131]: Foto diproses dalam memori di server dan segera dibuang setelah hasilnya dikembalikan. Kami tidak menyimpan gambar Anda, tidak menggunakannya untuk pelatihan AI, dan tidak perlu mendaftar.
+        - generic [ref=e132]:
+          - heading "Bisakah saya mengatur ukuran file maksimal di KB untuk formulir online?" [level=3] [ref=e133]
+          - paragraph [ref=e134]: Ya. Masukan "Target KB" memungkinkan Anda membatasi ukuran file keluaran — berguna untuk formulir lamaran visa atau pekerjaan dengan batasan ukuran file yang ketat.
+    - generic [ref=e135]:
+      - heading "Cara Membuat Foto Paspor atau ID" [level=2] [ref=e136]
+      - generic [ref=e137]:
+        - generic [ref=e138]:
+          - generic [ref=e139]: 📤
+          - heading "1. Unggah potret Anda" [level=3] [ref=e140]
+          - paragraph [ref=e141]: Unggah potret menghadap ke depan dalam format JPG, PNG, atau WebP. Bahkan pencahayaan netral bekerja paling baik.
+        - generic [ref=e142]:
+          - generic [ref=e143]: ⚙️
+          - heading "2. Pilih ukuran dan latar belakang" [level=3] [ref=e144]
+          - paragraph [ref=e145]: Pilih preset negara (atau masukkan dimensi khusus), pilih warna latar belakang, dan sesuaikan ukuran subjek atau margin atas jika diperlukan.
+        - generic [ref=e146]:
+          - generic [ref=e147]: 🖼️
+          - heading "3. Hasilkan, sesuaikan KB, unduh" [level=3] [ref=e148]
+          - paragraph [ref=e149]: MiaoCut mendeteksi wajah Anda secara otomatis dan menghasilkan foto standar, versi transparan HD, dan tata letak yang dapat dicetak. Tetapkan Target KB jika formulir Anda memerlukan ukuran file tertentu.
+    - generic [ref=e150]:
+      - heading "Spesifikasi Foto ID berdasarkan Negara & Dokumen" [level=2] [ref=e151]
+      - paragraph [ref=e152]: Ukuran dokumen umum dan aturan latar belakang. Selalu periksa persyaratan terbaru konsulat, kedutaan, atau kantor Anda sebelum mengirimkan — peraturan berubah.
+      - generic [ref=e153]:
+        - generic [ref=e154]:
+          - heading "Cina 1 inci (一寸)" [level=3] [ref=e155]
+          - paragraph [ref=e156]: 295 × 413 px · Latar belakang putih / biru / merah · Untuk kartu ID, dokumen sekolah, formulir aplikasi sederhana.
+        - generic [ref=e157]:
+          - heading "Cina 2 inci (二寸)" [level=3] [ref=e158]
+          - paragraph [ref=e159]: 413 × 579 px · Latar belakang putih / biru / merah · Untuk resume, diploma, formulir pekerjaan, laporan medis.
+        - generic [ref=e160]:
+          - heading "Paspor Tiongkok (中国护照)" [level=3] [ref=e161]
+          - paragraph [ref=e162]: 390 × 567 piksel · Latar belakang putih, ekspresi netral, tidak disarankan memakai kacamata · Untuk paspor, permohonan visa diajukan di Tiongkok.
+        - generic [ref=e163]:
+          - heading "Paspor AS" [level=3] [ref=e164]
+          - paragraph [ref=e165]: 600 × 600 px (2 × 2 inci) · Latar belakang putih polos atau putih pucat · Tanpa kacamata (sejak 2016), ekspresi netral, wajah penuh terlihat.
+        - generic [ref=e166]:
+          - heading "Visa Schengen (UE)" [level=3] [ref=e167]
+          - paragraph [ref=e168]: 413 × 531 piksel (35 × 45 mm) · Latar belakang abu-abu muda atau putih pucat · Cakupan wajah 70-80%, ekspresi netral.
+        - generic [ref=e169]:
+          - heading "Visa Jepang" [level=3] [ref=e170]
+          - paragraph [ref=e171]: 600 × 600 px (45 × 45 mm) · Latar belakang putih atau putih pucat · Menghadap ke depan, tanpa penutup kepala, diambil dalam waktu 6 bulan.
+    - generic [ref=e172]:
+      - heading "Alat MiaoCut Lainnya" [level=2] [ref=e173]
+      - generic [ref=e174]:
+        - link "Penghapus Latar Belakang Potret → Buat gambar LinkedIn atau profil sosial yang bersih." [ref=e175] [cursor=pointer]:
+          - /url: /id/portrait-background-remover/
+          - heading "Penghapus Latar Belakang Potret →" [level=3] [ref=e176]
+          - paragraph [ref=e177]: Buat gambar LinkedIn atau profil sosial yang bersih.
+        - link "Penghapus Latar Belakang AI → Potongan PNG transparan sekali klik untuk foto apa pun." [ref=e178] [cursor=pointer]:
+          - /url: /id/
+          - heading "Penghapus Latar Belakang AI →" [level=3] [ref=e179]
+          - paragraph [ref=e180]: Potongan PNG transparan sekali klik untuk foto apa pun.
+  - contentinfo [ref=e181]:
+    - generic [ref=e182]:
+      - heading "Semua Alat MiaoCut" [level=2] [ref=e183]
+      - generic [ref=e184]:
+        - generic [ref=e185]:
+          - heading "Penghapusan Latar Belakang AI" [level=3] [ref=e186]
+          - list [ref=e187]:
+            - listitem [ref=e188]:
+              - link "Hapus Latar Belakang" [ref=e189] [cursor=pointer]:
+                - /url: /id/
+            - listitem [ref=e190]:
+              - link "Produk" [ref=e191] [cursor=pointer]:
+                - /url: /id/product-photo-background-remover/
+            - listitem [ref=e192]:
+              - link "Potret" [ref=e193] [cursor=pointer]:
+                - /url: /id/portrait-background-remover/
+            - listitem [ref=e194]:
+              - link "Foto ID" [ref=e195] [cursor=pointer]:
+                - /url: /id/id-photo-maker/
+        - generic [ref=e196]:
+          - heading "Konversi Format" [level=3] [ref=e197]
+          - list [ref=e198]:
+            - listitem [ref=e199]:
+              - link "JPG → PNG Transparan" [ref=e200] [cursor=pointer]:
+                - /url: /id/jpg-to-transparent-png/
+            - listitem [ref=e201]:
+              - link "PNG → JPG" [ref=e202] [cursor=pointer]:
+                - /url: /id/png-to-jpg-white-background/
+        - generic [ref=e203]:
+          - heading "Perbaikan & Peningkatan Foto" [level=3] [ref=e204]
+          - list [ref=e205]:
+            - listitem [ref=e206]:
+              - link "Tanda air" [ref=e207] [cursor=pointer]:
+                - /url: /id/watermark-remover/
+            - listitem [ref=e208]:
+              - link "Foto lama" [ref=e209] [cursor=pointer]:
+                - /url: /id/old-photo-restoration/
+        - generic [ref=e210]:
+          - heading "Panduan" [level=3] [ref=e211]
+          - list [ref=e212]:
+            - listitem [ref=e213]:
+              - link "Cara Menghapus Latar Belakang" [ref=e214] [cursor=pointer]:
+                - /url: /how-to-remove-background/
+            - listitem [ref=e215]:
+              - link "Di PowerPoint" [ref=e216] [cursor=pointer]:
+                - /url: /how-to-remove-background/powerpoint/
+            - listitem [ref=e217]:
+              - link "Di GIMP" [ref=e218] [cursor=pointer]:
+                - /url: /how-to-remove-background/gimp/
+      - generic [ref=e219]:
+        - paragraph [ref=e220]: MiaoCut · Alat gambar AI gratis yang menghormati privasi Anda.
+        - paragraph [ref=e221]:
+          - link "Pribadi" [ref=e222] [cursor=pointer]:
+            - /url: /privacy/
+          - text: ·
+          - link "Ketentuan" [ref=e223] [cursor=pointer]:
+            - /url: /terms/
+          - text: ·
+          - link "GitHub" [ref=e224] [cursor=pointer]:
+            - /url: https://github.com/midcodehub/miaoCut
+  - generic [ref=e225]:
+    - generic:
+      - heading "☕ Umpan balik" [level=3]
+      - generic:
+        - textbox "Feedback message":
+          - /placeholder: Apa yang ada di pikiranmu?
+        - textbox "Email (optional)":
+          - /placeholder: Email (Opsional)
+        - button "Mengirim"
+    - button "☕" [ref=e226] [cursor=pointer]
