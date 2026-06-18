@@ -232,7 +232,7 @@
       源：src/input.css；构建命令：npm run build:css；输出：output.css
       改动 index.html 的 class 后必须重新跑 build:css 并把 output.css 一起提交。
     -->
-    <link rel="stylesheet" href="/output.css?v=76a690d4">
+    <link rel="stylesheet" href="/output.css?v=a6e2fdc8">
     <!--
       Umami Analytics - 隐私友好的流量统计
     -->
@@ -339,6 +339,15 @@
                     <p class="text-lg font-medium text-gray-700 mb-1 dark:text-zinc-100" data-i18n="dropzoneTitle">छवि को यहां खींचें और छोड़ें, या अपलोड करने के लिए क्लिक करें</p>
                     <p class="text-sm text-gray-500 dark:text-zinc-300" data-i18n="dropzoneSub">(JPG / PNG / WebP का समर्थन करता है)</p>
                 </div>
+            </div>
+
+            <div id="batch-fake-door" class="mt-4 flex flex-col items-center justify-center gap-2 text-center sm:flex-row">
+                <button id="batch-pro-trigger" type="button"
+                    class="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm transition-colors hover:border-gray-400 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500 dark:hover:bg-zinc-800 dark:focus:ring-zinc-100">
+                    <span data-i18n="batchDoorButton">बैच प्रोसेस</span>
+                    <span class="rounded-full bg-gray-900 px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.08em] text-white dark:bg-zinc-50 dark:text-zinc-900" data-i18n="batchDoorBadge">Pro</span>
+                </button>
+                <p class="text-xs text-gray-500 dark:text-zinc-400" data-i18n="batchDoorHint">एक साथ 20+ छवियों से बैकग्राउंड हटाएं।</p>
             </div>
 
             <!-- 信任背书 -->
@@ -1415,7 +1424,7 @@
     }
 };
     </script>
-    <script src="/app.js?v=01afb4dc"></script>
+    <script src="/app.js?v=27526fe2"></script>
     <script src="/language-menu.js"></script>
 
 </body>

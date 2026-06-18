@@ -167,7 +167,22 @@
         "toolJpgPngTitle": "JPG → 透明 PNG",
         "toolPngJpgTitle": "PNG → JPG",
         "toolWatermarkTitle": "去水印",
-        "toolRestoreTitle": "老照片"
+        "toolRestoreTitle": "老照片",
+        "batchDoorButton": "批量抠图",
+        "batchDoorBadge": "Pro",
+        "batchDoorHint": "一次处理 20+ 张图片。",
+        "batchModalTitle": "批量抠图 Pro 即将上线",
+        "batchModalBody": "目标速度：每秒 1-2 张。留下邮箱，上线后免费获得 100 积分体验。",
+        "batchModalEmailLabel": "邮箱",
+        "batchModalEmailPlaceholder": "you@example.com",
+        "batchModalSubmit": "加入候补名单",
+        "batchModalSending": "提交中...",
+        "batchModalNoThanks": "稍后再说",
+        "batchModalThanksTitle": "已加入名单",
+        "batchModalThanksBody": "上线后我们会通知你，并赠送 100 积分。",
+        "batchModalError": "提交失败，请稍后再试。",
+        "batchModalInvalidEmail": "请输入有效邮箱。",
+        "batchModalClose": "关闭"
     },
     "en": {
         "dropzoneTitle": "Drag & drop image here, or click to upload",
@@ -265,7 +280,22 @@
         "toolJpgPngTitle": "JPG → Transparent PNG",
         "toolPngJpgTitle": "PNG → JPG",
         "toolWatermarkTitle": "Watermark",
-        "toolRestoreTitle": "Old Photo"
+        "toolRestoreTitle": "Old Photo",
+        "batchDoorButton": "Batch Process",
+        "batchDoorBadge": "Pro",
+        "batchDoorHint": "Remove backgrounds from 20+ images at once.",
+        "batchModalTitle": "Batch Process Pro is coming soon",
+        "batchModalBody": "Target speed: 1-2 images per second. Leave your email and get 100 free credits when it opens.",
+        "batchModalEmailLabel": "Email",
+        "batchModalEmailPlaceholder": "you@example.com",
+        "batchModalSubmit": "Join waitlist",
+        "batchModalSending": "Joining...",
+        "batchModalNoThanks": "Maybe later",
+        "batchModalThanksTitle": "You are on the list",
+        "batchModalThanksBody": "We will notify you when it opens and add 100 free credits.",
+        "batchModalError": "Could not submit. Please try again.",
+        "batchModalInvalidEmail": "Enter a valid email.",
+        "batchModalClose": "Close"
     },
     "hi": {
         "dropzoneTitle": "छवि को यहां खींचें और छोड़ें, या अपलोड करने के लिए क्लिक करें",
@@ -363,7 +393,22 @@
         "toolJpgPngTitle": "JPG → पारदर्शी PNG",
         "toolPngJpgTitle": "PNG → JPG",
         "toolWatermarkTitle": "वाटर-मार्क",
-        "toolRestoreTitle": "पुरानी फोटो"
+        "toolRestoreTitle": "पुरानी फोटो",
+        "batchDoorButton": "बैच प्रोसेस",
+        "batchDoorBadge": "Pro",
+        "batchDoorHint": "एक साथ 20+ छवियों से बैकग्राउंड हटाएं।",
+        "batchModalTitle": "Batch Process Pro जल्द आ रहा है",
+        "batchModalBody": "लक्ष्य गति: प्रति सेकंड 1-2 छवियां। अपना ईमेल छोड़ें और लॉन्च पर 100 मुफ्त क्रेडिट पाएं।",
+        "batchModalEmailLabel": "ईमेल",
+        "batchModalEmailPlaceholder": "you@example.com",
+        "batchModalSubmit": "प्रतीक्षा सूची में शामिल हों",
+        "batchModalSending": "जुड़ रहे हैं...",
+        "batchModalNoThanks": "बाद में",
+        "batchModalThanksTitle": "आप सूची में जुड़ गए हैं",
+        "batchModalThanksBody": "लॉन्च पर हम आपको सूचित करेंगे और 100 मुफ्त क्रेडिट देंगे।",
+        "batchModalError": "सबमिट नहीं हो पाया। कृपया फिर कोशिश करें।",
+        "batchModalInvalidEmail": "मान्य ईमेल दर्ज करें।",
+        "batchModalClose": "बंद करें"
     },
     "id": {
         "dropzoneTitle": "Seret & letakkan gambar di sini, atau klik untuk mengunggah",
@@ -461,7 +506,22 @@
         "toolJpgPngTitle": "JPG → PNG Transparan",
         "toolPngJpgTitle": "PNG → JPG",
         "toolWatermarkTitle": "Tanda air",
-        "toolRestoreTitle": "Foto lama"
+        "toolRestoreTitle": "Foto lama",
+        "batchDoorButton": "Proses Batch",
+        "batchDoorBadge": "Pro",
+        "batchDoorHint": "Hapus latar belakang dari 20+ gambar sekaligus.",
+        "batchModalTitle": "Batch Process Pro segera hadir",
+        "batchModalBody": "Target kecepatan: 1-2 gambar per detik. Tinggalkan email Anda dan dapatkan 100 kredit gratis saat dibuka.",
+        "batchModalEmailLabel": "Email",
+        "batchModalEmailPlaceholder": "you@example.com",
+        "batchModalSubmit": "Gabung daftar tunggu",
+        "batchModalSending": "Mengirim...",
+        "batchModalNoThanks": "Nanti saja",
+        "batchModalThanksTitle": "Anda masuk daftar",
+        "batchModalThanksBody": "Kami akan memberi tahu Anda saat dibuka dan menambahkan 100 kredit gratis.",
+        "batchModalError": "Gagal mengirim. Silakan coba lagi.",
+        "batchModalInvalidEmail": "Masukkan email yang valid.",
+        "batchModalClose": "Tutup"
     },
     "pt-br": {
         "dropzoneTitle": "Arraste e solte a imagem aqui ou clique para fazer upload",
@@ -559,7 +619,22 @@
         "toolJpgPngTitle": "JPG → Transparente PNG",
         "toolPngJpgTitle": "PNG → JPG",
         "toolWatermarkTitle": "Marca d’água",
-        "toolRestoreTitle": "Foto antiga"
+        "toolRestoreTitle": "Foto antiga",
+        "batchDoorButton": "Processamento em lote",
+        "batchDoorBadge": "Pro",
+        "batchDoorHint": "Remova fundos de mais de 20 imagens de uma vez.",
+        "batchModalTitle": "Batch Process Pro chegará em breve",
+        "batchModalBody": "Velocidade alvo: 1-2 imagens por segundo. Deixe seu e-mail e ganhe 100 créditos grátis quando abrir.",
+        "batchModalEmailLabel": "E-mail",
+        "batchModalEmailPlaceholder": "you@example.com",
+        "batchModalSubmit": "Entrar na lista",
+        "batchModalSending": "Enviando...",
+        "batchModalNoThanks": "Talvez depois",
+        "batchModalThanksTitle": "Você entrou na lista",
+        "batchModalThanksBody": "Avisaremos quando abrir e adicionaremos 100 créditos grátis.",
+        "batchModalError": "Não foi possível enviar. Tente novamente.",
+        "batchModalInvalidEmail": "Digite um e-mail válido.",
+        "batchModalClose": "Fechar"
     },
     "bn": {
         "dropzoneTitle": "ছবিটি এখানে টেনে আনুন এবং ড্রপ করুন, অথবা আপলোড করতে ক্লিক করুন",
@@ -657,7 +732,22 @@
         "toolJpgPngTitle": "JPG → স্বচ্ছ PNG",
         "toolPngJpgTitle": "PNG → JPG",
         "toolWatermarkTitle": "জলছাপ",
-        "toolRestoreTitle": "পুরানো ছবি"
+        "toolRestoreTitle": "পুরানো ছবি",
+        "batchDoorButton": "ব্যাচ প্রসেস",
+        "batchDoorBadge": "Pro",
+        "batchDoorHint": "একসাথে 20+ ছবির ব্যাকগ্রাউন্ড সরান।",
+        "batchModalTitle": "Batch Process Pro শীঘ্রই আসছে",
+        "batchModalBody": "লক্ষ্য গতি: প্রতি সেকেন্ডে 1-2টি ছবি। আপনার ইমেল দিন এবং চালু হলে 100টি ফ্রি ক্রেডিট পান।",
+        "batchModalEmailLabel": "ইমেল",
+        "batchModalEmailPlaceholder": "you@example.com",
+        "batchModalSubmit": "ওয়েটলিস্টে যোগ দিন",
+        "batchModalSending": "জমা হচ্ছে...",
+        "batchModalNoThanks": "পরে",
+        "batchModalThanksTitle": "আপনি তালিকায় আছেন",
+        "batchModalThanksBody": "চালু হলে আমরা আপনাকে জানাব এবং 100টি ফ্রি ক্রেডিট দেব।",
+        "batchModalError": "জমা দেওয়া যায়নি। আবার চেষ্টা করুন।",
+        "batchModalInvalidEmail": "একটি বৈধ ইমেল লিখুন।",
+        "batchModalClose": "বন্ধ করুন"
     },
     "fil": {
         "dropzoneTitle": "I-drag at i-drop ang larawan dito, o i-click para mag-upload",
@@ -755,7 +845,22 @@
         "toolJpgPngTitle": "JPG → Transparent na PNG",
         "toolPngJpgTitle": "PNG → JPG",
         "toolWatermarkTitle": "Watermark",
-        "toolRestoreTitle": "Lumang Larawan"
+        "toolRestoreTitle": "Lumang Larawan",
+        "batchDoorButton": "Batch Process",
+        "batchDoorBadge": "Pro",
+        "batchDoorHint": "Alisin ang background ng 20+ larawan nang sabay.",
+        "batchModalTitle": "Malapit na ang Batch Process Pro",
+        "batchModalBody": "Target na bilis: 1-2 larawan bawat segundo. Iwan ang email mo at makakuha ng 100 libreng credits kapag inilunsad.",
+        "batchModalEmailLabel": "Email",
+        "batchModalEmailPlaceholder": "you@example.com",
+        "batchModalSubmit": "Sumali sa waitlist",
+        "batchModalSending": "Ipinapadala...",
+        "batchModalNoThanks": "Mamaya na lang",
+        "batchModalThanksTitle": "Nasa listahan ka na",
+        "batchModalThanksBody": "Aabisuhan ka namin kapag inilunsad at bibigyan ka ng 100 libreng credits.",
+        "batchModalError": "Hindi maisumite. Pakisubukang muli.",
+        "batchModalInvalidEmail": "Maglagay ng valid na email.",
+        "batchModalClose": "Isara"
     },
     "ur": {
         "dropzoneTitle": "تصویر کو یہاں گھسیٹیں اور چھوڑیں، یا اپ لوڈ کرنے کے لیے کلک کریں۔",
@@ -853,7 +958,22 @@
         "toolJpgPngTitle": "JPG → شفاف PNG",
         "toolPngJpgTitle": "PNG → JPG",
         "toolWatermarkTitle": "واٹر مارک",
-        "toolRestoreTitle": "پرانی تصویر"
+        "toolRestoreTitle": "پرانی تصویر",
+        "batchDoorButton": "بیچ پروسیس",
+        "batchDoorBadge": "Pro",
+        "batchDoorHint": "ایک ساتھ 20+ تصاویر کے پس منظر ہٹائیں۔",
+        "batchModalTitle": "Batch Process Pro جلد آ رہا ہے",
+        "batchModalBody": "ہدف رفتار: فی سیکنڈ 1-2 تصاویر۔ اپنا ای میل چھوڑیں اور لانچ پر 100 مفت کریڈٹس حاصل کریں۔",
+        "batchModalEmailLabel": "ای میل",
+        "batchModalEmailPlaceholder": "you@example.com",
+        "batchModalSubmit": "ویٹ لسٹ میں شامل ہوں",
+        "batchModalSending": "جمع ہو رہا ہے...",
+        "batchModalNoThanks": "بعد میں",
+        "batchModalThanksTitle": "آپ فہرست میں شامل ہیں",
+        "batchModalThanksBody": "لانچ پر ہم آپ کو اطلاع دیں گے اور 100 مفت کریڈٹس دیں گے۔",
+        "batchModalError": "جمع نہیں ہو سکا۔ دوبارہ کوشش کریں۔",
+        "batchModalInvalidEmail": "درست ای میل درج کریں۔",
+        "batchModalClose": "بند کریں"
     }
 };
 
@@ -1140,6 +1260,157 @@
     // ============================================================
     const _isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     const API_BASE = _isLocal ? 'http://localhost:8000' : 'https://api2.miaocut.app';
+
+    // ============================================================
+    // Batch Process Pro fake door
+    // ============================================================
+    function initBatchWaitlist() {
+        const trigger = document.getElementById('batch-pro-trigger');
+        if (!trigger) return;
+
+        const modal = document.createElement('div');
+        modal.id = 'batch-pro-modal';
+        modal.className = 'fixed inset-0 z-50 hidden items-center justify-center px-4 py-6';
+        modal.innerHTML = `
+            <div data-batch-backdrop class="absolute inset-0 bg-gray-950/45 backdrop-blur-sm"></div>
+            <div role="dialog" aria-modal="true" aria-labelledby="batch-modal-title" class="relative w-full max-w-md rounded-2xl border border-gray-200 bg-white p-5 text-start shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
+                <button type="button" id="batch-modal-close" class="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-full text-xl leading-none text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 dark:focus:ring-zinc-100" aria-label="${t('batchModalClose')}">&times;</button>
+                <div id="batch-modal-form-wrap">
+                    <p class="mb-2 inline-flex rounded-full bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand-700 dark:bg-brand-500/10 dark:text-brand-300">${t('batchDoorBadge')}</p>
+                    <h2 id="batch-modal-title" class="pr-10 text-xl font-bold text-gray-950 dark:text-zinc-50">${t('batchModalTitle')}</h2>
+                    <p class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-zinc-300">${t('batchModalBody')}</p>
+                    <form id="batch-waitlist-form" class="mt-5" novalidate>
+                        <label for="batch-waitlist-email" class="mb-1.5 block text-sm font-semibold text-gray-800 dark:text-zinc-100">${t('batchModalEmailLabel')}</label>
+                        <input id="batch-waitlist-email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="${t('batchModalEmailPlaceholder')}" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/15 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-100 dark:focus:ring-zinc-100/20">
+                        <p id="batch-waitlist-error" class="mt-2 hidden text-sm text-red-600 dark:text-red-400"></p>
+                        <div class="mt-4 flex flex-col gap-2 sm:flex-row">
+                            <button id="batch-waitlist-submit" type="submit" class="inline-flex min-h-11 flex-1 items-center justify-center rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-400 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus:ring-zinc-100">${t('batchModalSubmit')}</button>
+                            <button id="batch-modal-cancel" type="button" class="inline-flex min-h-11 items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-800 transition-colors hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:border-zinc-500 dark:focus:ring-zinc-100">${t('batchModalNoThanks')}</button>
+                        </div>
+                    </form>
+                </div>
+                <div id="batch-waitlist-thanks" class="hidden py-3">
+                    <p class="text-xl font-bold text-gray-950 dark:text-zinc-50">${t('batchModalThanksTitle')}</p>
+                    <p class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-zinc-300">${t('batchModalThanksBody')}</p>
+                    <button type="button" id="batch-thanks-close" class="mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus:ring-zinc-100">${t('batchModalClose')}</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        const formWrap = modal.querySelector('#batch-modal-form-wrap');
+        const form = modal.querySelector('#batch-waitlist-form');
+        const emailInput = modal.querySelector('#batch-waitlist-email');
+        const submitButton = modal.querySelector('#batch-waitlist-submit');
+        const errorEl = modal.querySelector('#batch-waitlist-error');
+        const thanksEl = modal.querySelector('#batch-waitlist-thanks');
+        const closeButtons = [
+            modal.querySelector('#batch-modal-close'),
+            modal.querySelector('#batch-modal-cancel'),
+            modal.querySelector('#batch-thanks-close'),
+        ].filter(Boolean);
+        let lastFocus = null;
+
+        function setError(message) {
+            errorEl.textContent = message || '';
+            errorEl.classList.toggle('hidden', !message);
+        }
+
+        function openModal() {
+            lastFocus = document.activeElement;
+            formWrap.classList.remove('hidden');
+            thanksEl.classList.add('hidden');
+            form.reset();
+            setError('');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.classList.add('overflow-hidden');
+            track('batch-door-opened', { page: window.MIAOCUT_PAGE_KEY || 'unknown', lang: currentLang });
+            setTimeout(() => emailInput.focus(), 0);
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.classList.remove('overflow-hidden');
+            if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+        }
+
+        function isValidEmail(value) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        }
+
+        trigger.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            openModal();
+        });
+
+        modal.querySelector('[data-batch-backdrop]').addEventListener('click', () => {
+            track('batch-door-dismissed', { page: window.MIAOCUT_PAGE_KEY || 'unknown', lang: currentLang, method: 'backdrop' });
+            closeModal();
+        });
+
+        closeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                track('batch-door-dismissed', { page: window.MIAOCUT_PAGE_KEY || 'unknown', lang: currentLang, method: 'button' });
+                closeModal();
+            });
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key !== 'Escape' || modal.classList.contains('hidden')) return;
+            track('batch-door-dismissed', { page: window.MIAOCUT_PAGE_KEY || 'unknown', lang: currentLang, method: 'escape' });
+            closeModal();
+        });
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const email = emailInput.value.trim();
+            if (!isValidEmail(email)) {
+                setError(t('batchModalInvalidEmail'));
+                emailInput.focus();
+                return;
+            }
+
+            submitButton.disabled = true;
+            submitButton.textContent = t('batchModalSending');
+            setError('');
+
+            try {
+                const resp = await fetch(`${API_BASE}/api/feedback`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: 'Batch Process Pro waitlist signup',
+                        email,
+                        page: window.MIAOCUT_PAGE_KEY || 'unknown',
+                        profile: currentProfile,
+                        feature: 'batch-process-pro',
+                        intent: 'waitlist',
+                        locale: currentLang,
+                        path: window.location.pathname,
+                        page_title: document.title,
+                    }),
+                });
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                track('batch-waitlist-submitted', { page: window.MIAOCUT_PAGE_KEY || 'unknown', lang: currentLang });
+                formWrap.classList.add('hidden');
+                thanksEl.classList.remove('hidden');
+                const doneButton = modal.querySelector('#batch-thanks-close');
+                if (doneButton) doneButton.focus();
+            } catch (error) {
+                console.warn('[MiaoCut] Batch waitlist submit failed:', error);
+                setError(t('batchModalError'));
+                track('batch-waitlist-failed', { page: window.MIAOCUT_PAGE_KEY || 'unknown', lang: currentLang });
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = t('batchModalSubmit');
+            }
+        });
+    }
+
+    initBatchWaitlist();
 
     // ============================================================
     // 拖拽 / 点击交互

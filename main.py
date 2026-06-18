@@ -1973,6 +1973,14 @@ def _hash_ip(ip: str) -> Optional[str]:
     return hmac.new(key.encode("utf-8"), ip.encode("utf-8"), hashlib.sha256).hexdigest()
 
 
+def _feedback_str(body: dict, key: str, max_len: int = 120) -> Optional[str]:
+    value = body.get(key)
+    if not isinstance(value, str):
+        return None
+    value = value.strip()
+    return value[:max_len] if value else None
+
+
 async def _deliver_feedback(entry: dict) -> None:
     if not FEEDBACK_ENDPOINT:
         _append_jsonl(FEEDBACK_FILE, entry)
@@ -2032,6 +2040,11 @@ async def submit_feedback(request: Request, background_tasks: BackgroundTasks):
         "referer": request.headers.get("referer", "")[:500] or None,
         "page": body.get("page") if isinstance(body.get("page"), str) else None,
         "profile": body.get("profile") if body.get("profile") in ("sharp", "fur") else None,
+        "feature": _feedback_str(body, "feature"),
+        "intent": _feedback_str(body, "intent"),
+        "locale": _feedback_str(body, "locale", 20),
+        "path": _feedback_str(body, "path", 300),
+        "page_title": _feedback_str(body, "page_title", 300),
         "backend_space": BACKEND_SPACE or None,
         "created_at": datetime.now(timezone.utc).isoformat(),
     }
