@@ -7,11 +7,11 @@
   <a href="https://trendshift.io/repositories/10645" target="_blank"><img src="https://trendshift.io/api/badge/repositories/10645" alt="idootop%2Fmi-gpt | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
 </p>
 <p align="center">
-  <strong>👉 在线直接用（免登录）：<a href="https://miaocut.app">miaocut.app</a></strong>
+  <strong>👉 在线体验 <a href="https://miaocut.app">免费 AI 抠图工具</a>（免登录）</strong>
 </p>
 
 <p align="center">
-  <a href="https://miaocut.app"><img src="https://img.shields.io/badge/在线使用-miaocut.app-2563eb" alt="在线站点"></a>
+  <a href="https://miaocut.app"><img src="https://img.shields.io/badge/在线使用-miaocut.app-2563eb" alt="免费 AI 抠图工具"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT 协议"></a>
   <img src="https://img.shields.io/badge/注册-无需-brightgreen" alt="免注册">
   <img src="https://img.shields.io/badge/水印-无-brightgreen" alt="无水印">
@@ -23,7 +23,7 @@
 
 **MiaoCut** 是一个**免登录**的在线 AI 图像处理工具集，核心功能是**一键去除图片背景**——上传任意图片，AI 分割模型（BiRefNet）约 1 秒抠好图并返回透明 PNG。同时提供证件照制作、去水印、老照片修复、格式转换等一系列实用工具。
 
-> 🔗 **打开浏览器即用 → [https://miaocut.app](https://miaocut.app)** —— 无需账号、无需信用卡、输出无水印。
+> 🔗 **用 [免费在线抠图工具](https://miaocut.app) 一键去除图片背景** —— 无需账号、无需信用卡、输出无水印。
 
 ---
 
@@ -37,11 +37,11 @@
 
 ## 🧰 功能列表
 
-每个工具都可在 [miaocut.app](https://miaocut.app) 免费使用：
+每个工具都可在 [MiaoCut 免费 AI 图片工具集](https://miaocut.app) 中使用：
 
 | 工具 | 链接 | 说明 |
 |------|------|------|
-| **AI 抠图** | [miaocut.app](https://miaocut.app) | 一键去除背景。两种模式：**Sharp**（快速、硬边）和 **Fur**（毛发/卷发/软边细腻）。 |
+| **AI 抠图** | [免费 AI 抠图工具](https://miaocut.app) | 一键去除背景。两种模式：**Sharp**（快速、硬边）和 **Fur**（毛发/卷发/软边细腻）。 |
 | **商品图抠图** | [/product-photo-background-remover/](https://miaocut.app/product-photo-background-remover/) | 电商白底图、方图裁切。 |
 | **人像抠图** | [/portrait-background-remover/](https://miaocut.app/portrait-background-remover/) | 头像、简历照、社媒人像。 |
 | **证件照制作** | [/id-photo-maker/](https://miaocut.app/id-photo-maker/) | 自动抠图 + 换底色 + 排版，支持多种证件照规格。 |
@@ -128,7 +128,7 @@ docker run --rm -p 7860:7860 -e PORT=7860 -e MAX_CONCURRENCY=1 -v miaocut-data:/
 
 ## 🤝 参与贡献
 
-欢迎提 Issue 和 PR。如果 MiaoCut 对你有帮助，给个 ⭐ 并在你的项目/博客里链接到 **[miaocut.app](https://miaocut.app)** 将非常感激 —— 能帮更多人找到这个免费、尊重隐私的抠图工具。
+欢迎提 Issue 和 PR。如果 MiaoCut 对你有帮助，给个 ⭐ 并在你的项目/博客里链接到 **[免费在线 AI 抠图工具](https://miaocut.app)** 将非常感激 —— 能帮更多人找到这个免费、尊重隐私的抠图工具。
 
 ## 📄 开源协议
 

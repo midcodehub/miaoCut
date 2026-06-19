@@ -13,11 +13,11 @@ app_port: 7860
 </p>
 
 <p align="center">
-  <strong>👉 Try it live (no signup): <a href="https://miaocut.app">miaocut.app</a></strong>
+  <strong>👉 Try the <a href="https://miaocut.app">Free AI Background Remover</a> live (no signup)</strong>
 </p>
 
 <p align="center">
-  <a href="https://miaocut.app"><img src="https://img.shields.io/badge/Live-miaocut.app-2563eb" alt="Live site"></a>
+  <a href="https://miaocut.app"><img src="https://img.shields.io/badge/Live-miaocut.app-2563eb" alt="Free AI Background Remover"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT License"></a>
   <img src="https://img.shields.io/badge/Signup-Not%20required-brightgreen" alt="No signup">
   <img src="https://img.shields.io/badge/Watermark-None-brightgreen" alt="No watermark">
@@ -29,7 +29,7 @@ app_port: 7860
 
 **MiaoCut** is a **free, no-signup online AI image toolkit**. Its core feature is **one-click background removal** — upload any photo and an AI segmentation model (BiRefNet) erases the background in about a second and returns a transparent PNG. It also ships a small family of related tools: ID photo maker, watermark remover, old-photo restoration, and format converters.
 
-> 🔗 **Use it right now in your browser → [https://miaocut.app](https://miaocut.app)** — no account, no credit card, no watermark.
+> 🔗 **Remove backgrounds online with [MiaoCut's free background remover](https://miaocut.app)** — no account, no credit card, no watermark.
 
 ---
 
@@ -43,11 +43,11 @@ app_port: 7860
 
 ## 🧰 Tools
 
-Every tool runs free in the browser at [miaocut.app](https://miaocut.app):
+Every tool is available in [MiaoCut's free AI image toolkit](https://miaocut.app):
 
 | Tool | Link | What it does |
 |------|------|------|
-| **AI Background Remover** | [miaocut.app](https://miaocut.app) | One-click background removal. Two modes: **Sharp** (fast, hard edges) and **Fur** (fine hair / fur / soft edges). |
+| **AI Background Remover** | [Free AI Background Remover](https://miaocut.app) | One-click background removal. Two modes: **Sharp** (fast, hard edges) and **Fur** (fine hair / fur / soft edges). |
 | **Product Photo Background Remover** | [/product-photo-background-remover/](https://miaocut.app/product-photo-background-remover/) | Clean white-background and square-canvas product shots for e-commerce. |
 | **Portrait Background Remover** | [/portrait-background-remover/](https://miaocut.app/portrait-background-remover/) | Headshots, profile pictures, and social media cutouts. |
 | **ID / Passport Photo Maker** | [/id-photo-maker/](https://miaocut.app/id-photo-maker/) | Auto cutout + background color swap + print layout for common ID photo specs. |
@@ -134,7 +134,7 @@ docker run --rm -p 7860:7860 -e PORT=7860 -e MAX_CONCURRENCY=1 -v miaocut-data:/
 
 ## 🤝 Contributing
 
-Issues and pull requests are welcome. If MiaoCut is useful to you, a ⭐ on GitHub and a link back to **[miaocut.app](https://miaocut.app)** are hugely appreciated — they help more people find a free, privacy-respecting background remover.
+Issues and pull requests are welcome. If MiaoCut is useful to you, a ⭐ on GitHub and a link back to the **[free AI background remover](https://miaocut.app)** are hugely appreciated — they help more people find a free, privacy-respecting background remover.
 
 ## 📄 License
 
