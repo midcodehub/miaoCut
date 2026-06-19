@@ -150,6 +150,19 @@ SHARP_768_FALLBACK = os.getenv("SHARP_768_FALLBACK", "isnet-general-use").strip(
 _BIREFNET_MEAN = (0.485, 0.456, 0.406)
 _BIREFNET_STD = (0.229, 0.224, 0.225)
 
+# ============================================================
+# sharp 边缘去污染（color decontamination / defringe）
+# ============================================================
+# BiRefNet 给的 alpha 是好的，但边缘半透明像素的 RGB 仍是"前景×α + 旧背景×(1-α)"的混合，
+# 换底色时旧背景色（如毛尖背后的深色市集）就显出来，变成肉眼可见的"灰黑脏边/模糊"。
+# 用 pymatting 的 estimate_foreground_ml 解出"纯前景色 F"替换被污染的边缘 RGB，毛尖即恢复主体本色。
+# 实测白猫长毛图（examples/raw/pet.png）只 +~0.1s（estimate_foreground_ml 在 1024² 上很快），
+# 灰黑边显著消除。对所有 sharp 底座（768 / isnet / birefnet-1024）都生效；纯硬边图自动跳过、0 开销。
+SHARP_DECONTAMINATE = os.getenv("SHARP_DECONTAMINATE", "1") == "1"
+# 前景估计的最大边长：超过则先等比缩到此尺寸估计前景色（前景色是低频信息，放大几乎无损），
+# 再把纯前景色放大回原尺寸，避免大图（如 4096²）前景估计耗时/内存暴涨。
+SHARP_DECONTAM_MAX_EDGE = int(os.getenv("SHARP_DECONTAM_MAX_EDGE", "2048"))
+
 # fur 档底座：默认用 BiRefNet_lite-matting（专门训练的抠图模型，直出软 alpha）。
 # 它和 sharp 用的 birefnet-general-lite 同架构、同 1024² 输入、同 onnxruntime CPU 速度（实测 ~9s），
 # 但边缘是逐根毛丝的软过渡，换底色时既没有 legacy 流水线那种"亮光晕"，也没有 sharp 那种"背景色脏边"。
@@ -942,6 +955,46 @@ def _run_rembg_sync(data: bytes, profile: Optional[str] = None) -> bytes:
     return _run_sharp_pipeline(data)
 
 
+def _decontaminate_foreground(result_img) -> bool:
+    """对 sharp 输出的半透明边缘做前景色去污染，消除"灰黑脏边"（原地改写 result_img 的 BGR）。
+
+    仅当存在真正的半透明带 (0.02,0.98) 才跑（纯硬边图直接跳过，0 开销）。
+    大图先等比缩到 SHARP_DECONTAM_MAX_EDGE 估计前景色再放大回去（前景色是低频信息，几乎无损），
+    避免 4096² 这种大图前景估计耗时/内存暴涨。返回是否真正执行了去污染（用于日志）。
+    """
+    import cv2
+    import numpy as np
+    from pymatting import estimate_foreground_ml
+
+    alpha_norm = result_img[:, :, 3].astype(np.float32) / 255.0
+    # 没有真正的半透明带（纯硬边主体）就不折腾，省 estimate_foreground_ml 的开销
+    if not np.any((alpha_norm > 0.02) & (alpha_norm < 0.98)):
+        return False
+
+    h, w = alpha_norm.shape
+    bgr = result_img[:, :, :3]
+    long_edge = max(h, w)
+
+    if long_edge > SHARP_DECONTAM_MAX_EDGE:
+        # 大图：在缩小尺度上解纯前景色，再把前景色放大回原尺寸（前景色低频，放大几乎无损）
+        scale = SHARP_DECONTAM_MAX_EDGE / long_edge
+        sw, sh = max(1, round(w * scale)), max(1, round(h * scale))
+        small_rgb = cv2.cvtColor(
+            cv2.resize(bgr, (sw, sh), interpolation=cv2.INTER_AREA), cv2.COLOR_BGR2RGB
+        ).astype(np.float32) / 255.0
+        small_a = cv2.resize(alpha_norm, (sw, sh), interpolation=cv2.INTER_AREA)
+        fg_small = estimate_foreground_ml(small_rgb, small_a)
+        fg_rgb = cv2.resize(fg_small, (w, h), interpolation=cv2.INTER_LINEAR)
+    else:
+        rgb_norm = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
+        fg_rgb = estimate_foreground_ml(rgb_norm, alpha_norm)
+
+    result_img[:, :, :3] = cv2.cvtColor(
+        (fg_rgb * 255.0).clip(0, 255).astype(np.uint8), cv2.COLOR_RGB2BGR
+    )
+    return True
+
+
 def _run_sharp_pipeline(data: bytes) -> bytes:
     """
     Sharp 模式：BiRefNet 直出 mask + 温和 gamma 校正 + 1px 高斯抗锯齿。
@@ -991,6 +1044,17 @@ def _run_sharp_pipeline(data: bytes) -> bytes:
     alpha_u8 = cv2.GaussianBlur(alpha_u8, (3, 3), sigmaX=0.5)
 
     result_img[:, :, 3] = alpha_u8
+    t_post = time.perf_counter()
+
+    # 前景色去污染：消除毛发/边缘的"灰黑脏边"（背景色污染）。默认开，纯硬边图自动跳过 0 开销。
+    deconned = False
+    if SHARP_DECONTAMINATE:
+        try:
+            deconned = _decontaminate_foreground(result_img)
+        except Exception as exc:
+            # 去污染只是锦上添花，失败就用未去污染的结果，绝不让整张抠图挂掉
+            logger.warning("sharp decontamination failed (%s); returning un-decontaminated cutout", exc)
+    t_decon = time.perf_counter()
 
     # 用 PNG 而非 WebP：实测 cv2.imencode 对带 alpha 的高质量 WebP 比 PNG 慢 ~100ms
     # （libwebp 要单独编 alpha plane）。WebP 文件小 70% 但用户感知不到下载差异，
@@ -999,8 +1063,8 @@ def _run_sharp_pipeline(data: bytes) -> bytes:
     t2 = time.perf_counter()
 
     logger.info(
-        "sharp pipeline: rembg=%.2fs post=%.2fs total=%.2fs (input=%.0fKB output_px=%dx%d)",
-        t1 - t0, t2 - t1, t2 - t0,
+        "sharp pipeline: rembg=%.2fs post=%.2fs decon=%.2fs(%s) enc=%.2fs total=%.2fs (input=%.0fKB output_px=%dx%d)",
+        t1 - t0, t_post - t1, t_decon - t_post, "on" if deconned else "skip", t2 - t_decon, t2 - t0,
         img_size_kb, result_img.shape[1], result_img.shape[0],
     )
     return output_png.tobytes()
