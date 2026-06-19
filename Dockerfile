@@ -38,6 +38,15 @@ RUN mkdir -p /model-cache && \
 names=['isnet-general-use','birefnet-general-lite']; \
 [print(next(sc for sc in sessions_class if sc.name()==n).download_models()) for n in names]"
 
+# 构建期预下载 SimpleLama 的 big-lama.pt（~196MB，去水印 /api/remove-watermark 的 inpainting 模型）。
+# 不预置的话，容器每次重启后第一个去水印请求都会触发 torch.hub 去 GitHub 重新下载这 196MB
+# （容器日志里的 "Downloading ... big-lama.pt to ~/.cache/torch/..."），既拖慢冷启动恢复，
+# 又可能让那个请求超时。预置到 /model-cache（下面会随 BiRefNet 权重一起 COPY 到 /opt/miaocut-models），
+# 运行时用 LAMA_MODEL 环境变量直接指向它，SimpleLama 检测到本地文件就完全跳过下载。
+RUN PYTHONPATH=/install/lib/python3.11/site-packages \
+    python -c "from torch.hub import download_url_to_file; \
+download_url_to_file('https://github.com/enesmsahin/simple-lama-inpainting/releases/download/v0.1.0/big-lama.pt', '/model-cache/big-lama.pt')"
+
 # ============================================================
 FROM python:3.11-slim
 
@@ -79,9 +88,12 @@ COPY --chown=user:user models/birefnet-lite-matting.onnx /opt/miaocut-models/
 COPY --chown=user:user models/birefnet-general-lite-768.onnx /opt/miaocut-models/
 
 # Hugging Face Spaces 默认公开 7860 端口；反馈数据写 /data 以便挂载持久化存储。
-# 模型已内置到镜像；如果将来缺失，main.py 会自动退到可写缓存目录。
+# 模型已内置到镜像；rembg 模型缺失时会自动退到可写缓存目录。
+# big-lama（去水印 inpainting 模型）由上面 builder 预置到 /opt/miaocut-models/big-lama.pt，
+# 用 LAMA_MODEL 指定后 SimpleLama 直接加载本地文件，容器重启不再去 GitHub 重下 196MB。
 ENV PORT=7860 \
     U2NET_HOME=/opt/miaocut-models \
+    LAMA_MODEL=/opt/miaocut-models/big-lama.pt \
     DATA_DIR=/data \
     MALLOC_ARENA_MAX=2 \
     MALLOC_TRIM_THRESHOLD_=131072

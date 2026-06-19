@@ -324,6 +324,117 @@ _log_cpu_info()
 
 
 # ============================================================
+# 内存 / 终止信号诊断（定位"无声重启"是否为 cgroup OOM）
+# ============================================================
+# 背景：HF Space 用 cgroup 把容器限到 2 vCPU，内存同样被 cgroup 限制——
+# 容器里 /proc/meminfo 看到的是物理机的（几十上百 GB），实际可用配额可能只有 2~4GB。
+# fur 档（alpha matting + foreground estimation）单请求峰值 1~1.5GB，叠加常驻很容易顶到配额，
+# 触发 cgroup OOM kill（SIGKILL，无任何应用日志）——这正是"无声重启"的典型成因。
+# 下面这些 helper 把"真实配额 / 当前用量 / 进程 RSS / OOM 次数"打到日志，便于确诊。
+def _read_int_file(path: str):
+    try:
+        with open(path) as f:
+            return int(f.read().strip())
+    except (FileNotFoundError, OSError, ValueError):
+        return None
+
+
+def _get_cgroup_mem():
+    """返回 (current_bytes, limit_bytes)，读不到的项为 None。兼容 cgroup v2 / v1。"""
+    # cgroup v2
+    cur = _read_int_file("/sys/fs/cgroup/memory.current")
+    limit = None
+    try:
+        with open("/sys/fs/cgroup/memory.max") as f:
+            raw = f.read().strip()
+        limit = None if raw == "max" else int(raw)
+    except (FileNotFoundError, OSError, ValueError):
+        pass
+    if cur is not None or limit is not None:
+        return cur, limit
+    # cgroup v1 兜底
+    cur = _read_int_file("/sys/fs/cgroup/memory/memory.usage_in_bytes")
+    limit = _read_int_file("/sys/fs/cgroup/memory/memory.limit_in_bytes")
+    return cur, limit
+
+
+def _get_process_rss():
+    """当前进程 RSS（字节），读 /proc/self/status 的 VmRSS。"""
+    try:
+        with open("/proc/self/status") as f:
+            for line in f:
+                if line.startswith("VmRSS:"):
+                    return int(line.split()[1]) * 1024
+    except (FileNotFoundError, OSError, ValueError, IndexError):
+        pass
+    return None
+
+
+def _get_oom_kill_count():
+    """cgroup v2 memory.events 里的 oom_kill 累计次数；读不到返回 None。"""
+    try:
+        with open("/sys/fs/cgroup/memory.events") as f:
+            for line in f:
+                if line.startswith("oom_kill "):
+                    return int(line.split()[1])
+    except (FileNotFoundError, OSError, ValueError, IndexError):
+        pass
+    return None
+
+
+def _fmt_mb(num):
+    return f"{num / 1024 / 1024:.0f}MB" if isinstance(num, int) else "n/a"
+
+
+def _log_memory_status(tag: str) -> None:
+    """打印 cgroup 内存配额 / 当前用量 / 进程 RSS / OOM 次数。纯读 /proc /sys，非 Linux 自动降级。"""
+    cur, limit = _get_cgroup_mem()
+    rss = _get_process_rss()
+    oom = _get_oom_kill_count()
+    if isinstance(cur, int) and isinstance(limit, int) and limit > 0:
+        pct = f"{cur / limit * 100:.0f}%"
+    else:
+        pct = "n/a"
+    logger.info(
+        "MEM[%s] cgroup_used=%s / limit=%s (%s) proc_rss=%s oom_kills=%s",
+        tag, _fmt_mb(cur), _fmt_mb(limit), pct, _fmt_mb(rss),
+        oom if oom is not None else "n/a",
+    )
+
+
+_original_signal_handlers = {}
+
+
+def _install_termination_logging() -> None:
+    """捕获 SIGTERM/SIGINT 记录日志，区分"平台优雅驱逐（SIGTERM）"与"OOM/强杀（SIGKILL，捕获不到）"。
+
+    SIGKILL 无法捕获：如果重启时日志里完全没有 "Received signal"、直接重新启动，
+    基本就是 SIGKILL（最常见是 cgroup OOM kill 或平台硬性强杀）；
+    若能看到 "Received SIGTERM"，则是平台优雅终止（节点维护 / 重新调度 / 抢占）。
+    链式调用 uvicorn 原 handler，不破坏其优雅关闭。
+    """
+    import signal as _signal
+
+    def _handler(signum, frame):
+        try:
+            name = _signal.Signals(signum).name
+        except (ValueError, KeyError):
+            name = str(signum)
+        logger.warning("Received signal %s (%s) — process terminating", signum, name)
+        _log_memory_status("on-signal")
+        prev = _original_signal_handlers.get(signum)
+        if callable(prev):
+            prev(signum, frame)
+
+    for sig in (_signal.SIGTERM, _signal.SIGINT):
+        try:
+            _original_signal_handlers[sig] = _signal.getsignal(sig)
+            _signal.signal(sig, _handler)
+        except (ValueError, OSError) as exc:
+            logger.warning("Could not install signal handler for %s: %s", sig, exc)
+
+
+# ============================================================
 # AI 模型初始化（sharp 档底座）
 # ============================================================
 # sharp 档具体加载哪个分割模型由 SHARP_MODEL 环境变量决定，默认 isnet-general-use。
@@ -871,6 +982,9 @@ else:
 @app.on_event("startup")
 async def schedule_model_warmup() -> None:
     global lama_executor
+    # 安装终止信号日志 + 打印启动时的真实内存配额（定位无声重启是否为 cgroup OOM）
+    _install_termination_logging()
+    _log_memory_status("startup")
     logger.info("Starting isolated ProcessPool for SimpleLama to prevent PyTorch thread contention...")
     
     # 必须使用 spawn，否则 fork 会带上主进程已经被初始化的各种线程锁和状态，容易死锁
@@ -951,8 +1065,12 @@ def _run_rembg_sync(data: bytes, profile: Optional[str] = None) -> bytes:
     """
     chosen = profile if profile in ("sharp", "fur") else CUTOUT_PROFILE
     if chosen == "fur":
-        return _run_fur_pipeline(data)
-    return _run_sharp_pipeline(data)
+        out = _run_fur_pipeline(data)
+    else:
+        out = _run_sharp_pipeline(data)
+    # 抠图后打印内存水位，定位"无声重启"是否为 cgroup OOM（fur 是内存大头）
+    _log_memory_status(f"after-{chosen}")
+    return out
 
 
 def _decontaminate_foreground(result_img) -> bool:
