@@ -31,6 +31,7 @@ import json
 import logging
 import math
 import os
+import time
 
 # 【极度关键】解决 pip 安装 torch 后污染环境，导致 ONNX Runtime 性能下降 2-3 秒的问题！
 # 哪怕我们用 ProcessPoolExecutor 把 PyTorch 隔离在了子进程，只要 `pip install torch` 跑过，
@@ -47,6 +48,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 from urllib.parse import quote
+from contextlib import asynccontextmanager
 from concurrent.futures import ProcessPoolExecutor
 import multiprocessing
 
@@ -95,6 +97,12 @@ MAX_IMAGE_PIXELS = int(os.getenv("MAX_IMAGE_PIXELS", str(4096 * 4096)))
 #
 # 上线后 `htop` 看下 RSS 稳态 + 压测时峰值，按实际值再调。
 MAX_CONCURRENCY = int(os.getenv("MAX_CONCURRENCY", "4"))
+# 满并发时最多等多久。超过就快速返回 429，让 Cloudflare Worker 可以立刻 failover 到其他 Space，
+# 不要在单个 Space 内排队几十秒后才超时。
+QUEUE_WAIT_TIMEOUT_SECONDS = float(os.getenv("QUEUE_WAIT_TIMEOUT_SECONDS", "0.2"))
+REMBG_QUEUE_WAIT_TIMEOUT_SECONDS = float(os.getenv("REMBG_QUEUE_WAIT_TIMEOUT_SECONDS", str(QUEUE_WAIT_TIMEOUT_SECONDS)))
+RESTORE_QUEUE_WAIT_TIMEOUT_SECONDS = float(os.getenv("RESTORE_QUEUE_WAIT_TIMEOUT_SECONDS", str(QUEUE_WAIT_TIMEOUT_SECONDS)))
+WATERMARK_QUEUE_WAIT_TIMEOUT_SECONDS = float(os.getenv("WATERMARK_QUEUE_WAIT_TIMEOUT_SECONDS", str(QUEUE_WAIT_TIMEOUT_SECONDS)))
 ENABLE_DOCS = os.getenv("ENABLE_DOCS", "0") == "1"
 WARMUP_BIREFNET_ON_STARTUP = os.getenv("WARMUP_BIREFNET_ON_STARTUP", "1") == "1"
 # INT8 动态量化开关：默认关闭。
@@ -118,19 +126,29 @@ CUTOUT_PROFILE = _raw_profile if _raw_profile in ("sharp", "fur") else "sharp"
 # ============================================================
 # sharp 档底座模型（速度优先档用哪个分割模型）
 # ============================================================
-# 默认 isnet-general-use：纯 CNN 分割模型，CPU 上单张 ~1.3s（实测 examples 真实人像图）。
-# 历史上 sharp 一度换成 birefnet-general-lite（Swin Transformer），边缘更细但 CPU 上要 ~9s，
-# 在 HF Space 这种 2 vCPU 机器上实测会涨到 25s+，体验严重退化。
+# 默认 birefnet-general-lite-768：BiRefNet-general-lite 在 768² 输入下重新导出的"折中档"。
+# 它在毛发/头发边缘质量上远好于 isnet、非常接近 1024² BiRefNet，而速度只要 1024² 的 ~1/3。
 #
-# 真实人像图对比实测（同一张 examples/raw 人物照，M1）：
-#   isnet-general-use     ~1.3s  头/帽/裤/鞋边缘与 birefnet 肉眼几乎无差，细杖也保住
-#   birefnet-general-lite ~8.8s  发丝级最细，但慢 6.5×
-#   u2net                 ~0.6s  细杖丢失 + 绿幕合成有明显光晕，质量不可接受
-# 结论：硬边主体（人、商品、Logo、证件照）用 isnet 性价比最高；真要逐根抠毛发，前端切到 fur 档。
+# 同一张白色长毛猫（examples/raw/pet.png，毛发地狱级场景）实测对比（M1）：
+#   isnet-general-use            1.4s   毛尖被切平、边缘锯齿块状（硬边主体够用，软边露怯）
+#   birefnet-general-lite-768   3.8s   毛丝清晰、软过渡，接近 1024²（当前默认，质量/速度甜点）
+#   birefnet-general-lite(1024) 12.0s  发丝级最细，但 2 vCPU 的 HF Space 上会涨到 25s+
+# 速度差距来自输入分辨率：768²≈1024² 的 0.56 倍像素，onnxruntime CPU 上实测约 3.1× 加速。
 #
-# 想找回 birefnet 的发丝细节，设 SHARP_MODEL=birefnet-general-lite 即可（Docker 镜像里两份权重都在，
-# 不用重新构建）。任何 rembg 支持的分割模型名都能填，找不到会在加载时报错。
-SHARP_MODEL = os.getenv("SHARP_MODEL", "isnet-general-use").strip() or "isnet-general-use"
+# 取值可以是：
+#   - "birefnet-general-lite-768" —— 768² 折中（默认）。这是一个**裸 onnx**（固定 768² 输入，
+#     scripts/export_general_lite_onnx.py 离线导出），由 _BiRefNet768Session 包装成 rembg 兼容
+#     session 后接入；模型文件按 _find_sharp_768_model_path 查找，找不到时回退到 SHARP_768_FALLBACK。
+#   - 任何 rembg 内置分割模型名（如 "isnet-general-use" 想最快、"birefnet-general-lite" 想最细）。
+SHARP_MODEL = os.getenv("SHARP_MODEL", "birefnet-general-lite-768").strip() or "birefnet-general-lite-768"
+# 768² 折中档的标识名 / onnx 文件名（不含扩展名）/ 输入边长。
+SHARP_768_MODEL_NAME = "birefnet-general-lite-768"
+SHARP_768_INPUT_SIZE = 768
+# 768² 模型文件缺失时的回退（必须是 rembg 内置名）。默认 isnet：保证"绝不会因为缺模型而变成 25s"。
+SHARP_768_FALLBACK = os.getenv("SHARP_768_FALLBACK", "isnet-general-use").strip() or "isnet-general-use"
+# BiRefNet 系列共用的 ImageNet 归一化常量（预处理）。
+_BIREFNET_MEAN = (0.485, 0.456, 0.406)
+_BIREFNET_STD = (0.229, 0.224, 0.225)
 
 # fur 档底座：默认用 BiRefNet_lite-matting（专门训练的抠图模型，直出软 alpha）。
 # 它和 sharp 用的 birefnet-general-lite 同架构、同 1024² 输入、同 onnxruntime CPU 速度（实测 ~9s），
@@ -310,6 +328,81 @@ _log_cpu_info()
 # providers=["CPUExecutionProvider"]：强制 CPU 推理。
 # Apple Silicon 上 onnxruntime 默认尝试 CoreML EP，但部分算子不支持会报错。
 # 纯 CPU 在 M1/M2 上 isnet ~1.3s、birefnet ~9s。
+
+
+# ============================================================
+# sharp 折中档：BiRefNet-general-lite @ 768²（裸 onnx，鸭子类型接入 rembg）
+# ============================================================
+def _find_sharp_768_model_path():
+    """按 U2NET_HOME > ~/.u2net > 仓库 models/ 顺序找 768² onnx，找不到返回 None。
+
+    生产：Dockerfile 把它 COPY 到 U2NET_HOME（和 int8 / matting 一样，由 owner 跑
+    scripts/upload_model_to_hf.py 先推到三个 Space 的 models/）。本地放任一处即可。
+    """
+    fname = f"{SHARP_768_MODEL_NAME}.onnx"
+    candidates = [
+        Path(os.environ.get("U2NET_HOME", "/data/.u2net")) / fname,
+        Path.home() / ".u2net" / fname,
+        Path(__file__).parent / "models" / fname,
+    ]
+    seen, ordered = set(), []
+    for p in candidates:
+        if p not in seen:
+            seen.add(p)
+            ordered.append(p)
+    return next((p for p in ordered if p.is_file()), None)
+
+
+class _BiRefNet768Session:
+    """把固定 768² 输入的裸 BiRefNet onnx 包装成 rembg 兼容 session（鸭子类型）。
+
+    rembg 的 remove() 只调用 session.predict(img) -> [mask]，实现这一个方法即可，
+    让 768² 折中模型无缝接入现有 sharp 流水线 / id-photo / human-matting，所有调用点零改动。
+
+    前后处理完全复刻 rembg BiRefNetSessionGeneral.predict，只把输入从 1024² 换成 768²：
+    resize(BILINEAR)→ImageNet 归一化→onnx(raw logits)→sigmoid→min-max 归一化→LANCZOS 放回原尺寸。
+    （导出脚本 scripts/export_general_lite_onnx.py 没把 sigmoid 烤进图，所以这里要自己 sigmoid，
+     与 rembg 对 birefnet 的处理完全一致。）
+    """
+
+    def __init__(self, ort_session, size=SHARP_768_INPUT_SIZE):
+        self._sess = ort_session
+        self._size = size
+        self._input_name = ort_session.get_inputs()[0].name
+
+    def predict(self, img, *args, **kwargs):
+        import numpy as np
+        size = self._size
+        resized = img.convert("RGB").resize((size, size), Image.Resampling.BILINEAR)
+        arr = np.asarray(resized, dtype=np.float32) / 255.0
+        arr = (arr - np.array(_BIREFNET_MEAN, dtype=np.float32)) / np.array(_BIREFNET_STD, dtype=np.float32)
+        inp = np.expand_dims(arr.transpose(2, 0, 1), 0)
+        raw = self._sess.run(None, {self._input_name: inp})[0][:, 0, :, :]
+        pred = 1.0 / (1.0 + np.exp(-raw))                  # sigmoid（onnx 输出 raw logits）
+        mi, ma = float(pred.min()), float(pred.max())
+        pred = (pred - mi) / (ma - mi + 1e-8)              # min-max 归一化（同 rembg）
+        pred = np.squeeze(pred)
+        mask = Image.fromarray((pred * 255).astype("uint8"), mode="L").resize(
+            img.size, Image.Resampling.LANCZOS)
+        return [mask]
+
+
+def _create_sharp_768_session(sess_opts):
+    """加载 768² 折中模型；找不到 onnx 文件时回退到 SHARP_768_FALLBACK（rembg 内置名），绝不让 sharp 崩。"""
+    path = _find_sharp_768_model_path()
+    if path is None:
+        logger.warning(
+            "sharp 768 model '%s.onnx' not found (U2NET_HOME / ~/.u2net / ./models); "
+            "falling back to rembg '%s'", SHARP_768_MODEL_NAME, SHARP_768_FALLBACK)
+        cls = next((sc for sc in sessions_class if sc.name() == SHARP_768_FALLBACK), None)
+        if cls is None:
+            raise RuntimeError(f"sharp 768 fallback '{SHARP_768_FALLBACK}' not found in rembg")
+        return cls(SHARP_768_FALLBACK, sess_opts, ["CPUExecutionProvider"])
+    logger.info("Loading sharp 768 model: %s (%.0f MB)", path, path.stat().st_size / 1024 / 1024)
+    inner = ort.InferenceSession(str(path), sess_opts, providers=["CPUExecutionProvider"])
+    return _BiRefNet768Session(inner)
+
+
 def _create_birefnet_session():
     """加载 sharp 档分割模型（SHARP_MODEL，默认 isnet-general-use），onnxruntime 默认 arena/mem_pattern（速度优先）。
 
@@ -335,6 +428,10 @@ def _create_birefnet_session():
         n = int(threads)
         sess_opts.inter_op_num_threads = n
         sess_opts.intra_op_num_threads = n
+
+    # 768² 折中档：裸 onnx + 鸭子类型 wrapper，不走 rembg 内置 session class。
+    if SHARP_MODEL == SHARP_768_MODEL_NAME:
+        return _create_sharp_768_session(sess_opts)
 
     cls = next((sc for sc in sessions_class if sc.name() == SHARP_MODEL), None)
     if cls is None:
@@ -562,6 +659,29 @@ watermark_semaphore = asyncio.Semaphore(int(os.getenv("WATERMARK_MAX_CONCURRENCY
 
 lama_executor = None
 _lama_model = None
+
+
+@asynccontextmanager
+async def limited_slot(semaphore: asyncio.Semaphore, timeout_seconds: float, label: str):
+    """Acquire a scarce inference slot briefly; fail fast when this Space is already saturated."""
+    started = time.perf_counter()
+    try:
+        await asyncio.wait_for(semaphore.acquire(), timeout=max(0.001, timeout_seconds))
+    except asyncio.TimeoutError:
+        logger.info("%s busy: no slot available within %.3fs", label, timeout_seconds)
+        raise HTTPException(
+            status_code=429,
+            detail="服务繁忙，请稍后重试。",
+            headers={"Retry-After": "3"},
+        )
+
+    queue_wait = time.perf_counter() - started
+    if queue_wait >= 0.05:
+        logger.info("%s acquired slot after %.3fs", label, queue_wait)
+    try:
+        yield
+    finally:
+        semaphore.release()
 
 def _init_lama_worker():
     global _lama_model
@@ -1390,7 +1510,7 @@ async def run_id_photo(
     top_margin_ratio: float,
     face_alignment: bool,
 ) -> dict:
-    async with rembg_semaphore:
+    async with limited_slot(rembg_semaphore, REMBG_QUEUE_WAIT_TIMEOUT_SECONDS, "id_photo"):
         return await asyncio.to_thread(
             _generate_id_photo_sync,
             input_data,
@@ -1431,7 +1551,7 @@ async def run_rembg(data: bytes, profile: Optional[str] = None) -> bytes:
       信号量排队是 await 级别的，成本极低；线程池资源有限（默认 40 线程），
       先抢令牌能让超额请求在 await 这里排队，不占线程。
     """
-    async with rembg_semaphore:
+    async with limited_slot(rembg_semaphore, REMBG_QUEUE_WAIT_TIMEOUT_SECONDS, "rembg"):
         return await asyncio.to_thread(_run_rembg_sync, data, profile)
 
 
@@ -1536,7 +1656,7 @@ async def run_old_photo_restore(
     scale: int,
     strength: str,
 ) -> tuple[bytes, str]:
-    async with restore_semaphore:
+    async with limited_slot(restore_semaphore, RESTORE_QUEUE_WAIT_TIMEOUT_SECONDS, "old_photo_restore"):
         if RESTORE_PROVIDER_URL:
             return await _restore_old_photo_external(input_data, filename, content_type, scale, strength)
         return await asyncio.to_thread(_restore_old_photo_local_sync, input_data, scale, strength)
@@ -1548,8 +1668,45 @@ async def run_old_photo_restore(
 @app.get("/")
 async def root():
     if not SERVE_STATIC:
-        return {"ok": True, "service": "miaocut-api"}
+        # 滚动发布探活用：
+        #   ok          —— 进程活着、HTTP 能响应（容器已启动）
+        #   model_ready —— sharp 模型是否已加载完成（startup warmup 完成 = 可以无损接抠图流量）
+        # model_ready 直接读模块级全局会话变量，**不会触发**懒加载，所以探活本身不会拖慢冷启动。
+        # gateway / 部署 workflow 可以等 model_ready=true 再把流量切到新节点，避免新节点接进来的
+        # 第一个真实请求干等 ~10s 模型加载。
+        return {
+            "ok": True,
+            "service": "miaocut-api",
+            "space": BACKEND_SPACE or None,
+            "model_ready": _high_quality_session is not None,
+        }
     return FileResponse("index.html")
+
+
+@app.get("/healthz")
+async def healthz():
+    return {
+        "ok": True,
+        "service": "miaocut-api",
+        "space": BACKEND_SPACE or None,
+    }
+
+
+@app.get("/readyz")
+async def readyz(response: Response):
+    model_ready = _high_quality_session is not None
+    rembg_accepting = not rembg_semaphore.locked()
+    ready = model_ready and rembg_accepting
+    if not ready:
+        response.status_code = 503
+    return {
+        "ok": ready,
+        "service": "miaocut-api",
+        "space": BACKEND_SPACE or None,
+        "model_ready": model_ready,
+        "rembg_accepting": rembg_accepting,
+        "max_concurrency": MAX_CONCURRENCY,
+    }
 
 
 if SERVE_STATIC:
@@ -1685,6 +1842,8 @@ async def remove_background(request: Request, file: UploadFile = File(...)):
     profile = profile_param if profile_param in ("sharp", "fur") else None
     try:
         output_data = await run_rembg(input_data, profile=profile)
+    except HTTPException:
+        raise
     except Exception as e:
         logger.exception("rembg failed: %s", e)
         raise HTTPException(status_code=500, detail="图片处理失败，可能图片过于复杂，请重试。")
@@ -1740,9 +1899,11 @@ async def remove_watermark(request: Request, image: UploadFile = File(...), mask
         mask_image = mask_image.resize(source_image.size, Image.Resampling.NEAREST)
 
     try:
-        async with watermark_semaphore:
+        async with limited_slot(watermark_semaphore, WATERMARK_QUEUE_WAIT_TIMEOUT_SECONDS, "watermark"):
             loop = asyncio.get_running_loop()
             result = await loop.run_in_executor(lama_executor, _run_lama_worker, source_image, mask_image)
+    except HTTPException:
+        raise
     except Exception as exc:
         logger.exception("watermark removal failed: %s", exc)
         raise HTTPException(status_code=500, detail="去水印处理失败，请重试。")
@@ -1965,6 +2126,8 @@ async def id_photo_human_matting(request: Request, file: UploadFile = File(...))
         output = await run_rembg(input_data, profile=profile)
         img = Image.open(io.BytesIO(output)).convert("RGBA")
         return {"ok": True, "image_base64": _image_to_base64(img, "PNG")}
+    except HTTPException:
+        raise
     except Exception as exc:
         logger.exception("id photo matting failed: %s", exc)
         raise HTTPException(status_code=500, detail="Human matting failed")

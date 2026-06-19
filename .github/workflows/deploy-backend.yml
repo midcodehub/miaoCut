@@ -1,12 +1,24 @@
 # ============================================================
-# MiaoCut 后端自动分发部署到 Hugging Face Spaces
+# MiaoCut 后端「滚动发布」到 Hugging Face Spaces（零停机 / 流量无损）
 # ============================================================
 # 流程：
 #   1. main 分支后端相关文件变更后触发。
-#   2. GitHub Actions 将后端最小快照依次推送到 Docker Spaces：
+#   2. GitHub Actions 把后端最小快照**逐个、串行**推送到 3 个 Docker Space：
 #      https://huggingface.co/spaces/midcodex/miao_cut
 #      https://huggingface.co/spaces/midcodex/miao_cut2
 #      https://huggingface.co/spaces/midcodex/miao_cut3
+#   3. 每推一个，就等它**走完整个重建周期并健康**（build → RUNNING → 模型预热完成）后，
+#      才推下一个。任意时刻最多只有 1 个 Space 在重建，另外 2 个继续服务旧版本。
+#
+# 为什么这样能无损：
+#   前端流量先打到 Cloudflare 的 gateway worker（scripts/cloudflare-hf-gateway-worker.js），
+#   worker 对 3 个 Space 做 round-robin + failover：正在重建的那个 Space 会返回 503/超时
+#   （已在 worker 的 FAILOVER_STATUS_CODES 里），worker 当场切到另外 2 个健康节点并熔断它。
+#   只要保证"同一时刻只动一个 Space"，worker 就永远有健康节点可用 → 用户无感知。
+#   ⚠️ 所以 worker 不需要改；它的 failover 能力正是滚动发布无损的前提。
+#
+#   任一 Space 重建失败（BUILD_ERROR / RUNTIME_ERROR / 超时）→ 立即中止，不再推后续 Space，
+#   保证最坏情况下也至少有 2 个 Space 停在可用的旧版本上，而不是三个一起挂。
 #
 # GitHub 仓库 Settings → Secrets and variables → Actions 中需配置：
 #   HF_TOKEN：有以上 Space 写权限的 Hugging Face access token。
@@ -44,14 +56,16 @@ jobs:
       - name: Install huggingface_hub
         run: pip install --quiet "huggingface_hub>=0.24"
 
-      - name: Upload code files to Hugging Face Spaces
+      - name: Rolling deploy to Hugging Face Spaces
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GITHUB_SHA: ${{ github.sha }}
-        # 用 HF API 的 upload_folder + allow_patterns，只上传白名单里的代码文件。
-        # 模型文件（models/*.onnx 等大文件）由 owner 在 HF Space 上手动维护，每次 workflow
-        # 完全不碰，自然就跳过 git-lfs / 100MB 上限 / 反复推大文件这些坑。
-        # 上传是真增量：HF API 内部按文件 sha256 dedupe，未变化的文件不会真正传输也不会触发 rebuild。
+        # 逐个 Space 滚动发布：推一个 → 等它重建并预热完成 → 再推下一个；任一失败即中止。
+        #
+        # 上传仍走 HF API 的 upload_folder + allow_patterns，只传白名单代码文件。
+        # 模型大文件（*.onnx）不在列表里，由 owner 手动维护，workflow 完全不碰。
+        # 上传是真增量（HF 按 sha256 dedupe）：文件没变就不会触发 rebuild，此时 wait_build_start
+        # 探测不到 build 周期，会判定"无变化"直接跳到健康探活，不会卡住。
         run: |
           set -euo pipefail
           if [ -z "$HF_TOKEN" ]; then
@@ -60,25 +74,132 @@ jobs:
           fi
           python - <<'PY'
           import os
+          import sys
+          import time
+          import json
+          import urllib.request
+
           from huggingface_hub import HfApi
 
           api = HfApi(token=os.environ["HF_TOKEN"])
           sha_short = os.environ.get("GITHUB_SHA", "manual")[:8]
-          spaces = ["miao_cut", "miao_cut2", "miao_cut3"]
 
-          # 这些是部署到 HF Space 必须的代码文件；改这些任一文件都会触发 HF Space 重新 build。
-          # 模型文件（*.onnx）不在列表里 → 由 owner 手动通过 HF Web UI / huggingface-cli 维护。
-          allow = ["main.py", "Dockerfile", "requirements.txt", "README.md"]
+          # (Space repo 名, 对外探活域名)。顺序 = 滚动发布顺序。
+          SPACES = [
+              ("miao_cut",  "midcodex-miao-cut.hf.space"),
+              ("miao_cut2", "midcodex-miao-cut2.hf.space"),
+              ("miao_cut3", "midcodex-miao-cut3.hf.space"),
+          ]
+          ALLOW = ["main.py", "Dockerfile", "requirements.txt", "README.md"]
 
-          for space in spaces:
+          # 各阶段超时（秒）。Docker Space 要 COPY ~400MB 模型 + pip install，build 偏慢，给足。
+          POLL_INTERVAL          = 10
+          BUILD_START_TIMEOUT    = 240    # 推完后多久内应观察到 build 开始；超时=无变化，跳过等待
+          BUILD_FINISH_TIMEOUT   = 1500   # build + 容器切换回到 RUNNING 的最长等待
+          READY_TIMEOUT          = 360    # RUNNING 后等 HTTP 健康 + 模型预热完成
+          READY_STABLE_HITS      = 2      # 连续 N 次探活成功才算稳定（躲开容器切换瞬间的抖动）
+
+          # 重建周期中的所有 stage（来自 huggingface_hub.SpaceStage 枚举）。
+          # 注意 RUNNING_BUILDING / RUNNING_APP_STARTING 前缀 RUNNING = 旧容器仍在 serving、
+          # 同时在 build/启动新容器，这正是 HF Docker Space 的无损切换期；wait_build_finish
+          # 等的是「纯 RUNNING」（精确等于），不会把这两个 RUNNING_* 误判成完成。
+          BUILDING_STAGES = {"BUILDING", "RUNNING_BUILDING", "APP_STARTING", "RUNNING_APP_STARTING"}
+          FATAL_STAGES    = {"BUILD_ERROR", "RUNTIME_ERROR", "CONFIG_ERROR", "NO_APP_FILE"}
+
+          def stage_of(repo_id):
+              try:
+                  return api.get_space_runtime(repo_id).stage or "UNKNOWN"
+              except Exception as exc:  # 偶发 5xx/网络抖动，不要让整条流水线崩
+                  print(f"    (warn) get_space_runtime({repo_id}) failed: {exc}")
+                  return "UNKNOWN"
+
+          def wait_build_start(repo_id):
+              """等 stage 进入 build 周期。返回 True=已开始 build；False=超时（视为文件无变化、未触发 rebuild）。"""
+              deadline = time.time() + BUILD_START_TIMEOUT
+              while time.time() < deadline:
+                  stage = stage_of(repo_id)
+                  if stage in FATAL_STAGES:
+                      raise RuntimeError(f"{repo_id} entered fatal stage during build start: {stage}")
+                  if stage in BUILDING_STAGES:
+                      print(f"    [{repo_id}] build started (stage={stage})")
+                      return True
+                  time.sleep(POLL_INTERVAL)
+              return False
+
+          def wait_build_finish(repo_id):
+              """等 build 完成、容器切换回到 RUNNING（不再处于 building/starting 态）。"""
+              deadline = time.time() + BUILD_FINISH_TIMEOUT
+              last = None
+              while time.time() < deadline:
+                  stage = stage_of(repo_id)
+                  if stage != last:
+                      print(f"    [{repo_id}] stage={stage}")
+                      last = stage
+                  if stage in FATAL_STAGES:
+                      raise RuntimeError(f"{repo_id} build failed: stage={stage}")
+                  if stage == "RUNNING":
+                      return
+                  time.sleep(POLL_INTERVAL)
+              raise TimeoutError(f"{repo_id} did not return to RUNNING within {BUILD_FINISH_TIMEOUT}s")
+
+          def probe(host):
+              """GET https://host/ → (ok, model_ready)。任何异常都算未就绪。"""
+              url = f"https://{host}/"
+              try:
+                  req = urllib.request.Request(url, headers={"User-Agent": "miaocut-rollout"})
+                  with urllib.request.urlopen(req, timeout=10) as r:
+                      if r.status != 200:
+                          return (False, False)
+                      data = json.loads(r.read().decode("utf-8"))
+                      return (bool(data.get("ok")), bool(data.get("model_ready")))
+              except Exception:
+                  return (False, False)
+
+          def wait_http_ready(host):
+              """等健康检查 ok 且 model_ready（模型预热完成），且连续稳定多次。"""
+              deadline = time.time() + READY_TIMEOUT
+              hits = 0
+              while time.time() < deadline:
+                  ok, ready = probe(host)
+                  if ok and ready:
+                      hits += 1
+                      if hits >= READY_STABLE_HITS:
+                          print(f"    [{host}] healthy & model_ready ✅")
+                          return
+                  else:
+                      hits = 0
+                  time.sleep(POLL_INTERVAL)
+              raise TimeoutError(f"{host} not healthy/model_ready within {READY_TIMEOUT}s")
+
+          def deploy_one(space, host):
               repo_id = f"midcodex/{space}"
-              print(f"==> Uploading {len(allow)} files to https://huggingface.co/spaces/{repo_id}")
+              print(f"==> [{repo_id}] uploading {ALLOW}")
               api.upload_folder(
                   folder_path=".",
                   repo_id=repo_id,
                   repo_type="space",
-                  allow_patterns=allow,
-                  commit_message=f"Deploy {sha_short} from GitHub Actions",
+                  allow_patterns=ALLOW,
+                  commit_message=f"Deploy {sha_short} from GitHub Actions (rolling)",
               )
-              print(f"    done: {repo_id}")
+              if wait_build_start(repo_id):
+                  wait_build_finish(repo_id)
+              else:
+                  print(f"    [{repo_id}] no rebuild detected (files unchanged); verifying current health")
+              wait_http_ready(host)
+
+          failed = None
+          for i, (space, host) in enumerate(SPACES):
+              try:
+                  deploy_one(space, host)
+                  print(f"    [{space}] done ({i + 1}/{len(SPACES)})\n")
+              except Exception as exc:
+                  failed = (space, exc)
+                  print(f"!! [{space}] deploy failed: {exc}", file=sys.stderr)
+                  print("!! Aborting rollout — remaining Spaces keep serving the previous version.",
+                        file=sys.stderr)
+                  break
+
+          if failed:
+              sys.exit(1)
+          print("Rolling deploy complete: all 3 Spaces updated with zero downtime.")
           PY

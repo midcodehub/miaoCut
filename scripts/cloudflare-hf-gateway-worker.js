@@ -67,15 +67,17 @@ export default {
       });
     }
 
+    const finalStatus = finalUnavailableStatus(result.lastFailure);
     return jsonResponse(
       {
-        error: "UPSTREAM_UNAVAILABLE",
+        error: finalStatus === 429 ? "UPSTREAM_BUSY" : "UPSTREAM_UNAVAILABLE",
         message: "All upstream nodes are unavailable, overloaded, or timed out.",
         attempts: result.attempts,
         lastFailure: result.lastFailure,
       },
-      502,
+      finalStatus,
       corsHeaders,
+      finalStatus === 429 ? { "Retry-After": "3" } : {},
     );
   },
 };
@@ -390,14 +392,23 @@ function applyCors(headers, corsHeaders) {
   }
 }
 
-function jsonResponse(body, status, corsHeaders) {
+function jsonResponse(body, status, corsHeaders, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
       ...corsHeaders,
+      ...extraHeaders,
       "Content-Type": "application/json; charset=utf-8",
     },
   });
+}
+
+function finalUnavailableStatus(lastFailure) {
+  if (!lastFailure) return 502;
+  if (lastFailure.status === 429 || lastFailure.reason === "status_429") return 429;
+  if (lastFailure.status === 503 || lastFailure.reason === "status_503") return 503;
+  if (lastFailure.reason === "timeout" || lastFailure.reason === "total_timeout") return 504;
+  return 502;
 }
 
 function parseStatusSet(value) {

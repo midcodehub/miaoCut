@@ -35,6 +35,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_MODELS = [
     REPO_ROOT / "models" / "birefnet-general-lite-int8.onnx",  # sharp 档 INT8
     REPO_ROOT / "models" / "birefnet-lite-matting.onnx",       # fur 档 matting
+    REPO_ROOT / "models" / "birefnet-general-lite-768.onnx",   # sharp 折中档（768²，默认底座）
 ]
 
 

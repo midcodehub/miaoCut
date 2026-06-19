@@ -71,6 +71,13 @@ COPY --chown=user:user models/birefnet-general-lite-int8.onnx /opt/miaocut-model
 # ⚠️ 改这行会触发三个 Space rebuild：务必先把 onnx 传齐全部 3 个 Space 再 push，否则 COPY 找不到文件会让 build 失败。
 COPY --chown=user:user models/birefnet-lite-matting.onnx /opt/miaocut-models/
 
+# sharp 折中档的 BiRefNet-general-lite @ 768² 模型（~196MB，由 scripts/export_general_lite_onnx.py 导出）。
+# 这是 SHARP_MODEL 的**默认底座**：毛发质量接近 1024² BiRefNet，速度只要 ~1/3。
+# 维护方式和上面 int8 / matting 完全一致（upload_model_to_hf.py 三个模型一起推）。
+# main.py 的 _find_sharp_768_model_path 检测到它就启用；缺失时自动回退 SHARP_768_FALLBACK（默认 isnet）。
+# ⚠️ 同样：改这行会触发三个 Space rebuild，务必先把 onnx 传齐全部 3 个 Space 再 push。
+COPY --chown=user:user models/birefnet-general-lite-768.onnx /opt/miaocut-models/
+
 # Hugging Face Spaces 默认公开 7860 端口；反馈数据写 /data 以便挂载持久化存储。
 # 模型已内置到镜像；如果将来缺失，main.py 会自动退到可写缓存目录。
 ENV PORT=7860 \
