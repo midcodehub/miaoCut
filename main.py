@@ -402,6 +402,28 @@ def _log_memory_status(tag: str) -> None:
     )
 
 
+# glibc malloc_trim：Linux 上 onnxruntime/numpy 用完的大块默认留在进程 free list 不还给 OS，
+# 一次次推理把 RSS 高水位垫高到逼近 cgroup OOM。每次推理后主动 trim 把空闲内存还回去。
+# 非 glibc 平台（如本地 macOS）拿不到 libc.malloc_trim，_malloc_trim 直接返回 False、安全跳过。
+import ctypes as _ctypes
+
+try:
+    _libc = _ctypes.CDLL("libc.so.6")
+except OSError:
+    _libc = None
+
+
+def _malloc_trim() -> bool:
+    """把 glibc free list 里的空闲内存还给 OS；非 glibc 平台返回 False。"""
+    if _libc is None or not hasattr(_libc, "malloc_trim"):
+        return False
+    try:
+        _libc.malloc_trim(0)
+        return True
+    except Exception:
+        return False
+
+
 _original_signal_handlers = {}
 
 
@@ -1070,6 +1092,10 @@ def _run_rembg_sync(data: bytes, profile: Optional[str] = None) -> bytes:
         out = _run_sharp_pipeline(data)
     # 抠图后打印内存水位，定位"无声重启"是否为 cgroup OOM（fur 是内存大头）
     _log_memory_status(f"after-{chosen}")
+    # glibc 默认不把 onnxruntime/numpy 用完的大块还给 OS，会累积驻留逼近 cgroup OOM；
+    # 主动 malloc_trim 回收，并打印回收后水位作对比（验证驻留是不是 glibc 不归还导致的）
+    if _malloc_trim():
+        _log_memory_status(f"after-{chosen}-trim")
     return out
 
 
