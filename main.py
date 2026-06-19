@@ -115,6 +115,23 @@ ENABLE_INT8_MODEL = os.getenv("ENABLE_INT8_MODEL", "0") == "1"
 _raw_profile = os.getenv("CUTOUT_PROFILE", "sharp").lower()
 CUTOUT_PROFILE = _raw_profile if _raw_profile in ("sharp", "fur") else "sharp"
 
+# ============================================================
+# sharp 档底座模型（速度优先档用哪个分割模型）
+# ============================================================
+# 默认 isnet-general-use：纯 CNN 分割模型，CPU 上单张 ~1.3s（实测 examples 真实人像图）。
+# 历史上 sharp 一度换成 birefnet-general-lite（Swin Transformer），边缘更细但 CPU 上要 ~9s，
+# 在 HF Space 这种 2 vCPU 机器上实测会涨到 25s+，体验严重退化。
+#
+# 真实人像图对比实测（同一张 examples/raw 人物照，M1）：
+#   isnet-general-use     ~1.3s  头/帽/裤/鞋边缘与 birefnet 肉眼几乎无差，细杖也保住
+#   birefnet-general-lite ~8.8s  发丝级最细，但慢 6.5×
+#   u2net                 ~0.6s  细杖丢失 + 绿幕合成有明显光晕，质量不可接受
+# 结论：硬边主体（人、商品、Logo、证件照）用 isnet 性价比最高；真要逐根抠毛发，前端切到 fur 档。
+#
+# 想找回 birefnet 的发丝细节，设 SHARP_MODEL=birefnet-general-lite 即可（Docker 镜像里两份权重都在，
+# 不用重新构建）。任何 rembg 支持的分割模型名都能填，找不到会在加载时报错。
+SHARP_MODEL = os.getenv("SHARP_MODEL", "isnet-general-use").strip() or "isnet-general-use"
+
 # fur 档底座：默认用 BiRefNet_lite-matting（专门训练的抠图模型，直出软 alpha）。
 # 它和 sharp 用的 birefnet-general-lite 同架构、同 1024² 输入、同 onnxruntime CPU 速度（实测 ~9s），
 # 但边缘是逐根毛丝的软过渡，换底色时既没有 legacy 流水线那种"亮光晕"，也没有 sharp 那种"背景色脏边"。
@@ -276,34 +293,35 @@ _log_cpu_info()
 
 
 # ============================================================
-# AI 模型初始化
+# AI 模型初始化（sharp 档底座）
 # ============================================================
-# BiRefNet (Bilateral Reference Network) 是 2024 年图像分割领域的 SOTA 模型。
-# 相比 IS-Net / U2-Net，BiRefNet 在以下方面有本质提升：
-#   - 边缘精度：发丝、毛绒、半透明物体的边界极其锐利
-#   - 细节保留：小物件、镂空区域不会被误删
-#   - 泛化能力：人物、商品、动物、建筑等场景通吃
+# sharp 档具体加载哪个分割模型由 SHARP_MODEL 环境变量决定，默认 isnet-general-use。
 #
-# birefnet-general-lite（swin_v1_tiny backbone）约 224MB，首次运行时 rembg 自动下载到 U2NET_HOME。
-# 之前用 birefnet-general（swin_v1_large，~480MB），M1 上 ~17s/张、Linux x86 4核 ~25s+/张，
-# 太慢；切到 lite 后 M1 ~9s、Linux 估 ~12~17s（按 HF Space 套餐档位变动），
-# 边缘质量肉眼几乎察觉不到差异。还原历史用 isnet-general-use（~1.2s/张）但发丝边缘会回到粗糙。
+# 为什么默认 isnet 而不是 birefnet：CPU 推理速度差 6.5×，但硬边主体的肉眼质量几乎一样。
+# 同一张 examples/raw 真实人像图实测（M1）：
+#   isnet-general-use     ~1.3s/张  纯 CNN；头/帽/裤/鞋边缘干净，细杖也保住（当前默认）
+#   birefnet-general-lite ~8.8s/张  Swin Transformer；发丝级最细，但 2 vCPU 的 HF Space 上会涨到 25s+
+#   u2net                 ~0.6s/张  最快但细杖丢失 + 合成有明显光晕，质量不可接受
+# 毛发/卷发/宠物这种"软边"主体由前端切到 fur 档（matting 模型）处理，不靠 sharp。
+#
+# BiRefNet (Bilateral Reference Network) 是发丝级边缘的 SOTA，想要那种细节就设
+# SHARP_MODEL=birefnet-general-lite（Docker 镜像里两份权重都预置，切换不用重新构建）。
 #
 # providers=["CPUExecutionProvider"]：强制 CPU 推理。
 # Apple Silicon 上 onnxruntime 默认尝试 CoreML EP，但部分算子不支持会报错。
-# 纯 CPU 在 M1/M2 上单张图 1~3 秒，完全够用。
+# 纯 CPU 在 M1/M2 上 isnet ~1.3s、birefnet ~9s。
 def _create_birefnet_session():
-    """加载 BiRefNet-lite 模型，使用 onnxruntime 默认的 arena/mem_pattern（速度优先）。
+    """加载 sharp 档分割模型（SHARP_MODEL，默认 isnet-general-use），onnxruntime 默认 arena/mem_pattern（速度优先）。
 
     rembg 自带的 new_session() 内部硬写 ort.SessionOptions()，没法外部覆盖；
     这里直接构造 session 类，是为了把 MIAOCUT_OMP_NUM_THREADS 注入 sess_opts
     （Hugging Face Space 不允许使用 OMP_NUM_THREADS 这个保留变量名，所以加了一个别名）。
 
-    ⚠️ 模型选型踩坑：项目历史用过三种模型，速度差异巨大（M1 实测同一张 1024² 图）：
-        isnet-general-use     ~1.2s/张  发丝边缘粗糙，需要换底色时毛边明显
-        birefnet-general-lite ~9s/张    边缘细腻，与 general 视觉差异极小（当前选择）
+    ⚠️ 模型选型踩坑：项目历史用过几种模型，速度差异巨大（M1 实测同一张图）：
+        isnet-general-use     ~1.3s/张  硬边主体边缘干净，发丝级细节弱于 birefnet（当前默认）
+        birefnet-general-lite ~9s/张    边缘最细腻，但 CPU 慢 6.5×，2 vCPU 机器上会到 25s+
         birefnet-general      ~17.8s/张 SOTA 质量，但 CPU 推理太慢
-    HF Space 是 CPU 推理，速度优先 → lite 是最佳折中。换成 general 之前先想清楚 14× 慢。
+    HF Space 是 CPU 推理，速度优先 → isnet 是最佳折中。要发丝细节再切 birefnet。
 
     ⚠️ 内存设置踩坑：曾设过 enable_cpu_mem_arena=False + enable_mem_pattern=False 来压 RSS，
     Linux 上每次推理耗时翻倍（arena 关 → 大块反复 malloc/free；mem_pattern 关 → 每次重算
@@ -318,12 +336,15 @@ def _create_birefnet_session():
         sess_opts.inter_op_num_threads = n
         sess_opts.intra_op_num_threads = n
 
-    cls = next((sc for sc in sessions_class if sc.name() == "birefnet-general-lite"), None)
+    cls = next((sc for sc in sessions_class if sc.name() == SHARP_MODEL), None)
     if cls is None:
-        raise RuntimeError("birefnet-general-lite session class not found in rembg")
-    sess = cls("birefnet-general-lite", sess_opts, ["CPUExecutionProvider"])
+        raise RuntimeError(f"sharp model session class '{SHARP_MODEL}' not found in rembg")
+    sess = cls(SHARP_MODEL, sess_opts, ["CPUExecutionProvider"])
 
-    # ---- INT8 量化模型（需显式设 ENABLE_INT8_MODEL=1 才加载）----
+    # ---- INT8 量化模型（仅对 birefnet-general-lite 生效，且需显式设 ENABLE_INT8_MODEL=1）----
+    # INT8 权重文件是为 birefnet 离线量化的；换成 isnet 等其他底座时直接跳过，避免张量名对不上。
+    if SHARP_MODEL != "birefnet-general-lite":
+        return sess
     # 实测在 HF Space Xeon 8375C（有 AVX-512 VNNI）上，动态 INT8 比 FP32 慢 ~2x（19s vs ~10s）：
     # Swin Transformer 层数多，每层 activation 动态量化的 scale 计算开销叠加后大于 VNNI 收益。
     # M1 上快 4-5s 是因为模型体积减半节省了统一内存带宽，与量化算法本身无关。
@@ -365,12 +386,12 @@ _high_quality_session_lock = threading.Lock()
 
 
 def get_high_quality_session():
-    """按需加载 BiRefNet，避免 Hugging Face Space 冷启动时阻塞健康检查。"""
+    """按需加载 sharp 档分割模型（SHARP_MODEL），避免 Hugging Face Space 冷启动时阻塞健康检查。"""
     global _high_quality_session
     if _high_quality_session is None:
         with _high_quality_session_lock:
             if _high_quality_session is None:
-                logger.info("Loading birefnet-general-lite AI model for background removal... (cutout_profile=%s)", CUTOUT_PROFILE)
+                logger.info("Loading sharp model '%s' for background removal... (cutout_profile=%s)", SHARP_MODEL, CUTOUT_PROFILE)
                 _high_quality_session = _create_birefnet_session()
     return _high_quality_session
 

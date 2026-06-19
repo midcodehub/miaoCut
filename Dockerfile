@@ -26,12 +26,17 @@ RUN apt-get update && \
 COPY requirements.txt .
 RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
-# 构建阶段预下载 BiRefNet 模型，避免容器启动后首个请求再去 GitHub 下载。
+# 构建阶段预下载 sharp 档两个候选模型，避免容器启动后首个请求再去 GitHub 下载。
+#   isnet-general-use     —— 当前 SHARP_MODEL 默认值（~1.3s，硬边主体性价比最高）
+#   birefnet-general-lite —— 设 SHARP_MODEL=birefnet-general-lite 可切回（发丝级细节）
+# 两份都预置，运行时切 SHARP_MODEL 不用重新构建镜像。
 # pip --prefix 安装的包不在 builder 默认 sys.path 中，所以显式设置 PYTHONPATH。
 RUN mkdir -p /model-cache && \
     U2NET_HOME=/model-cache \
     PYTHONPATH=/install/lib/python3.11/site-packages \
-    python -c "from rembg.sessions import sessions_class; cls = next(sc for sc in sessions_class if sc.name() == 'birefnet-general-lite'); print(cls.download_models())"
+    python -c "from rembg.sessions import sessions_class; \
+names=['isnet-general-use','birefnet-general-lite']; \
+[print(next(sc for sc in sessions_class if sc.name()==n).download_models()) for n in names]"
 
 # ============================================================
 FROM python:3.11-slim

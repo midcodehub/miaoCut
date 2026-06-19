@@ -70,7 +70,7 @@ npm run watch:css
 3. **大小+像素校验**：先看 `Content-Length`，再边读边截断，最后用 PIL `verify()` 兜底，避免内存炸弹。
 4. **抢信号量再进线程池** `run_rembg` ([main.py:404](main.py#L404))：`rembg_semaphore` 限并发到 `MAX_CONCURRENCY`，然后 `asyncio.to_thread` 跑 CPU 密集的 BiRefNet 推理，避免阻塞 event loop。
 5. **抠图分流** `_run_rembg_sync` ([main.py:274](main.py#L274))：按 profile 派发，profile 来自 `?profile=` query 参数（前端 toggle 控制） > `CUTOUT_PROFILE` 环境变量 > 默认 `sharp`：
-   - **`sharp`**（默认快）：`_run_sharp_pipeline` ([main.py:289](main.py#L289)) —— BiRefNet 直出 mask + 温和 gamma=0.85 + 极窄死区 [0.02, 0.98] + 1px 高斯抗锯齿。~1s/张，适合人物、商品、Logo 等"硬边"主体。
+   - **`sharp`**（默认快）：`_run_sharp_pipeline` ([main.py:289](main.py#L289)) —— 分割模型直出 mask + 温和 gamma=0.85 + 极窄死区 [0.02, 0.98] + 1px 高斯抗锯齿。底座模型由 `SHARP_MODEL` 环境变量决定，默认 `isnet-general-use`（~1.3s/张），适合人物、商品、Logo 等"硬边"主体。设 `SHARP_MODEL=birefnet-general-lite` 可换成发丝级边缘的 BiRefNet，但 CPU 上慢 ~6.5×（2 vCPU 的 HF Space 实测 25s+）。
    - **`fur`**（细腻慢）：`_run_fur_pipeline` ([main.py:339](main.py#L339)) —— `alpha_matting=True` 让 pymatting 在 trimap 未知带做闭式求解 + `estimate_foreground_ml` 解出纯前景色（消除半透明像素的背景色污染，这是 Adobe 那种"细腻"的关键）。~3~5s/张，适合白猫/卷发/羽毛/植物等"软边"主体。
 6. 编码为 PNG 返回（不用 WebP，因为 alpha plane 编码会多耗 ~100ms，反而拖慢体感）。
 
@@ -118,6 +118,7 @@ ALLOWED_ORIGINS=https://miaocut.app,https://www.miaocut.app,https://midcodex-mia
 MAX_CONCURRENCY=1
 ENABLE_DOCS=0          # 关掉 /docs 防接口枚举
 CUTOUT_PROFILE=sharp   # 默认；前端 toggle 可按请求覆盖到 fur
+SHARP_MODEL=isnet-general-use  # sharp 档底座，默认 isnet（~1.3s）；要发丝细节设 birefnet-general-lite（~9s）
 DATA_DIR=/data          # Space Persistent Storage
 PORT=7860               # Hugging Face Docker Space
 MIAOCUT_OMP_NUM_THREADS=2
