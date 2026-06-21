@@ -1,4 +1,31 @@
 User-agent: *
 Allow: /
 
+# Non-indexable endpoints and platform internals.
+Disallow: /api/
+Disallow: /cdn-cgi/
+
+# Duplicate URL variants created by tracking, ad, and UI parameters.
+# Keep asset version parameters such as /output.css?v=... crawlable.
+Disallow: /*?utm_
+Disallow: /*&utm_
+Disallow: /*?fbclid=
+Disallow: /*&fbclid=
+Disallow: /*?gclid=
+Disallow: /*&gclid=
+Disallow: /*?msclkid=
+Disallow: /*&msclkid=
+Disallow: /*?ref=
+Disallow: /*&ref=
+Disallow: /*?source=
+Disallow: /*&source=
+Disallow: /*?campaign=
+Disallow: /*&campaign=
+Disallow: /*?sort=
+Disallow: /*&sort=
+Disallow: /*?filter=
+Disallow: /*&filter=
+Disallow: /*?page=
+Disallow: /*&page=
+
 Sitemap: https://miaocut.app/sitemap.xml
