@@ -2,15 +2,17 @@
 MiaoCut 后端：1 秒纯净抠图。
 
 这是一个无登录的公网接口，防盗刷是重点。关键防护层（从外到内）：
-  1. 反代/CDN（Nginx、Cloudflare 等，外部配置）：TLS、大包限制、黑名单。
-  2. Origin/Referer 白名单：阻止第三方站点直接 fetch 白嫖我的接口。
-  3. SlowAPI 限流（按"真实 IP"，IPv6 按 /64 段聚合）：扛爬虫。
-  4. 请求体大小 + 图片像素上限：防内存炸弹。
-  5. 并发信号量 + 线程池：防 rembg 把 worker 打满。
+  1. 反代/CDN（Cloudflare Worker 网关 api2.miaocut.app）：TLS、大包限制、边缘限流/拦截。
+  2. 网关回源密钥（X-Gateway-Secret）：只放行经过网关的请求，封死直连 *.hf.space 绕过边缘防护。
+  3. Origin/Referer 白名单：阻止第三方站点直接 fetch 白嫖我的接口；无 Origin/Referer 直接 403。
+  4. SlowAPI 限流（按"真实 IP"，IPv6 按 /64 段聚合）：扛爬虫。
+  5. 请求体大小 + 图片像素上限：防内存炸弹。
+  6. 并发信号量 + 线程池：防 rembg 把 worker 打满。
 
 部署时至少要设置的环境变量：
   TRUST_PROXY=1                           # 有反向代理时必设
-  ALLOWED_ORIGINS=https://miaocut.example # 逗号分隔
+  ALLOWED_ORIGINS=https://miaocut.example # 逗号分隔；建议不要再列 *.hf.space
+  GATEWAY_SECRET=<长随机串>               # 与 Cloudflare Worker 同一个值；留空则不校验
   MAX_UPLOAD_MB=10
   MAX_CONCURRENCY=4                       # 按机器内存拍，公式见下方注释
   ENABLE_DOCS=0                           # 生产关掉 /docs
@@ -75,6 +77,11 @@ from slowapi.errors import RateLimitExceeded
 # 逗号分隔的源列表。示例：https://miaocut.com,https://www.miaocut.com
 # 空集合表示不做来源校验（本地 dev 友好）
 ALLOWED_ORIGINS = {o.strip().rstrip("/") for o in os.getenv("ALLOWED_ORIGINS", "").split(",") if o.strip()}
+# 网关回源密钥：只有 Cloudflare Worker 网关（api2.miaocut.app）知道这个值，
+# 它在回源到 *.hf.space 时注入到 X-Gateway-Secret 头。后端用它确认"请求确实来自网关"，
+# 从而把直连 *.hf.space 绕过网关（绕过边缘限流/人机验证）的请求挡在门外。详见 verify_gateway。
+# 留空表示不校验（本地 dev / 未配置时友好，与 ALLOWED_ORIGINS 的处理一致）。
+GATEWAY_SECRET = os.getenv("GATEWAY_SECRET", "").strip()
 # 是否在反代之后。true 时从 X-Forwarded-For 取真实 IP；false（默认）用 socket 对端，防伪造头
 TRUST_PROXY = os.getenv("TRUST_PROXY", "0") == "1"
 MAX_UPLOAD_BYTES = int(os.getenv("MAX_UPLOAD_MB", "10")) * 1024 * 1024
@@ -755,18 +762,32 @@ def get_real_ip(request: Request) -> str:
       - 生产一般在 Nginx/LB 之后，request.client.host 拿到的是代理 IP。
         所有用户共用一个 key → 要么全被限流，要么限流完全失效。
 
-    为什么默认不信任 X-Forwarded-For？
-      - 客户端可以随便伪造这个 header。只有在反代会覆盖/追加它时才能信任。
-      - 所以用 TRUST_PROXY 开关，部署时显式开启。
+    为什么不能信任 X-Forwarded-For 的"第一段"？
+      - 客户端可以随便伪造 X-Forwarded-For。约定上"最左是原始客户端"，但前提是
+        每一跳代理都不信任客户端塞进来的原值。攻击者只要发一行
+        `X-Forwarded-For: 1.2.3.4`，最左就变成假 IP，每次换一个就把按 IP 的限流
+        整个绕过。曾经这里取 `split(",")[0]` 正是这个洞。
+      - 唯一可信的来源是 Cloudflare Worker 网关注入的 X-Real-Client-IP
+        （= CF 观测到的 CF-Connecting-IP）：网关会先删掉客户端伪造的同名头再注入，
+        且回源已被 GATEWAY_SECRET 锁死，攻击者无法直连后端伪造它。
+        见 scripts/cloudflare-hf-gateway-worker.js。
 
     为什么 IPv6 要聚合到 /64？
       - 运营商通常给用户分配一整个 /64 前缀（2^64 个地址）。
       - 攻击者在前缀内切换地址 0 成本，按单 IP 限流形同虚设。
     """
     if TRUST_PROXY:
-        xff = request.headers.get("x-forwarded-for", "")
-        # XFF 第一个是最原始的客户端，后面的是一层层代理
-        ip = xff.split(",")[0].strip() if xff else (request.client.host if request.client else "0.0.0.0")
+        # 1) 首选：网关注入的可信客户端 IP（唯一不可被客户端伪造的来源）。
+        ip = request.headers.get("x-real-client-ip", "").strip()
+        # 2) 兜底：灰度期旧网关还没注入专用头时，退而取 X-Forwarded-For 的"最右"一段。
+        #    最右是最接近后端的可信代理追加的，不像最左那样可被客户端伪造。
+        if not ip:
+            xff = request.headers.get("x-forwarded-for", "")
+            if xff:
+                ip = xff.split(",")[-1].strip()
+        # 3) 末选：socket 对端。至少不可伪造；经网关时这里是 CF 出口 IP，粒度粗但不致命。
+        if not ip:
+            ip = request.client.host if request.client else "0.0.0.0"
     else:
         ip = request.client.host if request.client else "0.0.0.0"
 
@@ -1054,7 +1075,52 @@ def verify_origin(request: Request) -> None:
             raise HTTPException(status_code=403, detail="禁止的来源")
         return
 
-    # Origin 和 Referer 都没有：可能是命令行/同源直接导航，放行由限流兜底
+    # Origin 和 Referer 都没有。
+    # 前端是跨域调用（miaocut.app / 各子工具页 → api2.miaocut.app），浏览器对跨域
+    # fetch/XHR 会强制带上 Origin 头；两者皆无，基本可判定是 curl / 脚本直连。
+    # 这里从"放行"收紧为"拒绝"，抬高直接打 API 的门槛。
+    # ⚠️ Origin 在非浏览器环境可被伪造，所以这只是廉价兜底——真正防脚本靠
+    #    网关密钥（verify_gateway）+ 边缘人机验证（Cloudflare Turnstile）。
+    #    这里记一条 warning：如果攻击仍在继续但这条日志很少，说明攻击者伪造了
+    #    合法 Origin，那就必须上 Turnstile。
+    logger.warning(
+        "Blocked request without Origin/Referer: path=%s ip=%s ua=%s",
+        request.url.path,
+        get_real_ip(request),
+        request.headers.get("user-agent", "-"),
+    )
+    raise HTTPException(status_code=403, detail="禁止的来源")
+
+
+def verify_gateway(request: Request) -> None:
+    """
+    校验请求确实来自 Cloudflare Worker 网关，而不是直连 *.hf.space 绕过网关。
+
+    背景：边缘的限流 / Bot 拦截 / 人机验证都部署在 Cloudflare（api2.miaocut.app）上。
+    但 Hugging Face Space 的真实地址（*.hf.space）是公网可达的，攻击者一旦发现，
+    就能整个绕过 Cloudflare 这层防线直接打后端。
+
+    做法：网关 Worker 在回源时注入 X-Gateway-Secret=<GATEWAY_SECRET>，后端在这里用
+    恒定时间比较（hmac.compare_digest，防时序侧信道）校验。攻击者不知道密钥，
+    直连 Space 会被 403 —— 等于把后端唯一的合法入口焊死成"必须走网关"。
+
+    GATEWAY_SECRET 为空时跳过校验（本地 dev / 未配置时友好，与 verify_origin 一致）。
+
+    ⚠️ 新增任何 /api 路由时，记得把 Depends(verify_gateway) 一起挂上。
+    """
+    if not GATEWAY_SECRET:
+        return
+
+    provided = request.headers.get("x-gateway-secret", "")
+    # compare_digest 要求两边都是等长可比较的串；空值也能安全比较，结果为 False
+    if not hmac.compare_digest(provided, GATEWAY_SECRET):
+        logger.warning(
+            "Blocked non-gateway request (bad/absent X-Gateway-Secret): path=%s ip=%s ua=%s",
+            request.url.path,
+            get_real_ip(request),
+            request.headers.get("user-agent", "-"),
+        )
+        raise HTTPException(status_code=403, detail="禁止的来源")
     return
 
 
@@ -2001,7 +2067,7 @@ if SERVE_STATIC:
         return FileResponse("png-to-jpg-white-background/png-to-jpg.js", media_type="application/javascript")
 
 
-@app.post("/api/remove-background", dependencies=[Depends(verify_origin)])
+@app.post("/api/remove-background", dependencies=[Depends(verify_origin), Depends(verify_gateway)])
 @limiter.limit("5/minute;50/day")  # 按真实 IP 限流：每分钟 5 次，每天 50 次
 async def remove_background(request: Request, file: UploadFile = File(...)):
     # ---------- 1. MIME 初筛 ----------
@@ -2088,7 +2154,7 @@ def _run_watermark_removal_sync(source_image: Image.Image, mask_image: Image.Ima
     pass
 
 
-@app.post("/api/remove-watermark", dependencies=[Depends(verify_origin)])
+@app.post("/api/remove-watermark", dependencies=[Depends(verify_origin), Depends(verify_gateway)])
 @limiter.limit("3/minute;30/day")
 async def remove_watermark(request: Request, image: UploadFile = File(...), mask: UploadFile = File(...)):
     image_bytes = await image.read(MAX_UPLOAD_BYTES + 1)
@@ -2125,7 +2191,7 @@ async def remove_watermark(request: Request, image: UploadFile = File(...), mask
     )
 
 
-@app.post("/api/old-photo/restore", dependencies=[Depends(verify_origin)])
+@app.post("/api/old-photo/restore", dependencies=[Depends(verify_origin), Depends(verify_gateway)])
 @limiter.limit("3/minute;20/day")
 async def restore_old_photo(request: Request, file: UploadFile = File(...)):
     if file.content_type not in ALLOWED_MIME_TYPES:
@@ -2190,7 +2256,7 @@ async def restore_old_photo(request: Request, file: UploadFile = File(...)):
     )
 
 
-@app.post("/api/id-photo/create", dependencies=[Depends(verify_origin)])
+@app.post("/api/id-photo/create", dependencies=[Depends(verify_origin), Depends(verify_gateway)])
 @limiter.limit("3/minute;30/day")
 async def create_id_photo(
     request: Request,
@@ -2265,7 +2331,7 @@ async def create_id_photo(
     }
 
 
-@app.post("/api/id-photo/add-background", dependencies=[Depends(verify_origin)])
+@app.post("/api/id-photo/add-background", dependencies=[Depends(verify_origin), Depends(verify_gateway)])
 @limiter.limit("10/minute;100/day")
 async def add_id_photo_background(request: Request, body: AddBackgroundRequest):
     try:
@@ -2281,7 +2347,7 @@ async def add_id_photo_background(request: Request, body: AddBackgroundRequest):
     return {"ok": True, "image_base64": image_base64, "format": "jpeg"}
 
 
-@app.post("/api/id-photo/layout", dependencies=[Depends(verify_origin)])
+@app.post("/api/id-photo/layout", dependencies=[Depends(verify_origin), Depends(verify_gateway)])
 @limiter.limit("10/minute;100/day")
 async def create_id_photo_layout(request: Request, body: LayoutRequest):
     try:
@@ -2319,7 +2385,7 @@ async def create_id_photo_layout(request: Request, body: LayoutRequest):
     }
 
 
-@app.post("/api/id-photo/human-matting", dependencies=[Depends(verify_origin)])
+@app.post("/api/id-photo/human-matting", dependencies=[Depends(verify_origin), Depends(verify_gateway)])
 @limiter.limit("5/minute;50/day")
 async def id_photo_human_matting(request: Request, file: UploadFile = File(...)):
     if file.content_type not in ALLOWED_MIME_TYPES:
@@ -2398,7 +2464,7 @@ async def _deliver_feedback(entry: dict) -> None:
         _append_jsonl(FEEDBACK_FAILED_FILE, failed_entry)
 
 
-@app.post("/api/feedback", dependencies=[Depends(verify_origin)])
+@app.post("/api/feedback", dependencies=[Depends(verify_origin), Depends(verify_gateway)])
 @limiter.limit("3/minute")  # anti-spam
 async def submit_feedback(request: Request, background_tasks: BackgroundTasks):
     """

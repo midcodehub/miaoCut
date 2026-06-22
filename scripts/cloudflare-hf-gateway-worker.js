@@ -42,7 +42,7 @@ export default {
       bodyBuffer = await request.arrayBuffer();
     }
 
-    const upstreamHeaders = buildUpstreamHeaders(request);
+    const upstreamHeaders = buildUpstreamHeaders(request, env);
     const result = await proxyWithFailover({
       request,
       env,
@@ -349,7 +349,7 @@ function recordHostFailure(host, reason, config) {
   });
 }
 
-function buildUpstreamHeaders(request) {
+function buildUpstreamHeaders(request, env) {
   const headers = new Headers(request.headers);
   const incomingXff = headers.get("X-Forwarded-For");
   const cfConnectingIp = headers.get("CF-Connecting-IP");
@@ -364,6 +364,9 @@ function buildUpstreamHeaders(request) {
     "cf-ray",
     "cf-visitor",
     "x-real-ip",
+    // 客户端可能伪造这两个同名头冒充网关 / 伪造真实 IP。先无条件删掉，下面再由本 Worker 注入可信值。
+    "x-gateway-secret",
+    "x-real-client-ip",
   ]) {
     headers.delete(name);
   }
@@ -371,9 +374,20 @@ function buildUpstreamHeaders(request) {
   const forwardedFor = [incomingXff, cfConnectingIp].filter(Boolean).join(", ");
   if (forwardedFor) headers.set("X-Forwarded-For", forwardedFor);
 
+  // 注入可信客户端真实 IP（Cloudflare 观测到的对端，客户端无法伪造）。
+  // 后端 get_real_ip 优先用它做限流 key，避免被伪造的 X-Forwarded-For 绕过。
+  if (cfConnectingIp) headers.set("X-Real-Client-IP", cfConnectingIp);
+
   const url = new URL(request.url);
   headers.set("X-Forwarded-Host", url.host);
   headers.set("X-Forwarded-Proto", "https");
+
+  // 注入回源密钥：后端 verify_gateway 据此确认请求来自本网关，而非直连 *.hf.space。
+  // 在 Cloudflare 的 Worker 环境变量 / Secret 里配置 GATEWAY_SECRET，与后端同一个值。
+  // 未配置时不注入（本地 / 灰度阶段不至于把所有请求打 403）。
+  const gatewaySecret = env && env.GATEWAY_SECRET ? String(env.GATEWAY_SECRET) : "";
+  if (gatewaySecret) headers.set("X-Gateway-Secret", gatewaySecret);
+
   return headers;
 }
 
