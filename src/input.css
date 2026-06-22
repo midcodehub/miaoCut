@@ -36,12 +36,12 @@
     display: inline-flex;
     flex: 0 0 auto;
     align-items: center;
-    gap: 0.625rem;
+    gap: 0.75rem;
     color: rgb(17 24 39);
     font-size: 1.5rem;
     font-weight: 900;
     letter-spacing: -0.025em;
-    line-height: 2rem;
+    line-height: 1;
     text-decoration: none;
     white-space: nowrap;
     transition: color 160ms ease;
@@ -52,12 +52,16 @@
   }
 
   .site-brand-mark {
-    width: 2rem;
-    height: 2rem;
-    flex: 0 0 2rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex: 0 0 2.25rem;
     border-radius: 0.5rem;
     object-fit: contain;
     box-shadow: 0 1px 2px rgb(15 23 42 / 0.08);
+  }
+
+  .site-brand-text {
+    transform: translateY(-0.02em);
   }
 
   .dark .site-brand {
