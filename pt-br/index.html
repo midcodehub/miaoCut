@@ -232,7 +232,7 @@
       源：src/input.css；构建命令：npm run build:css；输出：output.css
       改动 index.html 的 class 后必须重新跑 build:css 并把 output.css 一起提交。
     -->
-    <link rel="stylesheet" href="/output.css?v=a6e2fdc8">
+    <link rel="stylesheet" href="/output.css?v=ac455e2b">
     <!--
       Umami Analytics - 隐私友好的流量统计
     -->
@@ -253,7 +253,10 @@
 
     <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
-            <a href="/pt-br/" class="text-2xl font-black tracking-tight text-gray-900 dark:text-zinc-50">MiaoCut</a>
+            <a href="/pt-br/" class="site-brand" aria-label="MiaoCut home">
+                <img src="/favicon.ico" alt="" class="site-brand-mark" width="32" height="32">
+                <span class="site-brand-text">MiaoCut</span>
+            </a>
             <div class="flex items-center gap-4">
                 <nav class="hidden items-center gap-4 text-sm font-medium text-gray-600 md:flex dark:text-zinc-300">
                     <a href="/pt-br/" class="text-gray-900 dark:text-zinc-50" data-i18n="navBg">Removedor de fundo</a>
@@ -1424,7 +1427,7 @@
     }
 };
     </script>
-    <script src="/app.js?v=27526fe2"></script>
+    <script src="/app.js?v=94486bec"></script>
     <script src="/language-menu.js"></script>
 
 </body>

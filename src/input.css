@@ -32,6 +32,60 @@
 
 /* 项目自定义样式（原本以 <style> 内联在 index.html）*/
 @layer components {
+  .site-brand {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.625rem;
+    color: rgb(17 24 39);
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    line-height: 2rem;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 160ms ease;
+  }
+
+  .site-brand:hover {
+    color: rgb(3 7 18);
+  }
+
+  .site-brand-mark {
+    width: 2rem;
+    height: 2rem;
+    flex: 0 0 2rem;
+    border-radius: 0.5rem;
+    object-fit: contain;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.08);
+  }
+
+  .dark .site-brand {
+    color: rgb(250 250 250);
+  }
+
+  .dark .site-brand:hover {
+    color: rgb(244 244 245);
+  }
+
+  @media (max-width: 400px) {
+    .site-brand {
+      gap: 0;
+    }
+
+    .site-brand-text {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+      white-space: nowrap;
+    }
+  }
+
   #dropzone {
     transition: all 0.2s ease-in-out;
   }

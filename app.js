@@ -182,7 +182,15 @@
         "batchModalThanksBody": "上线后我们会通知你，并赠送 100 积分。",
         "batchModalError": "提交失败，请稍后再试。",
         "batchModalInvalidEmail": "请输入有效邮箱。",
-        "batchModalClose": "关闭"
+        "batchModalClose": "关闭",
+        "rateDayModalTitle": "今日免费额度已用完",
+        "rateDayModalBody": "免费版每天有抠图次数上限，你今天的额度已经用完了（明天会自动重置，不是永久用完）。升级 Pro 即可解除每日限制，还能一次性批量处理、享受更高速度与并发。留下邮箱，Pro 开放时第一时间通知你，并赠送 100 积分。",
+        "rateDayModalSubmit": "预约 Pro",
+        "rateDayModalThanksTitle": "已加入 Pro 候补名单",
+        "rateDayModalThanksBody": "Pro 开放后我们会第一时间通知你，并赠送 100 积分。",
+        "rateBurstTitle": "手速太快啦",
+        "rateBurstBody": "请等约 {s} 秒再试 —— 今天的免费额度还没用完，放心。",
+        "rateBurstProCta": "想更快 / 批量处理？升级 Pro"
     },
     "en": {
         "dropzoneTitle": "Drag & drop image here, or click to upload",
@@ -295,7 +303,15 @@
         "batchModalThanksBody": "We will notify you when it opens and add 100 free credits.",
         "batchModalError": "Could not submit. Please try again.",
         "batchModalInvalidEmail": "Enter a valid email.",
-        "batchModalClose": "Close"
+        "batchModalClose": "Close",
+        "rateDayModalTitle": "Today's free quota is used up",
+        "rateDayModalBody": "The free plan has a daily limit on cutouts, and you've used today's quota (it resets automatically tomorrow — it's not gone for good). Upgrade to Pro to remove the daily limit, process images in batches, and get higher speed and concurrency. Leave your email and we'll notify you the moment Pro opens — plus 100 free credits.",
+        "rateDayModalSubmit": "Get Pro early access",
+        "rateDayModalThanksTitle": "You're on the Pro list",
+        "rateDayModalThanksBody": "We'll notify you the moment Pro opens and add 100 free credits.",
+        "rateBurstTitle": "Whoa, slow down a little",
+        "rateBurstBody": "Please wait about {s}s and try again — you still have free quota left today.",
+        "rateBurstProCta": "Need it faster / in batches? Get Pro"
     },
     "hi": {
         "dropzoneTitle": "छवि को यहां खींचें और छोड़ें, या अपलोड करने के लिए क्लिक करें",
@@ -1262,8 +1278,12 @@
     const API_BASE = _isLocal ? 'http://localhost:8000' : 'https://api2.miaocut.app';
 
     // ============================================================
-    // Batch Process Pro fake door
+    // Batch Process Pro fake door（同一个弹窗复用为 3 种场景，见 openWaitlistModal）
     // ============================================================
+    // 暴露给抠图 429 处理调用：
+    //   openWaitlistModal('rateDay')   今日额度用尽 → 引导升级 Pro
+    //   openWaitlistModal('rateBurst') 手速太快、想批量/更快 → 引导升级 Pro（复用批量文案）
+    let openWaitlistModal = null;
     function initBatchWaitlist() {
         const trigger = document.getElementById('batch-pro-trigger');
         if (!trigger) return;
@@ -1278,7 +1298,7 @@
                 <div id="batch-modal-form-wrap">
                     <p class="mb-2 inline-flex rounded-full bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand-700 dark:bg-brand-500/10 dark:text-brand-300">${t('batchDoorBadge')}</p>
                     <h2 id="batch-modal-title" class="pr-10 text-xl font-bold text-gray-950 dark:text-zinc-50">${t('batchModalTitle')}</h2>
-                    <p class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-zinc-300">${t('batchModalBody')}</p>
+                    <p id="batch-modal-subtitle" class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-zinc-300">${t('batchModalBody')}</p>
                     <form id="batch-waitlist-form" class="mt-5" novalidate>
                         <label for="batch-waitlist-email" class="mb-1.5 block text-sm font-semibold text-gray-800 dark:text-zinc-100">${t('batchModalEmailLabel')}</label>
                         <input id="batch-waitlist-email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="${t('batchModalEmailPlaceholder')}" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/15 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-100 dark:focus:ring-zinc-100/20">
@@ -1290,8 +1310,8 @@
                     </form>
                 </div>
                 <div id="batch-waitlist-thanks" class="hidden py-3">
-                    <p class="text-xl font-bold text-gray-950 dark:text-zinc-50">${t('batchModalThanksTitle')}</p>
-                    <p class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-zinc-300">${t('batchModalThanksBody')}</p>
+                    <p id="batch-thanks-title" class="text-xl font-bold text-gray-950 dark:text-zinc-50">${t('batchModalThanksTitle')}</p>
+                    <p id="batch-thanks-body" class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-zinc-300">${t('batchModalThanksBody')}</p>
                     <button type="button" id="batch-thanks-close" class="mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus:ring-zinc-100">${t('batchModalClose')}</button>
                 </div>
             </div>
@@ -1316,7 +1336,31 @@
             errorEl.classList.toggle('hidden', !message);
         }
 
-        function openModal() {
+        // 三种场景共用这个弹窗，靠 variant 切换文案与提交时的来源标记：
+        //   'batch'     批量抠图 fake door（首页按钮）
+        //   'rateDay'   今日额度用尽（每日额度文案）
+        //   'rateBurst' 手速太快、想更快/批量（复用批量卖点文案，仅来源不同）
+        let currentVariant = 'batch';
+        const titleEl = modal.querySelector('#batch-modal-title');
+        const subtitleEl = modal.querySelector('#batch-modal-subtitle');
+        const thanksTitleEl = modal.querySelector('#batch-thanks-title');
+        const thanksBodyEl = modal.querySelector('#batch-thanks-body');
+
+        function applyVariantText(variant) {
+            // rateDay 用专属"额度用尽"文案；batch / rateBurst 共用批量卖点文案
+            const k = variant === 'rateDay'
+                ? { title: 'rateDayModalTitle', body: 'rateDayModalBody', submit: 'rateDayModalSubmit', tT: 'rateDayModalThanksTitle', tB: 'rateDayModalThanksBody' }
+                : { title: 'batchModalTitle', body: 'batchModalBody', submit: 'batchModalSubmit', tT: 'batchModalThanksTitle', tB: 'batchModalThanksBody' };
+            titleEl.textContent = t(k.title);
+            subtitleEl.textContent = t(k.body);
+            submitButton.textContent = t(k.submit);
+            thanksTitleEl.textContent = t(k.tT);
+            thanksBodyEl.textContent = t(k.tB);
+        }
+
+        function openModal(variant) {
+            currentVariant = ['rateDay', 'rateBurst'].includes(variant) ? variant : 'batch';
+            applyVariantText(currentVariant);
             lastFocus = document.activeElement;
             formWrap.classList.remove('hidden');
             thanksEl.classList.add('hidden');
@@ -1325,9 +1369,10 @@
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             document.body.classList.add('overflow-hidden');
-            track('batch-door-opened', { page: window.MIAOCUT_PAGE_KEY || 'unknown', lang: currentLang });
+            track('waitlist-opened', { page: window.MIAOCUT_PAGE_KEY || 'unknown', lang: currentLang, variant: currentVariant });
             setTimeout(() => emailInput.focus(), 0);
         }
+        openWaitlistModal = openModal;  // 暴露给外部（抠图 429 调用）
 
         function closeModal() {
             modal.classList.add('hidden');
@@ -1343,7 +1388,7 @@
         trigger.addEventListener('click', (event) => {
             event.preventDefault();
             event.stopPropagation();
-            openModal();
+            openModal('batch');
         });
 
         modal.querySelector('[data-batch-backdrop]').addEventListener('click', () => {
@@ -1382,12 +1427,15 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        message: 'Batch Process Pro waitlist signup',
+                        message: 'Pro waitlist signup',
                         email,
                         page: window.MIAOCUT_PAGE_KEY || 'unknown',
                         profile: currentProfile,
-                        feature: 'batch-process-pro',
-                        intent: 'waitlist',
+                        feature: currentVariant === 'rateDay' ? 'rate-limit-upgrade'
+                            : currentVariant === 'rateBurst' ? 'rate-burst-upgrade'
+                            : 'batch-process-pro',
+                        intent: currentVariant === 'batch' ? 'waitlist' : 'pro_waitlist',
+                        source_variant: currentVariant,
                         locale: currentLang,
                         path: window.location.pathname,
                         page_title: document.title,
@@ -1576,14 +1624,17 @@
                     resolve(xhr.response);
                 } else {
                     let message = `请求失败（${xhr.status}）`;
+                    let data = null;
                     try {
                         const text = await xhr.response.text();
-                        const data = JSON.parse(text);
+                        data = JSON.parse(text);
                         if (data && typeof data.detail === 'string') message = data.detail;
                         else message = text || message;
                     } catch (_) { /* 解析失败用兜底 message */ }
                     const err = new Error(message);
                     err.status = xhr.status;
+                    // 后端 429 会带 scope（minute/day）+ retry_after，前端据此切两套文案
+                    if (data) { err.scope = data.scope; err.retryAfter = data.retry_after; }
                     reject(err);
                 }
             };
@@ -1595,6 +1646,35 @@
 
             xhr.send(formData);
         });
+    }
+
+    // 手速太快（minute 限流）时的温和提示：强调"今天还有额度"，并给一个升级 Pro 的批量入口。
+    // 与"每日额度用尽"区分开，避免让用户误以为额度被永久用光。
+    function showRateBurstNotice(secs) {
+        dropzoneContent.innerHTML = '';
+        const wrap = document.createElement('div');
+        wrap.className = 'flex flex-col items-center text-center px-4';
+        const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        icon.setAttribute('class', 'w-12 h-12 text-amber-500 mb-3');
+        icon.setAttribute('fill', 'none');
+        icon.setAttribute('stroke', 'currentColor');
+        icon.setAttribute('viewBox', '0 0 24 24');
+        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>';
+        const title = document.createElement('p');
+        title.className = 'text-lg font-medium text-gray-800 dark:text-zinc-100 mb-1';
+        title.textContent = t('rateBurstTitle');
+        const body = document.createElement('p');
+        body.className = 'text-sm text-gray-500 dark:text-zinc-400 max-w-xs mb-3';
+        body.textContent = t('rateBurstBody').replace('{s}', secs);
+        const proBtn = document.createElement('button');
+        proBtn.type = 'button';
+        proBtn.className = 'inline-flex items-center justify-center rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-700 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200';
+        proBtn.textContent = t('rateBurstProCta');
+        proBtn.addEventListener('click', () => {
+            if (typeof openWaitlistModal === 'function') openWaitlistModal('rateBurst');
+        });
+        wrap.append(icon, title, body, proBtn);
+        dropzoneContent.append(wrap);
     }
 
     function getEditorMode() {
@@ -2309,6 +2389,22 @@
         } catch (error) {
             shouldResetDropzone = true;
             console.error("API Error:", error);
+            // 限流 429 分两种，文案与引导完全不同（见后端 rate_limit_handler 的 scope）：
+            if (error.status === 429) {
+                if (error.scope === 'day') {
+                    // 今日免费额度用尽（明天重置）→ 引导升级 Pro（弹预约弹窗）
+                    track('cutout-rate-limited', { type: fileExt, page, scope: 'day' });
+                    resetDropzone();
+                    if (typeof openWaitlistModal === 'function') openWaitlistModal('rateDay');
+                } else {
+                    // 手速太快（minute）：当天还有额度，给温和提示 + 可选 Pro 批量入口。
+                    // 保留提示（不让 finally 的延时 reset 把它清掉），用户读完可点 Pro 或重新拖图。
+                    shouldResetDropzone = false;
+                    track('cutout-rate-limited', { type: fileExt, page, scope: 'minute' });
+                    showRateBurstNotice(Math.max(1, Math.round(error.retryAfter || 30)));
+                }
+                return;
+            }
             const reason = error.status ? `http-${error.status}`
                 : (error.kind || (error.message && /压缩|WebP/.test(error.message) ? 'compress' : 'unknown'));
             track('cutout-failed', { type: fileExt, reason, page });

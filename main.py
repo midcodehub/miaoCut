@@ -59,7 +59,7 @@ import onnxruntime as ort
 import uvicorn
 from fastapi import BackgroundTasks, Depends, FastAPI, File, HTTPException, Request, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from PIL import Image, ImageFilter, ImageOps
 from pydantic import BaseModel, Field
@@ -67,7 +67,7 @@ from rembg import remove
 from rembg.sessions import sessions_class
 # 注意：不要在顶层导入 PyTorch (SimpleLama)，否则会导致底层 OpenMP 线程池被 PyTorch 接管，
 # 严重拖慢 ONNX Runtime (rembg) 的执行速度！我们在 startup 时再懒加载它。
-from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi import Limiter
 from slowapi.errors import RateLimitExceeded
 
 
@@ -813,6 +813,50 @@ limiter = Limiter(key_func=get_real_ip)
 logger.info("RateLimiter storage: memory (single-process), trust_proxy=%s", TRUST_PROXY)
 
 
+async def rate_limit_handler(request: Request, exc: RateLimitExceeded) -> Response:
+    """限流命中(429)时：记录真实 IP 日志 + 返回带 scope 的 JSON，让前端区分两种 429。
+
+    为什么要包这一层（两个目的）：
+    1) 日志：slowapi 默认 handler 不打日志，无法区分"同一 IP 狂刷（攻击，限流正确生效）"
+       和"一堆不同 IP 各被拦一次（可能误杀）"。打出 ip= 后看是否集中即可判断。
+       注意 ip 是 get_real_ip 算出的限流 key，不是 access log 里的 HF 内网地址（10.x）。
+    2) scope：我们对一个接口同时挂了两条限制（如 10/minute 和 60/day）。这两种 429 含义
+       完全不同——
+         - minute 触发：当天还有额度，只是「太频繁」，等几十秒即可；
+         - day   触发：今日免费额度用尽（明天重置），是引导升级 Pro 的时机。
+       前端必须能分辨，否则会把"手速太快"误报成"额度永久用完"。这里把触发的那条规则的
+       粒度（exc.limit.limit.GRANULARITY.name → "minute"/"day"）放进响应，前端据此切文案。
+    """
+    # exc.limit 是 slowapi Limit；.limit 是 limits 的 RateLimitItem；.GRANULARITY 给出窗口粒度
+    item = getattr(getattr(exc, "limit", None), "limit", None)
+    granularity = getattr(item, "GRANULARITY", None)
+    scope = getattr(granularity, "name", "unknown")          # "minute" / "day" / ...
+    retry_after = int(getattr(granularity, "seconds", 60))   # 该窗口长度，作为「最多再等多久」上界
+
+    logger.warning(
+        "Rate limited (429): ip=%s path=%s scope=%s ua=%s",
+        get_real_ip(request),
+        request.url.path,
+        scope,
+        request.headers.get("user-agent", "-"),
+    )
+    # 用 detail 字段（前端已按 data.detail 取兜底文案）+ scope/retry_after（前端据此切文案）
+    return JSONResponse(
+        status_code=429,
+        content={
+            "detail": f"Rate limit exceeded: {exc.detail}",
+            "scope": scope,
+            "retry_after": retry_after,
+        },
+        headers={
+            "Retry-After": str(retry_after),
+            # 给网关识别：这是"用户超额"的 429，不是"节点故障"。网关应直接透传而非 failover
+            # 到下一个 Space（换 Space 用户照样超额，只会放大负载并丢掉这里的 scope）。
+            "X-RateLimit-Scope": scope,
+        },
+    )
+
+
 # ============================================================
 # 并发控制
 # ============================================================
@@ -988,7 +1032,7 @@ app = FastAPI(
     openapi_url="/openapi.json" if ENABLE_DOCS else None,
 )
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_exception_handler(RateLimitExceeded, rate_limit_handler)
 
 SERVE_STATIC_FRONTEND = os.getenv("SERVE_STATIC_FRONTEND", "auto").lower()
 STATIC_FRONTEND_AVAILABLE = Path("index.html").exists()
@@ -2068,7 +2112,7 @@ if SERVE_STATIC:
 
 
 @app.post("/api/remove-background", dependencies=[Depends(verify_origin), Depends(verify_gateway)])
-@limiter.limit("5/minute;50/day")  # 按真实 IP 限流：每分钟 5 次，每天 50 次
+@limiter.limit("10/minute;60/day")  # 免费业务额度：每分钟 10 次、每天 60 次（每 Space 各算，3 Space 实际更宽松）。超额返回 429，前端弹 Pro 预约弹窗
 async def remove_background(request: Request, file: UploadFile = File(...)):
     # ---------- 1. MIME 初筛 ----------
     # 注意：content_type 是客户端声明的，可以伪造。真正把关靠后面的 PIL 解析。

@@ -34,7 +34,19 @@
       "Bash(echo \"exit=$?\")",
       "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); t=[x['name'] for x in d['repositoryTopics']]; print\\('现在', len\\(t\\), '个标签:'\\); print\\(' ', ', '.join\\(t\\)\\)\")",
       "Bash(python -c \"import ast; ast.parse\\(open\\('main.py'\\).read\\(\\)\\); print\\('main.py 语法 OK'\\)\")",
-      "Bash(node --check scripts/cloudflare-hf-gateway-worker.js)"
+      "Bash(node --check scripts/cloudflare-hf-gateway-worker.js)",
+      "Bash(.venv/bin/python -)",
+      "Bash(.venv/bin/python -c \"import slowapi, os; print\\(os.path.dirname\\(slowapi.__file__\\)\\)\")",
+      "Bash(grep -n 'strategy\\\\|fixed-window\\\\|moving-window\\\\|STRATEGIES\\\\|self.limiter' __TRACKED_VAR__/extension.py)",
+      "Bash(grep -n 'class RateLimitExceeded' -A 20 __TRACKED_VAR__/errors.py)",
+      "Bash(grep -rn 'Retry-After\\\\|retry_after\\\\|def _rate_limit_exceeded_handler\\\\|window_stats\\\\|reset' __TRACKED_VAR__/extension.py)",
+      "Bash(sed -n 75,95p __TRACKED_VAR__/extension.py)",
+      "Bash(grep -rn 'class Limit\\\\b\\\\|self.limit\\\\b\\\\|GRANULARITY' __TRACKED_VAR__/wrappers.py)",
+      "Bash(.venv/bin/python -c \"import ast; ast.parse\\(open\\('main.py'\\).read\\(\\)\\); print\\('main.py 语法 OK'\\)\")",
+      "Bash(node --check app.js)",
+      "Bash(grep -nA8 \"content\" tailwind.config.js)",
+      "Bash(grep -vE \"^ ?M \\(bn|fil|hi|id|pt-br|ur|zh|ja|ko|fr|de|es|vi|th|ar|ru|tr|it|pl|nl|fa\\)/|how-to-remove|/index\\\\.html$\")",
+      "Bash(grep -E \"\\\\.\\(py|js|css|md|json\\)$|scripts/\")"
     ]
   }
 }

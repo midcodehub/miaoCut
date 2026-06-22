@@ -11,6 +11,39 @@ export default {
       return new Response(null, { status: 204, headers: corsHeaders });
     }
 
+    // === 边缘限流：每分钟频率墙（防洪 + 精确的每分钟额度）===
+    // 用 Cloudflare Rate Limiting binding（env.RATE_LIMITER）：全局计数、在所有 Space 之前，
+    // 不受后端 3 个 Space 各自计数（×3）影响，也省后端资源。key 用 CF 注入的真实客户端 IP（不可伪造）。
+    // 返回的 429 带 scope:"minute" + retry_after + X-RateLimit-Scope + 完整 CORS，
+    // 这样前端能从响应体读出 scope，弹「手速太快」提示（区别于后端的每日额度 429 → 升级 Pro）。
+    // 注意：CF Rate Limiting 的 period 只支持 10s / 60s，做不了「每天」，所以每分钟频率放这里、每日额度放后端。
+    // 「10/分」这个数字在 wrangler 的 ratelimit binding（limit/period）里配，不在本文件；调整额度改那里即可。
+    if (env.RATE_LIMITER && typeof env.RATE_LIMITER.limit === "function") {
+      const clientIp = request.headers.get("cf-connecting-ip") || "unknown-ip";
+      try {
+        const { success } = await env.RATE_LIMITER.limit({ key: clientIp });
+        if (!success) {
+          const retryAfter = readInt(env.EDGE_RATE_RETRY_AFTER, 30, 1, 120);
+          return jsonResponse(
+            {
+              // detail 是 API 兜底文案（英文，面向所有语言/客户端）；真正展示给用户的限流提示
+              // 由前端按语言 i18n 出（rateBurst* / rateDay*），正常 429 流程不会展示这个 detail。
+              error: "Too Many Requests",
+              detail: "Too many requests, please slow down.",
+              scope: "minute",
+              retry_after: retryAfter,
+            },
+            429,
+            corsHeaders,
+            { "Retry-After": String(retryAfter), "X-RateLimit-Scope": "minute" },
+          );
+        }
+      } catch (err) {
+        // 限流 binding 异常不应阻断业务：放行并交给后端的限流兜底
+        console.warn("RATE_LIMITER.limit failed, allowing request:", err?.message || err);
+      }
+    }
+
     const config = getConfig(env);
     const cnHosts = parseHosts(env.CN_HOSTS);
     const globalHosts = parseHosts(env.GLOBAL_HOSTS);
@@ -206,6 +239,13 @@ async function fetchOneHost({
     const latencyMs = Date.now() - startedAt;
 
     if (config.failoverStatuses.has(response.status)) {
+      // 限流 429（用户超额，后端打了 X-RateLimit-Scope 头）不是"节点故障"：
+      // 换 Space 用户照样超额，failover 只会把超额请求放大打到所有节点、并丢掉后端的
+      // scope 提示。直接透传给前端，让前端按 minute/day 弹对应提示。
+      // 「并发满」的 429 不带这个头，仍然继续 failover 到下一个 Space。
+      if (response.status === 429 && response.headers.get("X-RateLimit-Scope")) {
+        return { ok: true, host, status: response.status, response, latencyMs };
+      }
       await cancelBody(response);
       return {
         ok: false,
