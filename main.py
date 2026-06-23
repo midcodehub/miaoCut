@@ -431,6 +431,41 @@ def _malloc_trim() -> bool:
         return False
 
 
+# ⚠️ onnxruntime CPU 内存 arena：默认按 2 的幂翻倍扩张（kNextPowerOfTwo），且推理结束后不归还给
+# 底层分配器。实测一次 768² BiRefNet 推理就能把 arena 撑到 ~10GB 并常驻，sharp + fur 两个 session
+# 的 arena 叠加直接把 16GB 的 Space 顶到 ~15GB 反复 OOM（"每天静默重启几次"的真因，见 git 记录）。
+# 解法：给我们自己 session.run() 的调用传一个开了 memory.enable_memory_arena_shrinkage 的 RunOptions，
+# 让该次 run 结束后把空闲 arena 块还给 CPU 分配器（glibc），再由上面的 _malloc_trim 还给 OS。
+# 注意：只作用于"我们直接调用 run() 的推理"——sharp 走 _BiRefNet768Session.predict、fur 走
+# _run_matting_pipeline，两处都已注入；经 rembg 内置 session 的旁路（如 SHARP_MODEL=isnet 回退）
+# 注入不到，但生产默认就是这两条自管路径。设 ENABLE_ARENA_SHRINKAGE=0 可整体关闭回到旧行为。
+#
+# ⚠️ 为什么"每次 run 都收缩"而不是"内存高时才收缩"：
+#   每个 InferenceSession 各自持有独立 arena；内存峰值发生在 run 进行中，而收缩只能在 run 之后。
+#   若某次 sharp 没收缩、把 ~10GB 的 sharp arena 留着，紧接着一个 fur 请求会在 sharp arena 仍驻留时
+#   再长出 matting arena——叠加峰值就在那次 fur 推理"进行中"冲顶 OOM，事后再收缩也来不及（线上日志里
+#   fur 命中 96% 正是这个场景）。只有"每次 run 都清掉自己的 arena"才能保证下一次（无论哪种 profile）
+#   从基线起步、永不叠加。这是用每张 ~+9%（768 实测 +0.25s；线上推理 ~8s 占比更小）换"永不 OOM"。
+ENABLE_ARENA_SHRINKAGE = os.getenv("ENABLE_ARENA_SHRINKAGE", "1") == "1"
+
+
+def _make_arena_shrink_run_options():
+    if not ENABLE_ARENA_SHRINKAGE:
+        return None
+    try:
+        ro = ort.RunOptions()
+        ro.add_run_config_entry("memory.enable_memory_arena_shrinkage", "cpu:0")
+        return ro
+    except Exception as exc:  # 老版本 ort 没这个 config key 时安全降级，不影响推理本身
+        logger.warning("arena shrinkage unavailable (%s); running without it", exc)
+        return None
+
+
+# 进程级共享一个 RunOptions（纯只读配置，跨请求复用安全；rembg 并发已被 MAX_CONCURRENCY 串行化）。
+# None 表示未启用 / 不可用，session.run 第三参传 None 等价于不带 RunOptions。
+_ARENA_SHRINK_RUN_OPTIONS = _make_arena_shrink_run_options()
+
+
 _original_signal_handlers = {}
 
 
@@ -530,7 +565,7 @@ class _BiRefNet768Session:
         arr = np.asarray(resized, dtype=np.float32) / 255.0
         arr = (arr - np.array(_BIREFNET_MEAN, dtype=np.float32)) / np.array(_BIREFNET_STD, dtype=np.float32)
         inp = np.expand_dims(arr.transpose(2, 0, 1), 0)
-        raw = self._sess.run(None, {self._input_name: inp})[0][:, 0, :, :]
+        raw = self._sess.run(None, {self._input_name: inp}, _ARENA_SHRINK_RUN_OPTIONS)[0][:, 0, :, :]
         pred = 1.0 / (1.0 + np.exp(-raw))                  # sigmoid（onnx 输出 raw logits）
         mi, ma = float(pred.min()), float(pred.max())
         pred = (pred - mi) / (ma - mi + 1e-8)              # min-max 归一化（同 rembg）
@@ -733,7 +768,8 @@ def _warmup_matting_sync() -> None:
     if sess is None:
         return
     dummy = np.zeros((1, 3, _MATTING_INPUT_SIZE, _MATTING_INPUT_SIZE), dtype=np.float32)
-    sess.run(None, {sess.get_inputs()[0].name: dummy})
+    # 带 arena 收缩：warmup 只为提前付掉图/内存模式编译，不必让 1024² 的 arena 在首个真实请求前就常驻
+    sess.run(None, {sess.get_inputs()[0].name: dummy}, _ARENA_SHRINK_RUN_OPTIONS)
 
 
 async def warmup_matting_session() -> None:
@@ -1200,6 +1236,10 @@ def _run_rembg_sync(data: bytes, profile: Optional[str] = None) -> bytes:
         out = _run_fur_pipeline(data)
     else:
         out = _run_sharp_pipeline(data)
+    # 先 gc：释放本次流水线里 numpy/pymatting 的临时大数组（含循环引用），否则 malloc_trim 还看不到
+    # 这些块是空闲的、还不回去。一次请求 8~15s，这点 gc 开销可忽略。
+    import gc
+    gc.collect()
     # 抠图后打印内存水位，定位"无声重启"是否为 cgroup OOM（fur 是内存大头）
     _log_memory_status(f"after-{chosen}")
     # glibc 默认不把 onnxruntime/numpy 用完的大块还给 OS，会累积驻留逼近 cgroup OOM；
@@ -1364,7 +1404,7 @@ def _run_matting_pipeline(data: bytes, session) -> bytes:
     inp = np.expand_dims(arr.transpose(2, 0, 1), 0)
 
     input_name = session.get_inputs()[0].name
-    pred = session.run(None, {input_name: inp})[0]  # [1,1,1024,1024]，已 sigmoid
+    pred = session.run(None, {input_name: inp}, _ARENA_SHRINK_RUN_OPTIONS)[0]  # [1,1,1024,1024]，已 sigmoid
     t1 = time.perf_counter()
 
     alpha = np.clip(pred[0, 0], 0.0, 1.0)
