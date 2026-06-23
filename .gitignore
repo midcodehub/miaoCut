@@ -46,5 +46,6 @@ bench_out/
 models/*.onnx
 models/*.bak
 
-.claude/
-.agent/
+.claude
+.agent
+.playwright-cli
