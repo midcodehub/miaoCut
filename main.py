@@ -908,6 +908,44 @@ lama_executor = None
 _lama_model = None
 
 
+def _saturated_429() -> HTTPException:
+    """满载（并发打满）时统一构造的 429，供两条路径共用、保证响应形状一致：
+      1) limited_slot 抢槽超时（已读完整张图之后）
+      2) reject_if_saturated 入口处的非阻塞预检（读 body 之前）
+
+    关键是 ``X-Reason: saturated`` 这个机器可读标识——它和 slowapi 限流 429 的
+    ``X-RateLimit-Scope`` 互斥，用来把"两种 429"彻底分开：
+      - 带 X-Reason=saturated → 本 Space 并发饱和，网关应 **failover** 到其它 Space；
+      - 带 X-RateLimit-Scope  → 用户超额（minute/day），网关应 **透传**、前端弹 Pro。
+    body 仍只放 detail 字符串（前端按 ``data.detail`` 取兜底文案；且响应里没有
+    ``scope`` 字段即可判定"不是额度用完"），不改 body 形状以兼容老前端。
+    """
+    return HTTPException(
+        status_code=429,
+        detail="服务繁忙，请稍后重试。",
+        headers={"Retry-After": "3", "X-Reason": "saturated"},
+    )
+
+
+def reject_if_saturated(semaphore: asyncio.Semaphore, label: str) -> None:
+    """入口处的非阻塞预检：本 Space 已满载就立刻 429，不再白读整张上传体。
+
+    为什么需要它（治"429 很慢"）：
+      真正抢槽在下游 limited_slot 里，而那发生在 ``await file.read()`` 把整张图读进
+      内存之后。满载时 limited_slot 还要再等 timeout（默认 0.2s）才吐 429——意味着
+      客户端必须先把整张图上传完才被拒，移动网络下几 MB 就是好几秒，fail-fast 名存实亡。
+      这里在读 body 之前先用 ``semaphore.locked()`` 做一次非阻塞判断（locked()==True
+      表示信号量值为 0、槽位全占满），满载直接拒，省掉无谓的上传等待。
+
+    取舍：它比 limited_slot 的 timeout 宽限更激进，但不会"错收"——预检放行后请求仍会
+      到 limited_slot 再抢一次（那才是权威闸门）；预检"漏判"（恰好此刻有空槽）只是少拒
+      一个，预检与真正抢槽之间的误判窗口极小。持续满载时省下的整段上传耗时才是大头。
+    """
+    if semaphore.locked():
+        logger.info("%s saturated (pre-check): rejecting before body read", label)
+        raise _saturated_429()
+
+
 @asynccontextmanager
 async def limited_slot(semaphore: asyncio.Semaphore, timeout_seconds: float, label: str):
     """Acquire a scarce inference slot briefly; fail fast when this Space is already saturated."""
@@ -916,11 +954,7 @@ async def limited_slot(semaphore: asyncio.Semaphore, timeout_seconds: float, lab
         await asyncio.wait_for(semaphore.acquire(), timeout=max(0.001, timeout_seconds))
     except asyncio.TimeoutError:
         logger.info("%s busy: no slot available within %.3fs", label, timeout_seconds)
-        raise HTTPException(
-            status_code=429,
-            detail="服务繁忙，请稍后重试。",
-            headers={"Retry-After": "3"},
-        )
+        raise _saturated_429()
 
     queue_wait = time.perf_counter() - started
     if queue_wait >= 0.05:
@@ -1090,6 +1124,9 @@ if ALLOWED_ORIGINS:
         allow_origins=list(ALLOWED_ORIGINS),
         allow_methods=["GET", "POST", "OPTIONS"],
         allow_headers=["*"],
+        # 让浏览器能读到这几个 429 区分标识（默认 CORS 只暴露简单响应头）：
+        #   X-Reason=saturated → 并发饱和（稍后重试）；X-RateLimit-Scope → 用户超额（弹 Pro）。
+        expose_headers=["X-Reason", "X-RateLimit-Scope", "Retry-After"],
         max_age=3600,  # 预检缓存 1 小时，减少 OPTIONS 请求
     )
 else:
@@ -1099,6 +1136,7 @@ else:
         allow_origins=["*"],
         allow_methods=["GET", "POST", "OPTIONS"],
         allow_headers=["*"],
+        expose_headers=["X-Reason", "X-RateLimit-Scope", "Retry-After"],
     )
 
 
@@ -2168,6 +2206,10 @@ async def remove_background(request: Request, file: UploadFile = File(...)):
     if content_length and content_length.isdigit() and int(content_length) > MAX_UPLOAD_BYTES:
         raise HTTPException(status_code=413, detail="文件过大，请压缩后再上传。")
 
+    # 2c. 满载预检：本 Space 并发打满时立刻 429，不把整张图收完再拒（治"429 很慢"）。
+    #     真正的抢槽仍在下游 run_rembg 的 limited_slot 里，这里只是提前短路省带宽。
+    reject_if_saturated(rembg_semaphore, "rembg")
+
     # 2b. 边读边截断：防止客户端伪造/不发 Content-Length。多读一字节，超了就是超了。
     input_data = await file.read(MAX_UPLOAD_BYTES + 1)
     if len(input_data) > MAX_UPLOAD_BYTES:
@@ -2241,6 +2283,8 @@ def _run_watermark_removal_sync(source_image: Image.Image, mask_image: Image.Ima
 @app.post("/api/remove-watermark", dependencies=[Depends(verify_origin), Depends(verify_gateway)])
 @limiter.limit("3/minute;30/day")
 async def remove_watermark(request: Request, image: UploadFile = File(...), mask: UploadFile = File(...)):
+    # 满载预检：水印移除并发已满时直接 429，不白读 image+mask 两个 body。
+    reject_if_saturated(watermark_semaphore, "watermark")
     image_bytes = await image.read(MAX_UPLOAD_BYTES + 1)
     mask_bytes = await mask.read(MAX_UPLOAD_BYTES + 1)
     if len(image_bytes) > MAX_UPLOAD_BYTES or len(mask_bytes) > MAX_UPLOAD_BYTES:
@@ -2287,6 +2331,9 @@ async def restore_old_photo(request: Request, file: UploadFile = File(...)):
     content_length = request.headers.get("content-length")
     if content_length and content_length.isdigit() and int(content_length) > MAX_UPLOAD_BYTES:
         raise HTTPException(status_code=413, detail="文件过大，请压缩后再上传。")
+
+    # 满载预检：老照片修复并发已满时直接 429，不白读整张 body（gate 在 run_old_photo_restore）。
+    reject_if_saturated(restore_semaphore, "old_photo_restore")
 
     input_data = await file.read(MAX_UPLOAD_BYTES + 1)
     if len(input_data) > MAX_UPLOAD_BYTES:
@@ -2348,6 +2395,9 @@ async def create_id_photo(
 ):
     if file.content_type not in ALLOWED_MIME_TYPES:
         raise HTTPException(status_code=400, detail="Unsupported image format")
+
+    # 满载预检：证件照生成复用 rembg 槽位，满载时直接 429，不白读整张 body。
+    reject_if_saturated(rembg_semaphore, "id_photo")
 
     input_data = await file.read(MAX_UPLOAD_BYTES + 1)
     if len(input_data) > MAX_UPLOAD_BYTES:
@@ -2474,6 +2524,8 @@ async def create_id_photo_layout(request: Request, body: LayoutRequest):
 async def id_photo_human_matting(request: Request, file: UploadFile = File(...)):
     if file.content_type not in ALLOWED_MIME_TYPES:
         raise HTTPException(status_code=400, detail="Unsupported image format")
+    # 满载预检：人像抠图复用 rembg 槽位，满载时直接 429，不白读整张 body。
+    reject_if_saturated(rembg_semaphore, "rembg")
     input_data = await file.read(MAX_UPLOAD_BYTES + 1)
     if len(input_data) > MAX_UPLOAD_BYTES:
         raise HTTPException(status_code=413, detail="File too large")
