@@ -36,7 +36,7 @@ TOTAL_TIMEOUT_MS = "58000"
 
 # Notes:
 # If you use Cloudflare Rate Limiting for the proxy, you will need to add:
-# [[unsafe.bindings]]
-# name = "RATE_LIMITER"
-# type = "ratelimit"
-# namespace_id = "YOUR_RATE_LIMIT_ID"
+[[unsafe.bindings]]
+name = "RATE_LIMITER"
+type = "ratelimit"
+namespace_id = "999"
