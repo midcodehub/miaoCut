@@ -1101,24 +1101,11 @@
     // 埋点 (Umami custom events)
     // ============================================================
     // umami 脚本异步加载，未就绪/被广告拦截时直接 no-op，不让分析故障影响主流程。
-    function track(name, data) {
+    function track(name) {
         if (typeof umami === 'undefined') return;
         try {
-            if (data) umami.track(name, data); else umami.track(name);
+            umami.track(name);
         } catch (_) { /* analytics 失败不影响业务 */ }
-    }
-    function sizeBucket(bytes) {
-        if (bytes < 500 * 1024) return '<500K';
-        if (bytes < 2 * 1024 * 1024) return '500K-2M';
-        if (bytes < 5 * 1024 * 1024) return '2M-5M';
-        return '5M-10M';
-    }
-    function durationBucket(ms) {
-        const s = ms / 1000;
-        if (s < 2) return '<2s';
-        if (s < 5) return '2-5s';
-        if (s < 10) return '5-10s';
-        return '>10s';
     }
 
     // ============================================================
@@ -1222,7 +1209,7 @@
             const from = currentLang;
             const to = e.target.value;
             if (to === currentLang) return;
-            track('lang-switched', { from, to });
+            track('lang-switched');
             const target = alternateUrlFor(to) + window.location.search + window.location.hash;
             // 用 localStorage 记住偏好，下次直接打开根域名时可以让用户感知（虽然不再用作语言判定的源）
             localStorage.setItem('lang', to);
@@ -1265,7 +1252,7 @@
                 currentProfile = next;
                 localStorage.setItem('cutoutProfile', next);
                 updateProfileButtons();
-                track('profile-switched', { from, to: next });
+                track('profile-switched');
             });
         });
         updateProfileButtons();
@@ -1369,7 +1356,7 @@
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             document.body.classList.add('overflow-hidden');
-            track('waitlist-opened', { page: window.MIAOCUT_PAGE_KEY || 'unknown', lang: currentLang, variant: currentVariant });
+            track('waitlist-opened');
             setTimeout(() => emailInput.focus(), 0);
         }
         openWaitlistModal = openModal;  // 暴露给外部（抠图 429 调用）
@@ -1392,20 +1379,20 @@
         });
 
         modal.querySelector('[data-batch-backdrop]').addEventListener('click', () => {
-            track('batch-door-dismissed', { page: window.MIAOCUT_PAGE_KEY || 'unknown', lang: currentLang, method: 'backdrop' });
+            track('batch-door-dismissed');
             closeModal();
         });
 
         closeButtons.forEach(button => {
             button.addEventListener('click', () => {
-                track('batch-door-dismissed', { page: window.MIAOCUT_PAGE_KEY || 'unknown', lang: currentLang, method: 'button' });
+                track('batch-door-dismissed');
                 closeModal();
             });
         });
 
         document.addEventListener('keydown', (event) => {
             if (event.key !== 'Escape' || modal.classList.contains('hidden')) return;
-            track('batch-door-dismissed', { page: window.MIAOCUT_PAGE_KEY || 'unknown', lang: currentLang, method: 'escape' });
+            track('batch-door-dismissed');
             closeModal();
         });
 
@@ -1442,7 +1429,7 @@
                     }),
                 });
                 if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-                track('batch-waitlist-submitted', { page: window.MIAOCUT_PAGE_KEY || 'unknown', lang: currentLang });
+                track('batch-waitlist-submitted');
                 formWrap.classList.add('hidden');
                 thanksEl.classList.remove('hidden');
                 const doneButton = modal.querySelector('#batch-thanks-close');
@@ -1450,7 +1437,7 @@
             } catch (error) {
                 console.warn('[MiaoCut] Batch waitlist submit failed:', error);
                 setError(t('batchModalError'));
-                track('batch-waitlist-failed', { page: window.MIAOCUT_PAGE_KEY || 'unknown', lang: currentLang });
+                track('batch-waitlist-failed');
             } finally {
                 submitButton.disabled = false;
                 submitButton.textContent = t('batchModalSubmit');
@@ -1603,9 +1590,19 @@
     function uploadWithProgress(formData) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            const url = `${API_BASE}/api/remove-background?profile=${encodeURIComponent(currentProfile)}`;
+            // 登录用户走 Pro 网关（GPU，按 profile 扣分）；匿名走免费网关（CPU，含 localhost dev）。
+            // MiaoCutPro 未加载或未登录时，url 与鉴权头与原来完全一致，零回归。
+            const pro = window.MiaoCutPro;
+            const loggedIn = !!(pro && pro.isLoggedIn && pro.isLoggedIn());
+            const url = loggedIn
+                ? pro.removeBackgroundUrl(currentProfile)
+                : `${API_BASE}/api/remove-background?profile=${encodeURIComponent(currentProfile)}`;
             xhr.open('POST', url);
             xhr.responseType = 'blob';
+            // 登录用户带 Authorization（Supabase JWT）；匿名为空
+            if (loggedIn && pro.authHeader) {
+                for (const [k, v] of Object.entries(pro.authHeader())) xhr.setRequestHeader(k, v);
+            }
 
             xhr.upload.onprogress = (e) => {
                 if (!e.lengthComputable) return;
@@ -1713,11 +1710,11 @@
         document.body.removeChild(a);
     }
 
-    function autoDownloadTransparentResult(file, blob, page) {
+    function autoDownloadTransparentResult(file, blob) {
         const url = URL.createObjectURL(blob);
         downloadUrl(url, `${basenameFromFile(file)}_transparent.png`);
         setTimeout(() => URL.revokeObjectURL(url), 1000);
-        track('transparent-download', { page, mode: 'auto' });
+        track('transparent-download');
     }
 
     function bgLabelKey(bg) {
@@ -1999,7 +1996,7 @@
             const suffix = shapeOverride || resultState.config.downloadSuffix;
             downloadUrl(url, `${resultState.basename}_${suffix}.png`);
             setTimeout(() => URL.revokeObjectURL(url), 1000);
-            track('edited-download', { page: resultState.mode, bg: resultState.bg, size: resultState.size, shape: shapeOverride || resultState.shape });
+            track('edited-download');
         }, 'image/png');
     }
 
@@ -2027,7 +2024,7 @@
         const scaleInput = document.getElementById('editor-bg-scale');
         if (scaleInput) scaleInput.value = '100';
         renderPreview();
-        track('background-image-uploaded', { page: resultState.mode, type: file.type.replace('image/', '') });
+        track('background-image-uploaded');
     }
 
     function renderResultEditor() {
@@ -2229,7 +2226,7 @@
                 const shadowSelect = document.getElementById('editor-shadow');
                 if (shadowSelect) shadowSelect.value = resultState.shadow;
                 renderPreview();
-                track('amazon-preset-applied', { page: resultState.mode });
+                track('amazon-preset-applied');
             });
         }
         const customColor = document.getElementById('editor-custom-color');
@@ -2276,7 +2273,7 @@
         });
         document.getElementById('download-transparent').addEventListener('click', () => {
             downloadUrl(resultState.cutoutUrl, `${resultState.basename}_transparent.png`);
-            track('transparent-download', { page: resultState.mode });
+            track('transparent-download');
         });
         const downloadEdited = document.getElementById('download-edited');
         if (downloadEdited) downloadEdited.addEventListener('click', () => downloadCurrentVersion());
@@ -2341,18 +2338,18 @@
     async function handleFiles(files) {
         const file = files[0];
 
+        // 选图即预热 Beam（登录用户）：把 GPU 冷启动藏进后续「压缩+上传」窗口；匿名时是 no-op。
+        window.MiaoCutPro?.prewarm?.();
+
         if (!ALLOWED_TYPES.includes(file.type)) {
-            track('format-rejected', { type: file && file.type ? file.type : 'unknown' });
+            track('format-rejected');
             alert(t('alertSize'));
             return;
         }
 
         console.log(`[MiaoCut] 原始图片: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
-        const fileExt = file.type.replace('image/', '');
-        // 子页打点带 page 维度，便于在 Umami 后台分析"哪个 landing page 转化最高"
         const page = (window.MIAOCUT_PAGE_KEY || 'home');
-        track('upload-started', { type: fileExt, size: sizeBucket(file.size), profile: currentProfile, page });
-        const startedAt = performance.now();
+        track('upload-started');
 
         cleanupResultState();
         dropzoneContent.classList.add('pointer-events-none');
@@ -2371,15 +2368,10 @@
             formData.append('file', uploadFile);
             const blob = await uploadWithProgress(formData);
 
-            track('cutout-success', {
-                type: fileExt,
-                size: sizeBucket(file.size),
-                duration: durationBucket(performance.now() - startedAt),
-                page,
-            });
+            track('cutout-success');
 
             if (page === 'home') {
-                autoDownloadTransparentResult(file, blob, page);
+                autoDownloadTransparentResult(file, blob);
                 shouldResetDropzone = true;
             } else {
                 await showResultEditor(file, uploadFile, blob);
@@ -2393,21 +2385,26 @@
             if (error.status === 429) {
                 if (error.scope === 'day') {
                     // 今日免费额度用尽（明天重置）→ 引导升级 Pro（弹预约弹窗）
-                    track('cutout-rate-limited', { type: fileExt, page, scope: 'day' });
+                    track('cutout-rate-limited');
                     resetDropzone();
                     if (typeof openWaitlistModal === 'function') openWaitlistModal('rateDay');
                 } else {
                     // 手速太快（minute）：当天还有额度，给温和提示 + 可选 Pro 批量入口。
                     // 保留提示（不让 finally 的延时 reset 把它清掉），用户读完可点 Pro 或重新拖图。
                     shouldResetDropzone = false;
-                    track('cutout-rate-limited', { type: fileExt, page, scope: 'minute' });
+                    track('cutout-rate-limited');
                     showRateBurstNotice(Math.max(1, Math.round(error.retryAfter || 30)));
                 }
                 return;
             }
-            const reason = error.status ? `http-${error.status}`
-                : (error.kind || (error.message && /压缩|WebP/.test(error.message) ? 'compress' : 'unknown'));
-            track('cutout-failed', { type: fileExt, reason, page });
+            // 积分不足（登录付费路径专有）→ 引导去充值
+            if (error.status === 402) {
+                track('cutout-insufficient-credits');
+                resetDropzone();
+                window.location.href = '/pricing/';
+                return;
+            }
+            track('cutout-failed');
             // 用 DOM 拼装而不是 innerHTML 拼字符串，防止 error.message 里若含 HTML 被当标签执行（XSS）
             dropzoneContent.innerHTML = '';
             const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');

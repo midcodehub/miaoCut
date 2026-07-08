@@ -90,7 +90,7 @@
 
             if (typeof umami !== 'undefined') {
                 try {
-                    umami.track('lang-switched', { from: currentLang, to: targetLang });
+                    umami.track('lang-switched');
                 } catch (_) { /* analytics must not affect navigation */ }
             }
 

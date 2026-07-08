@@ -867,10 +867,10 @@
         return (i18n[state.lang] && i18n[state.lang][key]) || i18n.en[key] || key;
     }
 
-    function track(name, data) {
+    function track(name) {
         if (typeof umami === 'undefined') return;
         try {
-            if (data) umami.track(name, data); else umami.track(name);
+            umami.track(name);
         } catch (_) { /* analytics should not affect editing */ }
     }
 
@@ -926,7 +926,7 @@
         sourceImage.src = state.sourceObjectUrl;
         fileName.textContent = file.name;
         uploadHint.textContent = t('replaceHint');
-        track('watermark-uploaded', { type: file.type.replace('image/', '') });
+        track('watermark-uploaded');
     });
 
     sourceImage.addEventListener('load', () => {
@@ -1029,7 +1029,7 @@
             track('watermark-success');
         } catch (error) {
             setStatus(`${t('failed')}: ${error.message}`);
-            track('watermark-failed', { reason: error.message || 'unknown' });
+            track('watermark-failed');
         } finally {
             setBusy(false);
         }

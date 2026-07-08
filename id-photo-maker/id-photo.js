@@ -1382,13 +1382,13 @@
             state.transparentHd = data.image_base64_hd;
             await refreshOutputs();
             if (typeof umami !== 'undefined') {
-                umami.track('id-photo-success', { preset: preset.value, paper: $('paper').value });
+                umami.track('id-photo-success');
             }
         } catch (err) {
             console.error(err);
             setStatus(err.message || 'Failed to generate ID photo.');
             if (typeof umami !== 'undefined') {
-                umami.track('id-photo-failed', { reason: err.message || 'unknown' });
+                umami.track('id-photo-failed');
             }
         } finally {
             generateBtn.disabled = false;

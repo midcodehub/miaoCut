@@ -50,9 +50,18 @@ download_url_to_file('https://github.com/enesmsahin/simple-lama-inpainting/relea
 # ============================================================
 FROM python:3.11-slim
 
-# 系统依赖：MediaPipe/OpenCV 运行时需要 libGL/libglib。
+# 系统依赖：
+#   libgl1 / libglib2.0-0 —— MediaPipe / OpenCV 运行时依赖
+#   libjemalloc2          —— 替换 glibc 的默认 malloc；用它主要有两个收益：
+#     1) 内存碎片显著小于 glibc ptmalloc，同样负载下 RSS 峰值/steady-state 更低，
+#        对 cgroup 内存受限（HF Space 2 vCPU, 16GB 硬顶）尤其有价值。
+#     2) dirty/muzzy decay 机制会真正把空闲页归还给 OS，不像 glibc 那样即使 malloc_trim
+#        也常常留在进程里——这是我们过去靠 _malloc_trim + gc.collect 兜底的问题的更彻底解法。
+#   ⚠️ 注意 jemalloc 只解"分配器 → OS"这一层；ORT 自己的 arena（"ORT → 分配器"）仍需靠
+#      main.py 的 memory.enable_memory_arena_shrinkage 归还——两者互补，不要因为上了 jemalloc
+#      就关掉 ENABLE_ARENA_SHRINKAGE，会让 sharp + fur 两个 session 的 arena 叠加冲顶 OOM。
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends libgl1 libglib2.0-0 && \
+    apt-get install -y --no-install-recommends libgl1 libglib2.0-0 libjemalloc2 && \
     useradd -m -u 1000 user && \
     mkdir -p /home/user/app /data && \
     chown -R user:user /home/user/app /data && \
@@ -91,10 +100,23 @@ COPY --chown=user:user models/birefnet-general-lite-768.onnx /opt/miaocut-models
 # 模型已内置到镜像；rembg 模型缺失时会自动退到可写缓存目录。
 # big-lama（去水印 inpainting 模型）由上面 builder 预置到 /opt/miaocut-models/big-lama.pt，
 # 用 LAMA_MODEL 指定后 SimpleLama 直接加载本地文件，容器重启不再去 GitHub 重下 196MB。
+#
+# ---- jemalloc 相关（见上文 libjemalloc2 系统依赖注释）----
+#   LD_PRELOAD 让所有子进程（含 uvicorn 主进程、SimpleLama 的 ProcessPool worker）都跑 jemalloc。
+#   MALLOC_CONF 是 jemalloc 的 tuning，取的是 PyTorch 官方 Docker 也在用的一组保守值：
+#     background_thread:true —— 后台线程做 purge，避免 malloc/free 热路径承担 decay 成本
+#     metadata_thp:auto      —— 对 jemalloc 自己的元数据用 THP，减少 TLB miss
+#     dirty_decay_ms:5000    —— 5s 内不再用的 dirty page 归还给 OS
+#     muzzy_decay_ms:5000    —— 同上，第二层 muzzy state（jemalloc 的 lazy purge 分层）
+#   万一 jemalloc 在某个 Space 上表现异常，把这两行注掉重建镜像即可回退到 glibc；
+#   MALLOC_ARENA_MAX / MALLOC_TRIM_THRESHOLD_ 是 glibc 特有的 tuning，jemalloc 加载后被自动忽略，
+#   保留是为了让"关掉 jemalloc 回退 glibc"的场景仍然拿到之前调过的 glibc 参数。
 ENV PORT=7860 \
     U2NET_HOME=/opt/miaocut-models \
     LAMA_MODEL=/opt/miaocut-models/big-lama.pt \
     DATA_DIR=/data \
+    LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2 \
+    MALLOC_CONF="background_thread:true,metadata_thp:auto,dirty_decay_ms:5000,muzzy_decay_ms:5000" \
     MALLOC_ARENA_MAX=2 \
     MALLOC_TRIM_THRESHOLD_=131072
 

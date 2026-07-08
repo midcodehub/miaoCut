@@ -49,3 +49,14 @@ models/*.bak
 .claude
 .agent
 .playwright-cli
+ads.txt
+b27e253973b44d85af293d4f007fba0c.txt
+googlebbfb4abe1fc3d9df.html
+miaocut-seo-design-doc.md
+old-photo-restoration-design.md
+quantize_birefnet.ipynb
+docs/
+.claude/*
+.agents/
+scripts/
+benchmark

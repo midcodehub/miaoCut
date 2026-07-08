@@ -1,0 +1,62 @@
+name = "miaocut-pro-gateway"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+# 自定义域名:在 Cloudflare Dashboard 或下方 routes 绑定 pro-api.miaocut.app
+routes = [
+  { pattern = "pro-api.miaocut.app", custom_domain = true }
+]
+
+[[kv_namespaces]]
+binding = "MIAOCUT_STATE"
+id = "60a43578900044669a70f47e2cc30a6e"
+
+[[r2_buckets]]
+binding = "BATCH_BUCKET"
+bucket_name = "miaocut-batch"
+
+# -----------------------------------------------------------------------------
+# 非敏感变量(明文)。敏感密钥用 `wrangler secret put`,不要写在这里。
+# -----------------------------------------------------------------------------
+[vars]
+# CORS 允许来源(开发期可设为 "*"，生产建议精确到站点)
+CORS_ALLOW_ORIGIN = "*"
+
+# 业务参数
+SIGNUP_BONUS = "100"          # 注册赠送积分(决策:注册送 100)
+DAILY_FREE_QUOTA = "0"        # GPU 付费路径不设每日免费额度(免费走匿名 CPU)
+MAX_SYNC_UPLOAD_MB = "25"     # 同步单图上限,安全低于 CF 100MB;更大走 R2 异步(Phase 2)
+BEAM_TIMEOUT_MS = "60000"     # 转发 Beam 超时,容忍冷启动
+
+# Beam 单图处理 Endpoint(非敏感)
+BEAM_ENDPOINT = "https://miaocut-cutout-82d3943-v20.app.beam.cloud"
+
+# 批量任务专属 endpoint
+BEAM_BATCH_URL = "https://miaocut-batch-4855566-v55.app.beam.cloud"
+
+# R2(批量输入/输出)。endpoint/bucket 非敏感;Access Key/Secret 用 secret。
+R2_ENDPOINT = "https://4a7197a1b3b4e75dfc9b4951898836af.r2.cloudflarestorage.com"
+R2_BUCKET = "miaocut-batch"
+
+# 充值成功/取消跳转
+CHECKOUT_SUCCESS_URL = "https://miaocut.app/account/credits/?status=success"
+CHECKOUT_CANCEL_URL = "https://miaocut.app/pricing/?status=cancel"
+
+# Supabase 项目地址(非敏感)
+SUPABASE_URL = "https://kaqlfoxselrvriulvlsm.supabase.co"
+
+# -----------------------------------------------------------------------------
+# 以下为 SECRETS,用命令写入,切勿提交明文:
+#   wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+#   wrangler secret put SUPABASE_JWT_SECRET
+#   wrangler secret put STRIPE_SECRET_KEY
+#   wrangler secret put STRIPE_WEBHOOK_SECRET
+#   wrangler secret put BEAM_TOKEN               # Beam 端点鉴权 token
+#   wrangler secret put R2_ACCESS_KEY_ID         # R2 S3 API Access Key
+#   wrangler secret put R2_SECRET_ACCESS_KEY     # R2 S3 API Secret
+#   wrangler secret put BATCH_CALLBACK_SECRET    # 批量回调密钥(与 Beam batch task 同值)
+#   wrangler secret put STRIPE_PRICE_STARTER_100 # Stripe Price ID(price_...)
+#   wrangler secret put STRIPE_PRICE_CREATOR_500
+#   wrangler secret put STRIPE_PRICE_SELLER_1500
+#   wrangler secret put STRIPE_PRICE_STUDIO_5000
+# -----------------------------------------------------------------------------
