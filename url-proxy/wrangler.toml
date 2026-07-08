@@ -36,7 +36,7 @@ TOTAL_TIMEOUT_MS = "58000"
 
 # Notes:
 [[ratelimits]]
-binding = "RATE_LIMITER"
+name = "RATE_LIMITER"
 # namespace_id 可以是任意唯一的自定义整数/数字字符串
 namespace_id = "999"
 simple = { limit = 10, period = 60 }
