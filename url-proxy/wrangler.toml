@@ -1,0 +1,28 @@
+name = "miaocut-url-proxy"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+# Production Environment (default)
+[vars]
+CORS_ALLOW_ORIGIN = "*"
+CN_HOSTS = "midcodex-miao-cut.hf.space,midcodex-miao-cut2.hf.space,midcodex-miao-cut3.hf.space"
+GLOBAL_HOSTS = "midcodex-miao-cut.hf.space,midcodex-miao-cut2.hf.space,midcodex-miao-cut3.hf.space"
+
+# Dev Environment (staging)
+[env.dev]
+# Deploy to a dev specific route if needed, or rely on worker dev URL
+# routes = [
+#   { pattern = "dev-proxy.miaocut.app", custom_domain = true }
+# ]
+[env.dev.vars]
+CORS_ALLOW_ORIGIN = "*"
+# These point to the 3 dev spaces you will deploy
+CN_HOSTS = "wu408124546-miao-cut-dev1.hf.space,wu408124546-miao-cut-dev2.hf.space,wu408124546-miao-cut-dev3.hf.space"
+GLOBAL_HOSTS = "wu408124546-miao-cut-dev1.hf.space,wu408124546-miao-cut-dev2.hf.space,wu408124546-miao-cut-dev3.hf.space"
+
+# Notes:
+# If you use Cloudflare Rate Limiting for the proxy, you will need to add:
+# [[unsafe.bindings]]
+# name = "RATE_LIMITER"
+# type = "ratelimit"
+# namespace_id = "YOUR_RATE_LIMIT_ID"

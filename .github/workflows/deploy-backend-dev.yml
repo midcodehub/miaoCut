@@ -1,0 +1,162 @@
+name: Deploy Backend Dev
+
+on:
+  push:
+    branches: [ dev ]
+    paths:
+      - "main.py"
+      - "requirements.txt"
+      - "Dockerfile"
+      - ".github/workflows/deploy-backend-dev.yml"
+  workflow_dispatch:
+
+jobs:
+  deploy_spaces:
+    name: Push to Hugging Face Spaces (Dev)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install huggingface_hub
+        run: pip install --quiet "huggingface_hub>=0.24"
+
+      - name: Rolling deploy to Dev Hugging Face Spaces
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN_DEV }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          if [ -z "$HF_TOKEN" ]; then
+            echo "HF_TOKEN_DEV secret is not configured."
+            exit 1
+          fi
+          python - <<'PY'
+          import os
+          import sys
+          import time
+          import json
+          import urllib.request
+
+          from huggingface_hub import HfApi
+
+          api = HfApi(token=os.environ["HF_TOKEN"])
+          sha_short = os.environ.get("GITHUB_SHA", "manual")[:8]
+
+          # Dev Spaces for rolling deploy
+          SPACES = [
+              ("miao_cut_dev1", "wu408124546-miao-cut-dev1.hf.space"),
+              ("miao_cut_dev2", "wu408124546-miao-cut-dev2.hf.space"),
+              ("miao_cut_dev3", "wu408124546-miao-cut-dev3.hf.space"),
+          ]
+          ALLOW = ["main.py", "Dockerfile", "requirements.txt", "README.md"]
+
+          POLL_INTERVAL          = 10
+          BUILD_START_TIMEOUT    = 240
+          BUILD_FINISH_TIMEOUT   = 1500
+          READY_TIMEOUT          = 360
+          READY_STABLE_HITS      = 2
+
+          BUILDING_STAGES = {"BUILDING", "RUNNING_BUILDING", "APP_STARTING", "RUNNING_APP_STARTING"}
+          FATAL_STAGES    = {"BUILD_ERROR", "RUNTIME_ERROR", "CONFIG_ERROR", "NO_APP_FILE"}
+
+          def stage_of(repo_id):
+              try:
+                  return api.get_space_runtime(repo_id).stage or "UNKNOWN"
+              except Exception as exc:
+                  print(f"    (warn) get_space_runtime({repo_id}) failed: {exc}")
+                  return "UNKNOWN"
+
+          def wait_build_start(repo_id):
+              deadline = time.time() + BUILD_START_TIMEOUT
+              while time.time() < deadline:
+                  stage = stage_of(repo_id)
+                  if stage in FATAL_STAGES:
+                      raise RuntimeError(f"{repo_id} entered fatal stage during build start: {stage}")
+                  if stage in BUILDING_STAGES:
+                      print(f"    [{repo_id}] build started (stage={stage})")
+                      return True
+                  time.sleep(POLL_INTERVAL)
+              return False
+
+          def wait_build_finish(repo_id):
+              deadline = time.time() + BUILD_FINISH_TIMEOUT
+              last = None
+              while time.time() < deadline:
+                  stage = stage_of(repo_id)
+                  if stage != last:
+                      print(f"    [{repo_id}] stage={stage}")
+                      last = stage
+                  if stage in FATAL_STAGES:
+                      raise RuntimeError(f"{repo_id} build failed: stage={stage}")
+                  if stage == "RUNNING":
+                      return
+                  time.sleep(POLL_INTERVAL)
+              raise TimeoutError(f"{repo_id} did not return to RUNNING within {BUILD_FINISH_TIMEOUT}s")
+
+          def probe(host):
+              url = f"https://{host}/"
+              try:
+                  req = urllib.request.Request(url, headers={"User-Agent": "miaocut-rollout-dev"})
+                  with urllib.request.urlopen(req, timeout=10) as r:
+                      if r.status != 200:
+                          return (False, False)
+                      data = json.loads(r.read().decode("utf-8"))
+                      return (bool(data.get("ok")), bool(data.get("model_ready")))
+              except Exception:
+                  return (False, False)
+
+          def wait_http_ready(host):
+              deadline = time.time() + READY_TIMEOUT
+              hits = 0
+              while time.time() < deadline:
+                  ok, ready = probe(host)
+                  if ok and ready:
+                      hits += 1
+                      if hits >= READY_STABLE_HITS:
+                          print(f"    [{host}] healthy & model_ready ✅")
+                          return
+                  else:
+                      hits = 0
+                  time.sleep(POLL_INTERVAL)
+              raise TimeoutError(f"{host} not healthy/model_ready within {READY_TIMEOUT}s")
+
+          def deploy_one(space, host):
+              repo_id = f"wu408124546/{space}"
+              print(f"==> [{repo_id}] uploading {ALLOW}")
+              api.upload_folder(
+                  folder_path=".",
+                  repo_id=repo_id,
+                  repo_type="space",
+                  allow_patterns=ALLOW,
+                  commit_message=f"Deploy {sha_short} from GitHub Actions (rolling dev)",
+              )
+              if wait_build_start(repo_id):
+                  wait_build_finish(repo_id)
+              else:
+                  print(f"    [{repo_id}] no rebuild detected (files unchanged); verifying current health")
+              wait_http_ready(host)
+
+          failed = None
+          for i, (space, host) in enumerate(SPACES):
+              try:
+                  deploy_one(space, host)
+                  print(f"    [{space}] done ({i + 1}/{len(SPACES)})\n")
+              except Exception as exc:
+                  failed = (space, exc)
+                  print(f"!! [{space}] deploy failed: {exc}", file=sys.stderr)
+                  print("!! Aborting rollout — remaining Spaces keep serving the previous version.",
+                        file=sys.stderr)
+                  break
+
+          if failed:
+              sys.exit(1)
+          print("Rolling deploy complete: all 3 Dev Spaces updated with zero downtime.")
+          PY

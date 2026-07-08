@@ -60,3 +60,40 @@ SUPABASE_URL = "https://kaqlfoxselrvriulvlsm.supabase.co"
 #   wrangler secret put STRIPE_PRICE_SELLER_1500
 #   wrangler secret put STRIPE_PRICE_STUDIO_5000
 # -----------------------------------------------------------------------------
+
+# =============================================================================
+# Dev Environment (staging)
+# =============================================================================
+[env.dev]
+# 部署到自定义的 dev 域名
+routes = [
+  { pattern = "dev-api.miaocut.app", custom_domain = true }
+]
+
+# 为 dev 创建一个新的 KV namespace (你需要运行 `wrangler kv:namespace create MIAOCUT_STATE --env dev`)
+# 然后用生成的 id 替换下面的内容
+[[env.dev.kv_namespaces]]
+binding = "MIAOCUT_STATE"
+id = "PUT_YOUR_DEV_KV_ID_HERE"
+
+[[env.dev.r2_buckets]]
+binding = "BATCH_BUCKET"
+bucket_name = "miaocut-batch-dev"
+
+[env.dev.vars]
+CORS_ALLOW_ORIGIN = "*"
+SIGNUP_BONUS = "100"
+DAILY_FREE_QUOTA = "0"
+MAX_SYNC_UPLOAD_MB = "25"
+BEAM_TIMEOUT_MS = "60000"
+BEAM_ENDPOINT = "https://miaocut-cutout-82d3943-v20.app.beam.cloud"
+BEAM_BATCH_URL = "https://miaocut-batch-4855566-v55.app.beam.cloud"
+R2_ENDPOINT = "https://4a7197a1b3b4e75dfc9b4951898836af.r2.cloudflarestorage.com"
+R2_BUCKET = "miaocut-batch-dev"
+CHECKOUT_SUCCESS_URL = "https://miaocut.app/account/credits/?status=success"
+CHECKOUT_CANCEL_URL = "https://miaocut.app/pricing/?status=cancel"
+SUPABASE_URL = "PUT_YOUR_DEV_SUPABASE_URL_HERE"
+
+# Dev secrets are managed similarly:
+# wrangler secret put SUPABASE_SERVICE_ROLE_KEY --env dev
+# wrangler secret put STRIPE_SECRET_KEY --env dev (USE STRIPE TEST KEYS!)

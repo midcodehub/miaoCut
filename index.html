@@ -1656,7 +1656,13 @@
     <!-- MiaoCut Pro：登录态 / 积分。Supabase 未配置（留空）时完全 inert，匿名首页零影响。
          填入真实 SUPABASE_URL / ANON_KEY 后才启用登录，登录用户单图自动走 Pro 网关。 -->
     <script>
-        window.MIAOCUT_PRO_CONFIG = {
+        const isDev = window.location.hostname.includes('dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        window.MIAOCUT_PRO_CONFIG = isDev ? {
+            SUPABASE_URL: "DEV_SUPABASE_URL_HERE", // Replace with Dev Supabase URL
+            SUPABASE_ANON_KEY: "DEV_SUPABASE_ANON_KEY_HERE", // Replace with Dev Anon Key
+            PRO_API_BASE: "https://dev-api.miaocut.app",
+            FREE_API_BASE: "https://dev-api2.miaocut.app"
+        } : {
             SUPABASE_URL: "https://kaqlfoxselrvriulvlsm.supabase.co",
             SUPABASE_ANON_KEY: "sb_publishable_MlDRXsrWyxijTUocv4Hq-g_PIi85ZQY",
             PRO_API_BASE: "https://pro-api.miaocut.app",

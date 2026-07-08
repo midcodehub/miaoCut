@@ -8,13 +8,19 @@
   <title>Batch Background Remover — MiaoCut</title>
   <!-- MiaoCut Pro 配置：填入真实 Supabase key 后启用登录。PRO_API_BASE 为付费网关。 -->
   <script>
-    window.MIAOCUT_PRO_CONFIG = {
-      SUPABASE_URL: "https://kaqlfoxselrvriulvlsm.supabase.co",
-      SUPABASE_ANON_KEY: "sb_publishable_MlDRXsrWyxijTUocv4Hq-g_PIi85ZQY",
-      PRO_API_BASE: "https://pro-api.miaocut.app",
-      FREE_API_BASE: "https://api2.miaocut.app"
-    };
-  </script>
+        const isDev = window.location.hostname.includes('dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        window.MIAOCUT_PRO_CONFIG = isDev ? {
+            SUPABASE_URL: "DEV_SUPABASE_URL_HERE", // Replace with Dev Supabase URL
+            SUPABASE_ANON_KEY: "DEV_SUPABASE_ANON_KEY_HERE", // Replace with Dev Anon Key
+            PRO_API_BASE: "https://dev-api.miaocut.app",
+            FREE_API_BASE: "https://dev-api2.miaocut.app"
+        } : {
+            SUPABASE_URL: "https://kaqlfoxselrvriulvlsm.supabase.co",
+            SUPABASE_ANON_KEY: "sb_publishable_MlDRXsrWyxijTUocv4Hq-g_PIi85ZQY",
+            PRO_API_BASE: "https://pro-api.miaocut.app",
+            FREE_API_BASE: "https://api2.miaocut.app"
+        };
+    </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     :root {
