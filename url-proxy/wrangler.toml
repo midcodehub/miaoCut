@@ -7,6 +7,13 @@ compatibility_date = "2024-11-01"
 CORS_ALLOW_ORIGIN = "*"
 CN_HOSTS = "midcodex-miao-cut.hf.space,midcodex-miao-cut2.hf.space,midcodex-miao-cut3.hf.space"
 GLOBAL_HOSTS = "midcodex-miao-cut.hf.space,midcodex-miao-cut2.hf.space,midcodex-miao-cut3.hf.space"
+DEFAULT_MAX_CONCURRENCY = "2"
+GATEWAY_SECRET = "b721d02f8389ea4ebc2c22322f75a82f5f18c475365dd51c7068bcf7b14d5bd6"
+HEDGE_DELAY_MS = "25000"
+MAX_PARALLEL_REQUESTS = "2"
+PER_HOST_TIMEOUT_MS = "35000"
+QUEUE_POLL_INTERVAL_MS = "5000"
+TOTAL_TIMEOUT_MS = "58000"
 
 # Dev Environment (staging)
 [env.dev]
@@ -19,6 +26,13 @@ CORS_ALLOW_ORIGIN = "*"
 # These point to the 3 dev spaces you will deploy
 CN_HOSTS = "wu408124546-miao-cut-dev1.hf.space"
 GLOBAL_HOSTS = "wu408124546-miao-cut-dev1.hf.space"
+DEFAULT_MAX_CONCURRENCY = "2"
+GATEWAY_SECRET = "b721d02f8389ea4ebc2c22322f75a82f5f18c475365dd51c7068bcf7b14d5bd6"
+HEDGE_DELAY_MS = "25000"
+MAX_PARALLEL_REQUESTS = "2"
+PER_HOST_TIMEOUT_MS = "35000"
+QUEUE_POLL_INTERVAL_MS = "5000"
+TOTAL_TIMEOUT_MS = "58000"
 
 # Notes:
 # If you use Cloudflare Rate Limiting for the proxy, you will need to add:
