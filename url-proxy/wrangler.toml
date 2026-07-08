@@ -35,8 +35,8 @@ QUEUE_POLL_INTERVAL_MS = "5000"
 TOTAL_TIMEOUT_MS = "58000"
 
 # Notes:
-# If you use Cloudflare Rate Limiting for the proxy, you will need to add:
-[[unsafe.bindings]]
-name = "RATE_LIMITER"
-type = "ratelimit"
+[[ratelimits]]
+binding = "RATE_LIMITER"
+# namespace_id 可以是任意唯一的自定义整数/数字字符串
 namespace_id = "999"
+simple = { limit = 10, period = 60 }
