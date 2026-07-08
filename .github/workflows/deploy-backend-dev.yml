@@ -50,11 +50,9 @@ jobs:
           api = HfApi(token=os.environ["HF_TOKEN"])
           sha_short = os.environ.get("GITHUB_SHA", "manual")[:8]
 
-          # Dev Spaces for rolling deploy
+          # Dev Space for deployment
           SPACES = [
               ("miao_cut_dev1", "wu408124546-miao-cut-dev1.hf.space"),
-              ("miao_cut_dev2", "wu408124546-miao-cut-dev2.hf.space"),
-              ("miao_cut_dev3", "wu408124546-miao-cut-dev3.hf.space"),
           ]
           ALLOW = ["main.py", "Dockerfile", "requirements.txt", "README.md"]
 
