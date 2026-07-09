@@ -2,6 +2,10 @@ name = "miaocut-url-proxy"
 main = "src/index.js"
 compatibility_date = "2024-11-01"
 
+routes = [
+  { pattern = "api2.miaocut.app", custom_domain = true }
+]
+
 # Production Environment (default)
 [vars]
 CORS_ALLOW_ORIGIN = "*"
@@ -18,9 +22,9 @@ TOTAL_TIMEOUT_MS = "58000"
 # Dev Environment (staging)
 [env.dev]
 # Deploy to a dev specific route if needed, or rely on worker dev URL
-# routes = [
-#   { pattern = "dev-proxy.miaocut.app", custom_domain = true }
-# ]
+routes = [
+  { pattern = "dev-api2.miaocut.app", custom_domain = true }
+]
 [env.dev.vars]
 CORS_ALLOW_ORIGIN = "*"
 # These point to the 3 dev spaces you will deploy
