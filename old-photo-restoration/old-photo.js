@@ -1,7 +1,8 @@
 (function () {
     'use strict';
 
-    const API_BASE = 'https://api2.miaocut.app';
+    const _isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const API_BASE = (window.MIAOCUT_PRO_CONFIG && window.MIAOCUT_PRO_CONFIG.FREE_API_BASE) || (_isLocal ? 'http://localhost:8000' : 'https://api2.miaocut.app');
     const i18n = {
     "en": {
         "pageTitle": "Free AI Old Photo Restoration & Upscaler | MiaoCut",

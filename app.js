@@ -1262,7 +1262,7 @@
     // API 配置
     // ============================================================
     const _isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const API_BASE = _isLocal ? 'http://localhost:8000' : 'https://api2.miaocut.app';
+    const API_BASE = (window.MIAOCUT_PRO_CONFIG && window.MIAOCUT_PRO_CONFIG.FREE_API_BASE) || (_isLocal ? 'http://localhost:8000' : 'https://api2.miaocut.app');
 
     // ============================================================
     // Batch Process Pro fake door（同一个弹窗复用为 3 种场景，见 openWaitlistModal）
