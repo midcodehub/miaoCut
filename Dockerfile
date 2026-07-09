@@ -1,36 +1,60 @@
 # ============================================================
-# MiaoCut 后端 Dockerfile（Hugging Face Docker Space）
+# Dockerfile.openvino — OpenVINO EP variant (A/B image for one Space)
 # ============================================================
-# 多阶段构建：builder 装依赖 → runtime 只拷成品，镜像更小。
+# 与主 Dockerfile 唯一的差异（两处）：
+#   1) builder 阶段：装完 requirements.txt 后，把 rembg[cpu] 顺带装进来的 onnxruntime 移除，
+#      再装 onnxruntime-openvino。这个 wheel 里 bundle 了 OpenVINO 2025.4.1 CPU 内核，
+#      同时保留标准 CPUExecutionProvider 作为兜底。
+#      ⚠️ 不能把两个 wheel 共存：它们共享 top-level 模块名 `onnxruntime`，共存时
+#         import 结果依赖安装顺序，行为不可预测——必须先 rm 掉旧的 site-packages 目录
+#         再装新的（pip uninstall 在 --prefix 模式下不工作，故用 rm）。
+#   2) 运行时 ENV 追加 USE_OPENVINO_EP=1，让 main.py 的 _resolve_providers() 首选
+#      OpenVINOExecutionProvider，CPU EP 依然作为兜底（不可用时静默回退）。
 #
-# 构建：docker build -t miaocut-api .
-# 运行：docker run --rm -p 7860:7860 \
-#         -e PORT=7860 \
-#         -e ALLOWED_ORIGINS=https://miaocut.app,https://www.miaocut.app \
-#         -e TRUST_PROXY=1 \
-#         -e MAX_CONCURRENCY=1 \
-#         miaocut-api
+# 其余（jemalloc、模型预置、big-lama 预下载、其他 ENV 变量）与主 Dockerfile 完全一致。
+#
+# ---- 构建 & 使用 ----
+#   docker build -t miaocut-api-openvino -f Dockerfile.openvino .
+#   # Space 端：把 3 个 Space 中的一个（e.g. miao_cut3）换成这个镜像做灰度，
+#   # 另外两个继续跑默认 Dockerfile 做对照。
+#
+# ---- 期望收益（待 Space 端验证）----
+#   BiRefNet-lite（Swin Transformer 结构）在 Xeon 8375C（含 AVX-512 VNNI）上，
+#   OpenVINO CPU 内核对比 onnxruntime MLAS 通常快 1.5~3× at FP32。见
+#   docs/cutout-perf-followups.md 的 §1 里的完整测量协议和决策规则。
+#
+# ---- 验证 checklist（部署后第一件事）----
+#   看容器启动日志。main.py 的 _log_session_providers 会打印每个 session 用的 EP：
+#     Session 'sharp/birefnet-general-lite-768' providers: ['OpenVINOExecutionProvider', 'CPUExecutionProvider']
+#   如果看到 providers 只有 CPUExecutionProvider，说明 OpenVINO EP 未生效
+#   （可能是 onnxruntime-openvino 装错了、USE_OPENVINO_EP=0 被下游覆盖了、或 EP 初始化失败），
+#   参考 docs/cutout-perf-followups.md 的排错步骤。
+#
+# ---- 回退 ----
+#   删除本文件、切回默认 Dockerfile 重建镜像即可。main.py 里没有任何 OpenVINO 专属代码——
+#   `_resolve_providers()` 在 OpenVINO EP 不可用时自动回退到纯 CPU，完全对称。
 # ============================================================
 
 FROM python:3.11-slim AS builder
 
 WORKDIR /build
 
-# 构建阶段也会 import rembg/mediapipe/OpenCV 来预下载模型；
-# slim 镜像默认没有 libGL，缺失时会在 builder 的 python -c 里失败。
+# 构建阶段也会 import rembg/mediapipe/OpenCV 来预下载模型；缺 libGL 时 python -c 报错。
 RUN apt-get update && \
     apt-get install -y --no-install-recommends libgl1 libglib2.0-0 && \
     rm -rf /var/lib/apt/lists/*
 
-# 先装依赖（利用 Docker 缓存，改代码不重装依赖）
+# 先装完常规依赖（复用主 Dockerfile 的 requirements.txt，避免依赖表分叉维护）
 COPY requirements.txt .
-RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt && \
+    # rembg[cpu] 会连带装 onnxruntime；OpenVINO 变体不能与之共存（同一 top-level 模块名）
+    # pip uninstall 在 --prefix 模式下不工作，只能物理 rm site-packages 里的 onnxruntime 目录
+    rm -rf /install/lib/python3.11/site-packages/onnxruntime* && \
+    # 装 onnxruntime-openvino：wheel 里 bundle 了 OpenVINO 2025.4.1 CPU/GPU 库（Linux 单独 84MB wheel），
+    # 不需要在系统层单独装 openvino。pin 到 >=1.20,<2.0 覆盖当前 stable 且避免大版本跳跃。
+    pip install --no-cache-dir --prefix=/install "onnxruntime-openvino>=1.20,<2.0"
 
-# 构建阶段预下载 sharp 档两个候选模型，避免容器启动后首个请求再去 GitHub 下载。
-#   isnet-general-use     —— 当前 SHARP_MODEL 默认值（~1.3s，硬边主体性价比最高）
-#   birefnet-general-lite —— 设 SHARP_MODEL=birefnet-general-lite 可切回（发丝级细节）
-# 两份都预置，运行时切 SHARP_MODEL 不用重新构建镜像。
-# pip --prefix 安装的包不在 builder 默认 sys.path 中，所以显式设置 PYTHONPATH。
+# 模型预下载：与主 Dockerfile 完全一致
 RUN mkdir -p /model-cache && \
     U2NET_HOME=/model-cache \
     PYTHONPATH=/install/lib/python3.11/site-packages \
@@ -38,11 +62,7 @@ RUN mkdir -p /model-cache && \
 names=['isnet-general-use','birefnet-general-lite']; \
 [print(next(sc for sc in sessions_class if sc.name()==n).download_models()) for n in names]"
 
-# 构建期预下载 SimpleLama 的 big-lama.pt（~196MB，去水印 /api/remove-watermark 的 inpainting 模型）。
-# 不预置的话，容器每次重启后第一个去水印请求都会触发 torch.hub 去 GitHub 重新下载这 196MB
-# （容器日志里的 "Downloading ... big-lama.pt to ~/.cache/torch/..."），既拖慢冷启动恢复，
-# 又可能让那个请求超时。预置到 /model-cache（下面会随 BiRefNet 权重一起 COPY 到 /opt/miaocut-models），
-# 运行时用 LAMA_MODEL 环境变量直接指向它，SimpleLama 检测到本地文件就完全跳过下载。
+# big-lama.pt（去水印 inpainting 模型，196MB）也预下载，避免容器重启后首个去水印请求触发 GitHub 下载
 RUN PYTHONPATH=/install/lib/python3.11/site-packages \
     python -c "from torch.hub import download_url_to_file; \
 download_url_to_file('https://github.com/enesmsahin/simple-lama-inpainting/releases/download/v0.1.0/big-lama.pt', '/model-cache/big-lama.pt')"
@@ -50,15 +70,7 @@ download_url_to_file('https://github.com/enesmsahin/simple-lama-inpainting/relea
 # ============================================================
 FROM python:3.11-slim
 
-# 系统依赖：libgl1 / libglib2.0-0 —— MediaPipe / OpenCV 运行时依赖
-#
-# 【曾用过 jemalloc,已回退】
-# 之前尝试过 apt install libjemalloc2 + LD_PRELOAD 让 jemalloc 替换 glibc malloc,
-# 目标是降低碎片、更快归还内存给 OS。Space 端 A/B 后发现在 2 vCPU CPU-bound FP32
-# 推理场景下(BiRefNet-general-lite-768),jemalloc 的 background_thread 反而抢占
-# vCPU,导致 sharp 推理慢 ~3s(6.5s -> 9.5s median)。当前 Space 内存并不是瓶颈
-# (oom_kills=0,cgroup 用量只到 15%),不值这个速度代价,先撤。
-# 如果将来内存成为瓶颈再回来考虑 jemalloc + background_thread:false 或者 tcmalloc。
+# 与主 Dockerfile 同一套 apt 依赖（jemalloc 曾用过,后来发现 2 vCPU Space 上会拖慢 sharp 推理,已撤,见主 Dockerfile 注释）
 RUN apt-get update && \
     apt-get install -y --no-install-recommends libgl1 libglib2.0-0 && \
     useradd -m -u 1000 user && \
@@ -75,40 +87,26 @@ COPY --from=builder --chown=user:user /model-cache /opt/miaocut-models
 # 拷贝后端运行必需文件。前端由 Cloudflare Pages 托管，不放进 Space 镜像。
 COPY --chown=user:user main.py .
 
-# INT8 量化的 BiRefNet-lite 模型（~155 MB，由 scripts/quantize_birefnet_dynamic.py 离线生成）。
-# main.py 检测到 .u2net/ 下有 birefnet-general-lite-int8.onnx 时会自动启用，
-# 在 AVX-512 VNNI CPU（HF Space 的 Xeon 8375C 已确认有）上预期比 FP32 快 1.5~2.5×。
-# 找不到该文件时静默回退到 FP32，本地 dev / 没跑量化的 build 都能正常运行。
+# INT8 量化的 BiRefNet-lite 模型（详见主 Dockerfile 该行注释）
 COPY --chown=user:user models/birefnet-general-lite-int8.onnx /opt/miaocut-models/
 
-# fur 档的 BiRefNet_lite-matting 模型（~224MB，由 scripts/export_matting_onnx.py 离线导出）。
-# 维护方式和上面 int8 完全一致：owner 手动跑 scripts/upload_model_to_hf.py 把 onnx 推到三个 Space 的
-# models/ 目录（同一个脚本现在两个模型一起推），workflow 的 allow_patterns 不碰 *.onnx。
-# main.py 的 get_matting_session 检测到它就启用 fur matting；缺失时 fur 自动回退 legacy（见 ENABLE_FUR_MATTING）。
-# ⚠️ 改这行会触发三个 Space rebuild：务必先把 onnx 传齐全部 3 个 Space 再 push，否则 COPY 找不到文件会让 build 失败。
+# fur 档 BiRefNet_lite-matting 模型（详见主 Dockerfile 该行注释）
 COPY --chown=user:user models/birefnet-lite-matting.onnx /opt/miaocut-models/
 
-# sharp 折中档的 BiRefNet-general-lite @ 768² 模型（~196MB，由 scripts/export_general_lite_onnx.py 导出）。
-# 这是 SHARP_MODEL 的**默认底座**：毛发质量接近 1024² BiRefNet，速度只要 ~1/3。
-# 维护方式和上面 int8 / matting 完全一致（upload_model_to_hf.py 三个模型一起推）。
-# main.py 的 _find_sharp_768_model_path 检测到它就启用；缺失时自动回退 SHARP_768_FALLBACK（默认 isnet）。
-# ⚠️ 同样：改这行会触发三个 Space rebuild，务必先把 onnx 传齐全部 3 个 Space 再 push。
+# sharp 折中档 BiRefNet-general-lite @ 768² 模型（详见主 Dockerfile 该行注释）
 COPY --chown=user:user models/birefnet-general-lite-768.onnx /opt/miaocut-models/
 
-# Hugging Face Spaces 默认公开 7860 端口；反馈数据写 /data 以便挂载持久化存储。
-# 模型已内置到镜像；rembg 模型缺失时会自动退到可写缓存目录。
-# big-lama（去水印 inpainting 模型）由上面 builder 预置到 /opt/miaocut-models/big-lama.pt，
-# 用 LAMA_MODEL 指定后 SimpleLama 直接加载本地文件，容器重启不再去 GitHub 重下 196MB。
-#
-# MALLOC_ARENA_MAX / MALLOC_TRIM_THRESHOLD_ 是 glibc 特有的 tuning，配合 main.py 里的
-# _malloc_trim() 主动归还内存,减少 RSS 累积。之前尝试过用 jemalloc 替换 glibc,
-# 在 2 vCPU Space 上反而拖慢 sharp 推理 ~3s(见 apt install 注释),已撤回,当前继续用 glibc。
+# ---- ENV：与主 Dockerfile 完全一致，只是最后加了 USE_OPENVINO_EP=1 ----
+# USE_OPENVINO_EP=1 让 main.py 的 _resolve_providers() 首选 OpenVINOExecutionProvider，
+# CPU EP 依然在 providers 列表末尾兜底——两者共存互不干扰。
+# jemalloc 已从主 Dockerfile 撤回,本变体也一样,见主 Dockerfile 注释。
 ENV PORT=7860 \
     U2NET_HOME=/opt/miaocut-models \
     LAMA_MODEL=/opt/miaocut-models/big-lama.pt \
     DATA_DIR=/data \
     MALLOC_ARENA_MAX=2 \
-    MALLOC_TRIM_THRESHOLD_=131072
+    MALLOC_TRIM_THRESHOLD_=131072 \
+    USE_OPENVINO_EP=1
 
 USER user
 
