@@ -70,9 +70,9 @@ download_url_to_file('https://github.com/enesmsahin/simple-lama-inpainting/relea
 # ============================================================
 FROM python:3.11-slim
 
-# 与主 Dockerfile 同一套 apt 依赖 + jemalloc（见主 Dockerfile 该行注释了解每个包的用途）
+# 与主 Dockerfile 同一套 apt 依赖（jemalloc 曾用过,后来发现 2 vCPU Space 上会拖慢 sharp 推理,已撤,见主 Dockerfile 注释）
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends libgl1 libglib2.0-0 libjemalloc2 && \
+    apt-get install -y --no-install-recommends libgl1 libglib2.0-0 && \
     useradd -m -u 1000 user && \
     mkdir -p /home/user/app /data && \
     chown -R user:user /home/user/app /data && \
@@ -97,15 +97,13 @@ COPY --chown=user:user models/birefnet-lite-matting.onnx /opt/miaocut-models/
 COPY --chown=user:user models/birefnet-general-lite-768.onnx /opt/miaocut-models/
 
 # ---- ENV：与主 Dockerfile 完全一致，只是最后加了 USE_OPENVINO_EP=1 ----
-# jemalloc / MALLOC_CONF 的详细解释见主 Dockerfile 同名 ENV 块。
 # USE_OPENVINO_EP=1 让 main.py 的 _resolve_providers() 首选 OpenVINOExecutionProvider，
 # CPU EP 依然在 providers 列表末尾兜底——两者共存互不干扰。
+# jemalloc 已从主 Dockerfile 撤回,本变体也一样,见主 Dockerfile 注释。
 ENV PORT=7860 \
     U2NET_HOME=/opt/miaocut-models \
     LAMA_MODEL=/opt/miaocut-models/big-lama.pt \
     DATA_DIR=/data \
-    LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2 \
-    MALLOC_CONF="background_thread:true,metadata_thp:auto,dirty_decay_ms:5000,muzzy_decay_ms:5000" \
     MALLOC_ARENA_MAX=2 \
     MALLOC_TRIM_THRESHOLD_=131072 \
     USE_OPENVINO_EP=1
