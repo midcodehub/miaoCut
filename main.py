@@ -1408,18 +1408,19 @@ def _clear_transparent_rgb(rgba) -> int:
 
 
 def _decontaminate_foreground(result_img, is_rgb: bool = False) -> bool:
-    """对半透明边缘做前景色去污染，消除"灰黑脏边"（原地改写 result_img 的颜色通道）。
+    """对半透明边缘做前景色去污染,消除"灰黑脏边"(原地改写 result_img 的颜色通道)。
 
-    ⚠️ sharp 和 fur 两条流水线都在用（sharp 传 BGRA，fur 传 RGBA）：
-      · sharp 用 cv2.imencode(".png") 输出，BGR 通道顺序 → is_rgb=False（默认）
-      · fur 用 PIL.Image.save PNG 输出，RGB 通道顺序 → is_rgb=True
-    fur 档 matting 模型的软 alpha 半透明带很宽（毛发/发丝），如果不去污染，原图旧背景色（如深色
-    市集）会残留在毛尖，把猫身染成褐色。sharp 上已经跑了几个月的同一段代码,只是接到 fur 更软的
-    alpha 上,行为可预期。
+    ⚠️ sharp 和 fur 两条流水线都在用(sharp 传 BGRA,fur 传 RGBA):
+      · sharp 用 cv2.imencode(".png") 输出,BGR 通道顺序 → is_rgb=False(默认)
+      · fur 用 PIL.Image.save PNG 输出,RGB 通道顺序 → is_rgb=True
 
-    仅当存在真正的半透明带 (0.02,0.98) 才跑（纯硬边图直接跳过，0 开销）。
-    大图先等比缩到 DECONTAM_MAX_EDGE 估计前景色再放大回去（前景色是低频信息，几乎无损），
-    避免 4096² 这种大图前景估计耗时/内存暴涨。返回是否真正执行了去污染（用于日志）。
+    仅当存在真正的半透明带 (0.02, 0.98) 才跑(纯硬边图直接跳过,0 开销)。
+    大图先等比缩到 DECONTAM_MAX_EDGE 估计前景色再放大回去(前景色是低频信息,几乎无损),
+    避免 4096² 这种大图前景估计耗时/内存暴涨。返回是否真正执行了去污染(用于日志)。
+
+    ⚠️ 尝试过用 BlurFusion (Photoroom ICIP 2021) + guided filter + alpha levels 组合
+    替代/增强这条路径(见 docs/cutout-postmortem.md 第 4 节),在 pet.png / portrait.png
+    上视觉无差别、数值互有胜负。最终回退到纯 pymatting.estimate_foreground_ml。
     """
     import cv2
     import numpy as np
@@ -1569,18 +1570,19 @@ def _run_matting_pipeline(data: bytes, session) -> bytes:
       1) resize 到 1024² + ImageNet 归一化；
       2) onnxruntime 推理，输出已是 sigmoid 后的软 alpha [1,1,1024,1024]；
       3) alpha 双线性放回原尺寸，配原图 RGB 合成 RGBA；
-      4) （关键）pymatting 前景色去污染：消除毛发/边缘半透明像素上残留的旧背景色。
+      4) pymatting 前景色去污染:消除毛发/边缘半透明像素上残留的旧背景色。
 
-    ⚠️ 历史坑：早期版本以为 matting 模型 alpha 好就够了，没做前景色去污染
-    （原注释还说"无需去污染，换底色边可忽略"），实测在深色 → 白色底切换时暴露:
-    每根软过渡毛尖像素的 RGB 仍然是 alpha·猫毛 + (1-alpha)·旧深色背景 的混合，
-    到白底上会露出一圈明显的褐色/灰色染色。fur 档比 sharp 更明显——alpha 越软，
-    半透明像素占比越大，污染面积越大。
-    现在把 sharp 用了几个月的同一段 _decontaminate_foreground 也接到 fur 上，
-    让 matting 的软 alpha × 纯前景色 RGB = "毛丝清晰 + 无染色"。
+    ⚠️ 历史踩坑:早期版本注释错误地说"matting 模型 alpha 好就够了,无需去污染",实测深色 →
+    白色底切换时暴露:半透明毛尖 RGB 仍是 α·毛 + (1-α)·旧背景 的混合,到白底上露出一圈褐色 halo。
+    fur 档比 sharp 更明显——alpha 越软污染面积越大。
+    加入 pymatting 后 halo 大幅改善(pet.png warmth 从 +16 降到 +2)。
 
-    速度 ~9s/张 推理 + ~0.1~0.7s 去污染（大图上 max_edge 缩尺度控制上限）；
-    内存峰值仍比 legacy alpha_matting 低（不做 trimap 全局求解）。
+    ⚠️ 曾尝试用 Photoroom BlurFusion + guided filter + alpha levels 组合替代/增强这条路径,
+    在典型测试图 pet.png / portrait.png 上视觉无差别,数字互有胜负,已回退。
+    详见 docs/cutout-postmortem.md 第 4 节。
+
+    速度 ~9s 推理 + ~0.1~0.7s 去污染(大图上 max_edge 缩尺度控制上限)。
+    内存峰值仍比 legacy alpha_matting 低(不做 trimap 全局求解)。
     """
     import time
     import numpy as np
@@ -1612,10 +1614,8 @@ def _run_matting_pipeline(data: bytes, session) -> bytes:
     rgba = np.dstack([np.asarray(img, dtype=np.uint8), alpha_u8])
     t_post = time.perf_counter()
 
-    # 前景色去污染：与 sharp 完全同一段代码，只是 is_rgb=True 因为 fur 用 PIL 保存 RGBA。
-    # 纯硬边图（如 logo）自动跳过（内部检测半透明带存在性），0 开销。
-    # DECONTAMINATE 环境变量对 sharp/fur 统一生效——语义上就是"是否做前景色去污染"，
-    # 旧名 SHARP_DECONTAMINATE 仍作为兼容别名接受，见文件顶端的 config block。
+    # 前景色去污染:与 sharp 共用 _decontaminate_foreground,只是 is_rgb=True(fur 用 PIL 保存 RGBA)
+    # DECONTAMINATE 环境变量对 sharp/fur 统一生效,旧名 SHARP_DECONTAMINATE 兼容
     deconned = False
     if DECONTAMINATE:
         try:
@@ -1630,7 +1630,8 @@ def _run_matting_pipeline(data: bytes, session) -> bytes:
     t2 = time.perf_counter()
 
     logger.info(
-        "matting pipeline: infer=%.2fs post=%.2fs decon=%.2fs(%s) enc=%.2fs total=%.2fs (input=%.0fKB output_px=%dx%d cleared=%d)",
+        "matting pipeline: infer=%.2fs post=%.2fs decon=%.2fs(%s) enc=%.2fs total=%.2fs "
+        "(input=%.0fKB output_px=%dx%d cleared=%d)",
         t1 - t0, t_post - t1, t_decon - t_post, "on" if deconned else "skip", t2 - t_decon, t2 - t0,
         img_size_kb, orig_w, orig_h, cleared_px,
     )
