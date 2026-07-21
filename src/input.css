@@ -61,7 +61,25 @@
   }
 
   .site-brand-text {
+    display: inline-flex;
+    font-size: 0;
     transform: translateY(-0.02em);
+  }
+
+  .site-brand-text::before,
+  .site-brand-text::after {
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+
+  .site-brand-text::before {
+    content: "Miao";
+    color: currentColor;
+  }
+
+  .site-brand-text::after {
+    content: "Cut";
+    color: #1eb8a7;
   }
 
   .dark .site-brand {

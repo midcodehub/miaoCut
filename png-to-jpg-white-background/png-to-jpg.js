@@ -875,9 +875,9 @@
         return (i18n[state.lang] && i18n[state.lang][key]) || i18n.en[key] || key;
     }
 
-    function track(name, data) {
+    function track(name) {
         if (typeof umami === 'undefined') return;
-        try { data ? umami.track(name, data) : umami.track(name); } catch (_) { /* 分析不应影响主流程 */ }
+        try { umami.track(name); } catch (_) { /* 分析不应影响主流程 */ }
     }
 
     // ============================================================
@@ -1021,7 +1021,7 @@
         $('bgColorPicker').value = color;
         setActiveSwatch(color);
         renderResult();
-        track('bg-color-change', { color });
+        track('bg-color-change');
     }
 
     function onQualityChange() {
@@ -1055,7 +1055,7 @@
             showEditor();
             renderSource();
             renderResult();
-            track('file-loaded', { type: file.type, sizeKb: Math.round(file.size / 1024) });
+            track('file-loaded');
         } catch (err) {
             alert(err.message || t('errLoad'));
         }
@@ -1072,7 +1072,7 @@
         document.body.removeChild(a);
         // revokeObjectURL 必须等浏览器完成下载流程；微任务里立刻 revoke 在某些浏览器上会导致 0 字节文件
         setTimeout(() => URL.revokeObjectURL(url), 1000);
-        track('download', { quality: state.quality, bg: state.bgColor, sizeKb: Math.round(state.resultBlob.size / 1024) });
+        track('download');
     }
 
     // ============================================================

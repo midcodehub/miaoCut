@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Batch Background Remover — MiaoCut</title>
+  <!-- MiaoCut Pro 配置：填入真实 Supabase key 后启用登录。PRO_API_BASE 为付费网关。 -->
+  <script>
+        const isDev = window.location.hostname.includes('dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        window.MIAOCUT_PRO_CONFIG = isDev ? {
+            SUPABASE_URL: "DEV_SUPABASE_URL_HERE", // Replace with Dev Supabase URL
+            SUPABASE_ANON_KEY: "DEV_SUPABASE_ANON_KEY_HERE", // Replace with Dev Anon Key
+            PRO_API_BASE: "https://dev-api.miaocut.app",
+            FREE_API_BASE: "https://dev-api2.miaocut.app"
+        } : {
+            SUPABASE_URL: "https://kaqlfoxselrvriulvlsm.supabase.co",
+            SUPABASE_ANON_KEY: "sb_publishable_MlDRXsrWyxijTUocv4Hq-g_PIi85ZQY",
+            PRO_API_BASE: "https://pro-api.miaocut.app",
+            FREE_API_BASE: "https://api2.miaocut.app"
+        };
+    </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    :root {
+      --fg: #18181b;
+      --muted: #71717a;
+      --line: #e4e4e7;
+      --brand: #18181b;
+      --ok: #16a34a;
+      --err: #dc2626;
+      --bg: #fafafa;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: var(--fg);
+      background: var(--bg);
+    }
+
+    .wrap {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 24px 20px 80px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: -.02em;
+      text-decoration: none;
+      color: var(--fg);
+    }
+
+    .logo span {
+      color: #14b8a6;
+    }
+
+    .bal {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .bal b {
+      color: var(--fg);
+    }
+
+    h1 {
+      font-size: 26px;
+      margin: 0 0 6px;
+      letter-spacing: -.02em;
+    }
+
+    .sub {
+      color: var(--muted);
+      margin: 0 0 24px;
+      font-size: 15px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 9px 16px;
+      transition: .15s;
+    }
+
+    button:hover {
+      background: #f4f4f5;
+    }
+
+    button.primary {
+      background: var(--brand);
+      color: #fff;
+      border-color: var(--brand);
+    }
+
+    button.primary:hover {
+      background: #3f3f46;
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .toggle {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .toggle button {
+      border: none;
+      border-radius: 0;
+      padding: 8px 16px;
+      background: #fff;
+      font-size: 14px;
+    }
+
+    .toggle button.active {
+      background: var(--brand);
+      color: #fff;
+    }
+
+    .dz {
+      border: 2px dashed var(--line);
+      border-radius: 14px;
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--muted);
+      cursor: pointer;
+      transition: .15s;
+    }
+
+    .dz:hover,
+    .dz.drag {
+      border-color: #a1a1aa;
+      background: #f4f4f5;
+    }
+
+    .dz strong {
+      color: var(--fg);
+    }
+
+    .files {
+      margin-top: 14px;
+      font-size: 14px;
+    }
+
+    .cost {
+      margin: 14px 0;
+      font-size: 15px;
+    }
+
+    .cost b {
+      font-size: 17px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .chip {
+      aspect-ratio: 1;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+      background: #f4f4f5;
+    }
+
+    .chip img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .chip .badge {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: #fff;
+      background: rgba(0, 0, 0, .45);
+    }
+
+    .chip.done .badge {
+      background: rgba(22, 163, 74, .55);
+    }
+
+    .chip.failed .badge {
+      background: rgba(220, 38, 38, .6);
+    }
+
+    .bar {
+      height: 8px;
+      background: #e4e4e7;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    .bar>div {
+      height: 100%;
+      background: var(--brand);
+      width: 0;
+      transition: width .3s;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .msg {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .msg.err {
+      color: var(--err);
+    }
+
+    input[type=email] {
+      font: inherit;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      min-width: 240px;
+    }
+
+    a.link {
+      color: #14b8a6;
+      text-decoration: none;
+    }
+
+    /* --- 新增动画与蒙版 --- */
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+    .spinner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 24px;
+      height: 24px;
+      margin: -12px 0 0 -12px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s linear infinite;
+      z-index: 10;
+    }
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      transition: opacity 0.5s ease;
+      z-index: 5;
+      pointer-events: none;
+    }
+    .chip.done .overlay {
+      opacity: 0;
+    }
+    .chip.done .badge {
+      display: none; /* 完成后隐藏 badge，完整显示图片 */
+    }
+    .chip.done {
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .chip.done:hover {
+      transform: scale(1.05);
+      z-index: 20;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .chip img.result {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="10" height="10" fill="white"/><rect width="5" height="5" fill="%23ccc"/><rect x="5" y="5" width="5" height="5" fill="%23ccc"/></svg>') repeat;
+    }
+
+    /* --- Lightbox 模态框 --- */
+    #lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    #lightbox.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #lightbox img {
+      max-width: 90vw;
+      max-height: 90vh;
+      object-fit: contain;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><rect width="20" height="20" fill="white"/><rect width="10" height="10" fill="%23e5e5e5"/><rect x="10" y="10" width="10" height="10" fill="%23e5e5e5"/></svg>') repeat;
+    }
+    #lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #fff;
+      font-size: 28px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    #lightbox-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <a class="logo" href="/">miao<span>cut</span></a>
+      <div class="bal" id="balance"></div>
+    </header>
+
+    <h1>Batch Background Remover</h1>
+    <p class="sub">Upload many images, remove backgrounds in bulk, download all as a ZIP.</p>
+
+    <!-- 登录门 -->
+    <div class="card" id="login-gate">
+      <p style="margin-top:0">Sign in to use batch processing.</p>
+      <div class="row">
+        <button id="btn-google">Continue with Google</button>
+        <input type="email" id="login-email" placeholder="you@example.com" />
+        <button id="btn-email">Send magic link</button>
+      </div>
+      <div class="msg" id="login-msg"></div>
+    </div>
+
+    <!-- 工具 -->
+    <div class="card hidden" id="tool">
+      <div class="toggle" id="profile-toggle">
+        <button data-profile="fast" class="active">Fast · 1 credit</button>
+        <button data-profile="fur">Fine hair · 2 credits</button>
+      </div>
+      <div class="dz" id="dropzone">
+        <p style="margin:0"><strong>Click or drop images here</strong></p>
+        <p style="margin:6px 0 0; font-size:13px">PNG / JPG / WebP · up to 200 images</p>
+      </div>
+      <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" multiple class="hidden" />
+      <div class="files" id="file-list"></div>
+      <div class="cost hidden" id="cost-line"></div>
+      <button class="primary hidden" id="btn-start">Start processing</button>
+    </div>
+
+    <!-- 进度 -->
+    <div class="card hidden" id="progress">
+      <div class="row" style="justify-content:space-between">
+        <strong id="progress-text">Preparing…</strong>
+      </div>
+      <div class="bar">
+        <div id="progress-bar"></div>
+      </div>
+      <div class="grid" id="image-grid"></div>
+    </div>
+
+    <!-- 结果 -->
+    <div class="card hidden" id="results">
+      <div class="row" style="justify-content:space-between; margin-bottom:8px">
+        <strong id="results-summary"></strong>
+        <button class="primary" id="btn-zip">Download all (ZIP)</button>
+      </div>
+      <div class="msg" id="results-msg"></div>
+    </div>
+  </div>
+
+  <!-- Lightbox 模态框 -->
+  <div id="lightbox">
+    <button id="lightbox-close">&times;</button>
+    <img id="lightbox-img" src="" alt="">
+  </div>
+
+  <script type="module" src="/batch/batch.js"></script>
+</body>
+
+</html>

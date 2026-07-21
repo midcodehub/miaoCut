@@ -1,0 +1,25 @@
+name = "miaocut-gpu-scheduler"
+main = "src/index.ts"
+compatibility_date = "2024-03-20"
+
+# 定时唤醒 Kaggle 的 Cron 配置 (例如每2小时唤醒一次)
+[triggers]
+crons = ["0 */2 * * *"]
+
+# 绑定 R2 存储桶
+[[r2_buckets]]
+binding = "MIAOCUT_BUCKET"
+bucket_name = "miaocut-images"
+
+# 环境变量占位符 (敏感变量请用 wrangler secret put 设置)
+[vars]
+# Upstash Redis REST 接口
+UPSTASH_REDIS_REST_URL = "https://<your-upstash-url>"
+# Kaggle 用户名
+KAGGLE_USERNAME = "<your-kaggle-username>"
+# Kaggle API 调用目标 (以 Push API 为例)
+KAGGLE_KERNEL_REF = "your-username/your-kernel-slug"
+
+# 以下敏感信息需通过 CLI 设置:
+# wrangler secret put UPSTASH_REDIS_REST_TOKEN
+# wrangler secret put KAGGLE_KEY

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>(function () {
+        try { var s = localStorage.getItem('theme');
+            var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', d); } catch (e) {}
+    })();</script>
+    <title>Pricing — Credits for Batch & HD | MiaoCut</title>
+    <meta name="description" content="Buy MiaoCut credits. Single images stay free. Credits power high-volume and HD background removal. Failed jobs are never charged.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://miaocut.app/pricing/">
+    <link rel="stylesheet" href="/output.css?v=aa100de4">
+    <!-- Pro 配置:部署时填入真实值 -->
+    <script>
+        const isDev = window.location.hostname.includes('dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        window.MIAOCUT_PRO_CONFIG = isDev ? {
+            SUPABASE_URL: "DEV_SUPABASE_URL_HERE", // Replace with Dev Supabase URL
+            SUPABASE_ANON_KEY: "DEV_SUPABASE_ANON_KEY_HERE", // Replace with Dev Anon Key
+            PRO_API_BASE: "https://dev-api.miaocut.app",
+            FREE_API_BASE: "https://dev-api2.miaocut.app"
+        } : {
+            SUPABASE_URL: "https://kaqlfoxselrvriulvlsm.supabase.co",
+            SUPABASE_ANON_KEY: "sb_publishable_MlDRXsrWyxijTUocv4Hq-g_PIi85ZQY",
+            PRO_API_BASE: "https://pro-api.miaocut.app",
+            FREE_API_BASE: "https://api2.miaocut.app"
+        };
+    </script>
+</head>
+
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col dark:bg-zinc-950 dark:text-zinc-200">
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
+            <a href="/" class="site-brand" aria-label="MiaoCut home">
+                <img src="/favicon-nav.png" alt="" class="site-brand-mark" width="36" height="36">
+                <span class="site-brand-text">MiaoCut</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600 dark:text-zinc-300">
+                <a href="/" class="hover:text-gray-900 dark:hover:text-zinc-100">Background Remover</a>
+                <a href="/pricing/" class="text-brand-600 dark:text-brand-400">Pricing</a>
+                <a href="/account/credits/" class="hover:text-gray-900 dark:hover:text-zinc-100">Account</a>
+                <a id="nav-auth" href="#" class="hover:text-gray-900 dark:hover:text-zinc-100">Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-6xl flex-1 px-5 py-12">
+        <div class="text-center">
+            <h1 class="text-3xl font-bold sm:text-4xl">Simple credit pricing</h1>
+            <p class="mx-auto mt-3 max-w-2xl text-gray-600 dark:text-zinc-400">
+                Single images stay <strong>free</strong>. Credits power high-volume and HD processing.
+                <strong>1 image = 1 credit</strong> (fine/fur edges = 2). Failed jobs are never charged.
+            </p>
+        </div>
+
+        <!-- 充值包(价格为占位,最终值待定;积分数与后端 SKU 表一致)-->
+        <section class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" id="packs">
+            <!-- 卡片由 JS 渲染 -->
+        </section>
+
+        <p class="mt-8 text-center text-sm text-gray-500 dark:text-zinc-500">
+            Top-up credits are valid for 12 months. Prices shown exclude tax (calculated at checkout).
+        </p>
+    </main>
+
+    <footer class="border-t border-gray-200 py-8 text-center text-sm text-gray-500 dark:border-zinc-800 dark:text-zinc-500">
+        MiaoCut · Free, privacy-first AI image tools.
+    </footer>
+
+    <script type="module">
+        import MiaoCutPro from "/pro-account.js";
+
+        // 充值包定义(价格为展示占位;积分数须与后端 SKU_TABLE 一致)
+        const PACKS = [
+            { sku: "starter_100", credits: 100, price: "$4.99", note: "Starter" },
+            { sku: "creator_500", credits: 500, price: "$14.99", note: "Creator", badge: "Popular" },
+            { sku: "seller_1500", credits: 1500, price: "$29.99", note: "Seller" },
+            { sku: "studio_5000", credits: 5000, price: "$79.99", note: "Studio" }
+        ];
+
+        const wrap = document.getElementById("packs");
+        wrap.innerHTML = PACKS.map(p => `
+            <div class="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                ${p.badge ? `<span class="absolute -top-3 left-6 rounded-full bg-brand-600 px-3 py-0.5 text-xs font-semibold text-white">${p.badge}</span>` : ""}
+                <div class="text-sm font-medium text-gray-500 dark:text-zinc-400">${p.note}</div>
+                <div class="mt-1 text-3xl font-bold">${p.credits.toLocaleString()}<span class="text-base font-medium text-gray-500"> credits</span></div>
+                <div class="mt-2 text-xl font-semibold text-brand-600 dark:text-brand-400">${p.price}</div>
+                <button data-sku="${p.sku}" class="buy-btn mt-5 w-full rounded-lg bg-brand-600 px-4 py-2.5 font-semibold text-white transition hover:bg-brand-700">
+                    Buy credits
+                </button>
+            </div>
+        `).join("");
+
+        // 登录态导航
+        MiaoCutPro.onAuthChange(updateNav);
+        await MiaoCutPro.init().catch(() => {});
+        updateNav();
+
+        function updateNav() {
+            const link = document.getElementById("nav-auth");
+            if (MiaoCutPro.isLoggedIn()) {
+                link.textContent = "Account";
+                link.href = "/account/credits/";
+            } else {
+                link.textContent = "Login";
+                link.href = "/account/credits/";
+            }
+        }
+
+        // 购买:未登录先去账户页登录,已登录直接发起 checkout
+        wrap.querySelectorAll(".buy-btn").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const sku = btn.dataset.sku;
+                if (!MiaoCutPro.isLoggedIn()) {
+                    window.location.href = `/account/credits/?buy=${encodeURIComponent(sku)}`;
+                    return;
+                }
+                btn.disabled = true;
+                btn.textContent = "Redirecting…";
+                try {
+                    await MiaoCutPro.checkout(sku);
+                } catch (e) {
+                    btn.disabled = false;
+                    btn.textContent = "Buy credits";
+                    alert("Checkout failed, please try again.");
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

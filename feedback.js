@@ -187,7 +187,7 @@
             console.warn('[MiaoCut] Feedback send failed:', err);
         }
 
-        if (typeof umami !== 'undefined') umami.track('feedback-submitted', { has_email: email ? 'yes' : 'no' });
+        if (typeof umami !== 'undefined') umami.track('feedback-submitted');
 
         feedbackForm.classList.add('hidden');
         feedbackThanks.classList.remove('hidden');

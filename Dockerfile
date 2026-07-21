@@ -50,7 +50,15 @@ download_url_to_file('https://github.com/enesmsahin/simple-lama-inpainting/relea
 # ============================================================
 FROM python:3.11-slim
 
-# 系统依赖：MediaPipe/OpenCV 运行时需要 libGL/libglib。
+# 系统依赖：libgl1 / libglib2.0-0 —— MediaPipe / OpenCV 运行时依赖
+#
+# 【曾用过 jemalloc,已回退】
+# 之前尝试过 apt install libjemalloc2 + LD_PRELOAD 让 jemalloc 替换 glibc malloc,
+# 目标是降低碎片、更快归还内存给 OS。Space 端 A/B 后发现在 2 vCPU CPU-bound FP32
+# 推理场景下(BiRefNet-general-lite-768),jemalloc 的 background_thread 反而抢占
+# vCPU,导致 sharp 推理慢 ~3s(6.5s -> 9.5s median)。当前 Space 内存并不是瓶颈
+# (oom_kills=0,cgroup 用量只到 15%),不值这个速度代价,先撤。
+# 如果将来内存成为瓶颈再回来考虑 jemalloc + background_thread:false 或者 tcmalloc。
 RUN apt-get update && \
     apt-get install -y --no-install-recommends libgl1 libglib2.0-0 && \
     useradd -m -u 1000 user && \
@@ -91,6 +99,10 @@ COPY --chown=user:user models/birefnet-general-lite-768.onnx /opt/miaocut-models
 # 模型已内置到镜像；rembg 模型缺失时会自动退到可写缓存目录。
 # big-lama（去水印 inpainting 模型）由上面 builder 预置到 /opt/miaocut-models/big-lama.pt，
 # 用 LAMA_MODEL 指定后 SimpleLama 直接加载本地文件，容器重启不再去 GitHub 重下 196MB。
+#
+# MALLOC_ARENA_MAX / MALLOC_TRIM_THRESHOLD_ 是 glibc 特有的 tuning，配合 main.py 里的
+# _malloc_trim() 主动归还内存,减少 RSS 累积。之前尝试过用 jemalloc 替换 glibc,
+# 在 2 vCPU Space 上反而拖慢 sharp 推理 ~3s(见 apt install 注释),已撤回,当前继续用 glibc。
 ENV PORT=7860 \
     U2NET_HOME=/opt/miaocut-models \
     LAMA_MODEL=/opt/miaocut-models/big-lama.pt \

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>(function () {
+        try { var s = localStorage.getItem('theme');
+            var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', d); } catch (e) {}
+    })();</script>
+    <title>Your Credits | MiaoCut</title>
+    <meta name="description" content="Manage your MiaoCut credits: balance, transaction history, and top-ups.">
+    <meta name="robots" content="noindex,nofollow">
+    <link rel="stylesheet" href="/output.css?v=aa100de4">
+    <script>
+        const isDev = window.location.hostname.includes('dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        window.MIAOCUT_PRO_CONFIG = isDev ? {
+            SUPABASE_URL: "DEV_SUPABASE_URL_HERE", // Replace with Dev Supabase URL
+            SUPABASE_ANON_KEY: "DEV_SUPABASE_ANON_KEY_HERE", // Replace with Dev Anon Key
+            PRO_API_BASE: "https://dev-api.miaocut.app",
+            FREE_API_BASE: "https://dev-api2.miaocut.app"
+        } : {
+            SUPABASE_URL: "https://kaqlfoxselrvriulvlsm.supabase.co",
+            SUPABASE_ANON_KEY: "sb_publishable_MlDRXsrWyxijTUocv4Hq-g_PIi85ZQY",
+            PRO_API_BASE: "https://pro-api.miaocut.app",
+            FREE_API_BASE: "https://api2.miaocut.app"
+        };
+    </script>
+</head>
+
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col dark:bg-zinc-950 dark:text-zinc-200">
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
+            <a href="/" class="site-brand" aria-label="MiaoCut home">
+                <img src="/favicon-nav.png" alt="" class="site-brand-mark" width="36" height="36">
+                <span class="site-brand-text">MiaoCut</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600 dark:text-zinc-300">
+                <a href="/" class="hover:text-gray-900 dark:hover:text-zinc-100">Background Remover</a>
+                <a href="/pricing/" class="hover:text-gray-900 dark:hover:text-zinc-100">Pricing</a>
+                <a href="/account/credits/" class="text-brand-600 dark:text-brand-400">Account</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-3xl flex-1 px-5 py-12">
+
+        <!-- 未登录:登录表单 -->
+        <section id="login-view" class="hidden">
+            <h1 class="text-2xl font-bold">Sign in to MiaoCut</h1>
+            <p class="mt-2 text-gray-600 dark:text-zinc-400">Access your credits, history, and top-ups.</p>
+            <div class="mt-6 max-w-sm space-y-3">
+                <button id="google-btn" class="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 font-medium text-gray-700 transition hover:bg-gray-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
+                    Continue with Google
+                </button>
+                <div class="text-center text-xs text-gray-400">or</div>
+                <input id="email-input" type="email" placeholder="you@example.com"
+                    class="w-full rounded-lg border border-gray-300 px-4 py-2.5 dark:border-zinc-700 dark:bg-zinc-900">
+                <button id="email-btn" class="w-full rounded-lg bg-brand-600 px-4 py-2.5 font-semibold text-white transition hover:bg-brand-700">
+                    Email me a magic link
+                </button>
+                <p id="login-msg" class="text-sm text-gray-500"></p>
+            </div>
+        </section>
+
+        <!-- 已登录:账户面板 -->
+        <section id="account-view" class="hidden">
+            <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-bold">Your credits</h1>
+                <button id="logout-btn" class="text-sm text-gray-500 hover:text-gray-800 dark:hover:text-zinc-200">Sign out</button>
+            </div>
+            <p id="acct-email" class="mt-1 text-sm text-gray-500"></p>
+
+            <div class="mt-6 grid gap-4 sm:grid-cols-3">
+                <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+                    <div class="text-sm text-gray-500 dark:text-zinc-400">Total credits</div>
+                    <div id="bal-total" class="mt-1 text-3xl font-bold">—</div>
+                </div>
+                <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+                    <div class="text-sm text-gray-500 dark:text-zinc-400">Top-up</div>
+                    <div id="bal-topup" class="mt-1 text-3xl font-bold">—</div>
+                </div>
+                <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+                    <div class="text-sm text-gray-500 dark:text-zinc-400">Free left today</div>
+                    <div id="bal-free" class="mt-1 text-3xl font-bold">—</div>
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <a href="/pricing/" class="inline-block rounded-lg bg-brand-600 px-5 py-2.5 font-semibold text-white transition hover:bg-brand-700">Buy more credits</a>
+            </div>
+
+            <h2 class="mt-10 text-lg font-semibold">Transaction history</h2>
+            <div class="mt-3 overflow-hidden rounded-2xl border border-gray-200 dark:border-zinc-800">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-50 text-left text-gray-500 dark:bg-zinc-900 dark:text-zinc-400">
+                        <tr>
+                            <th class="px-4 py-2 font-medium">When</th>
+                            <th class="px-4 py-2 font-medium">Reason</th>
+                            <th class="px-4 py-2 text-right font-medium">Change</th>
+                            <th class="px-4 py-2 text-right font-medium">Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ledger-body" class="divide-y divide-gray-100 dark:divide-zinc-800"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer class="border-t border-gray-200 py-8 text-center text-sm text-gray-500 dark:border-zinc-800 dark:text-zinc-500">
+        MiaoCut · Free, privacy-first AI image tools.
+    </footer>
+
+    <script type="module">
+        import MiaoCutPro from "/pro-account.js";
+
+        const loginView = document.getElementById("login-view");
+        const acctView = document.getElementById("account-view");
+
+        MiaoCutPro.onAuthChange(render);
+        await MiaoCutPro.init().catch(() => {});
+        await render();
+
+        async function render() {
+            if (MiaoCutPro.isLoggedIn()) {
+                loginView.classList.add("hidden");
+                acctView.classList.remove("hidden");
+                await loadAccount();
+                // 从 /pricing/ 带 ?buy=sku 过来:登录后自动发起 checkout
+                const buy = new URLSearchParams(location.search).get("buy");
+                if (buy) {
+                    history.replaceState({}, "", location.pathname);
+                    MiaoCutPro.checkout(buy).catch(() => {});
+                }
+            } else {
+                acctView.classList.add("hidden");
+                loginView.classList.remove("hidden");
+            }
+        }
+
+        async function loadAccount() {
+            try {
+                const me = await MiaoCutPro.me();
+                document.getElementById("acct-email").textContent = me.email || "";
+                document.getElementById("bal-total").textContent = me.credits.total;
+                document.getElementById("bal-topup").textContent = me.credits.topup;
+                document.getElementById("bal-free").textContent = me.daily_free_left;
+
+                const { ledger } = await MiaoCutPro.ledger(50);
+                const body = document.getElementById("ledger-body");
+                body.innerHTML = (ledger || []).map(row => `
+                    <tr>
+                        <td class="px-4 py-2 text-gray-500">${new Date(row.created_at).toLocaleString()}</td>
+                        <td class="px-4 py-2">${row.reason}</td>
+                        <td class="px-4 py-2 text-right ${row.delta >= 0 ? "text-emerald-600" : "text-rose-600"}">${row.delta >= 0 ? "+" : ""}${row.delta}</td>
+                        <td class="px-4 py-2 text-right text-gray-500">${row.balance_after}</td>
+                    </tr>
+                `).join("") || `<tr><td colspan="4" class="px-4 py-6 text-center text-gray-400">No transactions yet.</td></tr>`;
+            } catch (e) {
+                console.warn("loadAccount failed:", e);
+            }
+        }
+
+        // 登录交互
+        document.getElementById("google-btn").addEventListener("click", () => {
+            MiaoCutPro.signInWithGoogle().catch(() => setMsg("Google sign-in unavailable."));
+        });
+        document.getElementById("email-btn").addEventListener("click", async () => {
+            const email = document.getElementById("email-input").value.trim();
+            if (!email) return setMsg("Please enter your email.");
+            try {
+                await MiaoCutPro.signInWithEmail(email);
+                setMsg("Check your inbox for the magic link.");
+            } catch (e) {
+                setMsg("Could not send link. Try again.");
+            }
+        });
+        document.getElementById("logout-btn").addEventListener("click", async () => {
+            await MiaoCutPro.signOut();
+            render();
+        });
+
+        function setMsg(t) { document.getElementById("login-msg").textContent = t; }
+    </script>
+</body>
+
+</html>

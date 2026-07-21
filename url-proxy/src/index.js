@@ -1,11 +1,9 @@
-let rrIndex = 0;
-let rrSeeded = false;
 const circuitByHost = new Map();
+const concurrencyByHost = new Map();
+const slotWaiters = [];
 
 export default {
   async fetch(request, env) {
-    seedRoundRobin();
-
     const corsHeaders = buildCorsHeaders(env);
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: corsHeaders });
@@ -49,9 +47,8 @@ export default {
     const globalHosts = parseHosts(env.GLOBAL_HOSTS);
     const country = request.cf?.country || "XX";
     const { primaryHosts, backupHosts } = chooseHostGroups(country, cnHosts, globalHosts);
-    const orderedHosts = orderHosts(primaryHosts, backupHosts);
 
-    if (orderedHosts.length === 0) {
+    if (primaryHosts.length === 0 && backupHosts.length === 0) {
       return jsonResponse(
         { error: "CONFIGURATION_ERROR", message: "No target hosts configured." },
         500,
@@ -80,7 +77,8 @@ export default {
       request,
       env,
       country,
-      hosts: orderedHosts,
+      primaryHosts,
+      backupHosts,
       bodyBuffer,
       upstreamHeaders,
       config,
@@ -115,36 +113,84 @@ export default {
   },
 };
 
-function seedRoundRobin() {
-  if (rrSeeded) return;
-  rrSeeded = true;
-  rrIndex = crypto.getRandomValues(new Uint32Array(1))[0];
+function getHostState(host, defaultMax) {
+  if (!concurrencyByHost.has(host)) {
+    concurrencyByHost.set(host, { maxConcurrency: defaultMax, inflight: 0, saturatedUntil: 0 });
+  }
+  return concurrencyByHost.get(host);
+}
+
+function selectByWeightedRandom(primaryHosts, backupHosts, config, excludeHosts = new Set()) {
+  const tryHosts = (hosts) => {
+    const now = Date.now();
+    const candidates = [];
+
+    for (const host of hosts) {
+      if (excludeHosts.has(host)) continue;
+      const circuit = circuitByHost.get(host);
+      if (circuit && circuit.cooldownUntil > now) continue;
+
+      const state = getHostState(host, config.defaultMaxConcurrency);
+      if (state.saturatedUntil > now) continue;
+
+      const free = Math.max(0, state.maxConcurrency - state.inflight);
+      if (free > 0) candidates.push({ host, weight: free });
+    }
+
+    if (candidates.length === 0) return null;
+    if (candidates.length === 1) return candidates[0].host;
+
+    const totalWeight = candidates.reduce((sum, c) => sum + c.weight, 0);
+    let r = Math.random() * totalWeight;
+    for (const c of candidates) {
+      r -= c.weight;
+      if (r <= 0) return c.host;
+    }
+    return candidates[0].host;
+  };
+
+  return tryHosts(primaryHosts) || tryHosts(backupHosts);
+}
+
+function notifySlotReleased() {
+  while (slotWaiters.length > 0) {
+    const resolve = slotWaiters.shift();
+    resolve();
+  }
+}
+
+function waitForSlotRelease() {
+  return new Promise((resolve) => slotWaiters.push(resolve));
 }
 
 async function proxyWithFailover(args) {
-  const { request, country, hosts, config } = args;
-  const rankedHosts = rankHostsByCircuit(hosts);
+  const { request, country, primaryHosts, backupHosts, config } = args;
   const deadline = Date.now() + config.totalTimeoutMs;
   const active = new Map();
-  let nextIndex = 0;
+  const activeHosts = new Set();
   let attempts = 0;
   let lastFailure = null;
   let lastLaunchAt = 0;
 
+  const totalHosts = primaryHosts.length + backupHosts.length;
   const canHedge =
     config.enableHedging &&
     config.hedgeDelayMs > 0 &&
     config.maxParallelRequests > 1 &&
     (config.hedgeUnsafeMethods || isSafeMethod(request.method));
-  const maxParallel = canHedge ? Math.min(config.maxParallelRequests, rankedHosts.length) : 1;
+  const maxParallel = canHedge ? Math.min(config.maxParallelRequests, totalHosts) : 1;
 
   const launchNext = () => {
-    if (nextIndex >= rankedHosts.length || active.size >= maxParallel) return false;
+    if (active.size >= maxParallel) return false;
 
     const remainingMs = deadline - Date.now();
     if (remainingMs <= 0) return false;
 
-    const host = rankedHosts[nextIndex++];
+    const host = selectByWeightedRandom(primaryHosts, backupHosts, config, activeHosts);
+    if (!host) return false;
+
+    activeHosts.add(host);
+
     const controller = new AbortController();
     const timeoutMs = Math.min(config.perHostTimeoutMs, remainingMs);
     attempts += 1;
@@ -161,7 +207,7 @@ async function proxyWithFailover(args) {
 
   launchNext();
 
-  while (active.size > 0) {
+  while (active.size > 0 || deadline > Date.now()) {
     const remainingMs = deadline - Date.now();
     if (remainingMs <= 0) {
       abortActive(active, "total_timeout");
@@ -169,14 +215,22 @@ async function proxyWithFailover(args) {
       break;
     }
 
-    const canLaunchMore = nextIndex < rankedHosts.length && active.size < maxParallel;
+    if (active.size === 0) {
+      if (!launchNext()) {
+        const waitMs = Math.min(config.queuePollIntervalMs, remainingMs);
+        await Promise.race([waitForSlotRelease(), sleep(waitMs)]);
+        continue;
+      }
+    }
+
+    const canLaunchMore = active.size < maxParallel;
     const waitForNextLaunch = canLaunchMore
       ? Math.max(0, config.hedgeDelayMs - (Date.now() - lastLaunchAt))
       : Infinity;
 
     const races = [Promise.race(active.keys())];
-    if (canLaunchMore) {
-      races.push(sleep(Math.min(waitForNextLaunch, remainingMs)).then(() => ({ timer: true })));
+    if (canLaunchMore && waitForNextLaunch < remainingMs) {
+      races.push(sleep(waitForNextLaunch).then(() => ({ timer: true })));
     }
 
     const event = await Promise.race(races);
@@ -188,6 +242,7 @@ async function proxyWithFailover(args) {
 
     active.delete(event.promise);
     const result = event.result;
+    activeHosts.delete(result.host);
 
     if (result.ok) {
       recordHostSuccess(result.host);
@@ -199,12 +254,20 @@ async function proxyWithFailover(args) {
     }
 
     lastFailure = sanitizeFailure(result);
-    recordHostFailure(result.host, result.reason, config);
-    console.warn(
-      `[${country}] ${result.host} failed: ${result.reason}, status=${result.status || 0}, latency=${result.latencyMs}ms`,
-    );
+    if (result.reason === "saturated") {
+      const state = getHostState(result.host, config.defaultMaxConcurrency);
+      state.saturatedUntil = Date.now() + config.queuePollIntervalMs;
+      console.warn(
+        `[${country}] ${result.host} saturated (429), cooling down for ${config.queuePollIntervalMs}ms`,
+      );
+    } else {
+      recordHostFailure(result.host, result.reason, config);
+      console.warn(
+        `[${country}] ${result.host} failed: ${result.reason}, status=${result.status || 0}, latency=${result.latencyMs}ms`,
+      );
+    }
 
-    if (active.size === 0) launchNext();
+    launchNext();
   }
 
   return { response: null, attempts, lastFailure };
@@ -219,6 +282,8 @@ async function fetchOneHost({
   timeoutMs,
   controller,
 }) {
+  const state = getHostState(host, config.defaultMaxConcurrency);
+  state.inflight++;
   const startedAt = Date.now();
   const timeoutId = setTimeout(() => controller.abort("timeout"), timeoutMs);
 
@@ -239,13 +304,21 @@ async function fetchOneHost({
     const latencyMs = Date.now() - startedAt;
 
     if (config.failoverStatuses.has(response.status)) {
-      // 限流 429（用户超额，后端打了 X-RateLimit-Scope 头）不是"节点故障"：
-      // 换 Space 用户照样超额，failover 只会把超额请求放大打到所有节点、并丢掉后端的
-      // scope 提示。直接透传给前端，让前端按 minute/day 弹对应提示。
-      // 「并发满」的 429 不带这个头，仍然继续 failover 到下一个 Space。
       if (response.status === 429 && response.headers.get("X-RateLimit-Scope")) {
         return { ok: true, host, status: response.status, response, latencyMs };
       }
+
+      if (response.status === 429 && response.headers.get("X-Reason") === "saturated") {
+        await cancelBody(response);
+        return {
+          ok: false,
+          host,
+          status: response.status,
+          reason: "saturated",
+          latencyMs,
+        };
+      }
+
       await cancelBody(response);
       return {
         ok: false,
@@ -272,6 +345,8 @@ async function fetchOneHost({
     return { ok: false, host, status: 0, reason, latencyMs };
   } finally {
     clearTimeout(timeoutId);
+    state.inflight--;
+    notifySlotReleased();
   }
 }
 
@@ -289,6 +364,8 @@ function getConfig(env) {
     failoverStatuses: parseStatusSet(
       env.FAILOVER_STATUS_CODES || "429,500,502,503,504,520,521,522,523,524",
     ),
+    defaultMaxConcurrency: readInt(env.DEFAULT_MAX_CONCURRENCY, 2, 1, 100),
+    queuePollIntervalMs: readInt(env.QUEUE_POLL_INTERVAL_MS, 5000, 1000, 30000),
   };
 }
 
@@ -328,46 +405,7 @@ function chooseHostGroups(country, cnHosts, globalHosts) {
   return { primaryHosts: cnHosts, backupHosts: [] };
 }
 
-function orderHosts(primaryHosts, backupHosts) {
-  const ordered = [];
-  const pushUnique = (host) => {
-    if (host && !ordered.includes(host)) ordered.push(host);
-  };
 
-  if (primaryHosts.length > 0) {
-    const start = rrIndex % primaryHosts.length;
-    rrIndex = (rrIndex + 1) >>> 0;
-    for (let i = 0; i < primaryHosts.length; i += 1) {
-      pushUnique(primaryHosts[(start + i) % primaryHosts.length]);
-    }
-  }
-
-  if (backupHosts.length > 0) {
-    const start = rrIndex % backupHosts.length;
-    for (let i = 0; i < backupHosts.length; i += 1) {
-      pushUnique(backupHosts[(start + i) % backupHosts.length]);
-    }
-  }
-
-  return ordered;
-}
-
-function rankHostsByCircuit(hosts) {
-  const now = Date.now();
-  const available = [];
-  const coolingDown = [];
-
-  for (const host of hosts) {
-    const state = circuitByHost.get(host);
-    if (state && state.cooldownUntil > now) {
-      coolingDown.push(host);
-    } else {
-      available.push(host);
-    }
-  }
-
-  return available.length > 0 ? [...available, ...coolingDown] : hosts;
-}
 
 function recordHostSuccess(host) {
   circuitByHost.delete(host);

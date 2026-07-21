@@ -158,17 +158,28 @@ _BIREFNET_MEAN = (0.485, 0.456, 0.406)
 _BIREFNET_STD = (0.229, 0.224, 0.225)
 
 # ============================================================
-# sharp 边缘去污染（color decontamination / defringe）
+# 前景色去污染（decontamination / defringe）—— sharp 与 fur 共用
 # ============================================================
 # BiRefNet 给的 alpha 是好的，但边缘半透明像素的 RGB 仍是"前景×α + 旧背景×(1-α)"的混合，
 # 换底色时旧背景色（如毛尖背后的深色市集）就显出来，变成肉眼可见的"灰黑脏边/模糊"。
 # 用 pymatting 的 estimate_foreground_ml 解出"纯前景色 F"替换被污染的边缘 RGB，毛尖即恢复主体本色。
-# 实测白猫长毛图（examples/raw/pet.png）只 +~0.1s（estimate_foreground_ml 在 1024² 上很快），
-# 灰黑边显著消除。对所有 sharp 底座（768 / isnet / birefnet-1024）都生效；纯硬边图自动跳过、0 开销。
-SHARP_DECONTAMINATE = os.getenv("SHARP_DECONTAMINATE", "1") == "1"
+#
+# 实测这一步对两条流水线都是正收益：
+#   · sharp: 白猫长毛图（examples/raw/pet.png）只 +~0.1s，灰黑边显著消除。
+#   · fur  : 同一张图 +~0.12s；毛发过渡带 warmth(R-B) 从 +16 降到 +2（数值上从"深褐色污染"
+#           降到"接近纯白猫毛"，见 scripts/measure_fur_pollution.py）。fur 档比 sharp 收益
+#           更大——alpha 越软，半透明像素占比越大，未去污染时污染面积也越大。
+# 纯硬边图（logo/product 无半透明带）自动跳过、0 开销。
+#
+# ⚠️ 环境变量名保留 SHARP_ 前缀是为了向后兼容既有部署——旧名 SHARP_DECONTAMINATE/
+#   SHARP_DECONTAM_MAX_EDGE 仍然可用；同时接受不带前缀的新名 DECONTAMINATE/DECONTAM_MAX_EDGE。
+#   Python 常量已改名，因为"SHARP_"这个前缀在当前语义下会误导阅读者以为只作用于 sharp 档。
+DECONTAMINATE = os.getenv("DECONTAMINATE", os.getenv("SHARP_DECONTAMINATE", "1")) == "1"
 # 前景估计的最大边长：超过则先等比缩到此尺寸估计前景色（前景色是低频信息，放大几乎无损），
 # 再把纯前景色放大回原尺寸，避免大图（如 4096²）前景估计耗时/内存暴涨。
-SHARP_DECONTAM_MAX_EDGE = int(os.getenv("SHARP_DECONTAM_MAX_EDGE", "2048"))
+DECONTAM_MAX_EDGE = int(os.getenv("DECONTAM_MAX_EDGE", os.getenv("SHARP_DECONTAM_MAX_EDGE", "2048")))
+# 透明 PNG 导出压缩级别。透明区域 RGB 清零是主要体积优化；压缩级别 3 是速度/体积的折中。
+PNG_COMPRESSION_LEVEL = max(0, min(9, int(os.getenv("PNG_COMPRESSION_LEVEL", "3"))))
 
 # fur 档底座：默认用 BiRefNet_lite-matting（专门训练的抠图模型，直出软 alpha）。
 # 它和 sharp 用的 birefnet-general-lite 同架构、同 1024² 输入、同 onnxruntime CPU 速度（实测 ~9s），
@@ -412,6 +423,13 @@ def _log_memory_status(tag: str) -> None:
 # glibc malloc_trim：Linux 上 onnxruntime/numpy 用完的大块默认留在进程 free list 不还给 OS，
 # 一次次推理把 RSS 高水位垫高到逼近 cgroup OOM。每次推理后主动 trim 把空闲内存还回去。
 # 非 glibc 平台（如本地 macOS）拿不到 libc.malloc_trim，_malloc_trim 直接返回 False、安全跳过。
+#
+# ⚠️ 当 jemalloc 通过 LD_PRELOAD 生效（生产 Dockerfile 默认如此）时：
+#   · Python 里的 malloc/free 走 jemalloc，libc.malloc_trim 只 trim libc 自己（几乎无东西可 trim），
+#     等价于 no-op。不删这段代码是为了"关掉 jemalloc 回退 glibc"的场景仍然能拿到旧的护栏。
+#   · jemalloc 靠 MALLOC_CONF 里的 dirty_decay_ms / muzzy_decay_ms 后台归还空闲页给 OS，
+#     不再需要应用层显式 trim。
+# 生产日志里的 "after-…-trim" 那行内存值理论上等于 "after-…"（jemalloc 下），是 no-op 的正常表现。
 import ctypes as _ctypes
 
 try:
@@ -421,7 +439,7 @@ except OSError:
 
 
 def _malloc_trim() -> bool:
-    """把 glibc free list 里的空闲内存还给 OS；非 glibc 平台返回 False。"""
+    """把 glibc free list 里的空闲内存还给 OS；非 glibc 平台返回 False；jemalloc 下为 no-op。"""
     if _libc is None or not hasattr(_libc, "malloc_trim"):
         return False
     try:
@@ -429,6 +447,33 @@ def _malloc_trim() -> bool:
         return True
     except Exception:
         return False
+
+
+def _detect_allocator() -> str:
+    """返回当前进程实际生效的 malloc 实现名，用于启动时确认 jemalloc 有没有真的接上。
+
+    LD_PRELOAD 有可能被无声吞掉（路径错、权限错、libjemalloc 缺失），glibc 兜底后进程照常
+    运行但内存行为完全不同——这个函数从 /proc/self/maps 读实际映射的 so 名字，比 env 更可信。
+    """
+    try:
+        with open("/proc/self/maps") as f:
+            maps = f.read()
+        if "libjemalloc" in maps:
+            return "jemalloc"
+        if "libtcmalloc" in maps:
+            return "tcmalloc"
+        if "libmimalloc" in maps:
+            return "mimalloc"
+        return "glibc"
+    except (FileNotFoundError, OSError):
+        return "unknown (non-Linux)"
+
+
+# 启动时立刻打印实际生效的 malloc（不是 LD_PRELOAD env 里声明的）。
+# 生产上 LD_PRELOAD 有可能被 useradd/USER 切换、缺失依赖等原因静默失效，回退到 glibc；
+# 这一行让 Space 部署后一眼就能确认 jemalloc 到底接没接上。
+logger.info("malloc        : %s (LD_PRELOAD=%s)",
+            _detect_allocator(), os.getenv("LD_PRELOAD", "(unset)"))
 
 
 # ⚠️ onnxruntime CPU 内存 arena：默认按 2 的幂翻倍扩张（kNextPowerOfTwo），且推理结束后不归还给
@@ -464,6 +509,62 @@ def _make_arena_shrink_run_options():
 # 进程级共享一个 RunOptions（纯只读配置，跨请求复用安全；rembg 并发已被 MAX_CONCURRENCY 串行化）。
 # None 表示未启用 / 不可用，session.run 第三参传 None 等价于不带 RunOptions。
 _ARENA_SHRINK_RUN_OPTIONS = _make_arena_shrink_run_options()
+
+
+# ============================================================
+# Execution Provider selection (opt-in OpenVINO EP)
+# ============================================================
+# 默认走 CPUExecutionProvider（onnxruntime 的 MLAS 内核）。生产在 HF Space 的 Xeon 8375C 上，
+# OpenVINO EP 对 BiRefNet / Swin Transformer 类模型通常比 MLAS 快 1.5~3×——但需要现场
+# A/B 才能确认，因此这里做成 opt-in：设 USE_OPENVINO_EP=1 才启用，CPU 回退始终保留。
+#
+# 启用方式（不进 requirements.txt，避免影响默认部署路径）：
+#   # 与 onnxruntime 二选一：onnxruntime-openvino 内置了标准 CPU EP + OpenVINO EP
+#   pip uninstall -y onnxruntime onnxruntime-gpu
+#   pip install onnxruntime-openvino
+#   USE_OPENVINO_EP=1 python main.py
+#
+# 未装 onnxruntime-openvino 时 OpenVINOExecutionProvider 不在 ort.get_available_providers()，
+# _resolve_providers() 静默回退到纯 CPU，绝不因 EP 不可用而 crash。
+USE_OPENVINO_EP = os.getenv("USE_OPENVINO_EP", "0") == "1"
+# 只探测一次并缓存，避免每个 session 创建都重复扫 providers 列表。
+_AVAILABLE_PROVIDERS = set(ort.get_available_providers())
+
+
+def _resolve_providers() -> list:
+    """按环境决定 onnxruntime providers 列表；缺 OpenVINO 时静默回退 CPU。
+
+    返回值可能是：
+      - [("OpenVINOExecutionProvider", {"device_type": "CPU"}), "CPUExecutionProvider"]（首选 OpenVINO，CPU 兜底）
+      - ["CPUExecutionProvider"]（默认；OpenVINO 未启用或不可用）
+    onnxruntime 的 InferenceSession(providers=...) 会按顺序尝试，首个可用的胜出。
+    """
+    providers: list = []
+    if USE_OPENVINO_EP:
+        if "OpenVINOExecutionProvider" in _AVAILABLE_PROVIDERS:
+            # device_type=CPU：Xeon 上用 OpenVINO 的 Intel 优化内核；后续要跑 GPU 就换成 GPU_FP32 / GPU_FP16。
+            # num_of_threads 留空跟 onnxruntime 全局线程一致（我们已经在 sess_opts 里设过 intra/inter）。
+            providers.append(("OpenVINOExecutionProvider", {"device_type": "CPU"}))
+        else:
+            logger.warning(
+                "USE_OPENVINO_EP=1 but OpenVINOExecutionProvider is not available "
+                "(pip install onnxruntime-openvino to enable). Falling back to CPUExecutionProvider."
+            )
+    providers.append("CPUExecutionProvider")
+    return providers
+
+
+def _log_session_providers(name: str, session) -> None:
+    """打印 session 实际使用的 EP 列表；Space 部署时用来确认 OpenVINO 真的接上了。
+
+    rembg 的 SessionClass 把 ort.InferenceSession 存在 .inner_session，我们直接读它；
+    裸 ort.InferenceSession 就是 session 本身。"""
+    inner = getattr(session, "inner_session", session)
+    try:
+        used = inner.get_providers()
+        logger.info("Session '%s' providers: %s", name, used)
+    except Exception:
+        pass
 
 
 _original_signal_handlers = {}
@@ -577,6 +678,7 @@ class _BiRefNet768Session:
 
 def _create_sharp_768_session(sess_opts):
     """加载 768² 折中模型；找不到 onnx 文件时回退到 SHARP_768_FALLBACK（rembg 内置名），绝不让 sharp 崩。"""
+    providers = _resolve_providers()
     path = _find_sharp_768_model_path()
     if path is None:
         logger.warning(
@@ -585,9 +687,12 @@ def _create_sharp_768_session(sess_opts):
         cls = next((sc for sc in sessions_class if sc.name() == SHARP_768_FALLBACK), None)
         if cls is None:
             raise RuntimeError(f"sharp 768 fallback '{SHARP_768_FALLBACK}' not found in rembg")
-        return cls(SHARP_768_FALLBACK, sess_opts, ["CPUExecutionProvider"])
+        sess = cls(SHARP_768_FALLBACK, sess_opts, providers)
+        _log_session_providers(f"sharp/{SHARP_768_FALLBACK}", sess)
+        return sess
     logger.info("Loading sharp 768 model: %s (%.0f MB)", path, path.stat().st_size / 1024 / 1024)
-    inner = ort.InferenceSession(str(path), sess_opts, providers=["CPUExecutionProvider"])
+    inner = ort.InferenceSession(str(path), sess_opts, providers=providers)
+    _log_session_providers(f"sharp/{SHARP_768_MODEL_NAME}", inner)
     return _BiRefNet768Session(inner)
 
 
@@ -621,10 +726,12 @@ def _create_birefnet_session():
     if SHARP_MODEL == SHARP_768_MODEL_NAME:
         return _create_sharp_768_session(sess_opts)
 
+    providers = _resolve_providers()
     cls = next((sc for sc in sessions_class if sc.name() == SHARP_MODEL), None)
     if cls is None:
         raise RuntimeError(f"sharp model session class '{SHARP_MODEL}' not found in rembg")
-    sess = cls(SHARP_MODEL, sess_opts, ["CPUExecutionProvider"])
+    sess = cls(SHARP_MODEL, sess_opts, providers)
+    _log_session_providers(f"sharp/{SHARP_MODEL}", sess)
 
     # ---- INT8 量化模型（仅对 birefnet-general-lite 生效，且需显式设 ENABLE_INT8_MODEL=1）----
     # INT8 权重文件是为 birefnet 离线量化的；换成 isnet 等其他底座时直接跳过，避免张量名对不上。
@@ -652,9 +759,10 @@ def _create_birefnet_session():
             int8_session = ort.InferenceSession(
                 str(int8_path),
                 sess_options=sess_opts,
-                providers=["CPUExecutionProvider"],
+                providers=providers,
             )
             sess.inner_session = int8_session
+            _log_session_providers(f"sharp/{SHARP_MODEL}-int8", int8_session)
             logger.info("Loaded INT8 quantized model: %s (%.0f MB)",
                         int8_path, int8_path.stat().st_size / 1024 / 1024)
         except Exception as exc:
@@ -757,7 +865,8 @@ def get_matting_session():
                 logger.info("Loading fur matting model: %s (%.0f MB)",
                             path, path.stat().st_size / 1024 / 1024)
                 _matting_session = ort.InferenceSession(
-                    str(path), sess_opts, providers=["CPUExecutionProvider"])
+                    str(path), sess_opts, providers=_resolve_providers())
+                _log_session_providers(f"fur/{MATTING_MODEL_NAME}", _matting_session)
     return _matting_session
 
 
@@ -1287,12 +1396,31 @@ def _run_rembg_sync(data: bytes, profile: Optional[str] = None) -> bytes:
     return out
 
 
-def _decontaminate_foreground(result_img) -> bool:
-    """对 sharp 输出的半透明边缘做前景色去污染，消除"灰黑脏边"（原地改写 result_img 的 BGR）。
+def _clear_transparent_rgb(rgba) -> int:
+    """Match optimized cutout exports: invisible pixels should not carry old background RGB."""
+    if rgba is None or getattr(rgba, "ndim", 0) < 3 or rgba.shape[2] < 4:
+        return 0
+    transparent = rgba[:, :, 3] == 0
+    count = int(transparent.sum())
+    if count:
+        rgba[transparent, :3] = 0
+    return count
 
-    仅当存在真正的半透明带 (0.02,0.98) 才跑（纯硬边图直接跳过，0 开销）。
-    大图先等比缩到 SHARP_DECONTAM_MAX_EDGE 估计前景色再放大回去（前景色是低频信息，几乎无损），
-    避免 4096² 这种大图前景估计耗时/内存暴涨。返回是否真正执行了去污染（用于日志）。
+
+def _decontaminate_foreground(result_img, is_rgb: bool = False) -> bool:
+    """对半透明边缘做前景色去污染,消除"灰黑脏边"(原地改写 result_img 的颜色通道)。
+
+    ⚠️ sharp 和 fur 两条流水线都在用(sharp 传 BGRA,fur 传 RGBA):
+      · sharp 用 cv2.imencode(".png") 输出,BGR 通道顺序 → is_rgb=False(默认)
+      · fur 用 PIL.Image.save PNG 输出,RGB 通道顺序 → is_rgb=True
+
+    仅当存在真正的半透明带 (0.02, 0.98) 才跑(纯硬边图直接跳过,0 开销)。
+    大图先等比缩到 DECONTAM_MAX_EDGE 估计前景色再放大回去(前景色是低频信息,几乎无损),
+    避免 4096² 这种大图前景估计耗时/内存暴涨。返回是否真正执行了去污染(用于日志)。
+
+    ⚠️ 尝试过用 BlurFusion (Photoroom ICIP 2021) + guided filter + alpha levels 组合
+    替代/增强这条路径(见 docs/cutout-postmortem.md 第 4 节),在 pet.png / portrait.png
+    上视觉无差别、数值互有胜负。最终回退到纯 pymatting.estimate_foreground_ml。
     """
     import cv2
     import numpy as np
@@ -1304,26 +1432,25 @@ def _decontaminate_foreground(result_img) -> bool:
         return False
 
     h, w = alpha_norm.shape
-    bgr = result_img[:, :, :3]
+    color = result_img[:, :, :3]
     long_edge = max(h, w)
 
-    if long_edge > SHARP_DECONTAM_MAX_EDGE:
+    if long_edge > DECONTAM_MAX_EDGE:
         # 大图：在缩小尺度上解纯前景色，再把前景色放大回原尺寸（前景色低频，放大几乎无损）
-        scale = SHARP_DECONTAM_MAX_EDGE / long_edge
+        scale = DECONTAM_MAX_EDGE / long_edge
         sw, sh = max(1, round(w * scale)), max(1, round(h * scale))
-        small_rgb = cv2.cvtColor(
-            cv2.resize(bgr, (sw, sh), interpolation=cv2.INTER_AREA), cv2.COLOR_BGR2RGB
-        ).astype(np.float32) / 255.0
+        small = cv2.resize(color, (sw, sh), interpolation=cv2.INTER_AREA)
+        # pymatting 期望 RGB [0,1]
+        small_rgb = (small if is_rgb else cv2.cvtColor(small, cv2.COLOR_BGR2RGB)).astype(np.float32) / 255.0
         small_a = cv2.resize(alpha_norm, (sw, sh), interpolation=cv2.INTER_AREA)
         fg_small = estimate_foreground_ml(small_rgb, small_a)
         fg_rgb = cv2.resize(fg_small, (w, h), interpolation=cv2.INTER_LINEAR)
     else:
-        rgb_norm = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
+        rgb_norm = (color if is_rgb else cv2.cvtColor(color, cv2.COLOR_BGR2RGB)).astype(np.float32) / 255.0
         fg_rgb = estimate_foreground_ml(rgb_norm, alpha_norm)
 
-    result_img[:, :, :3] = cv2.cvtColor(
-        (fg_rgb * 255.0).clip(0, 255).astype(np.uint8), cv2.COLOR_RGB2BGR
-    )
+    fg_u8 = (fg_rgb * 255.0).clip(0, 255).astype(np.uint8)
+    result_img[:, :, :3] = fg_u8 if is_rgb else cv2.cvtColor(fg_u8, cv2.COLOR_RGB2BGR)
     return True
 
 
@@ -1342,6 +1469,15 @@ def _run_sharp_pipeline(data: bytes) -> bytes:
 
     速度同前（~1s/张 on M1，~2s/张 on VPS），适合人物、商品、Logo 等"硬边"主体。
     对毛发场景请改用 CUTOUT_PROFILE=fur。
+
+    ⚠️ 性能优化历史：早期版本经 rembg.remove() 拿到的是 PNG 字节，然后 cv2.imdecode 再解回
+    numpy 做后处理。这条路径在每张图上额外承担两次编解码：
+      · rembg.remove 内部 PIL 把 naive_cutout 结果编成 PNG（大图 ~200~500ms）
+      · 我们再用 cv2.imdecode 解回 numpy（大图 ~100~300ms）
+    产品图（5716×3774）实测这条隐藏 round-trip 稳定占 ~400~800ms/张，且在编解码期间会多出
+    一份 ~O(w×h×4) 的临时内存峰值，间接推高 cgroup OOM 概率。
+    现在改为直接 session.predict()：只做一次输入 decode（PIL）和一次输出 encode（PNG）。
+    与 fur 档 _run_matting_pipeline 的路径完全对齐。
     """
     import time
     import cv2
@@ -1351,36 +1487,44 @@ def _run_sharp_pipeline(data: bytes) -> bytes:
     t0 = time.perf_counter()
     logger.info(">>> sharp pipeline BEGIN (input=%.0fKB)", img_size_kb)
 
-    output_data = remove(
-        data,
-        session=get_high_quality_session(),
-        alpha_matting=False,
-    )
+    # 一次 decode：从上传字节解成 PIL RGB。session.predict 内部会自己 resize/normalize，
+    # 我们只保证进去的是 RGB。convert("RGB") 会丢弃输入自带的 alpha 通道；这与 rembg.remove
+    # 的默认行为略有不同（后者会把用户上传的 PNG alpha 与 BiRefNet mask 取 min），但对
+    # "上传原图 → 抠背景"的正常场景（99%+ 是不透明 JPG/PNG/WebP）行为完全一致，
+    # 且对"用户上传已抠图再抠"的情况反而更符合直觉（直接用新 mask，不做交集）。
+    src_img = Image.open(io.BytesIO(data))
+    src_img = src_img.convert("RGB")
+
+    session = get_high_quality_session()
+    masks = session.predict(src_img)   # -> [PIL "L" mask]，尺寸 == src_img.size
+    mask = masks[0]
     t1 = time.perf_counter()
 
-    result_img = np.frombuffer(output_data, np.uint8)
-    result_img = cv2.imdecode(result_img, cv2.IMREAD_UNCHANGED)
-    if result_img is None or result_img.ndim < 3 or result_img.shape[2] < 4:
-        logger.info("sharp pipeline: rembg=%.2fs (input=%.0fKB) [early return]", t1 - t0, img_size_kb)
-        return output_data
+    # 组装 BGRA：cv2.imencode(".png", …) 期望 BGRA 通道顺序。
+    rgb_arr = np.asarray(src_img, dtype=np.uint8)
+    bgr = cv2.cvtColor(rgb_arr, cv2.COLOR_RGB2BGR)
 
-    alpha = result_img[:, :, 3].astype(np.float32) / 255.0
-    # 极窄死区：去 BiRefNet 输出端点的浮点噪声，不影响真正的过渡区域
+    # 有些 rembg 内置 session（如 isnet fallback）返回的 mask 长宽偶尔差 1px，兜底 resize。
+    if mask.size != src_img.size:
+        mask = mask.resize(src_img.size, Image.Resampling.LANCZOS)
+    alpha_u8 = np.asarray(mask, dtype=np.uint8)
+
+    # 极窄死区去 BiRefNet 端点浮点噪声；温和 gamma 抬中段（软过渡完整保留）。
+    alpha = alpha_u8.astype(np.float32) / 255.0
     alpha = np.where(alpha < 0.02, 0.0, alpha)
     alpha = np.where(alpha > 0.98, 1.0, alpha)
-    # 温和 gamma：中段抬一点点，主体更扎实；端点不变；软过渡完整保留
     alpha = np.power(alpha, 0.85)
     alpha_u8 = (alpha * 255).astype(np.uint8)
 
     # 1px 抗锯齿：极轻的高斯（kernel 3, sigma 0.5）做亚像素抗锯齿
     alpha_u8 = cv2.GaussianBlur(alpha_u8, (3, 3), sigmaX=0.5)
 
-    result_img[:, :, 3] = alpha_u8
+    result_img = np.dstack([bgr, alpha_u8])
     t_post = time.perf_counter()
 
     # 前景色去污染：消除毛发/边缘的"灰黑脏边"（背景色污染）。默认开，纯硬边图自动跳过 0 开销。
     deconned = False
-    if SHARP_DECONTAMINATE:
+    if DECONTAMINATE:
         try:
             deconned = _decontaminate_foreground(result_img)
         except Exception as exc:
@@ -1388,16 +1532,21 @@ def _run_sharp_pipeline(data: bytes) -> bytes:
             logger.warning("sharp decontamination failed (%s); returning un-decontaminated cutout", exc)
     t_decon = time.perf_counter()
 
+    cleared_px = _clear_transparent_rgb(result_img)
     # 用 PNG 而非 WebP：实测 cv2.imencode 对带 alpha 的高质量 WebP 比 PNG 慢 ~100ms
     # （libwebp 要单独编 alpha plane）。WebP 文件小 70% 但用户感知不到下载差异，
     # 反而 encode 多出来的 100ms 直接叠加在"AI 处理中"进度末尾，体感变慢。
-    _, output_png = cv2.imencode(".png", result_img)
+    _, output_png = cv2.imencode(
+        ".png",
+        result_img,
+        [int(cv2.IMWRITE_PNG_COMPRESSION), PNG_COMPRESSION_LEVEL],
+    )
     t2 = time.perf_counter()
 
     logger.info(
-        "sharp pipeline: rembg=%.2fs post=%.2fs decon=%.2fs(%s) enc=%.2fs total=%.2fs (input=%.0fKB output_px=%dx%d)",
+        "sharp pipeline: infer=%.2fs post=%.2fs decon=%.2fs(%s) enc=%.2fs total=%.2fs (input=%.0fKB output_px=%dx%d cleared=%d)",
         t1 - t0, t_post - t1, t_decon - t_post, "on" if deconned else "skip", t2 - t_decon, t2 - t0,
-        img_size_kb, result_img.shape[1], result_img.shape[0],
+        img_size_kb, result_img.shape[1], result_img.shape[0], cleared_px,
     )
     return output_png.tobytes()
 
@@ -1415,16 +1564,25 @@ def _run_fur_pipeline(data: bytes) -> bytes:
 
 def _run_matting_pipeline(data: bytes, session) -> bytes:
     """
-    Fur 首选：BiRefNet_lite-matting 直出软 alpha。
+    Fur 首选：BiRefNet_lite-matting 直出软 alpha + 前景色去污染。
 
-    前后处理与离线验证（scripts/export_matting_onnx.py）完全一致：
+    前后处理与离线验证（scripts/export_matting_onnx.py）一致：
       1) resize 到 1024² + ImageNet 归一化；
       2) onnxruntime 推理，输出已是 sigmoid 后的软 alpha [1,1,1024,1024]；
-      3) alpha 双线性放回原尺寸，配原图 RGB 合成 RGBA。
-    不做 trimap / pymatting / 前景估算——matting 模型的 alpha 在真背景处本就接近 0，
-    所以既无 legacy 的"亮光晕"，也无需去污染（实测换白/灰/深底色边可忽略）。
+      3) alpha 双线性放回原尺寸，配原图 RGB 合成 RGBA；
+      4) pymatting 前景色去污染:消除毛发/边缘半透明像素上残留的旧背景色。
 
-    速度 ~9s/张（onnxruntime CPU，与 sharp 同量级）；内存没有 legacy 的 pymatting +500MB 峰值。
+    ⚠️ 历史踩坑:早期版本注释错误地说"matting 模型 alpha 好就够了,无需去污染",实测深色 →
+    白色底切换时暴露:半透明毛尖 RGB 仍是 α·毛 + (1-α)·旧背景 的混合,到白底上露出一圈褐色 halo。
+    fur 档比 sharp 更明显——alpha 越软污染面积越大。
+    加入 pymatting 后 halo 大幅改善(pet.png warmth 从 +16 降到 +2)。
+
+    ⚠️ 曾尝试用 Photoroom BlurFusion + guided filter + alpha levels 组合替代/增强这条路径,
+    在典型测试图 pet.png / portrait.png 上视觉无差别,数字互有胜负,已回退。
+    详见 docs/cutout-postmortem.md 第 4 节。
+
+    速度 ~9s 推理 + ~0.1~0.7s 去污染(大图上 max_edge 缩尺度控制上限)。
+    内存峰值仍比 legacy alpha_matting 低(不做 trimap 全局求解)。
     """
     import time
     import numpy as np
@@ -1454,13 +1612,28 @@ def _run_matting_pipeline(data: bytes, session) -> bytes:
     alpha_u8 = np.where(alpha_u8 < 3, 0, alpha_u8).astype(np.uint8)
 
     rgba = np.dstack([np.asarray(img, dtype=np.uint8), alpha_u8])
+    t_post = time.perf_counter()
+
+    # 前景色去污染:与 sharp 共用 _decontaminate_foreground,只是 is_rgb=True(fur 用 PIL 保存 RGBA)
+    # DECONTAMINATE 环境变量对 sharp/fur 统一生效,旧名 SHARP_DECONTAMINATE 兼容
+    deconned = False
+    if DECONTAMINATE:
+        try:
+            deconned = _decontaminate_foreground(rgba, is_rgb=True)
+        except Exception as exc:
+            logger.warning("matting decontamination failed (%s); returning un-decontaminated cutout", exc)
+    t_decon = time.perf_counter()
+
+    cleared_px = _clear_transparent_rgb(rgba)
     buf = io.BytesIO()
-    Image.fromarray(rgba, mode="RGBA").save(buf, format="PNG")
+    Image.fromarray(rgba, mode="RGBA").save(buf, format="PNG", compress_level=PNG_COMPRESSION_LEVEL)
     t2 = time.perf_counter()
 
     logger.info(
-        "matting pipeline: infer=%.2fs post=%.2fs total=%.2fs (input=%.0fKB output_px=%dx%d)",
-        t1 - t0, t2 - t1, t2 - t0, img_size_kb, orig_w, orig_h,
+        "matting pipeline: infer=%.2fs post=%.2fs decon=%.2fs(%s) enc=%.2fs total=%.2fs "
+        "(input=%.0fKB output_px=%dx%d cleared=%d)",
+        t1 - t0, t_post - t1, t_decon - t_post, "on" if deconned else "skip", t2 - t_decon, t2 - t0,
+        img_size_kb, orig_w, orig_h, cleared_px,
     )
     return buf.getvalue()
 
@@ -1534,13 +1707,18 @@ def _run_fur_pipeline_legacy(data: bytes) -> bytes:
     alpha_u8 = np.where(alpha_u8 < 3, 0, alpha_u8).astype(np.uint8)
     result_img[:, :, 3] = alpha_u8
 
-    _, output_png = cv2.imencode(".png", result_img)
+    cleared_px = _clear_transparent_rgb(result_img)
+    _, output_png = cv2.imencode(
+        ".png",
+        result_img,
+        [int(cv2.IMWRITE_PNG_COMPRESSION), PNG_COMPRESSION_LEVEL],
+    )
     t4 = time.perf_counter()
 
     logger.info(
-        "fur pipeline: rembg+matting=%.2fs fg_est=%.2fs post=%.2fs total=%.2fs (input=%.0fKB output_px=%dx%d)",
+        "fur pipeline: rembg+matting=%.2fs fg_est=%.2fs post=%.2fs total=%.2fs (input=%.0fKB output_px=%dx%d cleared=%d)",
         t1 - t0, t3 - t2, t4 - t3, t4 - t0,
-        img_size_kb, result_img.shape[1], result_img.shape[0],
+        img_size_kb, result_img.shape[1], result_img.shape[0], cleared_px,
     )
     return output_png.tobytes()
 

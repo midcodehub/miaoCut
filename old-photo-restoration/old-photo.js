@@ -1,7 +1,8 @@
 (function () {
     'use strict';
 
-    const API_BASE = 'https://api2.miaocut.app';
+    const _isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const API_BASE = (window.MIAOCUT_PRO_CONFIG && window.MIAOCUT_PRO_CONFIG.FREE_API_BASE) || (_isLocal ? 'http://localhost:8000' : 'https://api2.miaocut.app');
     const i18n = {
     "en": {
         "pageTitle": "Free AI Old Photo Restoration & Upscaler | MiaoCut",
@@ -823,10 +824,10 @@
         return (i18n[state.lang] && i18n[state.lang][key]) || i18n.en[key] || key;
     }
 
-    function track(name, data) {
+    function track(name) {
         if (typeof umami === 'undefined') return;
         try {
-            if (data) umami.track(name, data); else umami.track(name);
+            umami.track(name);
         } catch (_) { /* analytics must not affect the tool */ }
     }
 
@@ -925,7 +926,6 @@
             form.append('file', state.file);
             form.append('scale', $('restore-scale').value);
             form.append('strength', $('restore-strength').value);
-            const startedAt = performance.now();
             const blob = await uploadWithProgress(form);
             state.outputBlob = blob;
             state.outputUrl = URL.createObjectURL(blob);
@@ -934,15 +934,11 @@
             afterEmpty.classList.add('hidden');
             downloadBtn.classList.remove('hidden');
             setStatus(t('ready'));
-            track('old-photo-success', {
-                scale: $('restore-scale').value,
-                strength: $('restore-strength').value,
-                duration: Math.round((performance.now() - startedAt) / 1000),
-            });
+            track('old-photo-success');
         } catch (err) {
             console.error(err);
             setStatus(err.message || t('failed'));
-            track('old-photo-failed', { reason: err.message || 'unknown' });
+            track('old-photo-failed');
         } finally {
             restoreBtn.disabled = false;
         }
@@ -959,7 +955,7 @@
         showInputPreview(file);
         clearOutput();
         setStatus('');
-        track('old-photo-uploaded', { type: file.type.replace('image/', '') });
+        track('old-photo-uploaded');
     });
 
     restoreBtn.addEventListener('click', restorePhoto);

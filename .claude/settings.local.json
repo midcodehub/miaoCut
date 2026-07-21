@@ -46,7 +46,22 @@
       "Bash(node --check app.js)",
       "Bash(grep -nA8 \"content\" tailwind.config.js)",
       "Bash(grep -vE \"^ ?M \\(bn|fil|hi|id|pt-br|ur|zh|ja|ko|fr|de|es|vi|th|ar|ru|tr|it|pl|nl|fa\\)/|how-to-remove|/index\\\\.html$\")",
-      "Bash(grep -E \"\\\\.\\(py|js|css|md|json\\)$|scripts/\")"
+      "Bash(grep -E \"\\\\.\\(py|js|css|md|json\\)$|scripts/\")",
+      "Bash(python3 /private/tmp/gen_nb.py)",
+      "Bash(python3 -c \"import json,sys; nb=json.load\\(open\\('benchmark/miaocut_gpu_benchmark.ipynb'\\)\\); print\\('valid json, nbformat', nb['nbformat'], 'cells', len\\(nb['cells']\\)\\)\")",
+      "Bash(python3 -)",
+      "Bash(python3 -c \"import json,ast; nb=json.load\\(open\\('benchmark/miaocut_gpu_benchmark.ipynb'\\)\\); [ast.parse\\('\\\\n'.join\\(l for l in ''.join\\(c['source']\\).splitlines\\(\\) if not l.lstrip\\(\\).startswith\\('!'\\)\\)\\) for c in nb['cells'] if c['cell_type']=='code']; print\\('valid + code OK'\\)\")",
+      "Bash(python3 -c \"import json,ast; nb=json.load\\(open\\('benchmark/miaocut_gpu_benchmark.ipynb'\\)\\); [ast.parse\\('\\\\n'.join\\(l for l in ''.join\\(c['source']\\).splitlines\\(\\) if not l.lstrip\\(\\).startswith\\('!'\\)\\)\\) for c in nb['cells'] if c['cell_type']=='code']; print\\('notebook 已更新默认配置为 matting，校验通过'\\)\")",
+      "Bash(python3 -m py_compile pro-gpu/app.py)",
+      "Bash(node --check pro-gateway/src/index.js)",
+      "Bash(node pro-gateway/test/smoke.mjs)",
+      "WebSearch",
+      "Bash(python -m py_compile main.py)",
+      "Bash(python -)",
+      "Bash(git --no-pager diff main.py)",
+      "Bash(node pro-gateway/test/smoke-batch.mjs)",
+      "Bash(node --check batch/batch.js)",
+      "Bash(node --check pro-account.js)"
     ]
   }
 }
