@@ -1,5 +1,9 @@
 #!/bin/bash
-export PATH="/Users/wuchao/Library/Python/3.14/bin:$PATH"
+# beam / modal 都装在项目 .venv 里（Python 3.11）。
+# ⚠️ 别再往 ~/Library/Python/3.x/bin 里装：那个目录不在默认 PATH，
+#    裸终端敲 beam 会 command not found，而且和 .venv 里的版本会打架。
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export PATH="$REPO_ROOT/.venv/bin:$PATH"
 
 echo "=========================================="
 echo "    MiaoCut Pro - Beam 环境变量自动配置"

@@ -19,12 +19,23 @@
 //   POST /webhooks/stripe         Stripe webhook(签名校验 + 幂等入账)
 //   POST /v1/prewarm             预热 Beam(触发冷启动,立即返回 202)
 //   POST /v1/remove-background   付费单图:校验余额 → 转发 Beam → 成功扣分
+//   GET  /v1/batch/platform-stats  双平台 A/B 对比数据(管理用,带 X-Batch-Secret)
+//
+// 【批量 GPU 双平台 A/B】(Beam vs Modal)
+//   同一份推理代码(pro-gpu/cutout_core.py)分别部署到两个 serverless GPU 平台,
+//   批量任务按 UTC 日期奇偶轮流投给两边(偶数天 Beam / 奇数天 Modal),
+//   积累失败率、冷启动率、单张耗时,配合各平台账单判断谁更稳、谁更便宜。
+//   · 强制钉死某一边:BATCH_PLATFORM_MODE=beam|modal(默认 alternate)
+//   · 付费【单图同步】路径不参与轮换,始终走 Beam —— 那是用户实时等着的链路,
+//     不拿它做实验;等对比出结论再整体切换。
 //
 // 依赖(wrangler vars / secrets,见 wrangler.toml + README):
 //   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SUPABASE_JWT_SECRET
 //   STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_PRICE_*
-//   BEAM_ENDPOINT(vars), BEAM_TOKEN(secret)
-//   CORS_ALLOW_ORIGIN,(可选)SIGNUP_BONUS, MAX_SYNC_UPLOAD_MB, BEAM_TIMEOUT_MS
+//   BEAM_ENDPOINT / BEAM_BATCH_URL(vars), BEAM_TOKEN(secret)
+//   MODAL_BATCH_URL(vars), MODAL_TOKEN(secret)   ← Modal 批量入队端点
+//   CORS_ALLOW_ORIGIN,(可选)SIGNUP_BONUS, MAX_SYNC_UPLOAD_MB, BEAM_TIMEOUT_MS,
+//   BATCH_PLATFORM_MODE
 // =============================================================================
 
 // ----- 可配置默认值(env 可覆盖)------------------------------------------
@@ -42,6 +53,12 @@ const PROFILE_ALIASES = { sharp: "fast" };
 // 批量(Phase 2):单批上限 + R2 预签名有效期(秒)
 const MAX_BATCH_IMAGES = 200;
 const PRESIGN_EXPIRES = 3600;
+
+// 批量 GPU 平台 A/B:按 UTC 日期轮换,一天 Beam 一天 Modal,跑一段时间后
+// 用 /v1/batch/platform-stats 对比失败率 / 冷启动率 / 单张耗时,再决定长期用谁。
+const BATCH_PLATFORMS = ["beam", "modal"];
+// 平台统计明细在 KV 里的保留天数(到期自动清,不用手工维护)
+const BATCH_STAT_TTL_DAYS = 14;
 
 // SKU → {credits, priceEnv}。积分数固定在服务端,Stripe priceId 从 env 读取。
 const SKU_TABLE = {
@@ -103,6 +120,11 @@ export default {
       // 内部隧道: Beam GPU 节点经过 Cloudflare 骨干网快速上传/下载 R2
       if (url.pathname.startsWith("/internal/r2/")) {
         return handleInternalR2Tunnel(request, env, cors);
+      }
+
+      // 双平台 A/B 对比数据(管理用,带 X-Batch-Secret)
+      if (path === "/v1/batch/platform-stats" && request.method === "GET") {
+        return await handlePlatformStats(request, env, url, cors);
       }
 
       const mStart = path.match(/^\/v1\/batch\/([0-9a-fA-F-]{36})\/start$/);
@@ -567,28 +589,30 @@ async function handleBatchCreate(request, env, ctx, cors) {
     });
   }
 
-  // 严谨预热节流逻辑 (使用 CF KV)
+  // 严谨预热节流逻辑 (使用 CF KV)。
+  // ⚠️ 节流状态按平台分开存:双平台轮换时,Beam 昨天热过不代表 Modal 今天是热的。
+  const platform = pickBatchPlatform(env);
   if (ctx && typeof ctx.waitUntil === "function" && env.MIAOCUT_STATE) {
     ctx.waitUntil((async () => {
       try {
         const now = Date.now();
         const [lastActiveStr, lastWarmupStr] = await Promise.all([
-          env.MIAOCUT_STATE.get("beam_last_active_at"),
-          env.MIAOCUT_STATE.get("beam_last_warmup_at")
+          env.MIAOCUT_STATE.get(`gpu_last_active_at:${platform}`),
+          env.MIAOCUT_STATE.get(`gpu_last_warmup_at:${platform}`)
         ]);
         const lastActive = parseInt(lastActiveStr || "0", 10);
         const lastWarmup = parseInt(lastWarmupStr || "0", 10);
 
-        // 如果过去55秒内有任务完成，说明Beam热着 (keep_warm_seconds=60)
+        // 如果过去55秒内有任务完成，说明容器还热着 (keep_warm/scaledown = 60s)
         if (now - lastActive < 55000) return;
         // 如果过去15秒内下发过预热指令，说明别人刚刚触发过了，正在拉起，跳过防并发
         if (now - lastWarmup < 15000) return;
 
         // 记录此次预热
-        await env.MIAOCUT_STATE.put("beam_last_warmup_at", now.toString());
-        
-        // 下发请求
-        await enqueueBeamBatch(env, {
+        await env.MIAOCUT_STATE.put(`gpu_last_warmup_at:${platform}`, now.toString());
+
+        // 下发空任务:GPU 端识别 job_id === "warmup" 后只拉容器、不读写 R2
+        await enqueueBatchTask(env, platform, {
           job_id: "warmup",
           image_id: "warmup",
           input_key: "warmup",
@@ -604,7 +628,7 @@ async function handleBatchCreate(request, env, ctx, cors) {
   }
 
   return json(
-    { job_id: job.job_id, profile, cost_per_image: cost, total_cost: totalCost, expires_in: PRESIGN_EXPIRES, uploads },
+    { job_id: job.job_id, profile, platform, cost_per_image: cost, total_cost: totalCost, expires_in: PRESIGN_EXPIRES, uploads },
     200,
     cors,
   );
@@ -629,11 +653,15 @@ async function handleBatchStart(request, env, jobId, cors) {
   if (fr === "insufficient") return json({ error: "insufficient_credits" }, 402, cors);
   if (fr !== "ok") return json({ error: "freeze_failed", detail: fr }, 409, cors);
 
+  // 平台在这里定一次,整批共用 —— 否则跨 UTC 0 点的大批量会一半 Beam 一半 Modal,
+  // 对比数据就不干净了(单张统计仍按实际平台归类,只是同一 job 不再混跑)。
+  const platform = pickBatchPlatform(env);
+
   // 入队:每图一个 task。入队失败的图当即释放其冻结积分，避免锁死。
   const images = await supabaseSelect(env, `job_images?job_id=eq.${jobId}&select=id,input_key,output_key`);
   let enqueued = 0;
   for (const im of images || []) {
-    const ok = await enqueueBeamBatch(env, {
+    const ok = await enqueueBatchTask(env, platform, {
       job_id: jobId,
       image_id: im.id,
       input_key: im.input_key,
@@ -651,7 +679,8 @@ async function handleBatchStart(request, env, jobId, cors) {
     }
   }
 
-  return json({ status: "processing", total: job.total_images, enqueued }, 200, cors);
+  console.log(JSON.stringify({ event: "batch_start", job_id: jobId, platform, total: job.total_images, enqueued }));
+  return json({ status: "processing", total: job.total_images, enqueued, platform }, 200, cors);
 }
 
 // GET /v1/batch/{id} —— 进度 + 已完成图的下载预签名 URL。过期自动兜底释放冻结。
@@ -687,10 +716,8 @@ async function handleBatchStatus(request, env, jobId, cors) {
     images.push(row);
   }
 
-  if (job.status === "done" && env.MIAOCUT_STATE) {
-    // 任务全部完成时更新活跃时间（客户端拿到 done 后即停止轮询，只会触发一次）
-    await env.MIAOCUT_STATE.put("beam_last_active_at", Date.now().toString());
-  }
+  // 注：容器活跃时间不在这里记 —— 这里拿不到这个 job 实际跑在哪个平台
+  // （跨 UTC 0 点轮询时会算错边）。改由回调 recordBatchStat 按真实平台记录。
 
   return json(
     {
@@ -742,7 +769,8 @@ async function handleInternalR2Tunnel(request, env, cors) {
   return json({ error: "not found" }, 404, cors);
 }
 
-// POST /internal/batch-callback ——// Beam 回调：每处理完一张图回调一次。扣分（单张）并更新状态。
+// POST /internal/batch-callback —— GPU 侧（Beam 或 Modal）回调：每处理完一张图回调一次。
+// 扣分（单张）并更新状态，顺带把这张图的平台/耗时/冷启动落进 KV 供 A/B 对比。
 async function handleBatchCallback(request, env, ctx, cors) {
   if (request.headers.get("x-batch-secret") !== env.BATCH_CALLBACK_SECRET) {
     return json({ error: "unauthorized" }, 401, cors);
@@ -757,7 +785,21 @@ async function handleBatchCallback(request, env, ctx, cors) {
     return json({ error: "bad_request" }, 400, cors);
   }
 
-  // 更新 Supabase：如果处理失败，依然扣分（按现有逻辑），但更新为 failed 状态。
+  // 统计走 waitUntil：GPU 容器在等这个回调返回，别让 KV 写拖慢它。
+  // 统计失败不影响积分结算（recordBatchStat 内部已吞异常）。
+  if (ctx && typeof ctx.waitUntil === "function") {
+    ctx.waitUntil(recordBatchStat(env, body));
+  }
+  if (status === "failed") {
+    console.error(JSON.stringify({
+      event: "batch_image_failed", platform: body.platform,
+      job_id: body.job_id, image_id, error: String(error || "").slice(0, 200),
+    }));
+  }
+
+  // 更新 Supabase（complete_batch_image 幂等，重复回调直接返回 'already'）：
+  //   done   → 结算：扣掉该图冻结的积分（真正消费）
+  //   failed → 释放：把该图冻结的积分退回余额 + 记 release 流水（失败不扣分）
   const r = await rpc(env, "complete_batch_image", {
     p_image: image_id,
     p_status: status === "done" ? "done" : "failed",
@@ -768,21 +810,180 @@ async function handleBatchCallback(request, env, ctx, cors) {
   return json({ ok: r === "ok" }, 200, cors);
 }
 
-// 入队到 Beam Task Queue(HTTP):POST 任务 kwargs 即入队。⚠️ 入队 body 格式以 Beam 文档为准。
-async function enqueueBeamBatch(env, args) {
-  if (!env.BEAM_BATCH_URL) return false;
-  try {
-    const res = await fetch(env.BEAM_BATCH_URL, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${env.BEAM_TOKEN}`, "Content-Type": "application/json" },
-      body: JSON.stringify(args),
-    });
-    if (!res.ok) console.error("beam enqueue failed:", res.status);
-    return res.ok;
-  } catch (e) {
-    console.error("beam enqueue error:", e?.message || e);
+// =============================================================================
+// 批量 GPU 平台 A/B(Beam vs Modal)
+// -----------------------------------------------------------------------------
+// 目的:同一份推理代码(pro-gpu/cutout_core.py)分别部署到两个 serverless GPU 平台,
+// 按天轮换承接批量任务,积累「稳定性 + 单张成本」的横向对比数据。
+//
+// 选择规则(无状态,纯函数):UTC epoch day 的奇偶 → beam / modal。
+// 好处是不依赖 KV、Worker 各实例算出来的结果天然一致,且在 UTC 0 点整齐翻面。
+// 用 BATCH_PLATFORM_MODE=beam|modal 可以强制钉死某一边(排障 / 结束实验时用)。
+// =============================================================================
+function batchPlatformEndpoint(env, platform) {
+  return platform === "modal"
+    ? { url: env.MODAL_BATCH_URL, token: env.MODAL_TOKEN }
+    : { url: env.BEAM_BATCH_URL, token: env.BEAM_TOKEN };
+}
+
+// 选出这一刻该用哪个平台。若轮到的平台没配 URL(比如 Modal 还没部署),
+// 自动回落到另一个可用平台 —— 保证实验的半成品状态不会把批量功能打挂。
+function pickBatchPlatform(env, now = Date.now()) {
+  const mode = String(env.BATCH_PLATFORM_MODE || "alternate").toLowerCase();
+  if (BATCH_PLATFORMS.includes(mode)) return mode;
+
+  const epochDay = Math.floor(now / 86400000); // UTC 天序号
+  const preferred = BATCH_PLATFORMS[epochDay % BATCH_PLATFORMS.length];
+  if (batchPlatformEndpoint(env, preferred).url) return preferred;
+
+  const fallback = BATCH_PLATFORMS.find((p) => batchPlatformEndpoint(env, p).url);
+  if (fallback && fallback !== preferred) {
+    console.warn(`batch platform ${preferred} not configured, falling back to ${fallback}`);
+    return fallback;
+  }
+  return preferred; // 两个都没配 → 让 enqueue 返回 false,上层按入队失败处理
+}
+
+// 入队一张图到指定平台。两边 body 格式完全一致(Modal 侧的 batch_enqueue_app
+// 就是为了对齐 Beam 的「POST kwargs 即入队」而写的),所以这里不用分叉。
+// ⚠️ Beam 入队 body 格式以 Beam 文档为准。
+async function enqueueBatchTask(env, platform, args) {
+  const { url, token } = batchPlatformEndpoint(env, platform);
+  if (!url) {
+    console.error(`batch enqueue skipped: ${platform} not configured`);
     return false;
   }
+  try {
+    const headers = { "Content-Type": "application/json" };
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers,
+      // platform 会被 GPU 端原样带回回调,统计时据此归类
+      body: JSON.stringify({ ...args, platform }),
+    });
+    if (!res.ok) console.error(`${platform} enqueue failed:`, res.status);
+    return res.ok;
+  } catch (e) {
+    console.error(`${platform} enqueue error:`, e?.message || e);
+    return false;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// 平台统计:每张图回调时写一条 KV「明细键」,读的时候 list 出来现场聚合。
+//
+// 为什么不做「读-改-写」的计数器:Worker 的 KV 没有原子自增,一批 200 张图的回调
+// 是并发到达的,累加计数一定会互相覆盖丢数 —— 而失败次数正是这个实验最不能丢的
+// 指标。改成「一次回调 = 一个独立 key」就完全无竞争;所有数据编码进 key 名,
+// 聚合时只 list 不 get,读也便宜。TTL 到期自动清理。
+//
+// key 形如:bstat:2026-07-22:modal:done:1830:1450:1:<image_id>
+//          bstat:<日期>:<平台>:<状态>:<总毫秒>:<抠图毫秒>:<是否冷启动>:<图ID>
+// -----------------------------------------------------------------------------
+function utcDateKey(ts = Date.now()) {
+  return new Date(ts).toISOString().slice(0, 10); // YYYY-MM-DD
+}
+
+async function recordBatchStat(env, body) {
+  if (!env.MIAOCUT_STATE) return;
+  const platform = BATCH_PLATFORMS.includes(body.platform) ? body.platform : "unknown";
+  const status = body.status === "done" ? "done" : "failed";
+  const totalMs = Math.max(0, Math.round(Number(body.total_ms) || 0));
+  const cutoutMs = Math.max(0, Math.round(Number(body.cutout_ms) || 0));
+  const cold = body.cold ? 1 : 0;
+  const imageId = String(body.image_id || "").replace(/[^0-9a-zA-Z-]/g, "");
+
+  const key = `bstat:${utcDateKey()}:${platform}:${status}:${totalMs}:${cutoutMs}:${cold}:${imageId}`;
+  try {
+    await Promise.all([
+      // value 留空:所有维度都在 key 里,list 一次就能聚合,不用逐条 get
+      env.MIAOCUT_STATE.put(key, "", { expirationTtl: BATCH_STAT_TTL_DAYS * 86400 }),
+      // 顺带记这个平台的容器活跃时间,供下次 handleBatchCreate 的预热节流判断。
+      // 放在回调里记是因为这里才知道这张图【真实】跑在哪个平台。
+      platform === "unknown"
+        ? null
+        : env.MIAOCUT_STATE.put(`gpu_last_active_at:${platform}`, Date.now().toString()),
+    ]);
+  } catch (e) {
+    console.error("recordBatchStat failed:", e?.message || e);
+  }
+}
+
+// GET /v1/batch/platform-stats?date=YYYY-MM-DD&days=7
+// 管理用:带 X-Batch-Secret(与 GPU 回调同一个密钥)。返回每天每平台的
+// 成功/失败数、失败率、冷启动率、耗时均值与 p50/p95 —— 判断「哪家更稳」的依据。
+// 成本要结合各平台账单的 GPU 秒数看,这里给出 GPU 占用总秒数作为估算口径。
+async function handlePlatformStats(request, env, url, cors) {
+  if (request.headers.get("x-batch-secret") !== env.BATCH_CALLBACK_SECRET) {
+    return json({ error: "unauthorized" }, 401, cors);
+  }
+  if (!env.MIAOCUT_STATE) return json({ error: "kv_not_configured" }, 500, cors);
+
+  // 注意 readInt(null/"") 会得到 0，所以先 || 7 再钳位，否则不带 days 会退化成只查 1 天
+  const days = Math.min(Math.max(readInt(url.searchParams.get("days") || 7, 7), 1), BATCH_STAT_TTL_DAYS);
+  const endDate = url.searchParams.get("date") || utcDateKey();
+  const endTs = Date.parse(`${endDate}T00:00:00Z`);
+  if (Number.isNaN(endTs)) return json({ error: "bad_date" }, 400, cors);
+
+  const out = {};
+  for (let i = 0; i < days; i++) {
+    const date = utcDateKey(endTs - i * 86400000);
+    for (const platform of BATCH_PLATFORMS) {
+      const samples = await listBatchStatSamples(env, `bstat:${date}:${platform}:`);
+      if (!samples.length) continue;
+      (out[date] ||= {})[platform] = summarizeBatchStats(samples);
+    }
+  }
+  return json({ days, end_date: endDate, stats: out }, 200, cors);
+}
+
+// 把某天某平台的明细键全部 list 出来解析成样本。KV list 单页上限 1000,
+// 用 cursor 翻页;设个页数上限防止极端情况下把 CPU 时间跑爆。
+async function listBatchStatSamples(env, prefix) {
+  const samples = [];
+  let cursor;
+  for (let page = 0; page < 20; page++) {
+    const res = await env.MIAOCUT_STATE.list({ prefix, limit: 1000, cursor });
+    for (const k of res.keys) {
+      // prefix 之后是 <status>:<totalMs>:<cutoutMs>:<cold>:<imageId>
+      const parts = k.name.slice(prefix.length).split(":");
+      if (parts.length < 4) continue;
+      samples.push({
+        status: parts[0],
+        totalMs: Number(parts[1]) || 0,
+        cutoutMs: Number(parts[2]) || 0,
+        cold: parts[3] === "1",
+      });
+    }
+    if (res.list_complete || !res.cursor) break;
+    cursor = res.cursor;
+  }
+  return samples;
+}
+
+function summarizeBatchStats(samples) {
+  const done = samples.filter((s) => s.status === "done");
+  const failed = samples.length - done.length;
+  const cold = samples.filter((s) => s.cold).length;
+  const totals = done.map((s) => s.totalMs).sort((a, b) => a - b);
+  const cutouts = done.map((s) => s.cutoutMs).sort((a, b) => a - b);
+  const pct = (arr, p) => (arr.length ? arr[Math.min(arr.length - 1, Math.floor(arr.length * p))] : 0);
+  const avg = (arr) => (arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : 0);
+
+  return {
+    total: samples.length,
+    succeeded: done.length,
+    failed,
+    fail_rate: samples.length ? +(failed / samples.length).toFixed(4) : 0,
+    cold_starts: cold,
+    cold_rate: samples.length ? +(cold / samples.length).toFixed(4) : 0,
+    total_ms: { avg: avg(totals), p50: pct(totals, 0.5), p95: pct(totals, 0.95) },
+    cutout_ms: { avg: avg(cutouts), p50: pct(cutouts, 0.5), p95: pct(cutouts, 0.95) },
+    // 成本估算口径:所有成功任务的 GPU 占用秒数之和(不含冷启动加载时间,
+    // 那部分要按平台账单的容器运行时长核对)
+    gpu_busy_s: Math.round(totals.reduce((a, b) => a + b, 0) / 1000),
+  };
 }
 
 // =============================================================================

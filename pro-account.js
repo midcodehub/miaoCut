@@ -112,14 +112,27 @@ const MiaoCutPro = {
     });
   },
 
-  /** Google 登录 */
-  async signInWithGoogle(redirectTo) {
+  /** 通用第三方登录（'google' | 'github' | 'gitlab' | 'apple' | 'azure' ...）
+   *  所有 provider 走同一条流程：跳转授权 → 回跳带 session → detectSessionInUrl 自动接住。
+   *  后端（Worker / 积分）无需任何改动——它只看 JWT 里的 email 与是否已验证。
+   *  新增一种登录 = Supabase 启用该 provider + 这里传不同的 provider 字符串。 */
+  async signInWithProvider(provider, redirectTo) {
     const c = await getClient();
     if (!c) throw new Error("auth_unavailable");
     return c.auth.signInWithOAuth({
-      provider: "google",
+      provider,
       options: { redirectTo: redirectTo || window.location.href },
     });
+  },
+
+  /** Google 登录（signInWithProvider 快捷方式，保持向后兼容） */
+  async signInWithGoogle(redirectTo) {
+    return this.signInWithProvider("google", redirectTo);
+  },
+
+  /** GitHub 登录 */
+  async signInWithGithub(redirectTo) {
+    return this.signInWithProvider("github", redirectTo);
   },
 
   async signOut() {

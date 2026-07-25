@@ -60,3 +60,6 @@ docs/
 .agents/
 scripts/
 benchmark
+
+# wrangler 本地构建缓存/状态（Worker 部署产物，不入库）
+.wrangler/

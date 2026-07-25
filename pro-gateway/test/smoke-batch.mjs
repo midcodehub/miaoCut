@@ -14,6 +14,10 @@ const env = {
   SUPABASE_JWT_SECRET: "test-jwt-secret",
   BEAM_BATCH_URL: "https://mock-beam.app/taskqueue",
   BEAM_TOKEN: "beam-token",
+  MODAL_BATCH_URL: "https://mock-modal.run/enqueue",
+  MODAL_TOKEN: "modal-token",
+  // 主流程钉死 Beam，保证 1~7 项与日期无关；轮换逻辑在第 8 项单独测
+  BATCH_PLATFORM_MODE: "beam",
   BATCH_CALLBACK_SECRET: "callback-secret",
   R2_ENDPOINT: "https://acct123.r2.cloudflarestorage.com",
   R2_BUCKET: "miaocut-batch",
@@ -36,8 +40,27 @@ const state = {
     { id: "i2", job_id: JOB_ID, idx: 1, orig_filename: "b.png", input_key: `batch/${JOB_ID}/in/i2`, output_key: `batch/${JOB_ID}/out/i2.png`, status: "pending", error: null },
   ],
 };
-const calls = { enqueue: 0 };
+const calls = { enqueue: 0, warmup: 0, beam: 0, modal: 0, lastArgs: null };
 const jr = (v) => new Response(JSON.stringify(v), { status: 200, headers: { "content-type": "application/json" } });
+
+// ---- 极简 KV mock（平台统计用：put 写 key，list 按 prefix 过滤）----
+const kv = new Map();
+env.MIAOCUT_STATE = {
+  async get(k) { return kv.has(k) ? kv.get(k) : null; },
+  async put(k, v) { kv.set(k, v); },
+  async list({ prefix = "", limit = 1000, cursor } = {}) {
+    const all = [...kv.keys()].filter((k) => k.startsWith(prefix)).sort();
+    const start = cursor ? Number(cursor) : 0;
+    const page = all.slice(start, start + limit);
+    const end = start + page.length;
+    return { keys: page.map((name) => ({ name })), list_complete: end >= all.length, cursor: String(end) };
+  },
+};
+
+// waitUntil 收集后台任务（统计写 KV 走 waitUntil），测试里要能 await 到它们
+const pending = [];
+const ctx = { waitUntil(p) { pending.push(Promise.resolve(p)); } };
+const settle = () => Promise.all(pending.splice(0));
 
 globalThis.fetch = async (input, init = {}) => {
   const url = typeof input === "string" ? input : input.url;
@@ -63,7 +86,15 @@ globalThis.fetch = async (input, init = {}) => {
     if (p.startsWith("/rest/v1/job_images?")) return jr(state.images.map((i) => ({ ...i })));
     return jr(null);
   }
-  if (url.startsWith(env.BEAM_BATCH_URL)) { calls.enqueue++; return jr({ task_id: "t" }); }
+  if (url.startsWith(env.BEAM_BATCH_URL) || url.startsWith(env.MODAL_BATCH_URL)) {
+    const args = JSON.parse(init.body || "{}");
+    // 预热是空任务（job_id === "warmup"），不算真实入队
+    if (args.job_id === "warmup") { calls.warmup++; return jr({ task_id: "t" }); }
+    calls.enqueue++;
+    calls.lastArgs = args;
+    calls[url.startsWith(env.BEAM_BATCH_URL) ? "beam" : "modal"]++;
+    return jr({ task_id: "t" });
+  }
   throw new Error("unexpected fetch: " + url);
 };
 
@@ -83,7 +114,7 @@ async function call(path, { method = "GET", token, body, secret } = {}) {
   if (body) headers["Content-Type"] = "application/json";
   const init = { method, headers };
   if (body) init.body = JSON.stringify(body);
-  return worker.fetch(new Request(`https://pro-api.miaocut.app${path}`, init), env, { waitUntil() {} });
+  return worker.fetch(new Request(`https://pro-api.miaocut.app${path}`, init), env, ctx);
 }
 
 let failures = 0;
@@ -99,20 +130,25 @@ async function main() {
   check("返回 job_id", j.job_id === JOB_ID, j.job_id);
   check("total_cost = 2(2张×fast 1分)", j.total_cost === 2, String(j.total_cost));
   check("每图带预签名 PUT URL", j.uploads?.length === 2 && /X-Amz-Signature=/.test(j.uploads[0].put_url || ""), j.uploads?.[0]?.put_url?.slice(0, 60));
+  await settle(); // 建任务时会后台下发一次预热空任务
+  check("建任务时下发预热空任务", calls.warmup === 1, `warmup=${calls.warmup}`);
 
   // 2) 开始 → 冻结 + 入队 2 个 task
   r = await call(`/v1/batch/${JOB_ID}/start`, { method: "POST", token: TOKEN });
   j = await r.json();
   check("POST /v1/batch/{id}/start → 200", r.status === 200, `got ${r.status}`);
   check("入队 2 个 task", j.enqueued === 2 && calls.enqueue === 2, `enqueued=${j.enqueued} beam=${calls.enqueue}`);
+  check("整批钉在同一平台(beam)", j.platform === "beam" && calls.modal === 0, `platform=${j.platform} modal=${calls.modal}`);
+  check("入队 body 带 platform 字段", calls.lastArgs?.platform === "beam", JSON.stringify(calls.lastArgs));
   check("任务转 processing", state.job.status === "processing");
 
-  // 3) Beam 回调:两张都成功 → 结算
-  r = await call("/internal/batch-callback", { method: "POST", secret: env.BATCH_CALLBACK_SECRET, body: { image_id: "i1", status: "done", output_key: state.images[0].output_key } });
+  // 3) GPU 回调:两张都成功 → 结算(顺带写平台统计)
+  r = await call("/internal/batch-callback", { method: "POST", secret: env.BATCH_CALLBACK_SECRET, body: { image_id: "i1", status: "done", output_key: state.images[0].output_key, platform: "beam", total_ms: 1800, cutout_ms: 1500, cold: true } });
   check("回调 i1 done → 200", r.status === 200, `got ${r.status}`);
-  r = await call("/internal/batch-callback", { method: "POST", secret: env.BATCH_CALLBACK_SECRET, body: { image_id: "i2", status: "done", output_key: state.images[1].output_key } });
+  r = await call("/internal/batch-callback", { method: "POST", secret: env.BATCH_CALLBACK_SECRET, body: { image_id: "i2", status: "done", output_key: state.images[1].output_key, platform: "beam", total_ms: 1200, cutout_ms: 1000, cold: false } });
   await r.json();
   check("回调 i2 done → 任务 done", state.job.status === "done" && state.job.succeeded === 2);
+  await settle(); // 等 waitUntil 里的统计写完
 
   // 4) 查状态 → done + 下载 URL
   r = await call(`/v1/batch/${JOB_ID}`, { token: TOKEN });
@@ -120,9 +156,9 @@ async function main() {
   check("GET /v1/batch/{id} → 200 done", r.status === 200 && j.done === true, `status=${j.status}`);
   check("成功图带下载预签名 URL", /X-Amz-Signature=/.test(j.images?.[0]?.download_url || ""), j.images?.[0]?.download_url?.slice(0, 60));
 
-  // 5) 回调无密钥 → 403
+  // 5) 回调无密钥 → 401（缺凭证）
   r = await call("/internal/batch-callback", { method: "POST", body: { image_id: "i1", status: "done" } });
-  check("回调无密钥 → 403", r.status === 403, `got ${r.status}`);
+  check("回调无密钥 → 401", r.status === 401, `got ${r.status}`);
 
   // 6) 超量 → 400
   r = await call("/v1/batch", { method: "POST", token: TOKEN, body: { profile: "fast", files: Array.from({ length: 201 }, (_, i) => ({ name: `${i}.png` })) } });
@@ -134,6 +170,47 @@ async function main() {
   j = await r.json();
   check("余额不足 → 402", r.status === 402 && j.needed === 2, JSON.stringify(j));
   mockBalance = 100;
+
+  // 8) 双平台 A/B:alternate 模式按 UTC 日期奇偶挑平台，整批只落一边
+  {
+    // 重置成可以重新 start 的状态
+    state.job.status = "pending"; state.job.succeeded = 0; state.job.failed = 0;
+    for (const im of state.images) { im.status = "pending"; im.error = null; }
+    calls.beam = 0; calls.modal = 0;
+
+    const expected = ["beam", "modal"][Math.floor(Date.now() / 86400000) % 2];
+    r = await worker.fetch(
+      new Request(`https://pro-api.miaocut.app/v1/batch/${JOB_ID}/start`, { method: "POST", headers: { Authorization: `Bearer ${TOKEN}` } }),
+      { ...env, BATCH_PLATFORM_MODE: "alternate" }, ctx,
+    );
+    j = await r.json();
+    check(`alternate today → ${expected}`, j.platform === expected, `got ${j.platform}`);
+    check("整批 2 张都投给同一平台", calls[expected] === 2 && calls[expected === "beam" ? "modal" : "beam"] === 0,
+      `beam=${calls.beam} modal=${calls.modal}`);
+
+    // Modal 未配置时安全回落到 Beam（Modal 还没部署的过渡期不能把批量打挂）
+    calls.beam = 0; calls.modal = 0;
+    state.job.status = "pending";
+    for (const im of state.images) im.status = "pending";
+    r = await worker.fetch(
+      new Request(`https://pro-api.miaocut.app/v1/batch/${JOB_ID}/start`, { method: "POST", headers: { Authorization: `Bearer ${TOKEN}` } }),
+      { ...env, BATCH_PLATFORM_MODE: "alternate", MODAL_BATCH_URL: "" }, ctx,
+    );
+    j = await r.json();
+    check("Modal 未配置 → 回落 Beam", j.platform === "beam" && calls.beam === 2, `platform=${j.platform} beam=${calls.beam}`);
+  }
+
+  // 9) 平台统计:回调写进 KV → 查询接口能聚合出来
+  r = await call("/v1/batch/platform-stats?days=1", { secret: env.BATCH_CALLBACK_SECRET });
+  j = await r.json();
+  const today = new Date().toISOString().slice(0, 10);
+  const s = j.stats?.[today]?.beam;
+  check("GET /v1/batch/platform-stats → 200", r.status === 200, `got ${r.status}`);
+  check("统计到 2 张 beam 成功", s?.total === 2 && s?.succeeded === 2 && s?.failed === 0, JSON.stringify(s));
+  check("冷启动率 = 0.5(2 张里 1 张冷)", s?.cold_rate === 0.5, String(s?.cold_rate));
+  check("耗时 avg = 1500ms", s?.total_ms?.avg === 1500, JSON.stringify(s?.total_ms));
+  r = await call("/v1/batch/platform-stats", {});
+  check("统计接口无密钥 → 401", r.status === 401, `got ${r.status}`);
 
   console.log("\n" + (failures === 0 ? "✅ 全部通过" : `❌ ${failures} 项失败`));
   process.exit(failures === 0 ? 0 : 1);

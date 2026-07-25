@@ -13,7 +13,10 @@ const $ = (id) => document.getElementById(id);
 const els = {
   balance: $("balance"),
   loginGate: $("login-gate"),
-  btnGoogle: $("btn-google"),
+  authOauth: $("auth-oauth"),
+  authEmail: $("auth-email"),
+  authDivider: $("auth-divider"),
+  oauthHint: $("oauth-hint"),
   btnEmail: $("btn-email"),
   loginEmail: $("login-email"),
   loginMsg: $("login-msg"),
@@ -56,18 +59,70 @@ async function render() {
   }
 }
 
-els.btnGoogle.addEventListener("click", async () => {
-  try { await MiaoCutPro.signInWithGoogle(window.location.href); }
-  catch (e) { els.loginMsg.textContent = e.message === "auth_unavailable" ? "登录暂未配置（Supabase）。" : "登录失败，请重试。"; }
-});
-els.btnEmail.addEventListener("click", async () => {
-  const email = els.loginEmail.value.trim();
-  if (!email) return;
+// ---------- 登录：海外 OAuth / 国内邮箱 ----------
+function setLoginMsg(text, isErr) {
+  els.loginMsg.textContent = text;
+  els.loginMsg.className = "msg" + (isErr ? " err" : "");
+}
+function authErr(err, fallback) {
+  if (err && err.message === "auth_unavailable") return "登录暂未配置（缺 Supabase 配置）。";
+  return err && err.message ? `${fallback}（${err.message}）` : fallback;
+}
+
+// 地区自适应：中国大陆访问 Google/GitHub 常受阻 → 把邮箱登录排到最前
+function looksMainlandChina() {
   try {
-    await MiaoCutPro.signInWithEmail(email, window.location.href);
-    els.loginMsg.textContent = "Magic link sent — check your email.";
-  } catch (e) {
-    els.loginMsg.textContent = e.message === "auth_unavailable" ? "登录暂未配置（Supabase）。" : "Failed to send, try again.";
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+    if (/Shanghai|Chongqing|Urumqi|Harbin|Kashgar/i.test(tz)) return true;
+  } catch (_) { /* ignore */ }
+  return /^zh(-|_)?(cn|hans)/i.test(navigator.language || "");
+}
+if (looksMainlandChina() && els.authEmail && els.authOauth) {
+  els.loginGate.insertBefore(els.authEmail, els.authOauth);     // 目标顺序：邮箱 → 分隔线 → OAuth
+  els.loginGate.insertBefore(els.authDivider, els.authOauth);
+  if (els.oauthHint) els.oauthHint.classList.remove("hidden");
+}
+
+// 第三方登录（事件委托：以后加 provider 只需在 HTML 加一个 data-provider 按钮）
+els.authOauth?.addEventListener("click", async (e) => {
+  const btn = e.target.closest(".auth-btn[data-provider]");
+  if (!btn) return;
+  const provider = btn.dataset.provider;
+  btn.disabled = true;
+  setLoginMsg(`Redirecting to ${provider}…`);
+  try {
+    const res = await MiaoCutPro.signInWithProvider(provider, window.location.href);
+    if (res && res.error) throw new Error(res.error.message || "oauth_failed");
+  } catch (err) {
+    btn.disabled = false;
+    setLoginMsg(authErr(err, `${provider} 登录失败，请重试。`), true);
+  }
+});
+
+// 邮箱登录（magic link）：无密码，点邮件里的链接即完成注册 + 验证 + 登录
+els.btnEmail?.addEventListener("click", async () => {
+  const email = (els.loginEmail.value || "").trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return setLoginMsg("请输入有效的邮箱地址。", true);
+  }
+  els.btnEmail.disabled = true;
+  setLoginMsg("Sending…");
+  try {
+    const res = await MiaoCutPro.signInWithEmail(email, window.location.href);
+    if (res && res.error) throw new Error(res.error.message || "send_failed");
+    setLoginMsg(`登录链接已发送到 ${email}，点击邮件中的链接即可登录（记得看垃圾箱）。`);
+    let left = 60; // 冷却，避免重复发信被 Supabase 限流
+    const tick = setInterval(() => {
+      els.btnEmail.textContent = `Resend in ${--left}s`;
+      if (left <= 0) {
+        clearInterval(tick);
+        els.btnEmail.disabled = false;
+        els.btnEmail.textContent = "Continue with Email";
+      }
+    }, 1000);
+  } catch (err) {
+    els.btnEmail.disabled = false;
+    setLoginMsg(authErr(err, "发送失败，请稍后重试。"), true);
   }
 });
 

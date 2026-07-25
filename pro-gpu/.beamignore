@@ -25,3 +25,6 @@ drive/MyDrive
 *.pyc
 .next/
 .circleci
+
+# Modal 适配层：Beam 侧用不到，别上传（它 import modal，Beam 镜像里没装）
+modal_app.py

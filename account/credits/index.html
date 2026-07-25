@@ -51,8 +51,11 @@
             <h1 class="text-2xl font-bold">Sign in to MiaoCut</h1>
             <p class="mt-2 text-gray-600 dark:text-zinc-400">Access your credits, history, and top-ups.</p>
             <div class="mt-6 max-w-sm space-y-3">
-                <button id="google-btn" class="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 font-medium text-gray-700 transition hover:bg-gray-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
+                <button data-provider="google" class="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 font-medium text-gray-700 transition hover:bg-gray-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
                     Continue with Google
+                </button>
+                <button data-provider="github" class="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 font-medium text-gray-700 transition hover:bg-gray-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
+                    Continue with GitHub
                 </button>
                 <div class="text-center text-xs text-gray-400">or</div>
                 <input id="email-input" type="email" placeholder="you@example.com"
@@ -162,18 +165,39 @@
             }
         }
 
-        // 登录交互
-        document.getElementById("google-btn").addEventListener("click", () => {
-            MiaoCutPro.signInWithGoogle().catch(() => setMsg("Google sign-in unavailable."));
+        // 登录交互：第三方走事件委托（加 provider 只需在上面加一个 data-provider 按钮）
+        loginView.addEventListener("click", async (e) => {
+            const btn = e.target.closest("button[data-provider]");
+            if (!btn) return;
+            const provider = btn.dataset.provider;
+            btn.disabled = true;
+            setMsg(`Redirecting to ${provider}…`);
+            try {
+                const res = await MiaoCutPro.signInWithProvider(provider);
+                if (res && res.error) throw new Error(res.error.message || "oauth_failed");
+            } catch (err) {
+                btn.disabled = false;
+                setMsg(`${provider} sign-in failed: ${err.message || "try again"}`);
+            }
         });
         document.getElementById("email-btn").addEventListener("click", async () => {
             const email = document.getElementById("email-input").value.trim();
-            if (!email) return setMsg("Please enter your email.");
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setMsg("Please enter a valid email.");
+            const btn = document.getElementById("email-btn");
+            btn.disabled = true;
+            setMsg("Sending…");
             try {
-                await MiaoCutPro.signInWithEmail(email);
-                setMsg("Check your inbox for the magic link.");
-            } catch (e) {
-                setMsg("Could not send link. Try again.");
+                const res = await MiaoCutPro.signInWithEmail(email);
+                if (res && res.error) throw new Error(res.error.message || "send_failed");
+                setMsg("Sign-in link sent — check your inbox (and spam).");
+                let left = 60; // 冷却，避免被 Supabase 限流
+                const tick = setInterval(() => {
+                    btn.textContent = `Resend in ${--left}s`;
+                    if (left <= 0) { clearInterval(tick); btn.disabled = false; btn.textContent = "Email me a magic link"; }
+                }, 1000);
+            } catch (err) {
+                btn.disabled = false;
+                setMsg(`Could not send link: ${err.message || "try again"}`);
             }
         });
         document.getElementById("logout-btn").addEventListener("click", async () => {

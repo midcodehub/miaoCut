@@ -83,7 +83,7 @@ begin
   for r in select * from jsonb_array_elements(p_files) loop
     v_img := gen_random_uuid();
     v_in  := 'batch/' || v_job || '/in/'  || v_img;
-    v_out := 'batch/' || v_job || '/out/' || v_img || '.png';
+    v_out := 'batch/' || v_job || '/out/' || v_img || '.webp';  -- Beam 输出 lossless WebP
     insert into public.job_images(id, job_id, user_id, idx, orig_filename, input_key, output_key, status)
       values (v_img, v_job, p_user, v_idx, r->>'name', v_in, v_out, 'pending');
     v_images := v_images || jsonb_build_object('image_id', v_img, 'input_key', v_in, 'orig_filename', r->>'name');

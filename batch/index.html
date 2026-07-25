@@ -320,6 +320,29 @@
       background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="10" height="10" fill="white"/><rect width="5" height="5" fill="%23ccc"/><rect x="5" y="5" width="5" height="5" fill="%23ccc"/></svg>') repeat;
     }
 
+    /* --- 登录（多方式：海外 OAuth / 国内邮箱） --- */
+    .auth-title { font-size: 20px; margin: 0 0 6px; letter-spacing: -.01em; }
+    .auth-sub { color: var(--muted); font-size: 14px; margin: 0 0 18px; }
+    .auth-btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; padding: 12px 16px; margin-bottom: 10px;
+      font-size: 15px; font-weight: 500;
+      border: 1px solid var(--line); border-radius: 12px; background: #fff;
+    }
+    .auth-btn:hover { background: #f4f4f5; }
+    .auth-btn svg { width: 18px; height: 18px; flex: none; }
+    .auth-btn.primary { background: var(--brand); color: #fff; border-color: var(--brand); }
+    .auth-btn.primary:hover { background: #3f3f46; }
+    .auth-divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 16px 0; color: var(--muted); font-size: 13px;
+    }
+    .auth-divider::before, .auth-divider::after {
+      content: ""; flex: 1; height: 1px; background: var(--line);
+    }
+    #auth-email input[type=email] { width: 100%; margin-bottom: 10px; min-width: 0; }
+    .auth-hint { color: var(--muted); font-size: 13px; margin: 8px 0 0; }
+
     /* --- Lightbox 模态框 --- */
     #lightbox {
       position: fixed;
@@ -376,14 +399,38 @@
     <h1>Batch Background Remover</h1>
     <p class="sub">Upload many images, remove backgrounds in bulk, download all as a ZIP.</p>
 
-    <!-- 登录门 -->
+    <!-- 登录门：海外走 Google / GitHub，国内走邮箱验证（JS 会按地区自动调顺序） -->
     <div class="card" id="login-gate">
-      <p style="margin-top:0">Sign in to use batch processing.</p>
-      <div class="row">
-        <button id="btn-google">Continue with Google</button>
-        <input type="email" id="login-email" placeholder="you@example.com" />
-        <button id="btn-email">Send magic link</button>
+      <h2 class="auth-title">Sign in to MiaoCut</h2>
+      <p class="auth-sub">Batch processing requires an account · new accounts get <b>100 free credits</b>.</p>
+
+      <div id="auth-oauth">
+        <button class="auth-btn" data-provider="google">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="#4285F4" d="M23.06 12.25c0-.85-.08-1.67-.22-2.45H12v4.63h6.2a5.3 5.3 0 0 1-2.3 3.48v2.89h3.72c2.18-2 3.44-4.96 3.44-8.55z"/>
+            <path fill="#34A853" d="M12 24c3.11 0 5.72-1.03 7.62-2.8l-3.72-2.89c-1.03.69-2.35 1.1-3.9 1.1-3 0-5.55-2.03-6.46-4.75H1.69v2.98A11.5 11.5 0 0 0 12 24z"/>
+            <path fill="#FBBC05" d="M5.54 14.66a6.9 6.9 0 0 1 0-4.4V7.28H1.69a11.5 11.5 0 0 0 0 10.36l3.85-2.98z"/>
+            <path fill="#EA4335" d="M12 4.75c1.69 0 3.2.58 4.4 1.72l3.3-3.3C17.71 1.2 15.1 0 12 0 7.47 0 3.55 2.6 1.69 6.38l3.85 2.98C6.45 6.78 9 4.75 12 4.75z"/>
+          </svg>
+          <span>Continue with Google</span>
+        </button>
+        <button class="auth-btn" data-provider="github">
+          <svg viewBox="0 0 16 16" aria-hidden="true">
+            <path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          <span>Continue with GitHub</span>
+        </button>
+        <p class="auth-hint hidden" id="oauth-hint">中国大陆访问 Google / GitHub 可能较慢，建议用上方邮箱登录。</p>
       </div>
+
+      <div class="auth-divider" id="auth-divider"><span>or</span></div>
+
+      <div id="auth-email">
+        <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email" />
+        <button class="auth-btn primary" id="btn-email">Continue with Email</button>
+        <p class="auth-hint">We'll email you a sign-in link — no password needed.</p>
+      </div>
+
       <div class="msg" id="login-msg"></div>
     </div>
 

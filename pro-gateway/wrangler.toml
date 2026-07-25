@@ -29,10 +29,27 @@ MAX_SYNC_UPLOAD_MB = "25"     # 同步单图上限,安全低于 CF 100MB;更大�
 BEAM_TIMEOUT_MS = "60000"     # 转发 Beam 超时,容忍冷启动
 
 # Beam 单图处理 Endpoint(非敏感)
-BEAM_ENDPOINT = "https://miaocut-cutout-82d3943-v20.app.beam.cloud"
+BEAM_ENDPOINT = "https://miaocut-cutout-82d3943-v21.app.beam.cloud"
 
 # 批量任务专属 endpoint
-BEAM_BATCH_URL = "https://miaocut-batch-4855566-v55.app.beam.cloud"
+BEAM_BATCH_URL = "https://miaocut-batch-4855566-v56.app.beam.cloud"
+
+# ---- 批量 GPU 双平台 A/B(Beam vs Modal)------------------------------------
+# alternate = 按 UTC 日期奇偶轮换(偶数天 Beam / 奇数天 Modal),跑一阵子后用
+#   curl -H "X-Batch-Secret: $BATCH_CALLBACK_SECRET" \
+#        "https://pro-api.miaocut.app/v1/batch/platform-stats?days=14"
+# 对比失败率/冷启动率/耗时。要临时钉死某一边就改成 "beam" 或 "modal"。
+# 注:付费单图同步路径不参与轮换,始终走 BEAM_ENDPOINT。
+# ⚠️ 当前钉死 beam:Modal 侧尚未跑通真实图片验证。
+#    验证步骤:改成 "modal" → wrangler deploy → 前端跑 3~5 张 → 看 platform-stats
+#    确认无误后再改回 "alternate" 正式开始 A/B。
+BATCH_PLATFORM_MODE = "beam"
+
+# Modal 批量入队端点(`modal deploy modal_app.py` 后打印的 batch-enqueue-app URL)
+# 留空 = Modal 侧未就绪,轮到 Modal 的日子会自动回落到 Beam。
+MODAL_BATCH_URL = "https://midcodehub--miaocut-pro-batch-enqueue-app.modal.run"
+# Modal 单图端点(暂不启用:付费单图仍全量走 Beam,不拿实时链路做实验)
+# MODAL_ENDPOINT = "https://midcodehub--miaocut-pro-cutoutendpoint-web.modal.run"
 
 # R2(批量输入/输出)。endpoint/bucket 非敏感;Access Key/Secret 用 secret。
 R2_ENDPOINT = "https://4a7197a1b3b4e75dfc9b4951898836af.r2.cloudflarestorage.com"
@@ -52,6 +69,8 @@ SUPABASE_URL = "https://kaqlfoxselrvriulvlsm.supabase.co"
 #   wrangler secret put STRIPE_SECRET_KEY
 #   wrangler secret put STRIPE_WEBHOOK_SECRET
 #   wrangler secret put BEAM_TOKEN               # Beam 端点鉴权 token
+#   wrangler secret put MODAL_TOKEN              # Modal 入队端点鉴权 token
+#                                                # (= Modal secret 里的 MIAOCUT_MODAL_TOKEN)
 #   wrangler secret put R2_ACCESS_KEY_ID         # R2 S3 API Access Key
 #   wrangler secret put R2_SECRET_ACCESS_KEY     # R2 S3 API Secret
 #   wrangler secret put BATCH_CALLBACK_SECRET    # 批量回调密钥(与 Beam batch task 同值)
@@ -86,8 +105,10 @@ SIGNUP_BONUS = "100"
 DAILY_FREE_QUOTA = "0"
 MAX_SYNC_UPLOAD_MB = "25"
 BEAM_TIMEOUT_MS = "60000"
-BEAM_ENDPOINT = "https://miaocut-cutout-82d3943-v20.app.beam.cloud"
-BEAM_BATCH_URL = "https://miaocut-batch-4855566-v55.app.beam.cloud"
+BEAM_ENDPOINT = "https://miaocut-cutout-82d3943-v21.app.beam.cloud"
+BEAM_BATCH_URL = "https://miaocut-batch-4855566-v56.app.beam.cloud"
+BATCH_PLATFORM_MODE = "alternate"
+MODAL_BATCH_URL = ""
 R2_ENDPOINT = "https://4a7197a1b3b4e75dfc9b4951898836af.r2.cloudflarestorage.com"
 R2_BUCKET = "miaocut-batch-dev"
 CHECKOUT_SUCCESS_URL = "https://miaocut.app/account/credits/?status=success"
