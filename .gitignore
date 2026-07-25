@@ -56,10 +56,10 @@ miaocut-seo-design-doc.md
 old-photo-restoration-design.md
 quantize_birefnet.ipynb
 docs/
-.claude/*
 .agents/
 scripts/
 benchmark
 
 # wrangler 本地构建缓存/状态（Worker 部署产物，不入库）
 .wrangler/
+.claude/logs/tool-audit.jsonl
