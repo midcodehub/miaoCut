@@ -114,10 +114,10 @@ docker run --rm -p 7860:7860 -e PORT=7860 -e MAX_CONCURRENCY=1 -v miaocut-data:/
 | `PORT` | `8000` | 服务监听端口 |
 | `TRUST_PROXY` | `0` | 设为 `1` 时从 `X-Forwarded-For` 提取真实 IP |
 | `ALLOWED_ORIGINS` | 空（跳过校验） | 允许的前端来源域名，逗号分隔 |
-| `MAX_CONCURRENCY` | `1` | 最大并发推理数（防 OOM 关键旋钮） |
+| `MAX_CONCURRENCY` | `4` | 最大并发推理数（防 OOM 关键旋钮） |
 | `CUTOUT_PROFILE` | `sharp` | 默认抠图模式（`sharp` / `fur`） |
-| `DATA_DIR` | `.` | 反馈数据持久化目录 |
-| `ENABLE_DOCS` | `1` | 设为 `0` 关闭 `/docs` 接口文档 |
+| `DATA_DIR` | `data` | 反馈数据持久化目录 |
+| `ENABLE_DOCS` | `0` | 设为 `1` 开启 `/docs` 接口文档 |
 
 ## 🛡️ 隐私与安全
 

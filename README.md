@@ -120,10 +120,10 @@ docker run --rm -p 7860:7860 -e PORT=7860 -e MAX_CONCURRENCY=1 -v miaocut-data:/
 | `PORT` | `8000` | Port to listen on |
 | `TRUST_PROXY` | `0` | Set `1` to read the real client IP from `X-Forwarded-For` |
 | `ALLOWED_ORIGINS` | empty (skips check) | Comma-separated allowed frontend origins |
-| `MAX_CONCURRENCY` | `1` | Max concurrent inferences (key knob against OOM) |
+| `MAX_CONCURRENCY` | `4` | Max concurrent inferences (key knob against OOM) |
 | `CUTOUT_PROFILE` | `sharp` | Default cutout profile (`sharp` / `fur`) |
-| `DATA_DIR` | `.` | Directory for persisted feedback data |
-| `ENABLE_DOCS` | `1` | Set `0` to disable the `/docs` endpoint |
+| `DATA_DIR` | `data` | Directory for persisted feedback data |
+| `ENABLE_DOCS` | `0` | Set `1` to enable the `/docs` endpoint |
 
 ## 🛡️ Privacy & security
 
