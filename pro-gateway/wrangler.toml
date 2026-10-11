@@ -19,11 +19,12 @@ bucket_name = "miaocut-batch"
 # 非敏感变量(明文)。敏感密钥用 `wrangler secret put`,不要写在这里。
 # -----------------------------------------------------------------------------
 [vars]
-# CORS 允许来源(开发期可设为 "*"，生产建议精确到站点)
-CORS_ALLOW_ORIGIN = "*"
+# CORS 允许来源:逗号分隔的白名单(dev 环境仍为 "*",方便本地调试)
+CORS_ALLOW_ORIGIN = "https://miaocut.app,https://www.miaocut.app"
 
 # 业务参数
 SIGNUP_BONUS = "100"          # 注册赠送积分(决策:注册送 100)
+SIGNUP_BONUS_PER_IP_DAILY = "3"  # 同一 IP 每天最多给几个新账户发注册积分(防批量注册薅积分)
 DAILY_FREE_QUOTA = "0"        # GPU 付费路径不设每日免费额度(免费走匿名 CPU)
 MAX_SYNC_UPLOAD_MB = "25"     # 同步单图上限,安全低于 CF 100MB;更大走 R2 异步(Phase 2)
 BEAM_TIMEOUT_MS = "60000"     # 转发 Beam 超时,容忍冷启动

@@ -120,9 +120,9 @@ async function main() {
   check("GET /v1/batch/{id} → 200 done", r.status === 200 && j.done === true, `status=${j.status}`);
   check("成功图带下载预签名 URL", /X-Amz-Signature=/.test(j.images?.[0]?.download_url || ""), j.images?.[0]?.download_url?.slice(0, 60));
 
-  // 5) 回调无密钥 → 403
+  // 5) 回调无密钥 → 401（与网关实现、设计文档一致：密钥缺失 / 错误一律 401）
   r = await call("/internal/batch-callback", { method: "POST", body: { image_id: "i1", status: "done" } });
-  check("回调无密钥 → 403", r.status === 403, `got ${r.status}`);
+  check("回调无密钥 → 401", r.status === 401, `got ${r.status}`);
 
   // 6) 超量 → 400
   r = await call("/v1/batch", { method: "POST", token: TOKEN, body: { profile: "fast", files: Array.from({ length: 201 }, (_, i) => ({ name: `${i}.png` })) } });

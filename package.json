@@ -10,9 +10,11 @@
     "build:assets": "node scripts/stamp-assets.mjs",
     "build": "npm run build:css && npm run build:i18n && npm run build:assets",
     "og": "node scripts/og/generate.mjs",
-    "test:editor": "node --test tests/editor-engine.test.cjs"
+    "test:editor": "node --test tests/editor-engine.test.cjs",
+    "test:gateway": "node --no-warnings pro-gateway/test/smoke.mjs && node --no-warnings pro-gateway/test/smoke-batch.mjs && node --no-warnings pro-gateway/test/smoke-hardening.mjs && node --no-warnings pro-gateway/test/db-migration.mjs"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.2.17",
     "playwright": "^1.59.1",
     "tailwindcss": "^3.4.17"
   }

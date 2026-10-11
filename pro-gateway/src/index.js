@@ -5,26 +5,33 @@
 // 免费网关一字不改。本 Worker 承载:鉴权 / 积分 / 支付 / 账户,并把【付费单图】
 // 转发到 Beam serverless GPU(无状态「字节→PNG」端点),成功后扣积分。
 //
-// 方案 X 关键点:
-//   · 付费单图 = 同步:浏览器 → 本 Worker → Beam → 返回 PNG(内存不落盘)。
-//   · 冷启动用 /v1/prewarm 在前端「选图即 ping」藏进上传窗口。
-//   · 大文件 / 批量 = 走 R2 异步直传(Phase 2,本文件暂不含)。
-//   · 登录用户【不设每日免费 GPU 额度】(免费走匿名 CPU);每张成功都扣分。注册送 100。
+// 产品决策(2026-10):积分只用于批量。单图一律走免费网关(CPU),登录与否都不扣分;
+//   本 Worker 的付费单图端点仍保留,但前端已不再调用(留给以后的「单图高清 GPU」)。
+//
+// 关键点:
+//   · 批量 = 客户端经预签名直传 R2(绕过 CF 100MB) → Beam Task Queue → 回调结算。
+//   · 注册送 100 积分:仅已验证邮箱;排除一次性邮箱、同 IP 每日上限、同一邮箱别名只发一次。
+//   · Stripe:支付成功入账;退款 / 争议(拒付)按比例扣回(见 db/migrations/2026-10-11-launch-hardening.sql)。
 //
 // 端点:
 //   GET  /auth/me                登录态 + 账户(首登懒初始化 + 发注册积分)
 //   GET  /credits/balance        余额
 //   GET  /credits/ledger         积分流水
 //   POST /checkout               创建 Stripe Checkout Session
-//   POST /webhooks/stripe         Stripe webhook(签名校验 + 幂等入账)
+//   POST /webhooks/stripe        Stripe webhook(签名校验;支付入账 / 退款与争议扣回,均幂等)
+//   POST /v1/batch               建批量任务 + 返回 R2 预签名上传地址
+//   POST /v1/batch/:id/start     冻结积分并入队
+//   GET  /v1/batch/:id           批量进度 + 结果下载地址
+//   POST /internal/batch-callback  Beam 任务完成回调(X-Batch-Secret)
 //   POST /v1/prewarm             预热 Beam(触发冷启动,立即返回 202)
-//   POST /v1/remove-background   付费单图:校验余额 → 转发 Beam → 成功扣分
+//   POST /v1/remove-background   付费单图(保留,前端暂未使用)
 //
 // 依赖(wrangler vars / secrets,见 wrangler.toml + README):
 //   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SUPABASE_JWT_SECRET
 //   STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_PRICE_*
 //   BEAM_ENDPOINT(vars), BEAM_TOKEN(secret)
-//   CORS_ALLOW_ORIGIN,(可选)SIGNUP_BONUS, MAX_SYNC_UPLOAD_MB, BEAM_TIMEOUT_MS
+//   CORS_ALLOW_ORIGIN(逗号分隔的来源白名单,或 "*"),(可选)SIGNUP_BONUS,
+//   SIGNUP_BONUS_PER_IP_DAILY, MAX_SYNC_UPLOAD_MB, BEAM_TIMEOUT_MS
 // =============================================================================
 
 // ----- 可配置默认值(env 可覆盖)------------------------------------------
@@ -32,7 +39,21 @@ const DEFAULTS = {
   SIGNUP_BONUS: 100, // 注册赠送积分(决策:注册送 100;仅已验证邮箱 / OAuth)
   DAILY_FREE_QUOTA: 0, // GPU 付费路径不设每日免费额度(免费走匿名 CPU)
   MAX_SYNC_UPLOAD_MB: 25, // 同步单图上限,安全低于 CF 100MB;更大走 R2 异步(Phase 2)
+  SIGNUP_BONUS_PER_IP_DAILY: 3, // 同一 IP 每天最多给几个新账户发注册积分(防批量注册薅积分)
 };
+
+// 常见一次性邮箱域名:用它们注册照常建账户,但不发注册积分。
+// 只收录最常见的一批,目的是提高薅积分成本,不追求覆盖全部(那需要外部黑名单服务)。
+const DISPOSABLE_EMAIL_DOMAINS = new Set([
+  "mailinator.com", "guerrillamail.com", "guerrillamail.net", "sharklasers.com", "grr.la",
+  "10minutemail.com", "10minutemail.net", "temp-mail.org", "tempmail.com", "tempmail.net",
+  "temp-mail.io", "tempmailo.com", "tempr.email", "throwawaymail.com", "yopmail.com",
+  "yopmail.net", "getnada.com", "nada.email", "dispostable.com", "maildrop.cc",
+  "mailnesia.com", "trashmail.com", "trashmail.de", "fakeinbox.com", "mintemail.com",
+  "mohmal.com", "emailondeck.com", "spamgourmet.com", "mailcatch.com", "moakt.com",
+  "1secmail.com", "1secmail.org", "1secmail.net", "burnermail.io", "inboxkitten.com",
+  "mail.tm", "linshiyouxiang.net", "33mail.com", "spambox.us", "tmail.ws",
+]);
 
 // 单图各档消耗(profile 来自前端 query;fast=1, fur=2)
 const CREDIT_COST = { fast: 1, fur: 2 };
@@ -58,7 +79,7 @@ const STRIPE_API = "https://api.stripe.com/v1";
 // =============================================================================
 export default {
   async fetch(request, env, ctx) {
-    const cors = buildCorsHeaders(env);
+    const cors = buildCorsHeaders(env, request);
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: cors });
     }
@@ -202,18 +223,78 @@ async function verifyJwtHS256(token, secret) {
 // =============================================================================
 // 账户聚合:取/建用户
 // =============================================================================
-async function getOrCreateAccount(user, env) {
+async function getOrCreateAccount(user, env, request) {
   let acct = await rpc(env, "get_account", { p_auth_user_id: user.authUserId });
   if (!acct) {
+    // 首次登录:决定发不发注册积分。最终是否发放还要过数据库里的两道关
+    // (邮箱已验证、同一规范化邮箱没领过),见 ensure_user。
+    const bonus = await signupBonusFor(user, env, request);
     await rpc(env, "ensure_user", {
       p_auth_user_id: user.authUserId,
       p_email: user.email,
       p_email_verified: user.emailVerified,
-      p_signup_bonus: readInt(env.SIGNUP_BONUS, DEFAULTS.SIGNUP_BONUS),
+      p_signup_bonus: bonus,
+      p_email_normalized: normalizeEmail(user.email),
     });
     acct = await rpc(env, "get_account", { p_auth_user_id: user.authUserId });
   }
   return acct; // {user_id, email, plan, subscription_credits, topup_credits, daily_used}
+}
+
+/**
+ * 新账户能拿多少注册积分(Worker 侧的防薅检查):
+ *   - 一次性邮箱 → 0
+ *   - 同一 IP 当天已给 SIGNUP_BONUS_PER_IP_DAILY 个新账户发过 → 0
+ * KV 计数是「最终一致」的,极端并发下可能多放一两个,对防批量注册已经足够。
+ */
+async function signupBonusFor(user, env, request) {
+  const bonus = readInt(env.SIGNUP_BONUS, DEFAULTS.SIGNUP_BONUS);
+  if (bonus <= 0 || !user.emailVerified) return 0;
+  if (isDisposableEmail(user.email)) {
+    console.log("signup bonus skipped: disposable email domain");
+    return 0;
+  }
+  const kv = env.MIAOCUT_STATE;
+  const ip = request && request.headers.get("CF-Connecting-IP");
+  if (kv && ip) {
+    const key = `signup_bonus_ip:${ip}:${new Date().toISOString().slice(0, 10)}`;
+    const used = Number(await kv.get(key)) || 0;
+    const limit = readInt(env.SIGNUP_BONUS_PER_IP_DAILY, DEFAULTS.SIGNUP_BONUS_PER_IP_DAILY);
+    if (used >= limit) {
+      console.log("signup bonus skipped: per-IP daily limit reached");
+      return 0;
+    }
+    await kv.put(key, String(used + 1), { expirationTtl: 2 * 86400 });
+  }
+  return bonus;
+}
+
+/**
+ * 规范化邮箱,用于识别「同一个邮箱的不同写法」:
+ *   - 全部小写
+ *   - 去掉 + 后面的部分(a+promo@x.com → a@x.com,大多数邮箱服务都支持这种别名)
+ *   - gmail.com / googlemail.com 去掉本地部分的点(Gmail 忽略点),域名统一成 gmail.com
+ */
+export function normalizeEmail(email) {
+  if (!email || typeof email !== "string" || !email.includes("@")) return null;
+  const at = email.lastIndexOf("@");
+  let local = email.slice(0, at).trim().toLowerCase();
+  let domain = email.slice(at + 1).trim().toLowerCase();
+  const plus = local.indexOf("+");
+  if (plus > 0) local = local.slice(0, plus);
+  if (domain === "googlemail.com") domain = "gmail.com";
+  if (domain === "gmail.com") local = local.replace(/\./g, "");
+  if (!local || !domain) return null;
+  return `${local}@${domain}`;
+}
+
+export function isDisposableEmail(email) {
+  if (!email || typeof email !== "string") return false;
+  const domain = email.slice(email.lastIndexOf("@") + 1).trim().toLowerCase();
+  if (DISPOSABLE_EMAIL_DOMAINS.has(domain)) return true;
+  // 子域名也算(例如 xxx.mailinator.com)
+  for (const d of DISPOSABLE_EMAIL_DOMAINS) if (domain.endsWith(`.${d}`)) return true;
+  return false;
 }
 
 // =============================================================================
@@ -223,7 +304,7 @@ async function handleAuthMe(request, env, cors) {
   const u = await requireUser(request, env);
   if (u.error) return json(u.error.body, u.error.status, cors);
 
-  const acct = await getOrCreateAccount(u, env);
+  const acct = await getOrCreateAccount(u, env, request);
   const quota = readInt(env.DAILY_FREE_QUOTA, DEFAULTS.DAILY_FREE_QUOTA);
   return json(
     {
@@ -247,7 +328,7 @@ async function handleBalance(request, env, cors) {
   const u = await requireUser(request, env);
   if (u.error) return json(u.error.body, u.error.status, cors);
 
-  const acct = await getOrCreateAccount(u, env);
+  const acct = await getOrCreateAccount(u, env, request);
   const quota = readInt(env.DAILY_FREE_QUOTA, DEFAULTS.DAILY_FREE_QUOTA);
   return json(
     {
@@ -265,7 +346,7 @@ async function handleLedger(request, env, url, cors) {
   const u = await requireUser(request, env);
   if (u.error) return json(u.error.body, u.error.status, cors);
 
-  const acct = await getOrCreateAccount(u, env);
+  const acct = await getOrCreateAccount(u, env, request);
   const limit = Math.min(Math.max(readInt(url.searchParams.get("limit"), 50), 1), 200);
   const rows = await supabaseSelect(
     env,
@@ -287,7 +368,7 @@ async function handleCheckout(request, env, cors) {
   const priceId = env[entry.priceEnv];
   if (!priceId) return json({ error: "price_not_configured", sku }, 500, cors);
 
-  const acct = await getOrCreateAccount(u, env);
+  const acct = await getOrCreateAccount(u, env, request);
 
   const params = {
     mode: "payment",
@@ -329,6 +410,10 @@ async function handleStripeWebhook(request, env, cors) {
     return json({ error: "bad_payload" }, 400, cors);
   }
 
+  // 退款 / 争议(拒付):扣回对应积分
+  if (event.type === "charge.refunded" || event.type === "charge.dispute.created") {
+    return handleStripeReversal(event, env, cors);
+  }
   if (event.type !== "checkout.session.completed") {
     return json({ received: true }, 200, cors); // 忽略其它事件
   }
@@ -356,6 +441,8 @@ async function handleStripeWebhook(request, env, cors) {
     currency: session.currency ?? null,
     credits: entry.credits,
     status: "paid",
+    // 退款 / 争议事件只带 payment_intent,存下来用于反查订单(见 handleStripeReversal)
+    payment_intent: session.payment_intent ?? null,
   });
 
   if (inserted.conflict) {
@@ -373,6 +460,32 @@ async function handleStripeWebhook(request, env, cors) {
   });
 
   return json({ received: true }, 200, cors);
+}
+
+/**
+ * Stripe 退款 / 争议 → 扣回积分(幂等,逻辑在数据库函数 revoke_order_credits)。
+ *   charge.refunded:         event.data.object 是 Charge(amount / amount_refunded,支持多次部分退款)
+ *   charge.dispute.created:  event.data.object 是 Dispute(争议一旦发生,扣回该订单全部剩余积分)
+ * 找不到订单(例如测试事件)时返回 200,避免 Stripe 无限重试。
+ */
+async function handleStripeReversal(event, env, cors) {
+  const obj = event.data?.object || {};
+  const paymentIntent = obj.payment_intent;
+  if (!paymentIntent) return json({ received: true }, 200, cors);
+
+  const isDispute = event.type === "charge.dispute.created";
+  const result = await rpc(env, "revoke_order_credits", {
+    p_payment_intent: String(paymentIntent),
+    p_refunded_amount: isDispute ? 0 : Number(obj.amount_refunded) || 0,
+    p_total_amount: isDispute ? 0 : Number(obj.amount) || 0,
+    p_reason: isDispute ? "dispute" : "refund",
+    p_ref: event.id,
+  });
+  if (result && result.shortfall > 0) {
+    // 用户已把积分用掉,没能全部扣回:记日志,人工跟进
+    console.warn("credit reversal shortfall", { paymentIntent, event: event.type, result });
+  }
+  return json({ received: true, result }, 200, cors);
 }
 
 // =============================================================================
@@ -420,7 +533,7 @@ async function handleRemoveBackground(request, env, url, cors) {
   }
 
   // 余额校验(登录用户无每日免费额度:每张成功都扣分)
-  const acct = await getOrCreateAccount(u, env);
+  const acct = await getOrCreateAccount(u, env, request);
   const balance = acct.subscription_credits + acct.topup_credits;
   if (balance < cost) {
     return json(
@@ -541,7 +654,7 @@ async function handleBatchCreate(request, env, ctx, cors) {
     return json({ error: "too_many_images", max: MAX_BATCH_IMAGES }, 400, cors);
   }
 
-  const acct = await getOrCreateAccount(u, env);
+  const acct = await getOrCreateAccount(u, env, request);
   const totalCost = files.length * cost;
   const balance = acct.subscription_credits + acct.topup_credits;
   // 软校验（此刻不冻结；点 start 才冻结）。余额不足先提示充值。
@@ -614,7 +727,7 @@ async function handleBatchCreate(request, env, ctx, cors) {
 async function handleBatchStart(request, env, jobId, cors) {
   const u = await requireUser(request, env);
   if (u.error) return json(u.error.body, u.error.status, cors);
-  const acct = await getOrCreateAccount(u, env);
+  const acct = await getOrCreateAccount(u, env, request);
 
   const rows = await supabaseSelect(
     env,
@@ -658,7 +771,7 @@ async function handleBatchStart(request, env, jobId, cors) {
 async function handleBatchStatus(request, env, jobId, cors) {
   const u = await requireUser(request, env);
   if (u.error) return json(u.error.body, u.error.status, cors);
-  const acct = await getOrCreateAccount(u, env);
+  const acct = await getOrCreateAccount(u, env, request);
 
   const sel = `id,profile,status,total_images,succeeded,failed,expires_at`;
   let rows = await supabaseSelect(env, `jobs?id=eq.${jobId}&user_id=eq.${acct.user_id}&select=${sel}`);
@@ -941,9 +1054,23 @@ async function verifyStripeSignature(payload, sigHeader, secret) {
 // =============================================================================
 // 工具
 // =============================================================================
-function buildCorsHeaders(env) {
+/**
+ * CORS_ALLOW_ORIGIN:"*" 或逗号分隔的白名单(如 "https://miaocut.app,https://www.miaocut.app")。
+ * 白名单模式下回显请求自己的 Origin(浏览器只认单个值),不在白名单里就回第一个 → 浏览器拦截。
+ * 注意 CORS 只防「别的网站在浏览器里调用」,不防脚本直接请求;真正的保护是每个接口都要 JWT。
+ */
+export function resolveAllowedOrigin(allowSetting, requestOrigin) {
+  const allowed = String(allowSetting || "*").split(",").map((x) => x.trim()).filter(Boolean);
+  if (allowed.length === 0 || allowed.includes("*")) return "*";
+  return allowed.includes(requestOrigin) ? requestOrigin : allowed[0];
+}
+
+function buildCorsHeaders(env, request) {
+  const origin = resolveAllowedOrigin(env.CORS_ALLOW_ORIGIN, request ? request.headers.get("Origin") || "" : "");
   return {
-    "Access-Control-Allow-Origin": env.CORS_ALLOW_ORIGIN || "*",
+    "Access-Control-Allow-Origin": origin,
+    // 白名单模式下响应随 Origin 变化,告诉缓存按 Origin 区分
+    ...(origin === "*" ? {} : { Vary: "Origin" }),
     "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
     "Access-Control-Allow-Headers": "Authorization,Content-Type",
     // 让浏览器能读到扣分 / 档位头

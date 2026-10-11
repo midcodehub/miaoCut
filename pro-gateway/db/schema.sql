@@ -12,6 +12,9 @@
 --  · 业务表与 Supabase Auth 的 auth.users 通过 users.auth_user_id 关联。
 -- =============================================================================
 
+-- ⚠️ 本文件是初始建表脚本。之后的结构变更都在 db/migrations/ 下按日期命名，
+--    新环境：先执行本文件和 schema-batch.sql，再按日期顺序执行 migrations/ 里的全部文件。
+--
 -- 需要 gen_random_uuid()
 create extension if not exists pgcrypto;
 

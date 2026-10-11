@@ -81,13 +81,38 @@ wrangler deploy
 # 在 Cloudflare 绑定自定义域 pro-api.miaocut.app
 ```
 
-## 计费规则(Phase 1)
+## 计费规则(2026-10 更新)
 
-- 匿名用户走免费网关(api2 → HF CPU),**不到本网关**。
-- 登录用户:**无每日免费 GPU 额度**;每张成功 = `fast` 1 / `fur` 2 积分(注册送 100 当试用额度)。
-- **失败不扣**:仅 Beam 返回 200 才扣分(含冷启动 503、4xx/5xx 都不扣)。
+- **单图一律免费**:无论是否登录都走免费网关(api2 → HF CPU),不扣积分。
+  本网关的 `/v1/remove-background`(付费单图 GPU)仍保留,前端暂未使用,留给以后的「单图高清」。
+- **积分只用于批量**:每张成功 = `fast` 1 / `fur` 2 积分;冻结 → 成功结算 → 失败释放。
+- **注册送 100 积分**,同时满足才发:邮箱已验证(邮箱登录链接或 Google)、不是一次性邮箱、
+  同一 IP 当天未超过 `SIGNUP_BONUS_PER_IP_DAILY`(默认 3)、同一邮箱的别名(Gmail 点 / +后缀)没领过。
 - 充值入账**幂等**:`orders.provider_ref = Stripe session.id` 唯一约束兜底。
-- 扣减原子:`consume_credits` 行锁,先扣会员积分再扣充值积分。幂等暂用 `request_id` 作 ledger `ref`。
+- **退款 / 争议**:`charge.refunded` 按退款比例扣回,`charge.dispute.created` 扣回该订单剩余全部;
+  幂等(`orders.credits_revoked`),余额最多扣到 0,扣不回的部分记日志 `credit reversal shortfall` 人工跟进。
+- 扣减原子:`consume_credits` 行锁,先扣会员积分再扣充值积分。
+
+## ⚠️ 上线加固(2026-10-11)部署顺序
+
+1. **先**在 Supabase SQL Editor 执行 `db/migrations/2026-10-11-launch-hardening.sql`(可重复执行)。
+   - 收回所有数据库函数的公开执行权限(之前任何人用页面里的公开 key 都能直接调用 `grant_topup` 加积分)
+   - 修复注册积分 bug、加邮箱别名防薅、新增退款扣回函数
+2. **再**部署 Worker:`wrangler deploy`(生产 CORS 已收紧为 miaocut.app 白名单)。
+   顺序反了的话,新用户注册和充值回调会因为找不到新函数 / 新列而报错。
+3. Stripe Dashboard → Webhooks → 该端点**追加订阅** `charge.refunded`、`charge.dispute.created` 两个事件。
+4. 验证漏洞已修复(应返回 401 / 403 / 404 之类的权限错误,而不是 200):
+
+   ```bash
+   curl -s -o /dev/null -w "%{http_code}\n" -X POST "$SUPABASE_URL/rest/v1/rpc/get_account" \
+     -H "apikey: <页面里的 publishable key>" -H "Content-Type: application/json" \
+     -d '{"p_auth_user_id":"00000000-0000-0000-0000-000000000000"}'
+   ```
+
+## 测试
+
+`npm run test:gateway`:三个 Worker 冒烟测试(mock Supabase / Beam / Stripe)+ 数据库迁移验证(内存 Postgres)。
+都不连任何真实服务。
 
 ## 待提供
 
