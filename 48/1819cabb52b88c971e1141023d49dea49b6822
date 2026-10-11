@@ -1,0 +1,21 @@
+.impeccable/design.json
+  s_c8dfc96faf2462::t_49dd4f30492523 1-606
+DESIGN.md
+  s_c8dfc96faf2462::t_13fd6f138cd67b 1-288
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "481819cabb52b88c971e1141023d49dea49b6822",
+  "prompts": {},
+  "sessions": {
+    "s_c8dfc96faf2462": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8d4f64c4-4d50-40db-ab2c-f573eacba2a0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "midcodehub <408124546@qq.com>"
+    }
+  }
+}
