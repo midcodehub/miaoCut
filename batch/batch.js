@@ -101,8 +101,8 @@ const els = {
   progressCount: $("progress-count"), progressBar: $("progress-bar"), progressNote: $("progress-note"),
   resultsBox: $("results-box"), resReady: $("res-ready"), resFailed: $("res-failed"),
   btnZip: $("btn-zip"), btnRetry: $("btn-retry"), btnNew: $("btn-new"), zipMsg: $("zip-msg"), retryNote: $("retry-note"),
-  runError: $("run-error"), runErrorText: $("run-error-text"), btnErrorRetry: $("btn-error-retry"), errorBuy: $("error-buy"), btnErrorNew: $("btn-error-new"),
-  runGrid: $("run-grid"), batchKeep: $("batch-keep"),
+  runError: $("run-error"), runErrorText: $("run-error-text"), btnErrorRetry: $("btn-error-retry"), errorBuy: $("error-buy"), btnErrorNew: $("btn-error-new"), errorHistory: $("error-history"),
+  runGrid: $("run-grid"), batchKeep: $("batch-keep"), dirTitle: $("dir-title"), dirCounts: $("dir-counts"),
   demo: $("demo"), demoGrid: $("demo-grid"),
   gate: $("gate"), gatePoint2: $("gate-point-2"), gateKeep: $("gate-keep"),
   btnGoogle: $("btn-google"), emailForm: $("email-form"), loginEmail: $("login-email"), loginMsg: $("login-msg"),
@@ -421,11 +421,12 @@ async function startBatch() {
     let aborted = false; // 一张彻底失败后，其余并发的上传不再继续
     await runPool(job.uploads, async (up, i) => {
       if (aborted) return;
-      setTileStatus(i, "uploading");
-      try { await putToR2(sources[i], up.put_url); }
+      const onProgress = (f) => setTileStatus(i, "uploading", f);
+      setTileStatus(i, "uploading", 0);
+      try { await putToR2(sources[i], up.put_url, onProgress); }
       catch (_) {
         await sleep(800);
-        try { await putToR2(sources[i], up.put_url); } catch (__) { aborted = true; throw new BatchError("errUpload"); }
+        try { await putToR2(sources[i], up.put_url, onProgress); } catch (__) { aborted = true; throw new BatchError("errUpload"); }
       }
       if (aborted) return;
       uploaded++;
@@ -449,10 +450,12 @@ async function startBatch() {
   }
 }
 
-function putToR2(file, url) {
+// onProgress(0~1)：XHR 才有上传进度事件（fetch 没有）
+function putToR2(file, url, onProgress) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open("PUT", url);
+    if (onProgress) xhr.upload.onprogress = (e) => { if (e.lengthComputable) onProgress(e.loaded / e.total); };
     xhr.onload = () => (xhr.status >= 200 && xhr.status < 300 ? resolve() : reject(new Error("upload_" + xhr.status)));
     xhr.onerror = () => reject(new Error("upload_network"));
     xhr.send(file);
@@ -466,7 +469,10 @@ async function fetchJob(jobId) {
     if (res.status === 404) return { gone: true };
     if (res.status === 401) return { auth: true };
     if (!res.ok) return null;
-    return await res.json();
+    const data = await res.json();
+    // 超过保留期：文件已被 R2 删除，不再显示下载
+    if (data && data.expired) return { expired: true };
+    return data;
   } catch (_) { return null; }
 }
 
@@ -474,13 +480,13 @@ async function pollJob() {
   if (state.polling) return;
   state.polling = true;
   try {
-    const total = state.job.total;
     let misses = 0; // 连续查询失败次数：网络断了 / 服务出错时不能无限转圈
     for (;;) {
       const data = await fetchJob(state.job.job_id);
       if (data && data.gone) { forgetJob(); goSelect(); return; }
       // 登录过期：提示重新登录（任务记录保留，登录回来会自动恢复）
       if (data && data.auth) { showRunError(new BatchError("errAuth"), "poll"); return; }
+      if (data && data.expired) { writeLS(LS_JOB, null); showRunError(new BatchError("errExpired"), "expired"); return; }
       if (!data && ++misses >= 8) {
         // 约半分钟都查不到：任务还在服务器上跑，给一个「再查一次」，绝不重新提交（否则会重复扣分）
         showRunError(new BatchError("errPoll"), "poll");
@@ -489,6 +495,7 @@ async function pollJob() {
       if (data) {
         misses = 0;
         applyJobData(data);
+        const total = state.job.total || 1; // 从处理记录打开时，总数要等第一次查询才知道
         const resolved = data.succeeded + data.failed;
         setProgress(t("stProcessing", { d: resolved, n: total }), 0.42 + (resolved / total) * 0.58, `${resolved}/${total}`);
         if (data.done) { showResults(); return; }
@@ -513,6 +520,7 @@ function applyJobData(data) {
     state.images[im.idx] = { ...cur, ...im };
     if (im.status === "done" || im.status === "failed") setTileStatus(im.idx, im.status);
   });
+  updateCounts();
 }
 
 function setProgress(text, frac, count = "") {
@@ -534,12 +542,18 @@ function showRunError(err, stage = "submit") {
   els.btnErrorRetry.textContent = stage === "poll"
     ? t(err.key === "errAuth" ? "errBack" : "checkAgain")
     : t(lastErrorRetryable ? "tryAgain" : "errBack");
-  els.runGrid.querySelectorAll("[data-spinner]").forEach((sp) => show(sp, false));
+  els.runGrid.querySelectorAll("[data-tile]").forEach((li) => {
+    const im = state.images[Number(li.dataset.tile)] || {};
+    if (im.status !== "done" && im.status !== "failed") setRing(li, "queued");
+  });
   // 没处理成的图恢复原图不透明度，否则在白底预览上像一张空白卡片
-  els.runGrid.querySelectorAll("[data-src-img]").forEach((img) => img.classList.remove("opacity-40"));
+  els.runGrid.querySelectorAll("[data-src-img]").forEach((img) => img.classList.remove("opacity-60"));
   show(els.errorBuy, err.buy);
   // 查询阶段出错：任务可能真的找不回来了，给一个出口（不取消服务器上的任务，只是不再跟踪它）
-  show(els.btnErrorNew, stage === "poll");
+  show(els.btnErrorNew, stage === "poll" || stage === "expired");
+  if (stage === "expired") { state.images = []; els.runGrid.innerHTML = ""; updateCounts(); }
+  show(els.btnErrorRetry, stage !== "expired"); // 已过期：没有可重试的
+  show(els.errorHistory, stage === "expired");
   setPhase("error");
   // 出错时网格保留，用户能看到是哪几张、自己选了什么
   if (err.key === "errNoCredits" || err.key === "errAuth") refreshAuth();
@@ -565,6 +579,49 @@ function showResults() {
 // =============================================================================
 // 处理网格：进度和结果共用，处理完不会消失
 // =============================================================================
+// 进度圈（SVG）：底圈 + 进度弧。pathLength=100，stroke-dasharray 直接用百分比。
+//   排队 → 空圈；上传 → 按真实字节填到 50%；抠图 → 弧线转动（服务端没有百分比，不做假进度）；
+//   完成 → 补满 + 打勾；失败 → 红圈 + ✕
+function ringHTML() {
+  return `
+    <span data-ring role="img" class="absolute right-1.5 top-1.5 grid h-8 w-8 place-items-center rounded-full bg-white/90 shadow-sm dark:bg-zinc-900/90">
+      <svg data-ring-svg viewBox="0 0 36 36" class="h-7 w-7 -rotate-90" aria-hidden="true">
+        <circle cx="18" cy="18" r="14" fill="none" stroke-width="3.5" class="stroke-gray-200 dark:stroke-zinc-700"></circle>
+        <circle data-arc cx="18" cy="18" r="14" fill="none" stroke-width="3.5" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100"
+          class="stroke-gray-900 transition-[stroke-dasharray] duration-200 ease-out motion-reduce:transition-none dark:stroke-zinc-100"></circle>
+      </svg>
+      <svg data-ring-done class="absolute hidden h-3.5 w-3.5 text-brand-700 dark:text-brand-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-8 8a1 1 0 01-1.4 0l-4-4a1 1 0 111.4-1.4L8 12.6l7.3-7.3a1 1 0 011.4 0z" clip-rule="evenodd"/></svg>
+      <svg data-ring-fail class="absolute hidden h-3 w-3 text-red-600 dark:text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </span>`;
+}
+
+// 改变某张图的进度圈。state: queued | uploading | processing | done | failed；frac = 上传进度 0~1
+function setRing(li, ringState, frac = 0) {
+  const ring = li.querySelector("[data-ring]");
+  if (!ring) return;
+  const svg = ring.querySelector("[data-ring-svg]");
+  const arc = ring.querySelector("[data-arc]");
+  const SPIN = ["animate-spin", "motion-reduce:animate-none"];
+  svg.classList.remove(...SPIN);
+  arc.classList.remove("stroke-brand-600", "dark:stroke-brand-400", "stroke-red-600", "dark:stroke-red-400");
+  arc.classList.add("stroke-gray-900", "dark:stroke-zinc-100");
+  show(ring.querySelector("[data-ring-done]"), ringState === "done");
+  show(ring.querySelector("[data-ring-fail]"), ringState === "failed");
+  let dash = 0;
+  if (ringState === "uploading") dash = Math.round(Math.max(0, Math.min(1, frac)) * 50);
+  else if (ringState === "processing") { dash = 30; svg.classList.add(...SPIN); }
+  else if (ringState === "done" || ringState === "failed") {
+    dash = 100;
+    arc.classList.remove("stroke-gray-900", "dark:stroke-zinc-100");
+    arc.classList.add(...(ringState === "done" ? ["stroke-brand-600", "dark:stroke-brand-400"] : ["stroke-red-600", "dark:stroke-red-400"]));
+  }
+  arc.setAttribute("stroke-dasharray", `${dash} 100`);
+  const label = ringState === "uploading" ? t("tileUploading", { p: Math.round(frac * 100) }) : t(`tile_${ringState}`);
+  ring.setAttribute("aria-label", label);
+  const line = li.querySelector("[data-line]");
+  if (line && ringState !== "failed") line.textContent = label;
+}
+
 function buildRunGrid() {
   const sources = state.job && state.job.sources;
   els.runGrid.innerHTML = state.images.map((im, i) => {
@@ -573,32 +630,38 @@ function buildRunGrid() {
     <li data-tile="${i}">
       <button type="button" data-open="${i}" disabled
         class="group relative block aspect-square w-full overflow-hidden rounded-lg border border-gray-200 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 enabled:cursor-zoom-in dark:border-zinc-800 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-preview-bg>
-        ${src ? `<img data-src-img src="${src}" alt="" loading="lazy" decoding="async" class="absolute inset-0 h-full w-full object-cover opacity-40 transition-opacity duration-200 motion-reduce:transition-none">` : ""}
+        ${src ? `<img data-src-img src="${src}" alt="" loading="lazy" decoding="async" class="absolute inset-0 h-full w-full object-cover opacity-60 transition-opacity duration-200 motion-reduce:transition-none">` : ""}
         <span class="absolute inset-0 flex items-center justify-center transition-[padding] duration-200 ease-out motion-reduce:transition-none" data-preview-pad></span>
-        <span data-spinner class="absolute inset-0 flex items-center justify-center">
-          <span class="h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-gray-900 motion-reduce:animate-none dark:border-zinc-600 dark:border-t-zinc-100"></span>
-        </span>
-        <span data-badge class="absolute bottom-1.5 left-1.5 hidden rounded-full bg-red-600 px-2 py-0.5 text-xs font-semibold text-white">${escapeHtml(t("tileFailed"))}</span>
+        ${ringHTML()}
       </button>
-      <p class="mt-1.5 truncate text-xs text-gray-600 dark:text-zinc-400" title="${escapeHtml(im.filename || "")}">${escapeHtml(im.filename || "")}</p>
-      <p data-reason class="mt-0.5 hidden text-xs text-red-600 dark:text-red-400"></p>
+      <p class="mt-1.5 truncate text-xs font-medium text-gray-800 dark:text-zinc-200" title="${escapeHtml(im.filename || "")}">${escapeHtml(im.filename || "")}</p>
+      <p data-line class="mt-0.5 truncate text-xs text-gray-600 dark:text-zinc-400"></p>
     </li>`;
   }).join("");
   applyOutputPreview(els.runGrid);
-  state.images.forEach((im, i) => { if (im.status === "done" || im.status === "failed") setTileStatus(i, im.status); });
+  state.images.forEach((im, i) => setTileStatus(i, im.status === "done" || im.status === "failed" ? im.status : (im.status === "queued" ? "queued" : "processing")));
+  updateCounts();
 }
 
-function setTileStatus(i, status) {
+// 目录顶部计数：已完成 / 处理中 / 失败
+function updateCounts() {
+  const total = state.images.length;
+  const done = state.images.filter((im) => im.status === "done").length;
+  const failed = state.images.filter((im) => im.status === "failed").length;
+  show(els.dirTitle.parentElement, total > 0); // 没有图片（如已过期）时不显示空目录头
+  els.dirTitle.textContent = t("dirTitle", { n: fmt(total) });
+  els.dirCounts.textContent = t("dirCounts", { d: fmt(done), p: fmt(Math.max(0, total - done - failed)), f: fmt(failed) });
+}
+
+function setTileStatus(i, status, frac = 0) {
   const li = els.runGrid.querySelector(`[data-tile="${i}"]`);
   if (!li) return;
   const im = state.images[i] || {};
   const btn = li.querySelector("[data-open]");
-  const spinner = li.querySelector("[data-spinner]");
-  const badge = li.querySelector("[data-badge]");
-  const reason = li.querySelector("[data-reason]");
+  const line = li.querySelector("[data-line]");
   const srcImg = li.querySelector("[data-src-img]");
   if (status === "done" && im.download_url) {
-    show(spinner, false);
+    setRing(li, "done");
     // 结果图出来时才创建 <img>（不留空 src 的占位图），淡入后盖住原图
     let result = li.querySelector("[data-result]");
     if (!result) {
@@ -612,20 +675,21 @@ function setTileStatus(i, status) {
       result.dataset.loaded = im.image_id;
       result.onload = () => {
         result.classList.remove("opacity-0");
-        // 先去掉 opacity-40 再加 opacity-0：两个类同时存在时 CSS 里后定义的 opacity-40 会赢，原图背景会透出来
-        if (srcImg) { srcImg.classList.remove("opacity-40"); srcImg.classList.add("opacity-0"); }
+        // 先去掉 opacity-60 再加 opacity-0：两个类同时存在时 CSS 里后定义的会赢，原图背景会透出来
+        if (srcImg) { srcImg.classList.remove("opacity-60"); srcImg.classList.add("opacity-0"); }
       };
       result.src = im.download_url;
     }
     btn.disabled = false;
     btn.setAttribute("aria-label", im.filename || "");
   } else if (status === "failed") {
-    show(spinner, false);
-    show(badge, true);
-    reason.textContent = t(IMAGE_ERRORS[im.error] || "errImgDefault");
-    show(reason, true);
+    setRing(li, "failed");
+    line.textContent = t(IMAGE_ERRORS[im.error] || "errImgDefault");
+    line.classList.add("text-red-600", "dark:text-red-400");
+    line.classList.remove("text-gray-600", "dark:text-zinc-400");
+    line.title = line.textContent;
   } else {
-    show(spinner, true);
+    setRing(li, status, frac);
   }
 }
 
@@ -753,6 +817,8 @@ els.btnErrorRetry.addEventListener("click", () => {
 
 function forgetJob() {
   writeLS(LS_JOB, null);
+  // 从处理记录打开的批次：地址里去掉 ?job=，否则刷新又会打开它
+  if (new URLSearchParams(location.search).has("job")) history.replaceState({}, "", location.pathname);
   state.job = null;
   state.images = [];
   els.runGrid.innerHTML = "";
@@ -916,10 +982,15 @@ async function boot() {
     addFiles(persisted.map((b, i) => (b instanceof File ? b : new File([b], `image-${i + 1}.${(b.type || "image/png").split("/")[1]}`, { type: b.type }))));
   }
 
-  // 恢复进行中 / 最近一次任务（24 小时内）
+  // 恢复任务：地址里的 ?job=（从处理记录打开）优先，其次是本浏览器最近一次任务
   if (state.loggedIn) {
     let saved = null;
     try { saved = JSON.parse(readLS(LS_JOB) || "null"); } catch (_) { saved = null; }
+    const jobParam = new URLSearchParams(location.search).get("job");
+    if (jobParam && /^[0-9a-f-]{36}$/i.test(jobParam) && (!saved || saved.job_id !== jobParam)) {
+      // 保留期由服务端判断（过期会返回 expired），这里的 days 只用于通过下面的本地检查
+      saved = { job_id: jobParam, total: 0, at: Date.now(), days: 7 };
+    }
     if (saved && saved.job_id && Date.now() - saved.at < (saved.days || 1) * DAY_MS) {
       // 原图还在本地（同一批）就用来显示缩略图、对比和重试
       const same = state.files.length === saved.total && state.files[0] && state.files[0].file.name === saved.first;

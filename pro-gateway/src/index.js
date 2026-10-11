@@ -25,7 +25,8 @@
 //   POST /webhooks/stripe        Stripe webhook(签名校验;积分包入账 / 订阅发积分与状态同步 / 退款与争议扣回,均幂等)
 //   POST /v1/batch               建批量任务 + 返回 R2 预签名上传地址
 //   POST /v1/batch/:id/start     冻结积分并入队
-//   GET  /v1/batch/:id           批量进度 + 结果下载地址
+//   GET  /v1/batch/:id           批量进度 + 结果下载地址(超过保留期返回 expired)
+//   GET  /v1/batches             处理记录:最近的批次 + 剩余保留时间 + 封面缩略图
 //   POST /internal/batch-callback  Beam 任务完成回调(X-Batch-Secret)
 //   POST /v1/prewarm             预热 Beam(触发冷启动,立即返回 202)
 //   POST /v1/remove-background   付费单图(保留,前端暂未使用)
@@ -150,6 +151,9 @@ export default {
       }
 
       // 批量(Phase 2)
+      if (path === "/v1/batches" && request.method === "GET") {
+        return await handleBatchList(request, env, url, cors);
+      }
       if (path === "/v1/batch" && request.method === "POST") {
         return await handleBatchCreate(request, env, ctx, cors);
       }
@@ -1083,6 +1087,16 @@ async function handleBatchStatus(request, env, jobId, cors) {
     job = (rows && rows[0]) || job;
   }
 
+  // 超过保留期:R2 生命周期规则已经(或即将)删掉文件,不再签发下载地址
+  const retentionEnd = batchRetentionEnd(job);
+  if (retentionEnd && retentionEnd <= Date.now()) {
+    return json({
+      job_id: job.id, status: job.status, total: job.total_images, succeeded: job.succeeded, failed: job.failed,
+      done: job.status === "done", expired: true, retention_days: job.retention_days || 1,
+      retention_ends_at: new Date(retentionEnd).toISOString(), images: [],
+    }, 200, cors);
+  }
+
   const imgs = await supabaseSelect(
     env,
     `job_images?job_id=eq.${jobId}&order=idx.asc&select=id,idx,orig_filename,output_key,status,error`,
@@ -1109,10 +1123,71 @@ async function handleBatchStatus(request, env, jobId, cors) {
       total: job.total_images, succeeded: job.succeeded, failed: job.failed,
       done: job.status === "done", images,
       retention_days: job.retention_days || 1,
+      retention_ends_at: retentionEnd ? new Date(retentionEnd).toISOString() : null,
     },
     200,
     cors,
   );
+}
+
+/**
+ * 批量结果的保留截止时间(毫秒):创建时间 + 保留天数。
+ * 用创建时间而不是完成时间,是偏保守的算法:R2 按对象写入时间计算过期,结果文件总是晚于任务创建,
+ * 所以「到截止时间之前」文件一定还在,不会出现记录里能点、实际已被删除的情况。
+ */
+export function batchRetentionEnd(job) {
+  const created = Date.parse(job && job.created_at);
+  if (!Number.isFinite(created)) return null;
+  return created + (Number(job.retention_days) || 1) * 86400 * 1000;
+}
+
+// GET /v1/batches —— 处理记录。只列真正开始处理过的批次(不含上传中途放弃的 pending 任务)
+async function handleBatchList(request, env, url, cors) {
+  const u = await requireUser(request, env);
+  if (u.error) return json(u.error.body, u.error.status, cors);
+  const acct = await getOrCreateAccount(u, env, request);
+  const limit = Math.min(Math.max(readInt(url.searchParams.get("limit"), 30), 1), 50);
+
+  const jobs = (await supabaseSelect(
+    env,
+    `jobs?user_id=eq.${acct.user_id}&status=neq.pending&order=created_at.desc&limit=${limit}` +
+      `&select=id,profile,status,total_images,succeeded,failed,retention_days,created_at`,
+  )) || [];
+
+  const now = Date.now();
+  const live = jobs.filter((j) => (batchRetentionEnd(j) || 0) > now).map((j) => j.id);
+
+  // 封面:每批前 4 张里成功的(一次查询拿全部,避免逐批请求)
+  const covers = {};
+  if (live.length) {
+    const imgs = (await supabaseSelect(
+      env,
+      `job_images?job_id=in.(${live.join(",")})&status=eq.done&idx=lt.4&order=idx.asc&select=job_id,idx,output_key`,
+    )) || [];
+    for (const im of imgs) {
+      if (!im.output_key) continue;
+      (covers[im.job_id] = covers[im.job_id] || []).push(await presignR2(env, "GET", im.output_key, PRESIGN_EXPIRES));
+    }
+  }
+
+  const batches = jobs.map((j) => {
+    const end = batchRetentionEnd(j);
+    const expired = !end || end <= now;
+    return {
+      job_id: j.id,
+      profile: j.profile,
+      status: j.status,
+      total: j.total_images,
+      succeeded: j.succeeded,
+      failed: j.failed,
+      created_at: j.created_at,
+      retention_days: j.retention_days || 1,
+      retention_ends_at: end ? new Date(end).toISOString() : null,
+      expired,
+      covers: expired ? [] : covers[j.id] || [],
+    };
+  });
+  return json({ batches, limits: accountLimits(acct) }, 200, cors);
 }
 
 // =============================================================================

@@ -28,6 +28,7 @@ module.exports = {
     // Pro 付费页：定价 / 账户（class 写在 HTML 和内联模板字符串里）+ 中英文案里的链接 class
     './pricing/index.html',
     './account/credits/index.html',
+    './account/batches/index.html',
     // 批量页：class 同时写在 HTML 和 batch.js 的模板字符串里
     './batch/index.html',
     './batch/batch.js',

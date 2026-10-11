@@ -14,7 +14,7 @@
     <meta name="description" content="Remove backgrounds from up to 200 product photos at once. Download transparent PNGs, white-background JPGs or Amazon-ready 2000×2000 images in one ZIP. Pay only for images that succeed; new accounts get 100 free credits.">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://miaocut.app/batch/">
-    <link rel="stylesheet" href="/output.css?v=dfc38bf1">
+    <link rel="stylesheet" href="/output.css?v=aa7fd341">
     <!-- 中英文案（运行时切换），须在 batch.js 之前加载 -->
     <script src="/pro-i18n.js"></script>
     <!-- MiaoCut Pro 配置：PRO_API_BASE 为付费网关 -->
@@ -65,6 +65,7 @@
             </div>
             <div id="balance-box" class="hidden items-center gap-3 text-sm">
                 <span class="font-semibold text-gray-900 tabular-nums dark:text-zinc-50" id="balance-text"></span>
+                <a href="/account/batches/" class="text-gray-600 underline underline-offset-4 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100" data-pi18n="historyLink">Batch history</a>
                 <a href="/pricing/" class="text-gray-600 underline underline-offset-4 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100" data-pi18n="batchBuyMore">Buy credits</a>
             </div>
         </div>
@@ -140,11 +141,17 @@
                         <div class="mt-4 flex flex-wrap items-center gap-3">
                             <button type="button" id="btn-error-retry" class="inline-flex min-h-11 items-center justify-center rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200">Try again</button>
                             <a id="error-buy" href="/pricing/" class="hidden text-sm font-medium text-gray-900 underline underline-offset-4 dark:text-zinc-50" data-pi18n="batchBuyMore">Buy credits</a>
+                            <a id="error-history" href="/account/batches/" class="hidden text-sm font-medium text-gray-900 underline underline-offset-4 dark:text-zinc-50" data-pi18n="historyLink">Batch history</a>
                             <button type="button" id="btn-error-new" class="hidden text-sm font-medium text-gray-700 underline-offset-4 hover:text-gray-900 hover:underline dark:text-zinc-300 dark:hover:text-zinc-50" data-pi18n="batchNew">Start a new batch</button>
                         </div>
                     </div>
 
-                    <ul id="run-grid" class="mt-6 grid grid-cols-[repeat(auto-fill,minmax(112px,1fr))] gap-3" role="list"></ul>
+                    <!-- 目录：这一批所有图片，每张右上角一个进度圈 -->
+                    <div class="mt-6 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-t border-gray-100 pt-5 dark:border-zinc-800">
+                        <h2 id="dir-title" class="text-base font-semibold text-gray-900 dark:text-zinc-50"></h2>
+                        <p id="dir-counts" class="text-sm tabular-nums text-gray-600 dark:text-zinc-400" aria-live="polite"></p>
+                    </div>
+                    <ul id="run-grid" class="mt-3 grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-3" role="list"></ul>
                 </section>
 
             </div>
