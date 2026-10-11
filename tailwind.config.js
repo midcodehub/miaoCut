@@ -8,6 +8,8 @@ module.exports = {
   content: [
     './index.html',
     './app.js',
+    // 结果页编辑器面板：class 写在 JS 模板字符串里
+    './editor/panel.js',
     './product-photo-background-remover/index.html',
     './portrait-background-remover/index.html',
     './id-photo-maker/index.html',
