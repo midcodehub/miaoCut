@@ -17,10 +17,10 @@
         });
     })();</script>
     <title>Privacy Policy | MiaoCut</title>
-    <meta name="description" content="MiaoCut privacy policy: images are processed in memory and never stored or used to train AI. Learn what data we do and don't collect.">
+    <meta name="description" content="MiaoCut privacy policy: free tools process images in memory only; batch files are deleted within 24 hours. Images are never used to train AI. Learn what data we collect.">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://miaocut.app/privacy/">
-    <link rel="stylesheet" href="/output.css?v=f673e167">
+    <link rel="stylesheet" href="/output.css?v=65ef86a2">
     <!-- umami-filter.js：上报前过滤/去重以节省 Umami 额度（规则见该文件顶部注释），须在 Umami 脚本之前加载 -->
     <script defer src="/umami-filter.js"></script>
     <script defer src="https://cloud.umami.is/script.js"
@@ -65,37 +65,56 @@
     <main class="flex-grow w-full max-w-3xl mx-auto px-4">
         <article class="prose-custom">
             <h1 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-2 dark:text-zinc-50">Privacy Policy</h1>
-            <p class="text-sm text-gray-500 mb-8 dark:text-zinc-400">Last updated: May 31, 2026</p>
+            <p class="text-sm text-gray-500 mb-8 dark:text-zinc-400">Last updated: October 11, 2026</p>
 
-            <p class="text-gray-600 leading-relaxed mb-8 dark:text-zinc-300">MiaoCut (<a href="https://miaocut.app" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">miaocut.app</a>) is a free, no-signup online image-processing service. We designed it to collect as little data as possible. This page explains what happens to your images and what limited data we process.</p>
+            <p class="text-gray-600 leading-relaxed mb-8 dark:text-zinc-300">MiaoCut (<a href="https://miaocut.app" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">miaocut.app</a>) offers free online image tools that work without an account, plus an optional account for paid batch processing. We collect as little data as possible. This page explains what happens to your images and what data we process in each case.</p>
 
             <section class="mb-8">
                 <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Your images</h2>
                 <ul class="space-y-2 text-gray-600 text-sm md:text-base list-disc list-inside dark:text-zinc-300">
-                    <li><strong>Processed in memory only.</strong> Images you upload are held in server memory just long enough to produce a result, then discarded.</li>
-                    <li><strong>Not stored.</strong> We do not save uploaded images or results to disk or any database.</li>
+                    <li><strong>Free single-image tools: processed in memory only.</strong> Images are held in server memory just long enough to produce a result, then discarded. They are not saved to disk or any database.</li>
+                    <li><strong>Batch processing: stored for up to 24 hours.</strong> When you use batch processing with an account, your uploaded images and the results are stored temporarily in cloud storage (Cloudflare R2) so they can be processed and downloaded. They are deleted automatically within 24 hours.</li>
                     <li><strong>Never used for training.</strong> Your images are never used to train AI models.</li>
                     <li><strong>No human review.</strong> No one at MiaoCut looks at your images.</li>
                 </ul>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Information we do process</h2>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Account information (only if you create an account)</h2>
                 <ul class="space-y-2 text-gray-600 text-sm md:text-base list-disc list-inside dark:text-zinc-300">
-                    <li><strong>IP address (transient).</strong> Used only to enforce fair-use rate limits and prevent abuse. It is not used to build a profile of you.</li>
-                    <li><strong>Anonymous usage analytics.</strong> We use a privacy-friendly analytics tool (Umami) that does not use cookies and does not collect personally identifiable information. It records aggregate events like page views and which tool was used.</li>
-                    <li><strong>Optional feedback.</strong> If you choose to submit feedback, we store the message you send so we can improve the service.</li>
+                    <li><strong>Email address and sign-in method</strong> (email link or Google). If you sign in with Google, we receive your email address and basic profile information you agree to share with us.</li>
+                    <li><strong>Credit balance and history</strong>, including credits granted, purchased, spent and refunded.</li>
+                    <li><strong>Batch job records</strong>, such as the number of images, status and timestamps. These records do not contain your images.</li>
                 </ul>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Cookies</h2>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">MiaoCut does not use tracking or advertising cookies. Your browser may store small preferences locally (such as your chosen language or quality mode) using local storage; this stays on your device.</p>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Payments</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">Payments are processed by Stripe. We never see or store your full card details. We keep order records (credit pack, amount, currency, Stripe reference and date) for accounting, tax and fraud-prevention purposes.</p>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Other information we process</h2>
+                <ul class="space-y-2 text-gray-600 text-sm md:text-base list-disc list-inside dark:text-zinc-300">
+                    <li><strong>IP address.</strong> Used to enforce fair-use rate limits and prevent abuse, for example limiting how many new accounts receive sign-up credits from one network. Short-lived counters keyed by IP address are deleted automatically within 2 days. It is not used to build a profile of you.</li>
+                    <li><strong>Anonymous usage analytics.</strong> We use a privacy-friendly analytics tool (Umami) that does not use cookies and does not collect personally identifiable information. It records aggregate events like page views and which tool was used.</li>
+                    <li><strong>Feedback and waitlist.</strong> If you send feedback or join a waitlist, we store your message and, if provided, your email address, so we can respond or notify you when a feature launches.</li>
+                </ul>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Cookies and local storage</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">MiaoCut does not use tracking or advertising cookies. Your browser stores small preferences locally (such as your chosen language or quality mode). If you sign in, your browser also stores a sign-in session so you stay logged in. This data stays on your device.</p>
             </section>
 
             <section class="mb-8">
                 <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Service providers</h2>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">The website is served via Cloudflare, and background processing runs on Hugging Face infrastructure. These providers process requests on our behalf to deliver the service. We do not sell or share your data with advertisers.</p>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">We rely on the following providers to run the service. They process data on our behalf only to deliver it: Cloudflare (website, gateway and temporary file storage), Hugging Face (free image processing), Supabase (accounts and credit records), Stripe (payments), Beam and Modal (GPU processing for batch jobs), Google (optional sign-in) and Umami (analytics). We do not sell your data or share it with advertisers.</p>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Your choices</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">You can use the free tools without an account. If you have an account, you can ask us to access, correct or delete your data by emailing <a href="mailto:support@miaocut.app" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">support@miaocut.app</a>. When we delete an account, we keep only the order records we are required to retain for accounting and tax purposes.</p>
             </section>
 
             <section class="mb-8">
@@ -110,7 +129,7 @@
 
             <section class="mb-12">
                 <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Contact</h2>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">Questions about privacy? Reach us through the feedback option on the site or at <a href="https://github.com/midcodehub" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">our GitHub</a>.</p>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">Questions about privacy? Email <a href="mailto:support@miaocut.app" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">support@miaocut.app</a>, use the feedback option on the site, or reach us on <a href="https://github.com/midcodehub" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">our GitHub</a>.</p>
             </section>
         </article>
     </main>
