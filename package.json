@@ -11,7 +11,8 @@
     "build": "npm run build:css && npm run build:i18n && npm run build:assets",
     "og": "node scripts/og/generate.mjs",
     "test:editor": "node --test tests/editor-engine.test.cjs",
-    "test:gateway": "node --no-warnings pro-gateway/test/smoke.mjs && node --no-warnings pro-gateway/test/smoke-batch.mjs && node --no-warnings pro-gateway/test/smoke-hardening.mjs && node --no-warnings pro-gateway/test/db-migration.mjs"
+    "test:gateway": "node --no-warnings pro-gateway/test/smoke.mjs && node --no-warnings pro-gateway/test/smoke-batch.mjs && node --no-warnings pro-gateway/test/smoke-hardening.mjs && node --no-warnings pro-gateway/test/db-migration.mjs",
+    "check:seo": "node scripts/seo-guard.mjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.2.17",

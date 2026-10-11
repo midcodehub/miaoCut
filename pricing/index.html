@@ -13,7 +13,7 @@
     <meta name="description" content="MiaoCut pricing: single-image background removal is free. Credits power batch processing from $0.016 per image. New accounts get 100 free credits. Failed images are never charged.">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://miaocut.app/pricing/">
-    <link rel="stylesheet" href="/output.css?v=1547d4cb">
+    <link rel="stylesheet" href="/output.css?v=49e1bfa5">
     <script src="/pro-i18n.js"></script>
     <!-- Pro 配置:部署时填入真实值 -->
     <script>
@@ -32,7 +32,7 @@
     </script>
 </head>
 
-<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col dark:bg-zinc-950 dark:text-zinc-200">
+<body class="flex min-h-screen flex-col bg-gray-50 font-sans text-gray-800 dark:bg-zinc-950 dark:text-zinc-200">
     <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
             <a href="/" class="site-brand" aria-label="MiaoCut home">
@@ -40,42 +40,148 @@
                 <span class="site-brand-text">MiaoCut</span>
             </a>
             <nav class="flex items-center gap-3 text-sm font-medium text-gray-600 sm:gap-4 dark:text-zinc-300">
-                <a href="/" class="hidden sm:inline hover:text-gray-900 dark:hover:text-zinc-100" data-pi18n="navTools">Background Remover</a>
+                <a href="/" class="hidden hover:text-gray-900 sm:inline dark:hover:text-zinc-100" data-pi18n="navTools">Background Remover</a>
                 <a href="/batch/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-pi18n="navBatch">Batch</a>
-                <a href="/pricing/" class="text-brand-600 dark:text-brand-400" data-pi18n="navPricing">Pricing</a>
-                <a id="nav-auth" href="/account/credits/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-pi18n="navLogin">Sign in</a>
+                <a href="/pricing/" class="text-gray-900 dark:text-zinc-50" aria-current="page" data-pi18n="navPricing">Pricing</a>
+                <!-- nav-auth 的文字由下方脚本按登录态设置，不挂 data-pi18n（避免语言脚本覆盖） -->
+                <a id="nav-auth" href="/account/credits/" class="hover:text-gray-900 dark:hover:text-zinc-100">Sign in</a>
                 <button type="button" data-pi18n-switch class="rounded-full border border-gray-300 px-2.5 py-1 text-xs text-gray-600 hover:border-gray-500 dark:border-zinc-700 dark:text-zinc-300">中文</button>
             </nav>
         </div>
     </header>
 
-    <main class="mx-auto w-full max-w-6xl flex-1 px-5 py-12">
-        <p id="pricing-notice" class="mx-auto mb-6 hidden max-w-2xl rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300" data-pi18n="pricingCanceled" hidden>Checkout was canceled — you have not been charged.</p>
-        <div class="text-center">
-            <h1 class="text-3xl font-bold sm:text-4xl" data-pi18n="pricingH1">Simple credit pricing</h1>
-            <p class="mx-auto mt-3 max-w-2xl text-gray-600 dark:text-zinc-400" data-pi18n-html="pricingSub">
-                Single images are <strong>free</strong>, no account needed. Credits are used for batch processing:
-                <strong>1 image = 1 credit</strong> (Fine hair mode = 2). Failed images are never charged.
+    <main class="mx-auto w-full max-w-4xl flex-1 px-5 pb-16 pt-10 sm:pt-14">
+        <p id="pricing-notice" class="mb-8 hidden rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300" role="status" data-pi18n="pricingCanceled">Checkout was canceled. You have not been charged.</p>
+
+        <!-- ⚠️ SEO：H1 文案与上线版本保持一致，不要改（scripts/seo-guard.mjs 会检查） -->
+        <div class="max-w-2xl">
+            <h1 class="text-3xl font-bold tracking-tight text-gray-900 [text-wrap:balance] sm:text-4xl dark:text-zinc-50" data-pi18n="pricingH1">Simple credit pricing</h1>
+            <p class="mt-3 text-gray-600 [text-wrap:pretty] dark:text-zinc-400" data-pi18n-html="pricingSub">
+                Single images are <strong>free</strong>, no account needed. Credits are used for <a href="/batch/" class="underline underline-offset-2">batch processing</a>:
+                <strong>1 image = 1 credit</strong> (Fine edges = 2). Failed images are never charged.
             </p>
-            <p class="mx-auto mt-3 max-w-2xl text-sm font-medium text-emerald-700 dark:text-emerald-400" data-pi18n="pricingBonus">New accounts get 100 free credits — enough to batch-process 100 images.</p>
-            <a href="/batch/" class="mt-5 inline-block rounded-full border border-gray-300 bg-white px-5 py-2 text-sm font-semibold text-gray-800 transition-colors hover:border-gray-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:border-zinc-500" data-pi18n="pricingTryBatch">Try batch processing</a>
+            <p class="mt-3 text-sm font-medium text-brand-700 dark:text-brand-400" data-pi18n="pricingBonus">New accounts get 100 free credits, enough to batch-process 100 images.</p>
         </div>
 
-        <!-- 充值包由 JS 渲染。⚠️ 价格是展示用，必须与 Stripe 里 4 个 Price 的实际金额手动保持一致；
-             积分数必须与 pro-gateway SKU_TABLE 一致（实际到账以服务端为准）。 -->
-        <section class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" id="packs"></section>
+        <!-- 估算器：输入张数 + 边缘精度 → 推荐最合适的积分包（同时高亮下方对应的一行） -->
+        <section class="mt-10 rounded-xl border border-gray-200 bg-white p-5 sm:p-6 dark:border-zinc-800 dark:bg-zinc-900" aria-labelledby="est-title">
+            <h2 id="est-title" class="text-lg font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="estTitle">How many photos do you need to process?</h2>
+            <div class="mt-4 flex flex-wrap items-end gap-x-6 gap-y-4">
+                <div>
+                    <label for="est-count" class="block text-sm font-medium text-gray-700 dark:text-zinc-300" data-pi18n="estLabel">Photos</label>
+                    <input id="est-count" type="number" inputmode="numeric" min="1" max="100000" step="1" value="300"
+                        class="mt-1.5 block w-36 rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm tabular-nums text-gray-900 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:border-zinc-300">
+                </div>
+                <fieldset>
+                    <legend class="text-sm font-medium text-gray-700 dark:text-zinc-300" data-pi18n="runTitle">Edge quality</legend>
+                    <div class="mt-1.5 flex flex-wrap gap-2">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="est-mode" value="1" class="peer sr-only" checked>
+                            <span class="inline-flex min-h-10 items-center rounded-full border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium text-gray-700 transition-colors hover:border-gray-500 peer-checked:border-gray-900 peer-checked:bg-gray-900 peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-gray-900 peer-focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:peer-checked:border-zinc-50 dark:peer-checked:bg-zinc-50 dark:peer-checked:text-zinc-950"><span data-pi18n="modeStandard">Standard</span>&nbsp;·&nbsp;<span data-pi18n="modeCost1">1 credit / image</span></span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="est-mode" value="2" class="peer sr-only">
+                            <span class="inline-flex min-h-10 items-center rounded-full border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium text-gray-700 transition-colors hover:border-gray-500 peer-checked:border-gray-900 peer-checked:bg-gray-900 peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-gray-900 peer-focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:peer-checked:border-zinc-50 dark:peer-checked:bg-zinc-50 dark:peer-checked:text-zinc-950"><span data-pi18n="modeFine">Fine edges</span>&nbsp;·&nbsp;<span data-pi18n="modeCost2">2 credits / image</span></span>
+                        </label>
+                    </div>
+                </fieldset>
+            </div>
+            <p id="est-result" class="mt-5 text-gray-900 [text-wrap:pretty] dark:text-zinc-50" aria-live="polite"></p>
+        </section>
 
-        <p class="mx-auto mt-8 max-w-2xl text-center text-sm text-gray-500 dark:text-zinc-500" data-pi18n-html="pricingFine">
+        <!-- 积分包：直接写在 HTML 里（搜索引擎不执行脚本也能读到价格）。
+             ⚠️ 价格必须与 Stripe 里 4 个 Price 的实际金额手动保持一致；积分数必须与 pro-gateway SKU_TABLE 一致。
+             每张单价 = 价格 / 积分（标准档），是主信息，所以字号最大。 -->
+        <section class="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-zinc-800 dark:bg-zinc-900" aria-labelledby="packs-title">
+            <h2 id="packs-title" class="sr-only" data-pi18n="packsTitle">Credit packs</h2>
+            <ul id="packs" class="divide-y divide-gray-100 dark:divide-zinc-800" role="list">
+                <li data-pack="starter_100" data-credits="100" data-cents="499" class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 px-5 py-5 transition-colors sm:grid-cols-[minmax(0,1fr)_9rem_6rem_9rem] sm:px-6">
+                    <div class="min-w-0">
+                        <p class="flex flex-wrap items-center gap-2"><span class="font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="packStarter">Starter</span><span data-fit class="hidden rounded-full bg-gray-900 px-2 py-0.5 text-xs font-semibold text-white dark:bg-zinc-50 dark:text-zinc-950" data-pi18n="packFit">Best fit</span></p>
+                        <p class="mt-0.5 text-sm tabular-nums text-gray-600 dark:text-zinc-400"><span>100</span> <span data-pi18n="packCredits">credits</span></p>
+                    </div>
+                    <p class="text-right sm:text-left"><span class="text-2xl font-bold tabular-nums text-gray-900 dark:text-zinc-50">$0.050</span><span class="block text-xs text-gray-600 dark:text-zinc-400" data-pi18n="packPerPhoto">per photo</span></p>
+                    <p class="text-sm tabular-nums text-gray-700 dark:text-zinc-300">$4.99</p>
+                    <button type="button" data-sku="starter_100" class="buy-btn justify-self-end"></button>
+                </li>
+                <li data-pack="creator_500" data-credits="500" data-cents="1499" class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 px-5 py-5 transition-colors sm:grid-cols-[minmax(0,1fr)_9rem_6rem_9rem] sm:px-6">
+                    <div class="min-w-0">
+                        <p class="flex flex-wrap items-center gap-2"><span class="font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="packCreator">Creator</span><span class="rounded-full border border-gray-300 px-2 py-0.5 text-xs font-medium text-gray-700 dark:border-zinc-700 dark:text-zinc-300" data-pi18n="packPopular">Popular</span><span data-fit class="hidden rounded-full bg-gray-900 px-2 py-0.5 text-xs font-semibold text-white dark:bg-zinc-50 dark:text-zinc-950" data-pi18n="packFit">Best fit</span></p>
+                        <p class="mt-0.5 text-sm tabular-nums text-gray-600 dark:text-zinc-400"><span>500</span> <span data-pi18n="packCredits">credits</span></p>
+                    </div>
+                    <p class="text-right sm:text-left"><span class="text-2xl font-bold tabular-nums text-gray-900 dark:text-zinc-50">$0.030</span><span class="block text-xs text-gray-600 dark:text-zinc-400" data-pi18n="packPerPhoto">per photo</span></p>
+                    <p class="text-sm tabular-nums text-gray-700 dark:text-zinc-300">$14.99</p>
+                    <button type="button" data-sku="creator_500" class="buy-btn justify-self-end"></button>
+                </li>
+                <li data-pack="seller_1500" data-credits="1500" data-cents="2999" class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 px-5 py-5 transition-colors sm:grid-cols-[minmax(0,1fr)_9rem_6rem_9rem] sm:px-6">
+                    <div class="min-w-0">
+                        <p class="flex flex-wrap items-center gap-2"><span class="font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="packSeller">Seller</span><span data-fit class="hidden rounded-full bg-gray-900 px-2 py-0.5 text-xs font-semibold text-white dark:bg-zinc-50 dark:text-zinc-950" data-pi18n="packFit">Best fit</span></p>
+                        <p class="mt-0.5 text-sm tabular-nums text-gray-600 dark:text-zinc-400"><span>1,500</span> <span data-pi18n="packCredits">credits</span></p>
+                    </div>
+                    <p class="text-right sm:text-left"><span class="text-2xl font-bold tabular-nums text-gray-900 dark:text-zinc-50">$0.020</span><span class="block text-xs text-gray-600 dark:text-zinc-400" data-pi18n="packPerPhoto">per photo</span></p>
+                    <p class="text-sm tabular-nums text-gray-700 dark:text-zinc-300">$29.99</p>
+                    <button type="button" data-sku="seller_1500" class="buy-btn justify-self-end"></button>
+                </li>
+                <li data-pack="studio_5000" data-credits="5000" data-cents="7999" class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 px-5 py-5 transition-colors sm:grid-cols-[minmax(0,1fr)_9rem_6rem_9rem] sm:px-6">
+                    <div class="min-w-0">
+                        <p class="flex flex-wrap items-center gap-2"><span class="font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="packStudio">Studio</span><span data-fit class="hidden rounded-full bg-gray-900 px-2 py-0.5 text-xs font-semibold text-white dark:bg-zinc-50 dark:text-zinc-950" data-pi18n="packFit">Best fit</span></p>
+                        <p class="mt-0.5 text-sm tabular-nums text-gray-600 dark:text-zinc-400"><span>5,000</span> <span data-pi18n="packCredits">credits</span></p>
+                    </div>
+                    <p class="text-right sm:text-left"><span class="text-2xl font-bold tabular-nums text-gray-900 dark:text-zinc-50">$0.016</span><span class="block text-xs text-gray-600 dark:text-zinc-400" data-pi18n="packPerPhoto">per photo</span></p>
+                    <p class="text-sm tabular-nums text-gray-700 dark:text-zinc-300">$79.99</p>
+                    <button type="button" data-sku="studio_5000" class="buy-btn justify-self-end"></button>
+                </li>
+            </ul>
+        </section>
+        <p id="buy-error" class="mt-3 hidden text-sm text-red-600 dark:text-red-400" role="alert" data-pi18n="buyFailed">Checkout failed, please try again.</p>
+
+        <p class="mt-6 max-w-2xl text-sm text-gray-600 dark:text-zinc-400" data-pi18n-html="pricingFine">
             Purchased credits are valid for 12 months. Prices exclude tax, which is calculated at checkout.
-            Unused credits can be refunded within 14 days — see our <a href="/terms/" class="underline underline-offset-2">Terms</a>.
+            Unused credits can be refunded within 14 days. See our <a href="/terms/" class="underline underline-offset-2">Terms</a>.
         </p>
+        <p class="mt-4"><a href="/batch/" class="text-sm font-medium text-gray-900 underline underline-offset-4 dark:text-zinc-50" data-pi18n="pricingTryBatch">Try batch processing</a></p>
+
+        <!-- 常见问题：原生 <details>，不需要脚本，键盘和读屏都能用 -->
+        <section class="mt-14" aria-labelledby="faq-title">
+            <h2 id="faq-title" class="text-xl font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="faqTitle">Questions</h2>
+            <div class="mt-4 divide-y divide-gray-200 border-y border-gray-200 dark:divide-zinc-800 dark:border-zinc-800">
+                <details class="group py-4">
+                    <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-gray-900 dark:text-zinc-50 [&::-webkit-details-marker]:hidden"><span data-pi18n="faqQ1">What is a credit?</span><svg class="h-4 w-4 flex-none text-gray-500 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
+                    <p class="mt-2 max-w-2xl text-sm text-gray-600 dark:text-zinc-400" data-pi18n="faqA1">One credit removes the background from one photo in Standard mode. Fine edges mode (hair, fur, plush, plants) uses 2 credits per photo.</p>
+                </details>
+                <details class="group py-4">
+                    <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-gray-900 dark:text-zinc-50 [&::-webkit-details-marker]:hidden"><span data-pi18n="faqQ2">Is single-image background removal still free?</span><svg class="h-4 w-4 flex-none text-gray-500 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
+                    <p class="mt-2 max-w-2xl text-sm text-gray-600 dark:text-zinc-400" data-pi18n="faqA2">Yes. Removing the background from one photo at a time is free on every MiaoCut tool, with no account and no watermark. Credits are only for batch processing.</p>
+                </details>
+                <details class="group py-4">
+                    <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-gray-900 dark:text-zinc-50 [&::-webkit-details-marker]:hidden"><span data-pi18n="faqQ3">What happens if an image fails?</span><svg class="h-4 w-4 flex-none text-gray-500 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
+                    <p class="mt-2 max-w-2xl text-sm text-gray-600 dark:text-zinc-400" data-pi18n="faqA3">You only pay for images that come back. Credits for failed images return to your balance automatically, and you can retry them from the results page.</p>
+                </details>
+                <details class="group py-4">
+                    <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-gray-900 dark:text-zinc-50 [&::-webkit-details-marker]:hidden"><span data-pi18n="faqQ4">Which formats do I get?</span><svg class="h-4 w-4 flex-none text-gray-500 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
+                    <p class="mt-2 max-w-2xl text-sm text-gray-600 dark:text-zinc-400" data-pi18n="faqA4">Download each batch as transparent PNG, white-background JPG, or an Amazon-ready 2000 × 2000 white JPG. You can switch formats and download again for 24 hours.</p>
+                </details>
+                <details class="group py-4">
+                    <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-gray-900 dark:text-zinc-50 [&::-webkit-details-marker]:hidden"><span data-pi18n="faqQ5">Do credits expire?</span><svg class="h-4 w-4 flex-none text-gray-500 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
+                    <p class="mt-2 max-w-2xl text-sm text-gray-600 dark:text-zinc-400" data-pi18n="faqA5">Purchased credits are valid for 12 months from the date of purchase.</p>
+                </details>
+                <details class="group py-4">
+                    <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-gray-900 dark:text-zinc-50 [&::-webkit-details-marker]:hidden"><span data-pi18n="faqQ6">Can I get a refund?</span><svg class="h-4 w-4 flex-none text-gray-500 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
+                    <p class="mt-2 max-w-2xl text-sm text-gray-600 dark:text-zinc-400" data-pi18n-html="faqA6">Unused credits can be refunded within 14 days of purchase. See the <a href="/terms/" class="underline underline-offset-2">Terms</a> for details.</p>
+                </details>
+                <details class="group py-4">
+                    <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-gray-900 dark:text-zinc-50 [&::-webkit-details-marker]:hidden"><span data-pi18n="faqQ7">How is payment handled?</span><svg class="h-4 w-4 flex-none text-gray-500 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
+                    <p class="mt-2 max-w-2xl text-sm text-gray-600 dark:text-zinc-400" data-pi18n="faqA7">Checkout runs on Stripe. MiaoCut never sees or stores your card details. Tax is calculated at checkout.</p>
+                </details>
+            </div>
+        </section>
     </main>
 
-    <footer class="border-t border-gray-200 py-8 text-center text-sm text-gray-500 dark:border-zinc-800 dark:text-zinc-500">
+    <footer class="border-t border-gray-200 py-8 text-center text-sm text-gray-500 dark:border-zinc-800 dark:text-zinc-400">
         <p data-pi18n="footerTagline">MiaoCut · Free, privacy-first AI image tools.</p>
         <p class="mt-2 space-x-4">
-            <a href="/terms/" class="hover:text-gray-800 dark:hover:text-zinc-300" data-pi18n="footerTerms">Terms</a>
-            <a href="/privacy/" class="hover:text-gray-800 dark:hover:text-zinc-300" data-pi18n="footerPrivacy">Privacy</a>
+            <a href="/terms/" class="hover:text-gray-800 dark:hover:text-zinc-200" data-pi18n="footerTerms">Terms</a>
+            <a href="/privacy/" class="hover:text-gray-800 dark:hover:text-zinc-200" data-pi18n="footerPrivacy">Privacy</a>
         </p>
     </footer>
 
@@ -83,48 +189,94 @@
         import MiaoCutPro from "/pro-account.js";
         const { t } = window.MiaoCutProI18n;
 
-        // 充值包：priceCents 用于展示价格和「每张约多少钱」，须与 Stripe Price 一致
-        const PACKS = [
-            { sku: "starter_100", credits: 100, priceCents: 499, noteKey: "packStarter" },
-            { sku: "creator_500", credits: 500, priceCents: 1499, noteKey: "packCreator", popular: true },
-            { sku: "seller_1500", credits: 1500, priceCents: 2999, noteKey: "packSeller" },
-            { sku: "studio_5000", credits: 5000, priceCents: 7999, noteKey: "packStudio" },
-        ];
-        const usd = (cents, digits = 2) => `$${(cents / 100).toFixed(digits)}`;
+        // 按钮样式：推荐的那一行是近黑色主按钮，其余是描边次按钮（一屏只有一个主操作）
+        const BTN_BASE = "buy-btn justify-self-end inline-flex min-h-10 items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-60 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900 sm:w-full";
+        const BTN_PRIMARY = "bg-gray-900 text-white hover:bg-gray-700 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200";
+        const BTN_SECONDARY = "border border-gray-300 bg-white text-gray-900 hover:border-gray-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500";
+        const rows = [...document.querySelectorAll("[data-pack]")];
+        rows.forEach((li) => { li.querySelector(".buy-btn").textContent = t("buyBtn"); });
 
-        const wrap = document.getElementById("packs");
-        wrap.innerHTML = PACKS.map(p => `
-            <div class="relative flex flex-col rounded-2xl border ${p.popular ? "border-brand-500 ring-1 ring-brand-500" : "border-gray-200 dark:border-zinc-800"} bg-white p-6 shadow-sm dark:bg-zinc-900">
-                ${p.popular ? `<span class="absolute -top-3 left-6 rounded-full bg-brand-600 px-3 py-0.5 text-xs font-semibold text-white">${t("packPopular")}</span>` : ""}
-                <div class="text-sm font-medium text-gray-500 dark:text-zinc-400">${t(p.noteKey)}</div>
-                <div class="mt-1 text-3xl font-bold">${p.credits.toLocaleString()}<span class="text-base font-medium text-gray-500"> ${t("packCredits")}</span></div>
-                <div class="mt-2 text-xl font-semibold text-brand-600 dark:text-brand-400">${usd(p.priceCents)}</div>
-                <div class="mt-1 text-xs text-gray-500 dark:text-zinc-400">${t("packPerImage", { price: usd(p.priceCents / p.credits, 3) })}</div>
-                <button data-sku="${p.sku}" class="buy-btn mt-5 w-full rounded-lg bg-brand-600 px-4 py-2.5 font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60">${t("buyBtn")}</button>
-            </div>
-        `).join("");
+        // ---------- 估算器 ----------
+        const countEl = document.getElementById("est-count");
+        const resultEl = document.getElementById("est-result");
+        const usd = (cents) => `$${(cents / 100).toFixed(2)}`;
+
+        // 总价最低、且积分够用的积分包组合（可以重复买同一个包）。
+        // 积分数都是 100 的倍数，以 100 积分为一格做「完全背包」动态规划；最多 10 万张 × 2 积分 = 2000 格，瞬间算完。
+        function cheapestCombo(need) {
+            const packs = rows.map((li) => ({ li, units: Number(li.dataset.credits) / 100, cents: Number(li.dataset.cents) }));
+            const target = Math.ceil(need / 100);
+            const maxUnits = target + Math.max(...packs.map((p) => p.units)); // 允许超出一个最大包的量
+            const best = new Array(maxUnits + 1).fill(Infinity);
+            const pick = new Array(maxUnits + 1).fill(-1);
+            best[0] = 0;
+            for (let u = 1; u <= maxUnits; u++) {
+                packs.forEach((p, i) => {
+                    if (p.units <= u && best[u - p.units] + p.cents < best[u]) { best[u] = best[u - p.units] + p.cents; pick[u] = i; }
+                });
+            }
+            // 在所有「够用」的方案里先找最低价；再在「不超过最低价 2%」的方案里挑积分最多的。
+            // 例：300 张时 3×Starter $14.97（300 积分）和 Creator $14.99（500 积分）只差 2 美分，应推荐后者
+            let minCents = Infinity;
+            for (let u = target; u <= maxUnits; u++) minCents = Math.min(minCents, best[u]);
+            let at = -1;
+            for (let u = target; u <= maxUnits; u++) {
+                if (best[u] <= minCents * 1.02) at = u;
+            }
+            const counts = new Map();
+            for (let u = at; u > 0; u -= packs[pick[u]].units) counts.set(pick[u], (counts.get(pick[u]) || 0) + 1);
+            const items = [...counts.entries()].sort((a, b) => packs[b[0]].units - packs[a[0]].units)
+                .map(([i, k]) => ({ li: packs[i].li, k }));
+            return { cents: best[at], credits: at * 100, items };
+        }
+
+        function estimate() {
+            const photos = Math.max(1, Math.min(100000, Math.floor(Number(countEl.value) || 0)));
+            const perPhoto = Number(document.querySelector('input[name="est-mode"]:checked').value);
+            const need = photos * perPhoto;
+            const combo = cheapestCombo(need);
+            const packName = (li) => t(li.querySelector("[data-pi18n]").dataset.pi18n);
+            const comboText = combo.items.map(({ li, k }) => (k > 1 ? `${k} × ${packName(li)}` : packName(li))).join(" + ");
+            let html = t("estResult", { c: need.toLocaleString(), pack: comboText, price: usd(combo.cents), credits: combo.credits.toLocaleString() });
+            // 多出来的积分不会浪费：说清楚留在余额里（12 个月有效）
+            if (combo.credits > need) html += " " + t("estLeft", { left: (combo.credits - need).toLocaleString() });
+            if (need <= 100) html += " " + t("estFree");
+            resultEl.textContent = html;
+            // 组合里每个包都高亮；主按钮给组合里最大的那个包
+            const inCombo = new Set(combo.items.map((x) => x.li));
+            const primary = combo.items[0] && combo.items[0].li;
+            rows.forEach((li) => {
+                const on = inCombo.has(li);
+                li.classList.toggle("bg-gray-50", on);
+                li.classList.toggle("dark:bg-zinc-800/60", on);
+                li.querySelector("[data-fit]").classList.toggle("hidden", !on);
+                li.querySelector(".buy-btn").className = `${BTN_BASE} ${li === primary ? BTN_PRIMARY : BTN_SECONDARY}`;
+            });
+        }
+        countEl.addEventListener("input", estimate);
+        document.querySelectorAll('input[name="est-mode"]').forEach((r) => r.addEventListener("change", estimate));
+        estimate();
 
         // Stripe 取消支付后跳回 ?status=cancel：提示「未扣款」
         if (new URLSearchParams(location.search).get("status") === "cancel") {
-            const n = document.getElementById("pricing-notice");
-            n.hidden = false;
-            n.classList.remove("hidden");
+            document.getElementById("pricing-notice").classList.remove("hidden");
         }
 
-        // 登录态导航
+        // ---------- 登录态导航 ----------
+        const navAuth = document.getElementById("nav-auth");
+        const updateNav = () => { navAuth.textContent = t(MiaoCutPro.isLoggedIn() ? "navAccount" : "navLogin"); };
+        updateNav();
         MiaoCutPro.onAuthChange(updateNav);
         await MiaoCutPro.init().catch(() => {});
         updateNav();
 
-        function updateNav() {
-            const link = document.getElementById("nav-auth");
-            link.textContent = t(MiaoCutPro.isLoggedIn() ? "navAccount" : "navLogin");
-        }
-
-        // 购买：未登录先去账户页登录（登录后自动发起 checkout），已登录直接发起
-        wrap.querySelectorAll(".buy-btn").forEach(btn => {
+        // ---------- 购买：未登录先去账户页登录（登录后自动发起 checkout），已登录直接发起 ----------
+        const buyError = document.getElementById("buy-error");
+        rows.forEach((li) => {
+            const btn = li.querySelector(".buy-btn");
             btn.addEventListener("click", async () => {
                 const sku = btn.dataset.sku;
+                buyError.classList.add("hidden");
                 if (!MiaoCutPro.isLoggedIn()) {
                     window.location.href = `/account/credits/?buy=${encodeURIComponent(sku)}`;
                     return;
@@ -136,7 +288,7 @@
                 } catch (e) {
                     btn.disabled = false;
                     btn.textContent = t("buyBtn");
-                    alert(t("buyFailed"));
+                    buyError.classList.remove("hidden"); // 页面内提示，不再用浏览器 alert()
                 }
             });
         });
