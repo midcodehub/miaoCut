@@ -1,0 +1,99 @@
+bn/product-photo-background-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 920
+ur/portrait-background-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 904
+bn/jpg-to-transparent-png/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 942
+id/product-photo-background-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 920
+id/portrait-background-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 904
+watermark-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 465
+hi/product-photo-background-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 920
+hi/portrait-background-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 904
+jpg-to-transparent-png/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 923
+bn/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 1571
+bn/portrait-background-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 904
+app.js
+  s_c8dfc96faf2462::t_cc9f03c52c95c0 416-423,537-544,658-665,779-786,900-907,1021-1028
+fil/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 1571
+id/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 1571
+fil/watermark-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 484
+fil/jpg-to-transparent-png/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 942
+pt-br/watermark-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 484
+ur/jpg-to-transparent-png/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 942
+zh/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 1571
+pt-br/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 1571
+fil/portrait-background-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 904
+id/watermark-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 484
+ur/watermark-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 484
+product-photo-background-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 950
+portrait-background-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 935
+pt-br/jpg-to-transparent-png/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 942
+pt-br/product-photo-background-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 920
+ur/product-photo-background-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 920
+ur/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 1571
+hi/jpg-to-transparent-png/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 942
+pt-br/portrait-background-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 904
+bn/watermark-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 484
+hi/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 1571
+zh/product-photo-background-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 920
+fil/product-photo-background-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 920
+zh/jpg-to-transparent-png/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 942
+index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 1677
+zh/portrait-background-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 904
+hi/watermark-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 484
+zh/watermark-remover/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 484
+id/jpg-to-transparent-png/index.html
+  s_c8dfc96faf2462::t_0f3803515f1e93 942
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "eccb3740f617cb4f05011aa06174ab21fcb78f0f",
+  "prompts": {},
+  "sessions": {
+    "s_c8dfc96faf2462": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8d4f64c4-4d50-40db-ab2c-f573eacba2a0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "midcodehub <408124546@qq.com>"
+    }
+  }
+}
