@@ -21,6 +21,9 @@ SECRETS=(
     ["STRIPE_PRICE_CREATOR_500"]="Stripe 商品 Price ID (500积分, price_...)"
     ["STRIPE_PRICE_SELLER_1500"]="Stripe 商品 Price ID (1500积分, price_...)"
     ["STRIPE_PRICE_STUDIO_5000"]="Stripe 商品 Price ID (5000积分, price_...)"
+    ["STRIPE_PRICE_SUB_BASIC"]="Stripe 月度订阅 Price ID (Basic 300积分/月 \$6.99, price_...)"
+    ["STRIPE_PRICE_SUB_PRO"]="Stripe 月度订阅 Price ID (Pro 1500积分/月 \$19.99, price_...)"
+    ["STRIPE_PRICE_SUB_BUSINESS"]="Stripe 月度订阅 Price ID (Business 5000积分/月 \$49.99, price_...)"
 )
 
 # 确保顺序提问，因为 Bash 关联数组是无序的
@@ -37,6 +40,9 @@ ORDER=(
     "STRIPE_PRICE_CREATOR_500"
     "STRIPE_PRICE_SELLER_1500"
     "STRIPE_PRICE_STUDIO_5000"
+    "STRIPE_PRICE_SUB_BASIC"
+    "STRIPE_PRICE_SUB_PRO"
+    "STRIPE_PRICE_SUB_BUSINESS"
 )
 
 for KEY in "${ORDER[@]}"; do

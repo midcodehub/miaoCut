@@ -12,13 +12,17 @@
 //   · 批量 = 客户端经预签名直传 R2(绕过 CF 100MB) → Beam Task Queue → 回调结算。
 //   · 注册送 100 积分:仅已验证邮箱;排除一次性邮箱、同 IP 每日上限、同一邮箱别名只发一次。
 //   · Stripe:支付成功入账;退款 / 争议(拒付)按比例扣回(见 db/migrations/2026-10-11-launch-hardening.sql)。
+//   · 月度订阅(db/migrations/2026-10-12-subscriptions.sql):每期发票支付成功发积分(最多结转一个月额度),
+//     升级立即补差额,订阅结束作废剩余订阅积分;订阅用户单批上限更高、结果保留 7 天。
 //
 // 端点:
 //   GET  /auth/me                登录态 + 账户(首登懒初始化 + 发注册积分)
 //   GET  /credits/balance        余额
 //   GET  /credits/ledger         积分流水
-//   POST /checkout               创建 Stripe Checkout Session
-//   POST /webhooks/stripe        Stripe webhook(签名校验;支付入账 / 退款与争议扣回,均幂等)
+//   GET  /plans                  公开:订阅是否已配置(前端据此决定显示不显示订阅入口)
+//   POST /checkout               创建 Stripe Checkout Session({sku} 积分包 / {plan} 订阅)
+//   POST /billing/portal         Stripe 客户门户(改档 / 取消 / 发票)
+//   POST /webhooks/stripe        Stripe webhook(签名校验;积分包入账 / 订阅发积分与状态同步 / 退款与争议扣回,均幂等)
 //   POST /v1/batch               建批量任务 + 返回 R2 预签名上传地址
 //   POST /v1/batch/:id/start     冻结积分并入队
 //   GET  /v1/batch/:id           批量进度 + 结果下载地址
@@ -28,7 +32,7 @@
 //
 // 依赖(wrangler vars / secrets,见 wrangler.toml + README):
 //   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SUPABASE_JWT_SECRET
-//   STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_PRICE_*
+//   STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_PRICE_*(积分包 4 个 + 订阅 STRIPE_PRICE_SUB_BASIC/PRO/BUSINESS)
 //   BEAM_ENDPOINT(vars), BEAM_TOKEN(secret)
 //   CORS_ALLOW_ORIGIN(逗号分隔的来源白名单,或 "*"),(可选)SIGNUP_BONUS,
 //   SIGNUP_BONUS_PER_IP_DAILY, MAX_SYNC_UPLOAD_MB, BEAM_TIMEOUT_MS
@@ -60,9 +64,36 @@ const CREDIT_COST = { fast: 1, fur: 2 };
 // 旧值兼容:线上 sharp → fast
 const PROFILE_ALIASES = { sharp: "fast" };
 
-// 批量(Phase 2):单批上限 + R2 预签名有效期(秒)
+// 批量(Phase 2):非订阅用户的单批上限 + R2 预签名有效期(秒)
 const MAX_BATCH_IMAGES = 200;
 const PRESIGN_EXPIRES = 3600;
+
+// 月度订阅档位。积分数 / 权益固定在服务端,Stripe priceId 从 env 读取(没配置 = 该档未开放)。
+//   rank:用于判断升级 / 降级;batchMax:单批上限;retentionDays:批量结果保留天数(R2 前缀 batch7/)
+//   ⚠️ 价格展示在 /pricing/,必须与 Stripe 里的月付价格一致:basic $6.99 / pro $19.99 / business $49.99
+const SUBSCRIPTION_PLANS = {
+  basic: { credits: 300, priceEnv: "STRIPE_PRICE_SUB_BASIC", rank: 1, batchMax: 200, retentionDays: 7 },
+  pro: { credits: 1500, priceEnv: "STRIPE_PRICE_SUB_PRO", rank: 2, batchMax: 500, retentionDays: 7 },
+  business: { credits: 5000, priceEnv: "STRIPE_PRICE_SUB_BUSINESS", rank: 3, batchMax: 500, retentionDays: 7 },
+};
+const FREE_LIMITS = { batchMax: MAX_BATCH_IMAGES, retentionDays: 1 };
+// Stripe 里这些状态算「订阅仍有效」(past_due = 扣款失败、Stripe 正在重试)
+const ACTIVE_SUB_STATUSES = new Set(["active", "trialing", "past_due"]);
+
+/** 某个档位(users.plan)的权益;free 或未知档位按非订阅处理 */
+export function planLimits(plan) {
+  const p = SUBSCRIPTION_PLANS[plan];
+  return p ? { batchMax: p.batchMax, retentionDays: p.retentionDays } : { ...FREE_LIMITS };
+}
+
+/** Stripe priceId → 档位名(没匹配到返回 null) */
+export function planByPriceId(env, priceId) {
+  if (!priceId) return null;
+  for (const [name, p] of Object.entries(SUBSCRIPTION_PLANS)) {
+    if (env[p.priceEnv] && env[p.priceEnv] === priceId) return name;
+  }
+  return null;
+}
 
 // SKU → {credits, priceEnv}。积分数固定在服务端,Stripe priceId 从 env 读取。
 const SKU_TABLE = {
@@ -104,6 +135,12 @@ export default {
       }
       if (path === "/checkout" && request.method === "POST") {
         return await handleCheckout(request, env, cors);
+      }
+      if (path === "/plans" && request.method === "GET") {
+        return handlePlans(env, cors);
+      }
+      if (path === "/billing/portal" && request.method === "POST") {
+        return await handleBillingPortal(request, env, cors);
       }
       if (path === "/v1/prewarm" && request.method === "POST") {
         return await handlePrewarm(request, env, ctx, cors);
@@ -316,12 +353,21 @@ async function handleAuthMe(request, env, cors) {
         topup: acct.topup_credits,
         total: acct.subscription_credits + acct.topup_credits,
       },
+      subscription: acct.subscription || null, // {plan, status, monthly_credits, current_period_end, cancel_at_period_end}
+      can_manage_billing: !!acct.stripe_customer_id,
+      limits: accountLimits(acct),
       daily_free_quota: quota,
       daily_free_left: Math.max(0, quota - acct.daily_used),
     },
     200,
     cors,
   );
+}
+
+// 账户当前权益:单批上限 + 结果保留天数(前端批量页用)
+function accountLimits(acct) {
+  const l = planLimits(acct && acct.plan);
+  return { batch_max: l.batchMax, retention_days: l.retentionDays };
 }
 
 async function handleBalance(request, env, cors) {
@@ -335,6 +381,8 @@ async function handleBalance(request, env, cors) {
       subscription: acct.subscription_credits,
       topup: acct.topup_credits,
       total: acct.subscription_credits + acct.topup_credits,
+      plan: acct.plan,
+      limits: accountLimits(acct),
       daily_free_left: Math.max(0, quota - acct.daily_used),
     },
     200,
@@ -361,6 +409,7 @@ async function handleCheckout(request, env, cors) {
   if (u.error) return json(u.error.body, u.error.status, cors);
 
   const body = await request.json().catch(() => ({}));
+  if (body.plan) return handleSubscriptionCheckout(u, String(body.plan), env, request, cors);
   const sku = String(body.sku || "");
   const entry = SKU_TABLE[sku];
   if (!entry) return json({ error: "invalid_sku" }, 400, cors);
@@ -396,6 +445,77 @@ async function handleCheckout(request, env, cors) {
   return json({ url: res.json.url, id: res.json.id }, 200, cors);
 }
 
+// 订阅结账(mode=subscription)。积分不在这里发,等 invoice.paid(首期发票支付成功)再发。
+async function handleSubscriptionCheckout(u, plan, env, request, cors) {
+  const def = SUBSCRIPTION_PLANS[plan];
+  if (!def) return json({ error: "invalid_plan" }, 400, cors);
+  const priceId = env[def.priceEnv];
+  if (!priceId) return json({ error: "price_not_configured", plan }, 500, cors);
+
+  const acct = await getOrCreateAccount(u, env, request);
+  // 已有有效订阅:改档 / 取消走客户门户,不允许再开一份订阅(否则会被扣两份钱)
+  if (acct.subscription && ACTIVE_SUB_STATUSES.has(acct.subscription.status)) {
+    return json({ error: "already_subscribed", plan: acct.subscription.plan }, 409, cors);
+  }
+
+  const params = {
+    mode: "subscription",
+    "line_items[0][price]": priceId,
+    "line_items[0][quantity]": "1",
+    success_url:
+      env.SUBSCRIPTION_SUCCESS_URL || "https://miaocut.app/account/credits/?status=subscribed",
+    cancel_url: env.CHECKOUT_CANCEL_URL || "https://miaocut.app/pricing/?status=cancel",
+    client_reference_id: acct.user_id,
+    "metadata[user_id]": acct.user_id,
+    "metadata[plan]": plan,
+    // 订阅对象本身也带上 user_id:续费 / 改档 / 取消的事件里能直接找到用户
+    "subscription_data[metadata][user_id]": acct.user_id,
+    "subscription_data[metadata][plan]": plan,
+    // 循环扣款只用银行卡(微信支付不支持自动续费)
+    "payment_method_types[0]": "card",
+    "automatic_tax[enabled]": "true",
+  };
+  if (acct.stripe_customer_id) {
+    // 老客户:复用同一个 Stripe customer(客户门户、发票都在一处);自动计税需要允许更新地址
+    params.customer = acct.stripe_customer_id;
+    params["customer_update[address]"] = "auto";
+  } else if (acct.email) {
+    params.customer_email = acct.email;
+  }
+
+  const res = await stripeRequest(env, "/checkout/sessions", params);
+  if (!res.ok) {
+    console.error("stripe subscription checkout failed:", res.status, res.text);
+    return json({ error: "stripe_error" }, 502, cors);
+  }
+  return json({ url: res.json.url, id: res.json.id }, 200, cors);
+}
+
+// GET /plans(公开):哪些订阅档已经配置了 Stripe 价格。前端没拿到就不显示订阅入口
+function handlePlans(env, cors) {
+  const plans = Object.entries(SUBSCRIPTION_PLANS)
+    .filter(([, p]) => !!env[p.priceEnv])
+    .map(([id, p]) => ({ id, credits: p.credits, batch_max: p.batchMax, retention_days: p.retentionDays }));
+  return json({ subscriptions_enabled: plans.length === Object.keys(SUBSCRIPTION_PLANS).length, plans }, 200, cors);
+}
+
+// POST /billing/portal:Stripe 客户门户(改档 / 取消 / 更新银行卡 / 下载发票)
+async function handleBillingPortal(request, env, cors) {
+  const u = await requireUser(request, env);
+  if (u.error) return json(u.error.body, u.error.status, cors);
+  const acct = await getOrCreateAccount(u, env, request);
+  if (!acct.stripe_customer_id) return json({ error: "no_customer" }, 400, cors);
+  const res = await stripeRequest(env, "/billing_portal/sessions", {
+    customer: acct.stripe_customer_id,
+    return_url: env.PORTAL_RETURN_URL || "https://miaocut.app/account/credits/",
+  });
+  if (!res.ok) {
+    console.error("stripe portal failed:", res.status, res.text);
+    return json({ error: "stripe_error" }, 502, cors);
+  }
+  return json({ url: res.json.url }, 200, cors);
+}
+
 async function handleStripeWebhook(request, env, cors) {
   const sig = request.headers.get("stripe-signature") || "";
   const raw = await request.text();
@@ -414,11 +534,29 @@ async function handleStripeWebhook(request, env, cors) {
   if (event.type === "charge.refunded" || event.type === "charge.dispute.created") {
     return handleStripeReversal(event, env, cors);
   }
+  // 订阅:发票支付成功发积分;订阅创建 / 变更 / 结束同步状态
+  if (event.type === "invoice.paid") {
+    return handleInvoicePaid(event, env, cors);
+  }
+  if (event.type === "customer.subscription.created" || event.type === "customer.subscription.updated") {
+    return handleSubscriptionChanged(event, env, cors);
+  }
+  if (event.type === "customer.subscription.deleted") {
+    return handleSubscriptionDeleted(event, env, cors);
+  }
   if (event.type !== "checkout.session.completed") {
     return json({ received: true }, 200, cors); // 忽略其它事件
   }
 
   const session = event.data?.object || {};
+  if (session.mode === "subscription") {
+    // 订阅结账完成:记下 Stripe 客户 id(以后续费 / 客户门户都用它)。积分由 invoice.paid 发,这里不发
+    const userId = session.metadata?.user_id || session.client_reference_id;
+    if (userId && session.customer) {
+      await rpc(env, "set_stripe_customer", { p_user: userId, p_customer: String(session.customer) });
+    }
+    return json({ received: true }, 200, cors);
+  }
   if (session.payment_status !== "paid") {
     return json({ received: true }, 200, cors);
   }
@@ -460,6 +598,164 @@ async function handleStripeWebhook(request, env, cors) {
   });
 
   return json({ received: true }, 200, cors);
+}
+
+// =============================================================================
+// 订阅 webhook
+// -----------------------------------------------------------------------------
+// Stripe 事件可能乱序、重复到达:状态一律以「此刻向 Stripe 重新拉取的订阅」为准;
+// 发积分的幂等靠 orders.provider_ref 唯一键(发票 id / 事件 id)。
+// 兼容新旧两种 API 版本的字段位置(2025 起 invoice.subscription、current_period_end 等字段搬了家)。
+// =============================================================================
+
+// invoice.paid:首期(subscription_create)和每月续费(subscription_cycle)发积分,其余(升级的差价发票等)忽略
+async function handleInvoicePaid(event, env, cors) {
+  const inv = event.data?.object || {};
+  const subId = inv.subscription || inv.parent?.subscription_details?.subscription;
+  if (!subId) return json({ received: true }, 200, cors); // 不是订阅发票
+  if (inv.billing_reason !== "subscription_create" && inv.billing_reason !== "subscription_cycle") {
+    return json({ received: true, ignored: inv.billing_reason }, 200, cors); // 升级差额在 subscription.updated 里补发
+  }
+
+  const sub = await fetchSubscription(env, subId);
+  const userId = await resolveSubscriptionUser(env, sub, inv.customer);
+  // 本期按发票上的价格算档位(降级在期末生效,这张发票就是新档位)
+  const line = inv.lines?.data?.[0] || {};
+  const linePrice = line.price?.id || line.pricing?.price_details?.price || null;
+  const plan = planByPriceId(env, linePrice) || (sub && planOfSubscription(env, sub));
+  const def = plan && SUBSCRIPTION_PLANS[plan];
+  if (!userId || !def) {
+    console.error("invoice.paid: unknown user/plan", { subId, userId, linePrice });
+    return json({ received: true }, 200, cors); // 不重试:人工排查
+  }
+
+  const inserted = await supabaseInsert(env, "orders", {
+    user_id: userId,
+    provider: "stripe",
+    provider_ref: String(inv.id),
+    sku: `sub_${plan}`,
+    amount_cents: inv.amount_paid ?? null,
+    currency: inv.currency ?? null,
+    credits: def.credits,
+    status: "paid",
+    // 退款事件只带 payment_intent;新版 API 的发票上没有这个字段时为 null(退款需人工扣回)
+    payment_intent: inv.payment_intent || inv.payments?.data?.[0]?.payment?.payment_intent || null,
+    kind: "subscription",
+    bucket: "subscription",
+  });
+  if (inserted.conflict) return json({ received: true, idempotent: true }, 200, cors);
+  if (!inserted.ok) {
+    console.error("subscription order insert failed:", inserted.status, inserted.text);
+    return json({ error: "order_insert_failed" }, 500, cors); // Stripe 会重试
+  }
+
+  const result = await rpc(env, "renew_subscription_credits", {
+    p_user: userId,
+    p_monthly: def.credits,
+    p_ref: String(inv.id),
+  });
+  if (sub) await syncSubscription(env, userId, sub);
+  return json({ received: true, result }, 200, cors);
+}
+
+// customer.subscription.created / updated:同步状态;检测到升级就立即补发差额
+async function handleSubscriptionChanged(event, env, cors) {
+  const obj = event.data?.object || {};
+  const sub = (await fetchSubscription(env, obj.id)) || obj;
+  const userId = await resolveSubscriptionUser(env, sub, sub.customer);
+  if (!userId) {
+    console.error("subscription event: unknown user", { sub: sub.id });
+    return json({ received: true }, 200, cors);
+  }
+
+  // 升级判定:previous_attributes 里有旧价格,且新档位更高。降级不补也不扣(期末生效)
+  const prevPrice = event.data?.previous_attributes?.items?.data?.[0]?.price?.id;
+  const oldPlan = planByPriceId(env, prevPrice);
+  const newPlan = planOfSubscription(env, sub);
+  if (oldPlan && newPlan && SUBSCRIPTION_PLANS[newPlan].rank > SUBSCRIPTION_PLANS[oldPlan].rank
+      && ACTIVE_SUB_STATUSES.has(sub.status)) {
+    const diff = SUBSCRIPTION_PLANS[newPlan].credits - SUBSCRIPTION_PLANS[oldPlan].credits;
+    const inserted = await supabaseInsert(env, "orders", {
+      user_id: userId,
+      provider: "stripe",
+      provider_ref: String(event.id), // 一次升级事件只补一次
+      sku: `sub_upgrade_${oldPlan}_${newPlan}`,
+      amount_cents: null,
+      currency: null,
+      credits: diff,
+      status: "paid",
+      payment_intent: null,
+      kind: "subscription",
+      bucket: "subscription",
+    });
+    if (inserted.ok) {
+      await rpc(env, "grant_subscription_credits", {
+        p_user: userId, p_credits: diff, p_reason: "subscription_upgrade", p_ref: String(event.id),
+      });
+    } else if (!inserted.conflict) {
+      console.error("upgrade order insert failed:", inserted.status, inserted.text);
+      return json({ error: "order_insert_failed" }, 500, cors);
+    }
+  }
+
+  await syncSubscription(env, userId, sub);
+  return json({ received: true }, 200, cors);
+}
+
+// customer.subscription.deleted:订阅结束(取消到期 / 欠费终止)→ 作废剩余订阅积分,档位回到 free
+async function handleSubscriptionDeleted(event, env, cors) {
+  const sub = event.data?.object || {};
+  const userId = await resolveSubscriptionUser(env, sub, sub.customer);
+  if (!userId) return json({ received: true }, 200, cors);
+  // 极少数情况:用户已经换了一份新订阅,旧订阅的结束事件不应清掉新订阅
+  const rows = await supabaseSelect(env, `subscriptions?user_id=eq.${userId}&select=stripe_subscription_id`);
+  const current = rows && rows[0] && rows[0].stripe_subscription_id;
+  if (current && current !== sub.id) return json({ received: true, stale: true }, 200, cors);
+  const result = await rpc(env, "end_subscription", { p_user: userId, p_ref: String(event.id) });
+  return json({ received: true, result }, 200, cors);
+}
+
+async function syncSubscription(env, userId, sub) {
+  const plan = planOfSubscription(env, sub);
+  if (!plan) {
+    console.error("subscription with unknown price", { sub: sub.id });
+    return;
+  }
+  // 新版 API 把 current_period_end 放在订阅项上,旧版在订阅本身
+  const periodEnd = sub.current_period_end || sub.items?.data?.[0]?.current_period_end || null;
+  await rpc(env, "upsert_subscription", {
+    p_user: userId,
+    p_sub_id: String(sub.id),
+    p_plan: plan,
+    p_status: String(sub.status || "incomplete"),
+    p_monthly: SUBSCRIPTION_PLANS[plan].credits,
+    p_period_end: periodEnd ? new Date(periodEnd * 1000).toISOString() : null,
+    p_cancel: !!sub.cancel_at_period_end,
+  });
+}
+
+function planOfSubscription(env, sub) {
+  return planByPriceId(env, sub?.items?.data?.[0]?.price?.id) || null;
+}
+
+// 订阅 → 我们的 user_id:优先用结账时写进订阅的 metadata,其次按 Stripe 客户 id 反查
+async function resolveSubscriptionUser(env, sub, customerId) {
+  const fromMeta = sub?.metadata?.user_id;
+  if (fromMeta) return String(fromMeta);
+  const cus = customerId || sub?.customer;
+  if (!cus) return null;
+  const rows = await supabaseSelect(env, `users?stripe_customer_id=eq.${encodeURIComponent(String(cus))}&select=id`);
+  return (rows && rows[0] && rows[0].id) || null;
+}
+
+async function fetchSubscription(env, subId) {
+  if (!subId) return null;
+  const res = await stripeGet(env, `/subscriptions/${encodeURIComponent(String(subId))}`);
+  if (!res.ok) {
+    console.error("stripe get subscription failed:", res.status, res.text);
+    return null;
+  }
+  return res.json;
 }
 
 /**
@@ -650,11 +946,12 @@ async function handleBatchCreate(request, env, ctx, cors) {
 
   const files = Array.isArray(body.files) ? body.files : [];
   if (files.length === 0) return json({ error: "no_files" }, 400, cors);
-  if (files.length > MAX_BATCH_IMAGES) {
-    return json({ error: "too_many_images", max: MAX_BATCH_IMAGES }, 400, cors);
-  }
 
   const acct = await getOrCreateAccount(u, env, request);
+  const limits = planLimits(acct.plan); // 订阅档位:单批上限 / 结果保留天数
+  if (files.length > limits.batchMax) {
+    return json({ error: "too_many_images", max: limits.batchMax }, 400, cors);
+  }
   const totalCost = files.length * cost;
   const balance = acct.subscription_credits + acct.topup_credits;
   // 软校验（此刻不冻结；点 start 才冻结）。余额不足先提示充值。
@@ -667,6 +964,7 @@ async function handleBatchCreate(request, env, ctx, cors) {
     p_profile: profile,
     p_cost: cost,
     p_files: files.map((f) => ({ name: String(f.name || "image") })),
+    p_retention_days: limits.retentionDays,
   });
   if (!job || !job.job_id) return json({ error: "create_failed" }, 500, cors);
 
@@ -773,7 +1071,7 @@ async function handleBatchStatus(request, env, jobId, cors) {
   if (u.error) return json(u.error.body, u.error.status, cors);
   const acct = await getOrCreateAccount(u, env, request);
 
-  const sel = `id,profile,status,total_images,succeeded,failed,expires_at`;
+  const sel = `id,profile,status,total_images,succeeded,failed,expires_at,retention_days,created_at`;
   let rows = await supabaseSelect(env, `jobs?id=eq.${jobId}&user_id=eq.${acct.user_id}&select=${sel}`);
   let job = rows && rows[0];
   if (!job) return json({ error: "not_found" }, 404, cors);
@@ -810,6 +1108,7 @@ async function handleBatchStatus(request, env, jobId, cors) {
       job_id: job.id, profile: job.profile, status: job.status,
       total: job.total_images, succeeded: job.succeeded, failed: job.failed,
       done: job.status === "done", images,
+      retention_days: job.retention_days || 1,
     },
     200,
     cors,
@@ -1011,6 +1310,21 @@ async function stripeRequest(env, pathname, params) {
       "Content-Type": "application/x-www-form-urlencoded",
     },
     body: encodeForm(params),
+  });
+  const text = await res.text();
+  let parsed = null;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    /* keep raw text */
+  }
+  return { ok: res.ok, status: res.status, json: parsed, text };
+}
+
+async function stripeGet(env, pathname) {
+  const res = await fetch(`${STRIPE_API}${pathname}`, {
+    method: "GET",
+    headers: { Authorization: `Bearer ${env.STRIPE_SECRET_KEY}` },
   });
   const text = await res.text();
   let parsed = null;

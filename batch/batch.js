@@ -20,8 +20,8 @@ const { presets, engine } = window.MiaoCutEditor;
 
 // ---------- 常量 ----------
 const CREDIT_COST = { fast: 1, fur: 2 };
-// 每批上限。⚠️ 与 pro-gateway 的 MAX_BATCH_IMAGES 保持一致；订阅档（Pro / Business 500 张）上线时再按账户档位下发
-const MAX_IMAGES = 200;
+// 每批上限：未登录 / 非订阅 200 张；登录后以服务端按档位下发的 limits.batch_max 为准（Pro / Business 500 张）
+const DEFAULT_MAX_IMAGES = 200;
 const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/webp"];
 // 积分包最低单价，展示在登录卡上。⚠️ 与 /pricing/ 的 PACKS（Studio 5000 积分 $79.99）保持一致
 const MIN_PACK_PRICE = "$0.016";
@@ -32,7 +32,7 @@ const LS_JOB = "miaocut.batch.job";        // 进行中 / 最近一次任务（�
 const LS_OUTPUT = "miaocut.batch.output";  // 上次选的下载格式
 const LS_MODE = "miaocut.batch.mode";      // 上次选的边缘精度
 const IDB_FILES = "miaocut.batch.files";   // 已选图片（File 对象），登录跳转、刷新后都还在
-const JOB_TTL_MS = 24 * 3600 * 1000;       // 服务端结果保留 24 小时，超过就不再恢复
+const DAY_MS = 24 * 3600 * 1000;           // 结果保留天数（1 或 7）× 一天，超过就不再恢复
 
 // 下载格式：都是单图编辑器的状态对象，交给 engine.exportImage 渲染
 const OUTPUTS = [
@@ -77,6 +77,8 @@ const IMAGE_ERRORS = {
 const state = {
   loggedIn: false,
   balance: null,          // 当前余额（积分），未知时为 null
+  maxImages: DEFAULT_MAX_IMAGES, // 当前账户的单批上限
+  retentionDays: 1,       // 当前账户的批量结果保留天数
   mode: readLS(LS_MODE) === "fur" ? "fur" : "fast",
   output: OUTPUTS.some((o) => o.id === readLS(LS_OUTPUT)) ? readLS(LS_OUTPUT) : "png",
   files: [],              // 已选图片：[{ id, file, url }]，url 是缩略图 objectURL
@@ -100,7 +102,7 @@ const els = {
   resultsBox: $("results-box"), resReady: $("res-ready"), resFailed: $("res-failed"),
   btnZip: $("btn-zip"), btnRetry: $("btn-retry"), btnNew: $("btn-new"), zipMsg: $("zip-msg"), retryNote: $("retry-note"),
   runError: $("run-error"), runErrorText: $("run-error-text"), btnErrorRetry: $("btn-error-retry"), errorBuy: $("error-buy"),
-  runGrid: $("run-grid"),
+  runGrid: $("run-grid"), batchKeep: $("batch-keep"),
   demo: $("demo"), demoGrid: $("demo-grid"),
   gate: $("gate"), gatePoint2: $("gate-point-2"), gateKeep: $("gate-keep"),
   btnGoogle: $("btn-google"), emailForm: $("email-form"), loginEmail: $("login-email"), loginMsg: $("login-msg"),
@@ -232,12 +234,12 @@ function addFiles(list) {
   let skippedLimit = 0;
   for (const file of list) {
     if (!ALLOWED_TYPES.includes(file.type)) { skippedType++; continue; }
-    if (state.files.length >= MAX_IMAGES) { skippedLimit++; continue; }
+    if (state.files.length >= state.maxImages) { skippedLimit++; continue; }
     state.files.push({ id: nextFileId++, file, url: URL.createObjectURL(file) });
   }
   const notes = [];
   if (skippedType) notes.push(t("skipType", { n: skippedType }));
-  if (skippedLimit) notes.push(t("skipLimit", { n: skippedLimit, max: MAX_IMAGES }));
+  if (skippedLimit) notes.push(t("skipLimit", { n: skippedLimit, max: state.maxImages }));
   els.skipNote.textContent = notes.join(" ");
   show(els.skipNote, notes.length > 0);
   els.fileInput.value = "";
@@ -327,6 +329,11 @@ async function refreshAuth() {
     try {
       const b = await MiaoCutPro.balance();
       state.balance = Number(b.total);
+      // 订阅档位的权益（老网关没有 limits 字段时保持默认）
+      if (b.limits) {
+        state.maxImages = Number(b.limits.batch_max) || DEFAULT_MAX_IMAGES;
+        state.retentionDays = Number(b.limits.retention_days) || 1;
+      }
     } catch (_) { state.balance = null; }
   } else {
     state.balance = null;
@@ -335,7 +342,16 @@ async function refreshAuth() {
   els.balanceBox.classList.toggle("flex", state.loggedIn && state.balance != null);
   if (state.balance != null) els.balanceText.textContent = t("batchBalanceShort", { n: fmt(state.balance) });
   setPhase(state.phase);
+  renderLimits();
   renderSummary();
+}
+
+// 上传区提示的上限、结果保留天数文案跟随账户档位
+function renderLimits() {
+  els.dzSub.textContent = t("dzSub", { max: state.maxImages });
+  const seven = state.retentionDays >= 7;
+  els.batchKeep.textContent = t(seven ? "batchKeep7" : "batchKeep");
+  els.progressNote.textContent = t(seven ? "stLeaveOk7" : "stLeaveOk");
 }
 
 function setLoginMsg(key) { els.loginMsg.textContent = key ? t(key) : ""; }
@@ -372,7 +388,7 @@ async function toBatchError(res) {
   if (res.status === 401) return new BatchError("errAuth");
   if (res.status === 402) return new BatchError("errNoCredits", null, { buy: true });
   const body = await res.json().catch(() => ({}));
-  if (body.error === "too_many_images") return new BatchError("errTooMany", { max: body.max || MAX_IMAGES });
+  if (body.error === "too_many_images") return new BatchError("errTooMany", { max: body.max || state.maxImages });
   return new BatchError("errGeneric");
 }
 
@@ -425,7 +441,7 @@ async function startBatch() {
     if (!startRes.ok) throw await toBatchError(startRes);
 
     // 记下任务，刷新 / 离开后回来能继续
-    writeLS(LS_JOB, JSON.stringify({ job_id: job.job_id, total: sources.length, first: sources[0].name, at: Date.now() }));
+    writeLS(LS_JOB, JSON.stringify({ job_id: job.job_id, total: sources.length, first: sources[0].name, at: Date.now(), days: state.retentionDays }));
     show(els.progressNote, true);
     await pollJob();
   } catch (e) {
@@ -850,7 +866,7 @@ els.btnStart.addEventListener("click", startBatch);
 // 启动
 // =============================================================================
 async function boot() {
-  els.dzSub.textContent = t("dzSub", { max: MAX_IMAGES });
+  renderLimits();
   els.gatePoint2.textContent = t("gatePoint2", { price: MIN_PACK_PRICE });
   renderOutputGroups();
   renderDemo();
@@ -872,7 +888,7 @@ async function boot() {
   if (state.loggedIn) {
     let saved = null;
     try { saved = JSON.parse(readLS(LS_JOB) || "null"); } catch (_) { saved = null; }
-    if (saved && saved.job_id && Date.now() - saved.at < JOB_TTL_MS) {
+    if (saved && saved.job_id && Date.now() - saved.at < (saved.days || 1) * DAY_MS) {
       // 原图还在本地（同一批）就用来显示缩略图、对比和重试
       const same = state.files.length === saved.total && state.files[0] && state.files[0].file.name === saved.first;
       const sources = same ? state.files.map((f) => f.file) : null;

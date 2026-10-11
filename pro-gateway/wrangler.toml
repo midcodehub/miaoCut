@@ -60,6 +60,9 @@ SUPABASE_URL = "https://kaqlfoxselrvriulvlsm.supabase.co"
 #   wrangler secret put STRIPE_PRICE_CREATOR_500
 #   wrangler secret put STRIPE_PRICE_SELLER_1500
 #   wrangler secret put STRIPE_PRICE_STUDIO_5000
+#   wrangler secret put STRIPE_PRICE_SUB_BASIC     # 月度订阅 Price ID(三个都配好前端才显示订阅入口)
+#   wrangler secret put STRIPE_PRICE_SUB_PRO
+#   wrangler secret put STRIPE_PRICE_SUB_BUSINESS
 # -----------------------------------------------------------------------------
 
 # =============================================================================

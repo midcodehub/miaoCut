@@ -14,7 +14,7 @@
     <meta name="description" content="Remove backgrounds from up to 200 product photos at once. Download transparent PNGs, white-background JPGs or Amazon-ready 2000×2000 images in one ZIP. Pay only for images that succeed; new accounts get 100 free credits.">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://miaocut.app/batch/">
-    <link rel="stylesheet" href="/output.css?v=49e1bfa5">
+    <link rel="stylesheet" href="/output.css?v=719d3716">
     <!-- 中英文案（运行时切换），须在 batch.js 之前加载 -->
     <script src="/pro-i18n.js"></script>
     <!-- MiaoCut Pro 配置：PRO_API_BASE 为付费网关 -->
@@ -110,7 +110,7 @@
                         <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-gray-100 dark:bg-zinc-800" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-labelledby="progress-text">
                             <div id="progress-bar" class="h-full w-0 rounded-full bg-gray-900 transition-[width] duration-300 ease-out dark:bg-zinc-100"></div>
                         </div>
-                        <p id="progress-note" class="mt-2 text-sm text-gray-500 dark:text-zinc-400" data-pi18n="stLeaveOk">You can leave this page. Come back within 24 hours to download.</p>
+                        <p id="progress-note" class="mt-2 text-sm text-gray-500 dark:text-zinc-400">You can leave this page. Come back within 24 hours to download.</p>
                     </div>
 
                     <!-- 结果头：完成数 + 下载格式 + 操作 -->
@@ -131,7 +131,7 @@
                         </div>
                         <p id="zip-msg" class="mt-3 hidden text-sm text-gray-600 dark:text-zinc-400" role="status"></p>
                         <p id="retry-note" class="mt-3 hidden text-sm text-gray-600 dark:text-zinc-400" data-pi18n="retryNoSource">To retry failed images, add those photos again.</p>
-                        <p class="mt-3 text-xs text-gray-500 dark:text-zinc-400" data-pi18n="batchKeep">Files are deleted automatically 24 hours after processing.</p>
+                        <p id="batch-keep" class="mt-3 text-xs text-gray-500 dark:text-zinc-400">Files are deleted automatically 24 hours after processing.</p>
                     </div>
 
                     <!-- 整批出错：人话 + 重试 -->

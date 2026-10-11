@@ -109,6 +109,36 @@ wrangler deploy
      -d '{"p_auth_user_id":"00000000-0000-0000-0000-000000000000"}'
    ```
 
+## 月度订阅(2026-10-12)上线顺序
+
+规则见 `db/migrations/2026-10-12-subscriptions.sql` 顶部注释:三档 Basic 300 / Pro 1500 / Business 5000 积分每月
+($6.99 / $19.99 / $49.99);未用完最多结转一个月额度;升级立即补差额,降级和取消在期末生效;
+订阅结束作废剩余订阅积分(积分包积分不动);订阅用户结果保留 7 天,Pro / Business 单批 500 张。
+
+1. **Supabase**:SQL Editor 执行 `db/migrations/2026-10-12-subscriptions.sql`(可重复执行)。必须在第 4 步之前。
+2. **Stripe**(先在测试模式做一遍):
+   - 新建产品「MiaoCut Monthly」,建 3 个**按月循环**价格:$6.99 / $19.99 / $49.99,记下 3 个 `price_...`。
+   - Webhooks → 现有端点**追加订阅**:`invoice.paid`、`customer.subscription.created`、
+     `customer.subscription.updated`、`customer.subscription.deleted`(`checkout.session.completed` 已有)。
+   - Settings → Billing → Customer portal:允许取消(期末生效)、允许在这 3 个价格之间切换;
+     升级「立即按比例开票」(always invoice),降级「期末生效」(schedule at period end);允许更新支付方式、查看发票。
+3. **R2**:`miaocut-batch` 桶加一条生命周期规则:前缀 `batch7/`,7 天后删除(原有 `batch/` 1 天的规则保留)。
+4. **Worker**:写入 3 个价格 id 后部署。三个都配好之前,`GET /plans` 返回 `subscriptions_enabled:false`,
+   前端不显示订阅入口,所以可以先部署代码、最后再填价格开放。
+
+   ```bash
+   wrangler secret put STRIPE_PRICE_SUB_BASIC
+   wrangler secret put STRIPE_PRICE_SUB_PRO
+   wrangler secret put STRIPE_PRICE_SUB_BUSINESS
+   wrangler deploy
+   ```
+5. 测试模式验证:用 Stripe 测试卡 `4242 4242 4242 4242` 订阅 Basic → 账户页出现「基础版 · 每月 300 积分」,
+   流水有「月度套餐积分 +300」;在客户门户升级到 Pro → 立即补 1200;取消 → 显示结束日期;
+   用 Stripe CLI `stripe trigger invoice.paid` 或测试时钟(Test clock)模拟下个月续费,检查结转。
+
+⚠️ 已知限制:Stripe 2025 年起的新 API 版本,发票上不再直接带 `payment_intent`。如果账户使用新版 API,
+订阅发票的退款不会自动扣回积分(日志会记 `order_not_found`),需要人工处理;积分包不受影响。
+
 ## 测试
 
 `npm run test:gateway`:三个 Worker 冒烟测试(mock Supabase / Beam / Stripe)+ 数据库迁移验证(内存 Postgres)。

@@ -169,6 +169,40 @@ const MiaoCutPro = {
     if (url) window.location.href = url;
     return url;
   },
+
+  /** 发起月度订阅:返回 Stripe Checkout URL 并跳转。已有有效订阅时抛 Error("already_subscribed") */
+  async checkoutPlan(plan) {
+    const res = await this.proFetch("/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ plan }),
+    });
+    if (res.status === 409) throw new Error("already_subscribed");
+    if (!res.ok) throw new Error(`checkout_failed_${res.status}`);
+    const { url } = await res.json();
+    if (url) window.location.href = url;
+    return url;
+  },
+
+  /** 打开 Stripe 客户门户(改档 / 取消 / 更新银行卡 / 发票) */
+  async billingPortal() {
+    const res = await this.proFetch("/billing/portal", { method: "POST" });
+    if (!res.ok) throw new Error(`portal_failed_${res.status}`);
+    const { url } = await res.json();
+    if (url) window.location.href = url;
+    return url;
+  },
+
+  /** 公开接口:订阅是否已配置。失败时当作未开放(页面不显示订阅入口) */
+  async plans() {
+    try {
+      const res = await fetch(`${PRO_API_BASE}/plans`);
+      if (!res.ok) return { subscriptions_enabled: false, plans: [] };
+      return await res.json();
+    } catch (_) {
+      return { subscriptions_enabled: false, plans: [] };
+    }
+  },
 };
 
 window.MiaoCutPro = MiaoCutPro;

@@ -12,7 +12,7 @@
     <title>Your Credits | MiaoCut</title>
     <meta name="description" content="Manage your MiaoCut credits: balance, transaction history, and top-ups.">
     <meta name="robots" content="noindex,nofollow">
-    <link rel="stylesheet" href="/output.css?v=49e1bfa5">
+    <link rel="stylesheet" href="/output.css?v=719d3716">
     <script src="/pro-i18n.js"></script>
     <script>
         const isDev = window.location.hostname.includes('dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -76,7 +76,7 @@
 
         <!-- ========== 已登录：余额 + 流水 ========== -->
         <section id="account-view" class="hidden">
-            <p id="pay-success" class="mb-6 hidden rounded-lg border border-brand-200 bg-brand-50 px-4 py-3 text-sm text-brand-800 dark:border-brand-500/30 dark:bg-brand-500/10 dark:text-brand-300" role="status" data-pi18n="paySuccess">Payment received. Your credits will appear in a few seconds.</p>
+            <p id="pay-success" class="mb-6 hidden rounded-lg border border-brand-200 bg-brand-50 px-4 py-3 text-sm text-brand-800 dark:border-brand-500/30 dark:bg-brand-500/10 dark:text-brand-300" role="status">Payment received. Your credits will appear in a few seconds.</p>
             <p id="checkout-error" class="mb-6 hidden rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300" role="alert" data-pi18n="buyFailed">Checkout failed, please try again.</p>
 
             <div class="flex flex-wrap items-start justify-between gap-4">
@@ -90,12 +90,26 @@
             <div class="mt-6 rounded-xl border border-gray-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
                 <p class="text-sm text-gray-600 dark:text-zinc-400" data-pi18n="balTotal">Available credits</p>
                 <p id="bal-total" class="mt-1 text-5xl font-bold tracking-tight tabular-nums text-gray-900 dark:text-zinc-50" aria-live="polite">—</p>
+                <p id="bal-split" class="mt-1 hidden text-sm tabular-nums text-gray-600 dark:text-zinc-400"></p>
                 <p class="mt-3 text-sm text-gray-600 dark:text-zinc-400" data-pi18n="balHint">Credits are used for batch processing. Single images are always free.</p>
                 <div class="mt-6 flex flex-wrap gap-3">
                     <a href="/batch/" class="inline-flex min-h-11 items-center justify-center rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-pi18n="goBatch">Start a batch</a>
                     <a href="/pricing/" class="inline-flex min-h-11 items-center justify-center rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-pi18n="buyMore">Buy more credits</a>
                 </div>
             </div>
+            <!-- 订阅：有订阅显示档位 / 续费日 / 管理入口；没有订阅且订阅已开放时，一行推荐 -->
+            <section id="sub-panel" class="mt-4 hidden rounded-xl border border-gray-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900" aria-live="polite">
+                <div class="flex flex-wrap items-start justify-between gap-4">
+                    <div class="min-w-0">
+                        <h2 id="sub-name" class="font-semibold text-gray-900 dark:text-zinc-50"></h2>
+                        <p id="sub-line" class="mt-1 text-sm text-gray-600 dark:text-zinc-400"></p>
+                        <p id="sub-warn" class="mt-2 hidden text-sm font-medium text-amber-700 dark:text-amber-400" role="alert"></p>
+                    </div>
+                    <button type="button" id="sub-manage" class="inline-flex min-h-10 items-center justify-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-pi18n="subManage">Manage subscription</button>
+                </div>
+                <p id="sub-error" class="mt-3 hidden text-sm text-red-600 dark:text-red-400" role="alert" data-pi18n="portalFailed">Could not open subscription settings. Please try again.</p>
+            </section>
+            <p id="sub-promo" class="mt-4 hidden text-sm text-gray-600 dark:text-zinc-400"><span data-pi18n="subNone">Listing every month? Plans start at $6.99 for 300 credits.</span> <a href="/pricing/#plans" class="font-medium text-gray-900 underline underline-offset-4 dark:text-zinc-50" data-pi18n="subSeePlans">See monthly plans</a></p>
             <p id="load-error" class="mt-4 hidden text-sm text-red-600 dark:text-red-400" role="alert" data-pi18n="loadFailed">Could not load your account. Please refresh the page.</p>
 
             <h2 class="mt-12 text-lg font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="historyH">Credit history</h2>
@@ -133,13 +147,20 @@
         const params = new URLSearchParams(location.search);
         const paidJustNow = params.get("status") === "success";
         const PACK_NAMES = { starter_100: "packStarter", creator_500: "packCreator", seller_1500: "packSeller", studio_5000: "packStudio" };
+        const PLAN_NAMES = { basic: "planBasic", pro: "planPro", business: "planBusiness" };
+        const subscribedJustNow = params.get("status") === "subscribed";
         const show = (el, on) => el.classList.toggle("hidden", !on);
 
         // 从定价页带 ?buy=sku 过来但还没登录：说明登录后会直接去结账
         const buySku = params.get("buy");
+        const planParam = params.get("plan");
         if (buySku && PACK_NAMES[buySku]) {
             const note = document.getElementById("buy-note");
             note.textContent = t("loginBuyNote", { pack: t(PACK_NAMES[buySku]) });
+            show(note, true);
+        } else if (planParam && PLAN_NAMES[planParam]) {
+            const note = document.getElementById("buy-note");
+            note.textContent = t("loginPlanNote", { plan: t(PLAN_NAMES[planParam]) });
             show(note, true);
         }
 
@@ -158,14 +179,27 @@
                 history.replaceState({}, "", location.pathname);
                 MiaoCutPro.checkout(buy).catch(() => show(document.getElementById("checkout-error"), true));
             }
-            if (paidJustNow) showPaymentSuccess();
+            // 从 /pricing/ 带 ?plan= 过来：登录后自动发起订阅结账（已有订阅就打开客户门户）
+            const plan = params.get("plan");
+            if (plan && PLAN_NAMES[plan]) {
+                params.delete("plan");
+                history.replaceState({}, "", location.pathname);
+                MiaoCutPro.checkoutPlan(plan).catch((e) => {
+                    if (e && e.message === "already_subscribed") return openPortal();
+                    show(document.getElementById("checkout-error"), true);
+                });
+            }
+            if (paidJustNow || subscribedJustNow) showPaymentSuccess();
         }
 
         // Stripe 支付成功跳回 ?status=success。积分由 webhook 异步入账，可能晚几秒到：
         // 先提示「已支付、马上到账」，再每 3 秒刷新一次余额，最多 30 秒。
         let polling = false;
         function showPaymentSuccess() {
-            show(document.getElementById("pay-success"), true);
+            const el = document.getElementById("pay-success");
+            // 文字由脚本设置（不挂 data-pi18n，避免语言脚本把「订阅已开通」覆盖成默认的「已收到付款」）
+            el.textContent = t(subscribedJustNow ? "subscribedNote" : "paySuccess");
+            show(el, true);
             if (polling) return;
             polling = true;
             history.replaceState({}, "", location.pathname);
@@ -244,6 +278,11 @@
                 const me = await MiaoCutPro.me();
                 document.getElementById("acct-email").textContent = me.email || "";
                 document.getElementById("bal-total").textContent = Number(me.credits.total).toLocaleString();
+                // 有套餐积分时拆开显示：两种积分的有效期规则不同
+                const split = document.getElementById("bal-split");
+                split.textContent = t("balSplit", { sub: Number(me.credits.subscription).toLocaleString(), top: Number(me.credits.topup).toLocaleString() });
+                show(split, me.credits.subscription > 0);
+                renderSubscription(me);
 
                 // 取 200 条（接口上限）：失败多的批次会产生很多退回记录，合并后才是一行
                 const { ledger } = await MiaoCutPro.ledger(200);
@@ -256,6 +295,49 @@
                 show(errEl, true);
             }
         }
+
+        // ---------- 订阅面板 ----------
+        const ACTIVE = new Set(["active", "trialing", "past_due"]);
+        let subsEnabledPromise = null; // 只在需要显示推荐时才查一次 /plans
+        function renderSubscription(me) {
+            const panel = document.getElementById("sub-panel");
+            const promo = document.getElementById("sub-promo");
+            const sub = me.subscription;
+            const active = sub && ACTIVE.has(sub.status);
+            show(panel, !!active);
+            if (active) {
+                const locale = lang === "zh" ? "zh-CN" : "en-US";
+                const date = sub.current_period_end
+                    ? new Date(sub.current_period_end).toLocaleDateString(locale, { year: "numeric", month: "short", day: "numeric" })
+                    : "—";
+                document.getElementById("sub-name").textContent = t("subPlanName", { plan: t(PLAN_NAMES[sub.plan] || sub.plan) });
+                document.getElementById("sub-line").textContent = sub.cancel_at_period_end
+                    ? t("subEnds", { date })
+                    : t("subRenews", { credits: Number(sub.monthly_credits).toLocaleString(), date });
+                const warn = document.getElementById("sub-warn");
+                warn.textContent = sub.status === "past_due" ? t("subPastDue") : "";
+                show(warn, sub.status === "past_due");
+                show(document.getElementById("sub-manage"), !!me.can_manage_billing);
+                show(promo, false);
+                return;
+            }
+            // 没有有效订阅：订阅开放后才推荐
+            if (!subsEnabledPromise) subsEnabledPromise = MiaoCutPro.plans().then((x) => !!(x && x.subscriptions_enabled));
+            subsEnabledPromise.then((on) => show(promo, on));
+        }
+
+        async function openPortal() {
+            const btn = document.getElementById("sub-manage");
+            btn.disabled = true;
+            show(document.getElementById("sub-error"), false);
+            try {
+                await MiaoCutPro.billingPortal();
+            } catch (e) {
+                btn.disabled = false;
+                show(document.getElementById("sub-error"), true);
+            }
+        }
+        document.getElementById("sub-manage").addEventListener("click", openPortal);
 
         // ---------- 登录（登录后回到当前页，?buy= 参数会保留） ----------
         const setMsg = (key) => { document.getElementById("login-msg").textContent = key ? t(key) : ""; };
