@@ -126,15 +126,19 @@
         { id: 'original', value: null,   labelKey: 'ratioOriginal', fileLabel: 'original' },
         { id: '1:1',      value: 1,      labelKey: 'ratioSquare',   fileLabel: '1x1' },
         { id: '4:5',      value: 4 / 5,  labelKey: 'ratioPortrait', fileLabel: '4x5' },
+        { id: '3:4',      value: 3 / 4,  labelKey: 'ratio34',       fileLabel: '3x4' },   // 证件照 / 简历照（人像页用）
         { id: '9:16',     value: 9 / 16, labelKey: 'ratioStory',    fileLabel: '9x16' },
     ];
 
     // 可选固定导出尺寸（长边像素）；null = 按规则自动计算。
-    // 亚马逊主图建议长边 ≥ 1600 才能放大查看，所以给 2000 档。
+    // 亚马逊主图建议长边 ≥ 1600 才能放大查看，所以给 2000 档；512 / 1024 是头像常用尺寸。
+    // 各页面在 app.js 的页面配置里挑自己要显示的几档。
     const EXPORT_SIZES = [
         { id: 'auto', longSide: null, labelKey: 'sizeAuto' },
-        { id: '1080', longSide: 1080, labelKey: 'size1080' },
-        { id: '2000', longSide: 2000, labelKey: 'size2000' },
+        { id: '512',  longSide: 512,  label: '512 px' },
+        { id: '1024', longSide: 1024, label: '1024 px' },
+        { id: '1080', longSide: 1080, label: '1080 px' },
+        { id: '2000', longSide: 2000, label: '2000 px' },
     ];
 
     // ------------------------------------------------------------

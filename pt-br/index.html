@@ -232,7 +232,7 @@
       源：src/input.css；构建命令：npm run build:css；输出：output.css
       改动 index.html 的 class 后必须重新跑 build:css 并把 output.css 一起提交。
     -->
-    <link rel="stylesheet" href="/output.css?v=aa100de4">
+    <link rel="stylesheet" href="/output.css?v=b2240db8">
     <!--
       Umami Analytics - 隐私友好的流量统计
     -->
@@ -1568,7 +1568,11 @@
         };
     </script>
     <script type="module" src="/pt-br/pro-account.js"></script>
-    <script src="/app.js?v=7f55dd93"></script>
+    <!-- 结果页编辑器（背景 / 阴影 / 画幅 / 导出）。defer：不阻塞首屏，抠图成功后 app.js 才会用到 -->
+    <script defer src="/editor/presets.js?v=7bd0815f"></script>
+    <script defer src="/editor/engine.js?v=4eb7a47c"></script>
+    <script defer src="/editor/panel.js?v=68aa109a"></script>
+    <script src="/app.js?v=e0770840"></script>
     <script src="/language-menu.js"></script>
 
 </body>

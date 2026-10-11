@@ -34,11 +34,15 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 
 // 需要打戳的资源：物理文件路径 + 在 HTML 里的引用属性。
-// 只收 _headers 里走长缓存（max-age=86400）的那两个；language-menu.js / feedback.js
+// 只收 _headers 里走 immutable 长缓存的资源；language-menu.js / feedback.js
 // 是 4h must-revalidate，自愈快，先不纳入（要加的话照此再补一项即可）。
 const ASSETS = [
   { file: 'output.css', attr: 'href', url: '/output.css' },
   { file: 'app.js', attr: 'src', url: '/app.js' },
+  // 结果页编辑器（/editor/*，_headers 里同样是 immutable 长缓存）
+  { file: 'editor/presets.js', attr: 'src', url: '/editor/presets.js' },
+  { file: 'editor/engine.js', attr: 'src', url: '/editor/engine.js' },
+  { file: 'editor/panel.js', attr: 'src', url: '/editor/panel.js' },
 ];
 
 // 不扫描的目录：依赖、git、playwright 抓取产物
