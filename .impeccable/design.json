@@ -1,0 +1,606 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-11T09:03:56+00:00",
+  "title": "Design System: MiaoCut",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "primary",
+        "displayName": "工作台墨黑",
+        "tonalRamp": [
+          "#030712",
+          "#111827",
+          "#374151",
+          "#4b5563",
+          "#6b7280",
+          "#d1d5db",
+          "#f3f4f6",
+          "#f9fafb"
+        ]
+      },
+      "ink-soft": {
+        "role": "primary",
+        "displayName": "工作台石墨",
+        "tonalRamp": [
+          "#030712",
+          "#111827",
+          "#374151",
+          "#4b5563",
+          "#6b7280",
+          "#d1d5db",
+          "#f3f4f6",
+          "#f9fafb"
+        ]
+      },
+      "body-text": {
+        "role": "neutral",
+        "displayName": "正文",
+        "tonalRamp": [
+          "#030712",
+          "#111827",
+          "#374151",
+          "#4b5563",
+          "#6b7280",
+          "#d1d5db",
+          "#f3f4f6",
+          "#f9fafb"
+        ]
+      },
+      "secondary-text": {
+        "role": "neutral",
+        "displayName": "说明文字",
+        "tonalRamp": [
+          "#030712",
+          "#111827",
+          "#374151",
+          "#4b5563",
+          "#6b7280",
+          "#d1d5db",
+          "#f3f4f6",
+          "#f9fafb"
+        ]
+      },
+      "muted-text": {
+        "role": "neutral",
+        "displayName": "辅助文字",
+        "tonalRamp": [
+          "#030712",
+          "#111827",
+          "#374151",
+          "#4b5563",
+          "#6b7280",
+          "#d1d5db",
+          "#f3f4f6",
+          "#f9fafb"
+        ]
+      },
+      "canvas": {
+        "role": "neutral",
+        "displayName": "台面灰",
+        "tonalRamp": [
+          "#030712",
+          "#111827",
+          "#374151",
+          "#4b5563",
+          "#6b7280",
+          "#d1d5db",
+          "#f3f4f6",
+          "#f9fafb"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "纸白",
+        "tonalRamp": [
+          "#030712",
+          "#111827",
+          "#374151",
+          "#4b5563",
+          "#6b7280",
+          "#d1d5db",
+          "#f3f4f6",
+          "#f9fafb"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "细线灰",
+        "tonalRamp": [
+          "#030712",
+          "#111827",
+          "#374151",
+          "#4b5563",
+          "#6b7280",
+          "#d1d5db",
+          "#f3f4f6",
+          "#f9fafb"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "边框灰",
+        "tonalRamp": [
+          "#030712",
+          "#111827",
+          "#374151",
+          "#4b5563",
+          "#6b7280",
+          "#d1d5db",
+          "#f3f4f6",
+          "#f9fafb"
+        ]
+      },
+      "border-strong": {
+        "role": "neutral",
+        "displayName": "描边灰",
+        "tonalRamp": [
+          "#030712",
+          "#111827",
+          "#374151",
+          "#4b5563",
+          "#6b7280",
+          "#d1d5db",
+          "#f3f4f6",
+          "#f9fafb"
+        ]
+      },
+      "brand": {
+        "role": "secondary",
+        "displayName": "抠图祖母绿",
+        "tonalRamp": [
+          "#022c22",
+          "#064e3b",
+          "#065f46",
+          "#047857",
+          "#059669",
+          "#34d399",
+          "#a7f3d0",
+          "#ecfdf5"
+        ]
+      },
+      "brand-strong": {
+        "role": "secondary",
+        "displayName": "深祖母绿",
+        "tonalRamp": [
+          "#022c22",
+          "#064e3b",
+          "#065f46",
+          "#047857",
+          "#059669",
+          "#34d399",
+          "#a7f3d0",
+          "#ecfdf5"
+        ]
+      },
+      "brand-text": {
+        "role": "secondary",
+        "displayName": "祖母绿文字",
+        "tonalRamp": [
+          "#022c22",
+          "#064e3b",
+          "#065f46",
+          "#047857",
+          "#059669",
+          "#34d399",
+          "#a7f3d0",
+          "#ecfdf5"
+        ]
+      },
+      "brand-tint": {
+        "role": "secondary",
+        "displayName": "薄荷底",
+        "tonalRamp": [
+          "#022c22",
+          "#064e3b",
+          "#065f46",
+          "#047857",
+          "#059669",
+          "#34d399",
+          "#a7f3d0",
+          "#ecfdf5"
+        ]
+      },
+      "brand-hover-border": {
+        "role": "secondary",
+        "displayName": "悬停提示绿",
+        "tonalRamp": [
+          "#022c22",
+          "#064e3b",
+          "#065f46",
+          "#047857",
+          "#059669",
+          "#34d399",
+          "#a7f3d0",
+          "#ecfdf5"
+        ]
+      },
+      "error": {
+        "role": "status",
+        "displayName": "错误红",
+        "tonalRamp": [
+          "#450a0a",
+          "#7f1d1d",
+          "#991b1b",
+          "#b91c1c",
+          "#dc2626",
+          "#f87171",
+          "#fecaca",
+          "#fef2f2"
+        ]
+      },
+      "warning": {
+        "role": "status",
+        "displayName": "警告琥珀",
+        "tonalRamp": [
+          "#451a03",
+          "#78350f",
+          "#92400e",
+          "#b45309",
+          "#d97706",
+          "#fbbf24",
+          "#fde68a",
+          "#fffbeb"
+        ]
+      },
+      "dark-canvas": {
+        "role": "neutral",
+        "displayName": "深色台面",
+        "tonalRamp": [
+          "#09090b",
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "dark-surface": {
+        "role": "neutral",
+        "displayName": "深色区块",
+        "tonalRamp": [
+          "#09090b",
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "dark-raised": {
+        "role": "neutral",
+        "displayName": "深色浮起层",
+        "tonalRamp": [
+          "#09090b",
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "dark-border": {
+        "role": "neutral",
+        "displayName": "深色边框",
+        "tonalRamp": [
+          "#09090b",
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "dark-border-strong": {
+        "role": "neutral",
+        "displayName": "深色描边",
+        "tonalRamp": [
+          "#09090b",
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "dark-ink": {
+        "role": "primary",
+        "displayName": "深色模式墨白",
+        "tonalRamp": [
+          "#09090b",
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "dark-body-text": {
+        "role": "neutral",
+        "displayName": "深色正文",
+        "tonalRamp": [
+          "#09090b",
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "dark-secondary-text": {
+        "role": "neutral",
+        "displayName": "深色说明文字",
+        "tonalRamp": [
+          "#09090b",
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "dark-muted-text": {
+        "role": "neutral",
+        "displayName": "深色辅助文字",
+        "tonalRamp": [
+          "#09090b",
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "dark-brand-text": {
+        "role": "secondary",
+        "displayName": "深色祖母绿文字",
+        "tonalRamp": [
+          "#022c22",
+          "#064e3b",
+          "#065f46",
+          "#047857",
+          "#059669",
+          "#34d399",
+          "#a7f3d0",
+          "#ecfdf5"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "每页唯一的主标题。"
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "页面分区标题。"
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "卡片、弹窗、工具名称。"
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "说明性段落，单行约 70 字符以内。"
+      },
+      "body-small": {
+        "displayName": "Body small",
+        "purpose": "界面最常用字号：按钮、导航、表单、辅助说明。"
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "徽章、小标签、计数。"
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "需要等宽的数字或代码，极少使用。"
+      }
+    },
+    "shadows": [
+      {
+        "name": "mark",
+        "value": "0 1px 2px rgb(15 23 42 / 0.08)",
+        "purpose": "logo 图标等小元素的轻微托底。"
+      },
+      {
+        "name": "hover-lift",
+        "value": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+        "purpose": "可点击卡片悬停时浮起。"
+      },
+      {
+        "name": "popover",
+        "value": "0 18px 45px rgb(15 23 42 / 0.14), 0 4px 12px rgb(15 23 42 / 0.08)",
+        "purpose": "下拉菜单。"
+      },
+      {
+        "name": "dialog",
+        "value": "0 25px 50px -12px rgb(0 0 0 / 0.25)",
+        "purpose": "模态弹窗，配合半透明遮罩与轻微背景模糊。"
+      }
+    ],
+    "motion": [
+      {
+        "name": "state-change",
+        "value": "150ms cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "按钮、链接、卡片的颜色和阴影过渡。"
+      },
+      {
+        "name": "brand-hover",
+        "value": "160ms ease",
+        "purpose": "logo 与语言菜单的悬停过渡。"
+      },
+      {
+        "name": "dropzone",
+        "value": "200ms ease-in-out",
+        "purpose": "上传区悬停 / 拖入时的边框与背景变化。"
+      },
+      {
+        "name": "slide-in",
+        "value": "500ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "顶部提示条从上方滑入。"
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "一屏中最主要的操作：开始处理、下载、购买。",
+      "html": "<button class=\"ds-btn-primary\">Start processing</button>",
+      "css": ".ds-btn-primary { font-family: Geist, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; background: #111827; color: #ffffff; border: none; border-radius: 9999px; padding: 10px 20px; font-size: 14px; font-weight: 600; line-height: 20px; cursor: pointer; transition: background-color 150ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-primary:hover { background: #374151; } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #111827; } .ds-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "并列的次要操作：下载透明 PNG、查看定价。",
+      "html": "<button class=\"ds-btn-secondary\">Download transparent PNG</button>",
+      "css": ".ds-btn-secondary { font-family: Geist, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; background: #ffffff; color: #111827; border: 1px solid #d1d5db; border-radius: 9999px; padding: 10px 20px; font-size: 14px; font-weight: 600; line-height: 20px; cursor: pointer; transition: border-color 150ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-secondary:hover { border-color: #6b7280; } .ds-btn-secondary:focus-visible { outline: none; box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #111827; }"
+    },
+    {
+      "name": "Toggle Chips",
+      "kind": "chip",
+      "refersTo": "chip-toggle",
+      "description": "互斥选项：质量档位、画幅比例、导出格式。选中为墨黑底。",
+      "html": "<div class=\"ds-chips\"><button class=\"ds-chip ds-chip-active\" aria-pressed=\"true\">Fast</button><button class=\"ds-chip\" aria-pressed=\"false\">Fine (hair / fur)</button></div>",
+      "css": ".ds-chips { display: flex; gap: 8px; flex-wrap: wrap; } .ds-chip { font-family: Geist, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; background: #ffffff; color: #374151; border: 1px solid #d1d5db; border-radius: 9999px; padding: 4px 12px; font-size: 14px; font-weight: 500; cursor: pointer; transition: border-color 150ms, background-color 150ms, color 150ms; } .ds-chip:hover { border-color: #9ca3af; } .ds-chip:focus-visible { outline: none; box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #111827; } .ds-chip-active { background: #111827; color: #ffffff; border-color: #111827; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "邮箱、自定义颜色值等文本输入。",
+      "html": "<input class=\"ds-input\" type=\"email\" placeholder=\"you@example.com\">",
+      "css": ".ds-input { font-family: Geist, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; background: #ffffff; color: #111827; border: 1px solid #d1d5db; border-radius: 8px; padding: 10px 12px; font-size: 14px; line-height: 20px; width: 260px; transition: border-color 150ms, box-shadow 150ms; } .ds-input::placeholder { color: #6b7280; } .ds-input:focus { outline: none; border-color: #111827; box-shadow: 0 0 0 2px rgb(17 24 39 / 0.15); }"
+    },
+    {
+      "name": "Feature Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "工具入口或功能说明卡片：静止扁平，悬停浮起。",
+      "html": "<a class=\"ds-card\" href=\"#\"><span class=\"ds-icon-tile\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"3\"/><path d=\"M3 15l5-5 4 4 3-3 6 6\"/></svg></span><strong class=\"ds-card-title\">Product photos</strong><span class=\"ds-card-body\">White backgrounds and square canvases for listings.</span></a>",
+      "css": ".ds-card { font-family: Geist, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; display: flex; flex-direction: column; gap: 8px; width: 260px; background: #f9fafb; border: 1px solid #f3f4f6; border-radius: 12px; padding: 24px; color: #111827; text-decoration: none; transition: box-shadow 150ms cubic-bezier(0.4,0,0.2,1); } .ds-card:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); } .ds-card:focus-visible { outline: 2px solid #111827; outline-offset: 2px; } .ds-card-title { font-size: 18px; font-weight: 700; line-height: 28px; } .ds-card-body { font-size: 14px; line-height: 20px; color: #4b5563; } .ds-icon-tile { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 12px; background: #ecfdf5; color: #059669; }"
+    },
+    {
+      "name": "Dropzone",
+      "kind": "custom",
+      "refersTo": "dropzone",
+      "description": "标志性组件：上传区。虚线框，悬停时变为祖母绿提示。",
+      "html": "<div class=\"ds-dropzone\" tabindex=\"0\" role=\"button\"><svg width=\"40\" height=\"40\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12\"/></svg><strong>Drag &amp; drop image here, or click to upload</strong><span>Supports JPG / PNG / WebP</span></div>",
+      "css": ".ds-dropzone { font-family: Geist, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; width: 420px; min-height: 220px; background: #ffffff; border: 2px dashed #d1d5db; border-radius: 12px; padding: 32px; color: #374151; text-align: center; cursor: pointer; transition: border-color 200ms, background-color 200ms; } .ds-dropzone svg { color: #9ca3af; margin-bottom: 8px; } .ds-dropzone strong { font-size: 18px; font-weight: 500; } .ds-dropzone span { font-size: 14px; color: #6b7280; } .ds-dropzone:hover, .ds-dropzone:focus-visible { outline: none; border-color: #34d399; background: rgb(236 253 245 / 0.4); }"
+    },
+    {
+      "name": "Top Navigation",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "吸顶顶栏：左 logo，右侧文字导航，当前页为墨黑。",
+      "html": "<nav class=\"ds-nav\"><span class=\"ds-nav-brand\">Miao<span>Cut</span></span><a class=\"ds-nav-link ds-nav-active\" href=\"#\">Background Remover</a><a class=\"ds-nav-link\" href=\"#\">Product</a><a class=\"ds-nav-link\" href=\"#\">Portrait</a><a class=\"ds-nav-link\" href=\"#\">Pricing</a></nav>",
+      "css": ".ds-nav { font-family: Geist, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; display: flex; align-items: center; gap: 16px; padding: 16px 20px; background: rgb(255 255 255 / 0.95); border-bottom: 1px solid #e5e7eb; } .ds-nav-brand { font-size: 24px; font-weight: 900; letter-spacing: -0.025em; color: #111827; margin-right: auto; } .ds-nav-brand span { color: #10b981; } .ds-nav-link { font-size: 14px; font-weight: 500; color: #4b5563; text-decoration: none; transition: color 150ms; } .ds-nav-link:hover, .ds-nav-active { color: #111827; } .ds-nav-link:focus-visible { outline: 2px solid #111827; outline-offset: 2px; border-radius: 4px; }"
+    },
+    {
+      "name": "Dialog",
+      "kind": "custom",
+      "refersTo": "dialog",
+      "description": "模态弹窗：唯一常驻大阴影的元素。",
+      "html": "<div class=\"ds-dialog\" role=\"dialog\"><span class=\"ds-badge\">Pro</span><strong class=\"ds-dialog-title\">Today's free quota is used up</strong><p class=\"ds-dialog-body\">It resets automatically tomorrow. Need more right now? Batch processing uses credits instead.</p><div class=\"ds-dialog-actions\"><button class=\"ds-dialog-primary\">Try batch processing</button><button class=\"ds-dialog-text\">Maybe later</button></div></div>",
+      "css": ".ds-dialog { font-family: Geist, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; width: 400px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 20px; box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25); display: flex; flex-direction: column; gap: 8px; } .ds-badge { align-self: flex-start; background: #ecfdf5; color: #047857; border-radius: 9999px; padding: 4px 10px; font-size: 12px; font-weight: 600; } .ds-dialog-title { font-size: 20px; font-weight: 700; color: #030712; } .ds-dialog-body { margin: 0; font-size: 14px; line-height: 22px; color: #4b5563; } .ds-dialog-actions { display: flex; gap: 8px; margin-top: 12px; } .ds-dialog-primary { flex: 1; background: #111827; color: #fff; border: none; border-radius: 8px; padding: 10px 16px; font-size: 14px; font-weight: 600; cursor: pointer; } .ds-dialog-primary:hover { background: #374151; } .ds-dialog-text { background: none; border: 1px solid #d1d5db; border-radius: 8px; padding: 10px 16px; font-size: 14px; font-weight: 600; color: #1f2937; cursor: pointer; } .ds-dialog-text:hover { border-color: #6b7280; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "安静的工作台",
+    "overview": "MiaoCut 的界面像一张收拾干净的工作台：工具摆在顺手的位置，台面本身不抢眼，用户放上来的图片和处理结果才是主角。界面整体克制、实用、可信，一眼就能看懂下一步该做什么，不用装饰去争夺注意力。\n\n色彩以中性灰为底，近黑色承担所有主要操作，品牌祖母绿只在少数地方出现（成功状态、图标底色、悬停提示、选中态），因为稀少所以醒目。层次靠浅色底和细边框表达，静止时是平的，只有被鼠标指向、被打开的东西（悬停的卡片、下拉菜单、弹窗）才浮起来。全站深色模式是一等公民，每一处浅色设计都有对应的深色版本。\n\n这套系统来自免费工具页的现有实现（首页、商品图、人像、去水印等）。会员模块（定价、批量、账户）目前偏离了它，重新设计时以本文件为准。",
+    "keyCharacteristics": [
+      "中性灰底 + 近黑色主操作 + 少量祖母绿点缀",
+      "静止扁平，交互时才浮起",
+      "卡片 12px 圆角，操作按钮和切换标签用胶囊形，表单控件 8px",
+      "全站只用 Geist 一个字体家族，靠字重和字号拉开层级",
+      "深色模式完整对应，使用 zinc 灰阶"
+    ],
+    "rules": [
+      {
+        "name": "The One Accent Rule",
+        "body": "祖母绿在任何一屏上占比不超过约 10%。它出现在成功、选中、图标底板和悬停提示上，不用来做主按钮或大面积背景。",
+        "section": "colors"
+      },
+      {
+        "name": "The Readable Green Rule",
+        "body": "绿色文字在浅色模式一律用 brand-text（#047857），不用 brand / brand-strong；后两者对白底对比度不足 4.5:1。",
+        "section": "colors"
+      },
+      {
+        "name": "The Single Green Rule",
+        "body": "品牌绿以祖母绿为准（2026-10-11 确认）。logo 字标里的青绿色（#1eb8a7）是历史遗留，待统一，不得在其他地方使用。",
+        "section": "colors"
+      },
+      {
+        "name": "The One Family Rule",
+        "body": "全站只用 Geist（加极少量 Geist Mono）。层级靠字重（400 / 500 / 600 / 700）和字号拉开，不引入第二种展示字体。",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-At-Rest Rule",
+        "body": "卡片和区块静止时不带阴影。阴影是对交互的回应（悬停、展开、弹出），不是装饰。",
+        "section": "elevation"
+      },
+      {
+        "name": "The No Over-Round Rule",
+        "body": "卡片和区块的圆角不超过 16px。",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "**Do** 主操作一律用墨黑胶囊按钮（深色模式反转为近白），一屏只有一个最主要的操作。",
+      "**Do** 绿色文字在浅色模式用 brand-text（#047857），深色模式用 dark-brand-text（#34d399）。",
+      "**Do** 每个浅色样式都写出对应的深色样式（zinc 灰阶），深色模式与浅色模式同等完整。",
+      "**Do** 层级先用台面灰 / 纸白交替和 1px 细线表达，阴影只给悬停、下拉、弹窗。",
+      "**Do** 卡片 12px、控件 8px、操作按钮和切换标签胶囊形。",
+      "**Do** 透明图一律放在浅灰棋盘格上展示。",
+      "**Do** 所有页面（包括会员模块）共用同一套 Tailwind 样式和顶栏，不另起一套独立 CSS。"
+    ],
+    "donts": [
+      "**Don't** 用祖母绿做主按钮或大面积背景；绿色只表示成功、选中和少量重点（The One Accent Rule）。",
+      "**Don't** 在 logo 字标以外使用青绿色 #1eb8a7。",
+      "**Don't** 引入第二种强调色（蓝、紫、粉等）做装饰；红色和琥珀色只用于错误和警告。",
+      "**Don't** 让卡片静止时带阴影，也不要“1px 边框 + 大范围柔和阴影”叠在一起。",
+      "**Don't** 卡片和区块圆角超过 16px。",
+      "**Don't** 引入 Geist 以外的展示字体。",
+      "**Don't** 用比 muted-text（#6b7280）更浅的灰色写正文或说明文字。"
+    ]
+  }
+}
