@@ -1823,19 +1823,13 @@
     function uploadWithProgress(formData) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            // 登录用户走 Pro 网关（GPU，按 profile 扣分）；匿名走免费网关（CPU，含 localhost dev）。
-            // MiaoCutPro 未加载或未登录时，url 与鉴权头与原来完全一致，零回归。
-            const pro = window.MiaoCutPro;
-            const loggedIn = !!(pro && pro.isLoggedIn && pro.isLoggedIn());
-            const url = loggedIn
-                ? pro.removeBackgroundUrl(currentProfile)
-                : `${API_BASE}/api/remove-background?profile=${encodeURIComponent(currentProfile)}`;
+            // 单图一律走免费网关（CPU），登录与否都一样、不扣积分。
+            // 产品决策（2026-10）：积分只用于批量（/batch/）。早期版本里登录用户单图会走 Pro 网关
+            // 的 GPU 并扣分，等于「登录反而失去免费额度」，会劝退注册，已取消。
+            // Pro 网关的 /v1/remove-background 仍保留在服务端，以后若做「单图高清 GPU」可按需接回。
+            const url = `${API_BASE}/api/remove-background?profile=${encodeURIComponent(currentProfile)}`;
             xhr.open('POST', url);
             xhr.responseType = 'blob';
-            // 登录用户带 Authorization（Supabase JWT）；匿名为空
-            if (loggedIn && pro.authHeader) {
-                for (const [k, v] of Object.entries(pro.authHeader())) xhr.setRequestHeader(k, v);
-            }
 
             xhr.upload.onprogress = (e) => {
                 if (!e.lengthComputable) return;
@@ -2069,9 +2063,6 @@
     async function handleFiles(files) {
         const file = files[0];
 
-        // 选图即预热 Beam（登录用户）：把 GPU 冷启动藏进后续「压缩+上传」窗口；匿名时是 no-op。
-        window.MiaoCutPro?.prewarm?.();
-
         if (!ALLOWED_TYPES.includes(file.type)) {
             track('format-rejected');
             alert(t('alertSize'));
@@ -2129,13 +2120,6 @@
                     track('cutout-rate-limited');
                     showRateBurstNotice(Math.max(1, Math.round(error.retryAfter || 30)));
                 }
-                return;
-            }
-            // 积分不足（登录付费路径专有）→ 引导去充值
-            if (error.status === 402) {
-                track('cutout-insufficient-credits');
-                resetDropzone();
-                window.location.href = '/pricing/';
                 return;
             }
             track('cutout-failed');
