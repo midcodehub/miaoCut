@@ -1,0 +1,19 @@
+account/credits/index.html
+  s_c8dfc96faf2462::t_9d3fad20d1fbbb 218-224
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "61924b72a094c0c91e7fd20c0f2f9153f3021d91",
+  "prompts": {},
+  "sessions": {
+    "s_c8dfc96faf2462": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8d4f64c4-4d50-40db-ab2c-f573eacba2a0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "midcodehub <408124546@qq.com>"
+    }
+  }
+}
