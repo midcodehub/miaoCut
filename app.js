@@ -1714,7 +1714,8 @@
         const url = URL.createObjectURL(blob);
         downloadUrl(url, `${basenameFromFile(file)}_transparent.png`);
         setTimeout(() => URL.revokeObjectURL(url), 1000);
-        track('transparent-download');
+        // 不在这里报 transparent-download：首页抠图成功必然自动下载，和 cutout-success 一一对应，
+        // 再报一次只会白白多消耗一条 Umami 额度。子页「下载透明图」按钮那里的上报保留。
     }
 
     function bgLabelKey(bg) {

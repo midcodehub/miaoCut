@@ -21,8 +21,12 @@
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://miaocut.app/terms/">
     <link rel="stylesheet" href="/output.css?v=aa100de4">
+    <!-- umami-filter.js：上报前过滤/去重以节省 Umami 额度（规则见该文件顶部注释），须在 Umami 脚本之前加载 -->
+    <script defer src="/umami-filter.js"></script>
     <script defer src="https://cloud.umami.is/script.js"
-        data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"></script>
+        data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"
+        data-domains="miaocut.app,www.miaocut.app"
+        data-before-send="miaocutUmamiBeforeSend"></script>
 </head>
 
 <body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-brand-100 selection:text-brand-900 dark:bg-zinc-950 dark:text-zinc-200">
