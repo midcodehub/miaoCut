@@ -1,0 +1,19 @@
+app.js
+  s_c8dfc96faf2462::t_2aab5740c55dd7 1826-1830
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "7d02c985ce8a7ec95c5e40fe581bd80ba04a03cc",
+  "prompts": {},
+  "sessions": {
+    "s_c8dfc96faf2462": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8d4f64c4-4d50-40db-ab2c-f573eacba2a0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "midcodehub <408124546@qq.com>"
+    }
+  }
+}
