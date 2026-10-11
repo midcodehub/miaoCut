@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-pi18n-title="batchDocTitle">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="noindex" />
-  <title>Batch Background Remover — MiaoCut</title>
+  <meta name="robots" content="index,follow" />
+  <meta name="description" content="Remove backgrounds from up to 200 images at once and download them as a ZIP. Pay only for successful images with credits; new accounts get 100 free credits." />
+  <link rel="canonical" href="https://miaocut.app/batch/" />
+  <title>Batch Background Remover — Remove Backgrounds from Many Images | MiaoCut</title>
+  <!-- 中英文案（运行时切换），须在 batch.js 之前加载 -->
+  <script src="/pro-i18n.js"></script>
   <!-- MiaoCut Pro 配置：填入真实 Supabase key 后启用登录。PRO_API_BASE 为付费网关。 -->
   <script>
         const isDev = window.location.hostname.includes('dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -75,6 +79,43 @@
     }
 
     .bal b {
+      color: var(--fg);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 14px;
+    }
+
+    .nav a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .nav a:hover {
+      color: var(--fg);
+    }
+
+    .nav .lang {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 12px;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 8px 0 0;
+    }
+
+    .note a,
+    .msg a {
       color: var(--fg);
     }
 
@@ -370,19 +411,24 @@
   <div class="wrap">
     <header>
       <a class="logo" href="/">miao<span>cut</span></a>
-      <div class="bal" id="balance"></div>
+      <nav class="nav">
+        <span class="bal" id="balance"></span>
+        <a href="/pricing/" data-pi18n="navPricing">Pricing</a>
+        <a href="/account/credits/" data-pi18n="navAccount">Account</a>
+        <button type="button" class="lang" data-pi18n-switch>中文</button>
+      </nav>
     </header>
 
-    <h1>Batch Background Remover</h1>
-    <p class="sub">Upload many images, remove backgrounds in bulk, download all as a ZIP.</p>
+    <h1 data-pi18n="batchH1">Batch Background Remover</h1>
+    <p class="sub" data-pi18n="batchSub">Upload up to 200 images, remove backgrounds in bulk, and download them all as a ZIP.</p>
 
     <!-- 登录门 -->
     <div class="card" id="login-gate">
-      <p style="margin-top:0">Sign in to use batch processing.</p>
+      <p style="margin-top:0" data-pi18n="batchLogin">Sign in to use batch processing. New accounts get 100 free credits.</p>
       <div class="row">
-        <button id="btn-google">Continue with Google</button>
-        <input type="email" id="login-email" placeholder="you@example.com" />
-        <button id="btn-email">Send magic link</button>
+        <button id="btn-google" data-pi18n="loginGoogle">Continue with Google</button>
+        <input type="email" id="login-email" placeholder="you@example.com" data-pi18n-ph="emailPlaceholder" autocomplete="email" />
+        <button id="btn-email" data-pi18n="batchSendLink">Send sign-in link</button>
       </div>
       <div class="msg" id="login-msg"></div>
     </div>
@@ -390,23 +436,23 @@
     <!-- 工具 -->
     <div class="card hidden" id="tool">
       <div class="toggle" id="profile-toggle">
-        <button data-profile="fast" class="active">Fast · 1 credit</button>
-        <button data-profile="fur">Fine hair · 2 credits</button>
+        <button data-profile="fast" class="active" data-pi18n="profileFast">Fast · 1 credit</button>
+        <button data-profile="fur" data-pi18n="profileFur">Fine hair · 2 credits</button>
       </div>
       <div class="dz" id="dropzone">
-        <p style="margin:0"><strong>Click or drop images here</strong></p>
-        <p style="margin:6px 0 0; font-size:13px">PNG / JPG / WebP · up to 200 images</p>
+        <p style="margin:0"><strong data-pi18n="dzTitle">Click or drop images here</strong></p>
+        <p style="margin:6px 0 0; font-size:13px" data-pi18n="dzSub">PNG / JPG / WebP · up to 200 images</p>
       </div>
       <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" multiple class="hidden" />
       <div class="files" id="file-list"></div>
       <div class="cost hidden" id="cost-line"></div>
-      <button class="primary hidden" id="btn-start">Start processing</button>
+      <button class="primary hidden" id="btn-start" data-pi18n="startBtn">Start processing</button>
     </div>
 
     <!-- 进度 -->
     <div class="card hidden" id="progress">
       <div class="row" style="justify-content:space-between">
-        <strong id="progress-text">Preparing…</strong>
+        <strong id="progress-text" data-pi18n="stPreparing">Preparing…</strong>
       </div>
       <div class="bar">
         <div id="progress-bar"></div>
@@ -418,9 +464,13 @@
     <div class="card hidden" id="results">
       <div class="row" style="justify-content:space-between; margin-bottom:8px">
         <strong id="results-summary"></strong>
-        <button class="primary" id="btn-zip">Download all (ZIP)</button>
+        <button class="primary" id="btn-zip" data-pi18n="zipBtn">Download all (ZIP)</button>
       </div>
       <div class="msg" id="results-msg"></div>
+      <p class="note" data-pi18n="batchKeep">Results are kept for 24 hours, then deleted automatically.</p>
+      <div class="row" style="margin-top:12px">
+        <button id="btn-again" data-pi18n="batchAgain">Process more images</button>
+      </div>
     </div>
   </div>
 

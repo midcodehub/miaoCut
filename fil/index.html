@@ -232,7 +232,7 @@
       源：src/input.css；构建命令：npm run build:css；输出：output.css
       改动 index.html 的 class 后必须重新跑 build:css 并把 output.css 一起提交。
     -->
-    <link rel="stylesheet" href="/output.css?v=f673e167">
+    <link rel="stylesheet" href="/output.css?v=65ef86a2">
     <!--
       Umami Analytics - 隐私友好的流量统计
     -->
@@ -279,6 +279,9 @@
                     <a href="/fil/old-photo-restoration/"
                         class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100"
                         data-i18n="navRestore">Lumang Larawan</a>
+                    <!-- 顶栏已较满：「定价」只在 ≥1280px 显示，避免 1024~1279px 时导航换行（窄屏可从批量入口、额度弹窗进入定价） -->
+                    <a href="/pricing/" class="hidden xl:inline hover:text-gray-900 transition-colors dark:hover:text-zinc-100"
+                        data-i18n="navPricing">Presyo</a>
                 </nav>
                 <a href="https://github.com/midcodehub/miaoCut" target="_blank" rel="noopener"
                     aria-label="MiaoCut on GitHub (open source)" title="View source on GitHub"
@@ -397,13 +400,13 @@
 
             <div id="batch-fake-door"
                 class="mt-4 flex flex-col items-center justify-center gap-2 text-center sm:flex-row">
-                <button id="batch-pro-trigger" type="button"
+                <a id="batch-pro-trigger" href="/batch/" data-umami-event="batch-door-clicked"
                     class="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm transition-colors hover:border-gray-400 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500 dark:hover:bg-zinc-800 dark:focus:ring-zinc-100">
                     <span data-i18n="batchDoorButton">Batch Process</span>
                     <span
                         class="rounded-full bg-gray-900 px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.08em] text-white dark:bg-zinc-50 dark:text-zinc-900"
                         data-i18n="batchDoorBadge">Pro</span>
-                </button>
+                </a>
                 <p class="text-xs text-gray-500 dark:text-zinc-400" data-i18n="batchDoorHint">Alisin ang background ng 20+ larawan nang sabay.</p>
             </div>
 
@@ -1572,7 +1575,7 @@
     <script defer src="/editor/presets.js?v=87652954"></script>
     <script defer src="/editor/engine.js?v=0a2be26a"></script>
     <script defer src="/editor/panel.js?v=15ad8bba"></script>
-    <script src="/app.js?v=d56dabcd"></script>
+    <script src="/app.js?v=fb982cfb"></script>
     <script src="/language-menu.js"></script>
 
 </body>

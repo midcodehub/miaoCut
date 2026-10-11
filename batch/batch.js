@@ -5,6 +5,9 @@
 // =============================================================================
 import MiaoCutPro from "/pro-account.js";
 
+// 中英文案见 /pro-i18n.js（页面里先于本文件加载）
+const { t } = window.MiaoCutProI18n;
+
 const CREDIT_COST = { fast: 1, fur: 2 };
 const MAX_IMAGES = 200;
 const ALLOWED = ["image/png", "image/jpeg", "image/webp"];
@@ -49,7 +52,7 @@ async function render() {
   if (logged) {
     try {
       const b = await MiaoCutPro.balance();
-      els.balance.innerHTML = `Balance: <b>${b.total}</b> credits`;
+      els.balance.innerHTML = t("batchBalance", { n: Number(b.total).toLocaleString() });
     } catch (_) { /* ignore */ }
   } else {
     els.balance.textContent = "";
@@ -58,16 +61,16 @@ async function render() {
 
 els.btnGoogle.addEventListener("click", async () => {
   try { await MiaoCutPro.signInWithGoogle(window.location.href); }
-  catch (e) { els.loginMsg.textContent = e.message === "auth_unavailable" ? "登录暂未配置（Supabase）。" : "登录失败，请重试。"; }
+  catch (e) { els.loginMsg.textContent = e.message === "auth_unavailable" ? t("loginUnavailable") : t("loginGoogleFailed"); }
 });
 els.btnEmail.addEventListener("click", async () => {
   const email = els.loginEmail.value.trim();
-  if (!email) return;
+  if (!email) { els.loginMsg.textContent = t("loginNeedEmail"); return; }
   try {
     await MiaoCutPro.signInWithEmail(email, window.location.href);
-    els.loginMsg.textContent = "Magic link sent — check your email.";
+    els.loginMsg.textContent = t("loginSent");
   } catch (e) {
-    els.loginMsg.textContent = e.message === "auth_unavailable" ? "登录暂未配置（Supabase）。" : "Failed to send, try again.";
+    els.loginMsg.textContent = e.message === "auth_unavailable" ? t("loginUnavailable") : t("loginSendFailed");
   }
 });
 
@@ -94,7 +97,7 @@ function addFiles(fileList) {
     if (ALLOWED.includes(f.type) && files.length < MAX_IMAGES) files.push(f);
   }
   els.fileInput.value = "";
-  els.fileList.textContent = files.length ? `${files.length} image${files.length > 1 ? "s" : ""} selected` : "";
+  els.fileList.textContent = files.length ? (files.length === 1 ? t("filesOne") : t("filesMany", { n: files.length })) : "";
   updateCost();
 }
 
@@ -104,7 +107,7 @@ function updateCost() {
   els.costLine.classList.toggle("hidden", !has);
   if (has) {
     const cost = files.length * CREDIT_COST[profile];
-    els.costLine.innerHTML = `${files.length} × ${CREDIT_COST[profile]} = <b>${cost}</b> credits · failed images are not charged`;
+    els.costLine.innerHTML = t("costLine", { n: files.length, c: CREDIT_COST[profile], t: cost });
   }
 }
 
@@ -120,7 +123,7 @@ async function start() {
 
   try {
     // 1) 建任务 → 拿到每图的预签名 PUT URL
-    setProgress("Preparing…", 0.02);
+    setProgress(t("stPreparing"), 0.02);
     const create = await MiaoCutPro.proFetch("/v1/batch", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -156,11 +159,11 @@ async function start() {
       await putToR2(files[i], up.put_url);
       uploaded++;
       setBadge(up.image_id, "↑", "");
-      setProgress(`Uploading ${uploaded}/${job.uploads.length}`, (uploaded / job.uploads.length) * 0.4);
+      setProgress(t("stUploading", { i: uploaded, n: job.uploads.length }), (uploaded / job.uploads.length) * 0.4);
     }, 4);
 
     // 3) 开始 → 冻结积分 + 入队 Beam
-    setProgress("Starting…", 0.42);
+    setProgress(t("stStarting"), 0.42);
     const startRes = await MiaoCutPro.proFetch(`/v1/batch/${job.job_id}/start`, { method: "POST" });
     if (startRes.status === 402) return paywall();
     if (!startRes.ok) throw new Error(`start_${startRes.status}`);
@@ -168,8 +171,9 @@ async function start() {
     // 4) 轮询进度
     await poll(job.job_id, job.uploads.length);
   } catch (e) {
-    setProgress("Something went wrong: " + e.message, 1, true);
+    setProgress(t("stError", { m: e.message }), 1, true);
     els.btnStart.disabled = false;
+    showAgainButtonInProgress();
   }
 }
 
@@ -200,7 +204,7 @@ async function poll(jobId, total) {
       }
     }
     const resolved = data.succeeded + data.failed;
-    setProgress(`Processing… ${resolved}/${total} done`, 0.4 + (resolved / total) * 0.6);
+    setProgress(t("stProcessing", { d: resolved, n: total }), 0.4 + (resolved / total) * 0.6);
     if (data.done) {
       return showResults(data);
     }
@@ -210,8 +214,8 @@ async function poll(jobId, total) {
 function showResults(data) {
   els.progress.classList.add("hidden");
   els.results.classList.remove("hidden");
-  els.resultsSummary.textContent = `Done — ${data.succeeded} succeeded, ${data.failed} failed`;
-  els.resultsMsg.textContent = data.failed ? "Failed images were not charged." : "";
+  els.resultsSummary.textContent = t("resDone", { s: data.succeeded, f: data.failed });
+  els.resultsMsg.textContent = data.failed ? t("resFailedFree") : "";
   els.btnZip.disabled = data.succeeded === 0;
   render(); // 刷新余额
 }
@@ -220,7 +224,7 @@ els.btnZip.addEventListener("click", async () => {
   const done = lastImages.filter((im) => im.status === "done" && im.download_url);
   if (!done.length) return;
   els.btnZip.disabled = true;
-  els.resultsMsg.textContent = "Packing ZIP…";
+  els.resultsMsg.textContent = t("zipPacking");
   try {
     const zip = new JSZip();
     let n = 0;
@@ -228,7 +232,7 @@ els.btnZip.addEventListener("click", async () => {
       const blob = await (await fetch(im.download_url)).blob();
       const base = (im.filename || "image").replace(/\.[^.]+$/, "");
       zip.file(`${base}_removed.webp`, blob);
-      els.resultsMsg.textContent = `Packing ZIP… ${++n}/${done.length}`;
+      els.resultsMsg.textContent = t("zipPackingN", { i: ++n, n: done.length });
     }, 4);
     const out = await zip.generateAsync({ type: "blob" });
     const a = document.createElement("a");
@@ -238,7 +242,7 @@ els.btnZip.addEventListener("click", async () => {
     setTimeout(() => URL.revokeObjectURL(a.href), 3000);
     els.resultsMsg.textContent = "";
   } catch (e) {
-    els.resultsMsg.textContent = "ZIP failed: " + e.message;
+    els.resultsMsg.textContent = t("zipFailed", { m: e.message });
   } finally {
     els.btnZip.disabled = false;
   }
@@ -275,10 +279,47 @@ function setProgress(text, frac, isErr) {
   els.progressBar.style.width = Math.max(0, Math.min(1, frac)) * 100 + "%";
 }
 
+// 积分不足：提示 + 「去购买积分」链接（不再 1.2 秒后自动跳走，避免用户来不及看清提示）
 function paywall() {
-  setProgress("Not enough credits.", 1, true);
-  setTimeout(() => { window.location.href = "/pricing/"; }, 1200);
+  setProgress(t("stNoCredits"), 1, true);
+  els.btnStart.disabled = false;
+  const link = document.createElement("a");
+  link.href = "/pricing/";
+  link.textContent = t("buyCreditsLink");
+  link.style.marginLeft = "8px";
+  els.progressText.appendChild(link);
+  showAgainButtonInProgress();
 }
+
+// 进度卡里放一个「返回」按钮（积分不足 / 出错后可以回到选图界面）
+function showAgainButtonInProgress() {
+  if (els.progress.querySelector("#btn-back")) return;
+  const btn = document.createElement("button");
+  btn.id = "btn-back";
+  btn.textContent = t("batchAgain");
+  btn.style.marginTop = "12px";
+  btn.addEventListener("click", resetBatch);
+  els.progress.appendChild(btn);
+}
+
+// 「继续处理更多图片」：清空本批状态，回到选图界面（不刷新页面，保留登录态和余额显示）
+function resetBatch() {
+  files = [];
+  chips = {};
+  lastImages = [];
+  els.imageGrid.innerHTML = "";
+  els.fileList.textContent = "";
+  els.resultsMsg.textContent = "";
+  const back = els.progress.querySelector("#btn-back");
+  if (back) back.remove();
+  els.results.classList.add("hidden");
+  els.progress.classList.add("hidden");
+  els.tool.classList.remove("hidden");
+  els.btnStart.disabled = false;
+  updateCost();
+  render();
+}
+document.getElementById("btn-again").addEventListener("click", resetBatch);
 
 // ---------- 启动 ----------
 MiaoCutPro.init().then(render).catch(() => render());

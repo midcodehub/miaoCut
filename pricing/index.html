@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-pi18n-title="pricingDocTitle">
 
 <head>
     <meta charset="UTF-8">
@@ -9,11 +9,12 @@
             var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
             document.documentElement.classList.toggle('dark', d); } catch (e) {}
     })();</script>
-    <title>Pricing — Credits for Batch & HD | MiaoCut</title>
-    <meta name="description" content="Buy MiaoCut credits. Single images stay free. Credits power high-volume and HD background removal. Failed jobs are never charged.">
+    <title>Pricing — Credits for Batch Background Removal | MiaoCut</title>
+    <meta name="description" content="MiaoCut pricing: single-image background removal is free. Credits power batch processing from $0.016 per image. New accounts get 100 free credits. Failed images are never charged.">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://miaocut.app/pricing/">
-    <link rel="stylesheet" href="/output.css?v=f673e167">
+    <link rel="stylesheet" href="/output.css?v=65ef86a2">
+    <script src="/pro-i18n.js"></script>
     <!-- Pro 配置:部署时填入真实值 -->
     <script>
         const isDev = window.location.hostname.includes('dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -38,61 +39,77 @@
                 <img src="/favicon-nav.png" alt="" class="site-brand-mark" width="36" height="36">
                 <span class="site-brand-text">MiaoCut</span>
             </a>
-            <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600 dark:text-zinc-300">
-                <a href="/" class="hover:text-gray-900 dark:hover:text-zinc-100">Background Remover</a>
-                <a href="/pricing/" class="text-brand-600 dark:text-brand-400">Pricing</a>
-                <a href="/account/credits/" class="hover:text-gray-900 dark:hover:text-zinc-100">Account</a>
-                <a id="nav-auth" href="#" class="hover:text-gray-900 dark:hover:text-zinc-100">Login</a>
+            <nav class="flex items-center gap-3 text-sm font-medium text-gray-600 sm:gap-4 dark:text-zinc-300">
+                <a href="/" class="hidden sm:inline hover:text-gray-900 dark:hover:text-zinc-100" data-pi18n="navTools">Background Remover</a>
+                <a href="/batch/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-pi18n="navBatch">Batch</a>
+                <a href="/pricing/" class="text-brand-600 dark:text-brand-400" data-pi18n="navPricing">Pricing</a>
+                <a id="nav-auth" href="/account/credits/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-pi18n="navLogin">Sign in</a>
+                <button type="button" data-pi18n-switch class="rounded-full border border-gray-300 px-2.5 py-1 text-xs text-gray-600 hover:border-gray-500 dark:border-zinc-700 dark:text-zinc-300">中文</button>
             </nav>
         </div>
     </header>
 
     <main class="mx-auto w-full max-w-6xl flex-1 px-5 py-12">
+        <p id="pricing-notice" class="mx-auto mb-6 hidden max-w-2xl rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300" data-pi18n="pricingCanceled" hidden>Checkout was canceled — you have not been charged.</p>
         <div class="text-center">
-            <h1 class="text-3xl font-bold sm:text-4xl">Simple credit pricing</h1>
-            <p class="mx-auto mt-3 max-w-2xl text-gray-600 dark:text-zinc-400">
-                Single images stay <strong>free</strong>. Credits power high-volume and HD processing.
-                <strong>1 image = 1 credit</strong> (fine/fur edges = 2). Failed jobs are never charged.
+            <h1 class="text-3xl font-bold sm:text-4xl" data-pi18n="pricingH1">Simple credit pricing</h1>
+            <p class="mx-auto mt-3 max-w-2xl text-gray-600 dark:text-zinc-400" data-pi18n-html="pricingSub">
+                Single images are <strong>free</strong>, no account needed. Credits are used for batch processing:
+                <strong>1 image = 1 credit</strong> (Fine hair mode = 2). Failed images are never charged.
             </p>
+            <p class="mx-auto mt-3 max-w-2xl text-sm font-medium text-emerald-700 dark:text-emerald-400" data-pi18n="pricingBonus">New accounts get 100 free credits — enough to batch-process 100 images.</p>
+            <a href="/batch/" class="mt-5 inline-block rounded-full border border-gray-300 bg-white px-5 py-2 text-sm font-semibold text-gray-800 transition-colors hover:border-gray-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:border-zinc-500" data-pi18n="pricingTryBatch">Try batch processing</a>
         </div>
 
-        <!-- 充值包(价格为占位,最终值待定;积分数与后端 SKU 表一致)-->
-        <section class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" id="packs">
-            <!-- 卡片由 JS 渲染 -->
-        </section>
+        <!-- 充值包由 JS 渲染。⚠️ 价格是展示用，必须与 Stripe 里 4 个 Price 的实际金额手动保持一致；
+             积分数必须与 pro-gateway SKU_TABLE 一致（实际到账以服务端为准）。 -->
+        <section class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" id="packs"></section>
 
-        <p class="mt-8 text-center text-sm text-gray-500 dark:text-zinc-500">
-            Top-up credits are valid for 12 months. Prices shown exclude tax (calculated at checkout).
+        <p class="mx-auto mt-8 max-w-2xl text-center text-sm text-gray-500 dark:text-zinc-500" data-pi18n-html="pricingFine">
+            Purchased credits are valid for 12 months. Prices exclude tax, which is calculated at checkout.
+            Unused credits can be refunded within 14 days — see our <a href="/terms/" class="underline underline-offset-2">Terms</a>.
         </p>
     </main>
 
     <footer class="border-t border-gray-200 py-8 text-center text-sm text-gray-500 dark:border-zinc-800 dark:text-zinc-500">
-        MiaoCut · Free, privacy-first AI image tools.
+        <p data-pi18n="footerTagline">MiaoCut · Free, privacy-first AI image tools.</p>
+        <p class="mt-2 space-x-4">
+            <a href="/terms/" class="hover:text-gray-800 dark:hover:text-zinc-300" data-pi18n="footerTerms">Terms</a>
+            <a href="/privacy/" class="hover:text-gray-800 dark:hover:text-zinc-300" data-pi18n="footerPrivacy">Privacy</a>
+        </p>
     </footer>
 
     <script type="module">
         import MiaoCutPro from "/pro-account.js";
+        const { t } = window.MiaoCutProI18n;
 
-        // 充值包定义(价格为展示占位;积分数须与后端 SKU_TABLE 一致)
+        // 充值包：priceCents 用于展示价格和「每张约多少钱」，须与 Stripe Price 一致
         const PACKS = [
-            { sku: "starter_100", credits: 100, price: "$4.99", note: "Starter" },
-            { sku: "creator_500", credits: 500, price: "$14.99", note: "Creator", badge: "Popular" },
-            { sku: "seller_1500", credits: 1500, price: "$29.99", note: "Seller" },
-            { sku: "studio_5000", credits: 5000, price: "$79.99", note: "Studio" }
+            { sku: "starter_100", credits: 100, priceCents: 499, noteKey: "packStarter" },
+            { sku: "creator_500", credits: 500, priceCents: 1499, noteKey: "packCreator", popular: true },
+            { sku: "seller_1500", credits: 1500, priceCents: 2999, noteKey: "packSeller" },
+            { sku: "studio_5000", credits: 5000, priceCents: 7999, noteKey: "packStudio" },
         ];
+        const usd = (cents, digits = 2) => `$${(cents / 100).toFixed(digits)}`;
 
         const wrap = document.getElementById("packs");
         wrap.innerHTML = PACKS.map(p => `
-            <div class="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-                ${p.badge ? `<span class="absolute -top-3 left-6 rounded-full bg-brand-600 px-3 py-0.5 text-xs font-semibold text-white">${p.badge}</span>` : ""}
-                <div class="text-sm font-medium text-gray-500 dark:text-zinc-400">${p.note}</div>
-                <div class="mt-1 text-3xl font-bold">${p.credits.toLocaleString()}<span class="text-base font-medium text-gray-500"> credits</span></div>
-                <div class="mt-2 text-xl font-semibold text-brand-600 dark:text-brand-400">${p.price}</div>
-                <button data-sku="${p.sku}" class="buy-btn mt-5 w-full rounded-lg bg-brand-600 px-4 py-2.5 font-semibold text-white transition hover:bg-brand-700">
-                    Buy credits
-                </button>
+            <div class="relative flex flex-col rounded-2xl border ${p.popular ? "border-brand-500 ring-1 ring-brand-500" : "border-gray-200 dark:border-zinc-800"} bg-white p-6 shadow-sm dark:bg-zinc-900">
+                ${p.popular ? `<span class="absolute -top-3 left-6 rounded-full bg-brand-600 px-3 py-0.5 text-xs font-semibold text-white">${t("packPopular")}</span>` : ""}
+                <div class="text-sm font-medium text-gray-500 dark:text-zinc-400">${t(p.noteKey)}</div>
+                <div class="mt-1 text-3xl font-bold">${p.credits.toLocaleString()}<span class="text-base font-medium text-gray-500"> ${t("packCredits")}</span></div>
+                <div class="mt-2 text-xl font-semibold text-brand-600 dark:text-brand-400">${usd(p.priceCents)}</div>
+                <div class="mt-1 text-xs text-gray-500 dark:text-zinc-400">${t("packPerImage", { price: usd(p.priceCents / p.credits, 3) })}</div>
+                <button data-sku="${p.sku}" class="buy-btn mt-5 w-full rounded-lg bg-brand-600 px-4 py-2.5 font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60">${t("buyBtn")}</button>
             </div>
         `).join("");
+
+        // Stripe 取消支付后跳回 ?status=cancel：提示「未扣款」
+        if (new URLSearchParams(location.search).get("status") === "cancel") {
+            const n = document.getElementById("pricing-notice");
+            n.hidden = false;
+            n.classList.remove("hidden");
+        }
 
         // 登录态导航
         MiaoCutPro.onAuthChange(updateNav);
@@ -101,16 +118,10 @@
 
         function updateNav() {
             const link = document.getElementById("nav-auth");
-            if (MiaoCutPro.isLoggedIn()) {
-                link.textContent = "Account";
-                link.href = "/account/credits/";
-            } else {
-                link.textContent = "Login";
-                link.href = "/account/credits/";
-            }
+            link.textContent = t(MiaoCutPro.isLoggedIn() ? "navAccount" : "navLogin");
         }
 
-        // 购买:未登录先去账户页登录,已登录直接发起 checkout
+        // 购买：未登录先去账户页登录（登录后自动发起 checkout），已登录直接发起
         wrap.querySelectorAll(".buy-btn").forEach(btn => {
             btn.addEventListener("click", async () => {
                 const sku = btn.dataset.sku;
@@ -119,13 +130,13 @@
                     return;
                 }
                 btn.disabled = true;
-                btn.textContent = "Redirecting…";
+                btn.textContent = t("buyRedirecting");
                 try {
                     await MiaoCutPro.checkout(sku);
                 } catch (e) {
                     btn.disabled = false;
-                    btn.textContent = "Buy credits";
-                    alert("Checkout failed, please try again.");
+                    btn.textContent = t("buyBtn");
+                    alert(t("buyFailed"));
                 }
             });
         });

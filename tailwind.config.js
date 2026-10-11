@@ -25,6 +25,10 @@ module.exports = {
     './privacy/**/*.html',
     './terms/**/*.html',
     './feedback.js',
+    // Pro 付费页：定价 / 账户（class 写在 HTML 和内联模板字符串里）+ 中英文案里的链接 class
+    './pricing/index.html',
+    './account/credits/index.html',
+    './pro-i18n.js',
   ],
   theme: {
     extend: {
