@@ -121,10 +121,6 @@
         const params = new URLSearchParams(location.search);
         const paidJustNow = params.get("status") === "success";
 
-        MiaoCutPro.onAuthChange(() => render());
-        await MiaoCutPro.init().catch(() => {});
-        await render();
-
         async function render() {
             const nav = document.getElementById("nav-auth");
             if (MiaoCutPro.isLoggedIn()) {
@@ -219,6 +215,13 @@
         });
 
         function setMsg(text) { document.getElementById("login-msg").textContent = text; }
+
+        // ---------- 启动 ----------
+        // ⚠️ 必须放在脚本最后：上面的 let / const（polling、escapeHtml）在声明之前访问会抛
+        // 「Cannot access before initialization」，导致已登录时流水加载失败、支付成功提示报错。
+        MiaoCutPro.onAuthChange(() => render());
+        await MiaoCutPro.init().catch(() => {});
+        await render();
     </script>
 </body>
 
