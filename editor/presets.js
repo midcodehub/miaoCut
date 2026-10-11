@@ -120,7 +120,7 @@
     // ------------------------------------------------------------
     // 画幅比例
     // ------------------------------------------------------------
-    // value = 宽 / 高；original 的 value 为 null，运行时用抠图原图宽高比代替。
+    // value = 宽 / 高；original 的 value 为 null，表示「保持原图尺寸 + 主体原位置」（见 engine.js computeExportSize）。
     // fileLabel 用在下载文件名里（冒号不能出现在文件名中）。
     const RATIOS = [
         { id: 'original', value: null,   labelKey: 'ratioOriginal', fileLabel: 'original' },

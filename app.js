@@ -195,7 +195,7 @@
         "sliderOffsetY": "垂直偏移",
         "contactShadowCroppedHint": "主体底部被裁切，已自动贴住画布底边，接地阴影不生效。",
         "canvasLabel": "画布",
-        "ratioOriginal": "原图比例",
+        "ratioOriginal": "原图尺寸",
         "ratioSquare": "1:1 方图",
         "ratioPortrait": "4:5 竖图",
         "ratioStory": "9:16 竖屏",
@@ -479,7 +479,7 @@
         "sliderOffsetY": "ऊर्ध्वाधर खिसकाव",
         "contactShadowCroppedHint": "विषय नीचे से कटा हुआ है, इसलिए उसे नीचे के किनारे पर रखा गया है और ज़मीनी छाया लागू नहीं होगी।",
         "canvasLabel": "कैनवास",
-        "ratioOriginal": "मूल अनुपात",
+        "ratioOriginal": "मूल आकार",
         "ratioSquare": "1:1 वर्ग",
         "ratioPortrait": "4:5 पोर्ट्रेट",
         "ratioStory": "9:16 स्टोरी",
@@ -893,7 +893,7 @@
         "sliderOffsetY": "উল্লম্ব সরণ",
         "contactShadowCroppedHint": "বিষয়টি নিচে কাটা আছে, তাই এটি নিচের প্রান্তে বসানো হয়েছে এবং মাটির ছায়া প্রয়োগ হবে না।",
         "canvasLabel": "ক্যানভাস",
-        "ratioOriginal": "আসল অনুপাত",
+        "ratioOriginal": "আসল আকার",
         "ratioSquare": "1:1 বর্গ",
         "ratioPortrait": "4:5 পোর্ট্রেট",
         "ratioStory": "9:16 স্টোরি",
@@ -1169,7 +1169,7 @@
         "sliderOffsetY": "عمودی کھسکاؤ",
         "contactShadowCroppedHint": "تصویر کا موضوع نیچے سے کٹا ہوا ہے، اس لیے اسے نیچے کے کنارے پر رکھا گیا ہے اور زمینی سایہ نہیں لگے گا۔",
         "canvasLabel": "کینوس",
-        "ratioOriginal": "اصل تناسب",
+        "ratioOriginal": "اصل سائز",
         "ratioSquare": "1:1 مربع",
         "ratioPortrait": "4:5 پورٹریٹ",
         "ratioStory": "9:16 اسٹوری",
@@ -1920,7 +1920,10 @@
         dropzoneContent.classList.remove('pointer-events-none');
         dropzoneContent.classList.add('w-full');
         dropzone.classList.add('cursor-default', 'border-solid');
+        // overflow-hidden 会让编辑器里预览图的 sticky 失效（sticky 相对最近的滚动容器），编辑时去掉；
+        // 重置时 resetDropzone 会整体还原初始 class
         dropzone.classList.remove(
+            'overflow-hidden',
             'cursor-pointer', 'border-dashed',
             'hover:border-gray-400', 'hover:bg-gray-50',
             'hover:border-brand-400', 'hover:bg-brand-50/40', 'dark:hover:bg-brand-500/10',

@@ -144,6 +144,22 @@
         return { bbox, ground, touchesBottom, contact, footprint };
     }
 
+    function isOriginalRatio(ratioId) {
+        const found = presets.RATIOS.find((r) => r.id === ratioId);
+        return !found || found.value == null;
+    }
+
+    /**
+     * 原图画幅下，让主体回到「原图里原位置」所需的偏移（相对画布宽高，和 layout.offsetX/Y 同单位）。
+     * 面板切到原图画幅时，把 subjectScale 设为 1、offset 设为这个值，就是原图构图。
+     */
+    function computeOriginalOffset(bbox, image) {
+        return {
+            x: (bbox.x + bbox.width / 2) / image.width - 0.5,
+            y: (bbox.y + bbox.height / 2) / image.height - 0.5,
+        };
+    }
+
     /** 画幅 id → 宽高比数值；original 用抠图原图的宽高比 */
     function resolveRatio(ratioId, imageWidth, imageHeight) {
         const found = presets.RATIOS.find((r) => r.id === ratioId);
@@ -152,8 +168,12 @@
     }
 
     /**
-     * 计算导出画布尺寸（像素）。核心原则：主体按 1:1 原像素画上去，不放大、不浪费。
+     * 计算导出画布尺寸（像素）。
      *
+     * 画幅 = original（原图）：画布就是抠图原图的尺寸，保持原尺寸、原构图。
+     *   指定了固定长边就等比缩放到该长边；不做最小长边放大（原图多大就导出多大）。
+     *
+     * 其他画幅：主体按 1:1 原像素画上去，不放大、不浪费。
      *   1. 主体占比为 s 时，画布至少要 bbox.width / s 宽、bbox.height / s 高
      *   2. 再按目标宽高比 r 把短的那边补齐
      *   3. 指定了固定长边（1080 / 2000）就整体缩放到该长边
@@ -167,11 +187,18 @@
      */
     function computeExportSize(bbox, layout, image) {
         const limits = presets.EXPORT_LIMITS;
-        const ratio = resolveRatio(layout.ratio, image.width, image.height);
-        const s = clamp(layout.subjectScale || 1, 0.3, 1);
-
-        let width = Math.max(bbox.width / s, (bbox.height / s) * ratio);
-        let height = width / ratio;
+        const isOriginal = isOriginalRatio(layout.ratio);
+        let width;
+        let height;
+        if (isOriginal) {
+            width = image.width;
+            height = image.height;
+        } else {
+            const ratio = resolveRatio(layout.ratio, image.width, image.height);
+            const s = clamp(layout.subjectScale || 1, 0.3, 1);
+            width = Math.max(bbox.width / s, (bbox.height / s) * ratio);
+            height = width / ratio;
+        }
 
         const sizePreset = presets.EXPORT_SIZES.find((x) => x.id === layout.exportSize);
         const fixedLongSide = sizePreset && sizePreset.longSide;
@@ -180,7 +207,7 @@
             const k = fixedLongSide / longSide;
             width *= k;
             height *= k;
-        } else if (longSide < limits.minLongSide) {
+        } else if (!isOriginal && longSide < limits.minLongSide) {
             const k = limits.minLongSide / longSide;
             width *= k;
             height *= k;
@@ -198,17 +225,24 @@
     }
 
     /**
-     * 主体在画布上的位置和大小：把 bbox 等比缩放进「画布 × 主体占比」的框里，
-     * 再按 offsetX / offsetY 平移（相对画布宽高，0 = 居中）。
+     * 主体在画布上的位置和大小，再按 offsetX / offsetY 平移（相对画布宽高，0 = 居中）。
+     *
+     *   - 其他画幅：把 bbox 等比缩放进「画布 × 主体占比」的框里（subjectScale = 主体占画布比例）
+     *   - original：主体大小 = 原图里的大小 × subjectScale（1 = 原大小）。
+     *     配合 computeOriginalOffset 给出的偏移，就是原图里的原位置
      *
      * 预览和导出都调这个函数，只是传入的画布尺寸不同，所以构图完全一致。
      *
      * anchorBottom = true（主体被原图底边截断，比如半身人像）：主体底边贴住画布底边，
      * 只允许水平偏移；否则截断处会悬在画布中间，一眼假。
+     *
+     * @param {{width,height}} [image] 抠图原始尺寸，original 画幅时必传
      */
-    function computeSubjectRect(bbox, canvasWidth, canvasHeight, layout, anchorBottom) {
+    function computeSubjectRect(bbox, canvasWidth, canvasHeight, layout, anchorBottom, image) {
         const s = clamp(layout.subjectScale || 1, 0.3, 1);
-        const scale = Math.min((canvasWidth * s) / bbox.width, (canvasHeight * s) / bbox.height);
+        const scale = isOriginalRatio(layout.ratio) && image
+            ? (canvasWidth / image.width) * s
+            : Math.min((canvasWidth * s) / bbox.width, (canvasHeight * s) / bbox.height);
         const width = bbox.width * scale;
         const height = bbox.height * scale;
         const cx = canvasWidth * (0.5 + clamp(layout.offsetX || 0, -0.5, 0.5));
@@ -309,6 +343,7 @@
         const bbox = analysis.bbox;
         const footprint = analysis.footprint;
         const groundRow = analysis.ground;
+        const imageSize = { width: imageWidth, height: imageHeight };
         const touchesBottom = analysis.touchesBottom;
 
         // ---- 接触线条带：1px 高、bbox 宽的黑条，alpha = 每列的贴地程度 ----
@@ -596,7 +631,7 @@
         // ---- 合成 ----
 
         function drawComposition(ctx, state, W, H, cache) {
-            const rect = computeSubjectRect(bbox, W, H, state.layout, touchesBottom);
+            const rect = computeSubjectRect(bbox, W, H, state.layout, touchesBottom, imageSize);
 
             ctx.save();
             ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -626,8 +661,8 @@
 
         /** 导出尺寸 + 主体在导出画布上的位置（面板显示尺寸、做拖拽命中判断用） */
         function getLayout(state) {
-            const size = computeExportSize(bbox, state.layout, { width: imageWidth, height: imageHeight });
-            const rect = computeSubjectRect(bbox, size.width, size.height, state.layout, touchesBottom);
+            const size = computeExportSize(bbox, state.layout, imageSize);
+            const rect = computeSubjectRect(bbox, size.width, size.height, state.layout, touchesBottom, imageSize);
             return { width: size.width, height: size.height, subject: rect };
         }
 
@@ -647,7 +682,7 @@
         function renderPreview(canvas, state, opts) {
             const maxSide = (opts && opts.maxSide) || presets.PREVIEW_MAX_SIDE;
             const dpr = (opts && opts.interactive) ? 1 : clamp((opts && opts.dpr) || 1, 1, 2);
-            const size = computeExportSize(bbox, state.layout, { width: imageWidth, height: imageHeight });
+            const size = computeExportSize(bbox, state.layout, imageSize);
             const scale = Math.min(1, (maxSide * dpr) / Math.max(size.width, size.height));
             const W = Math.max(1, Math.round(size.width * scale));
             const H = Math.max(1, Math.round(size.height * scale));
@@ -676,7 +711,7 @@
          * @returns {Promise<{blob: Blob, filename: string, width: number, height: number, format: string}>}
          */
         function exportImage(state) {
-            const size = computeExportSize(bbox, state.layout, { width: imageWidth, height: imageHeight });
+            const size = computeExportSize(bbox, state.layout, imageSize);
             const W = size.width;
             const H = size.height;
             const format = state.export.format || 'png';
@@ -735,6 +770,8 @@
             bbox,
             footprint,
             touchesBottom,
+            // 原图画幅下主体回到原位置所需的 offset（面板切到「原图」时用）
+            originalOffset: computeOriginalOffset(bbox, imageSize),
             imageWidth,
             imageHeight,
             getLayout,
@@ -750,6 +787,7 @@
         analyzeAlpha,
         computeExportSize,
         computeSubjectRect,
+        computeOriginalOffset,
         resolveRatio,
         buildFileName,
     };

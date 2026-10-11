@@ -109,7 +109,26 @@
             pendingInteractive: false,
             drag: null,
             exporting: false,
+            // 非原图画幅下用户设置的「主体大小」。切到原图画幅时主体大小会变成 100%（原大小），
+            // 切回 1:1 等画幅时恢复这个值，避免主体突然顶满画布
+            framedScale: isOriginal(state.layout.ratio) ? 0.8 : state.layout.subjectScale,
         };
+
+        function isOriginal(ratioId) {
+            const r = presets.RATIOS.find((x) => x.id === ratioId);
+            return !r || r.value == null;
+        }
+
+        /**
+         * 原图画幅 = 保持原尺寸 + 原位置：主体大小 100%，偏移设为主体在原图里的位置。
+         * （画布尺寸由引擎按原图尺寸算，见 engine.js computeExportSize）
+         */
+        function applyOriginalComposition() {
+            state.layout.subjectScale = 1;
+            state.layout.offsetX = engine.originalOffset.x;
+            state.layout.offsetY = engine.originalOffset.y;
+        }
+        if (isOriginal(state.layout.ratio)) applyOriginalComposition();
 
         const ratios = (config.ratios || ['original', '1:1', '4:5', '9:16'])
             .map((id) => presets.RATIOS.find((r) => r.id === id)).filter(Boolean);
@@ -174,7 +193,7 @@
                 </div>
                 <div class="grid gap-6 md:grid-cols-5">
                     <div class="md:col-span-3">
-                        <div class="flex flex-col items-center gap-2 md:sticky md:top-4">
+                        <div class="flex flex-col items-center gap-2 md:sticky md:top-20">
                             <div class="flex w-full items-center justify-center rounded-xl bg-gray-100 p-3 dark:bg-zinc-800">
                                 <canvas data-ref="canvas" class="block h-auto max-h-[46vh] w-auto max-w-full cursor-grab touch-none rounded-md shadow-sm md:max-h-[560px]" style="${CHECKER}"></canvas>
                             </div>
@@ -376,7 +395,17 @@
                 return;
             }
             if (el.dataset.ratio) {
-                state.layout.ratio = el.dataset.ratio;
+                const wasOriginal = isOriginal(state.layout.ratio);
+                const next = el.dataset.ratio;
+                if (next === state.layout.ratio) return;
+                if (!wasOriginal) ui.framedScale = state.layout.subjectScale;
+                state.layout.ratio = next;
+                if (isOriginal(next)) {
+                    applyOriginalComposition();
+                } else if (wasOriginal) {
+                    // 从原图切到 1:1 等画幅：恢复之前的留白，主体重新居中
+                    Object.assign(state.layout, { subjectScale: ui.framedScale, offsetX: 0, offsetY: 0 });
+                }
                 commit(false);
                 return;
             }

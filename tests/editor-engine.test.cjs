@@ -89,9 +89,29 @@ test('computeExportSize：9:16 宽高比正确', () => {
     assert.ok(Math.abs(size.width / size.height - 9 / 16) < 0.002);
 });
 
-test('computeExportSize：original 比例沿用抠图原图宽高比', () => {
-    const size = engine.computeExportSize({ width: 1000, height: 1000 }, { ratio: 'original', subjectScale: 1, exportSize: 'auto' }, { width: 2000, height: 1000 });
-    assert.ok(Math.abs(size.width / size.height - 2) < 0.002);
+test('原图画幅：画布 = 抠图原尺寸，小图也不放大', () => {
+    const image = { width: 1600, height: 1200 };
+    const layout = { ratio: 'original', subjectScale: 1, exportSize: 'auto' };
+    assert.deepEqual(engine.computeExportSize({ width: 500, height: 400 }, layout, image), { width: 1600, height: 1200 });
+    // 小图（长边 < minLongSide）保持原尺寸，不像其他画幅那样放大到 1024
+    assert.deepEqual(engine.computeExportSize({ width: 100, height: 80 }, layout, { width: 300, height: 200 }), { width: 300, height: 200 });
+});
+
+test('原图画幅：主体大小 100% + originalOffset = 原图里的原位置', () => {
+    const image = { width: 1600, height: 1200 };
+    const bbox = { x: 200, y: 300, width: 500, height: 400 };
+    const off = engine.computeOriginalOffset(bbox, image);
+    const layout = { ratio: 'original', subjectScale: 1, offsetX: off.x, offsetY: off.y };
+    const rect = engine.computeSubjectRect(bbox, 1600, 1200, layout, false, image);
+    for (const f of ['x', 'y', 'width', 'height']) assert.ok(Math.abs(rect[f] - bbox[f]) < 1e-9, `${f} 应与原图一致`);
+    // 预览（缩小到 400×300）时等比缩小，位置比例不变
+    const small = engine.computeSubjectRect(bbox, 400, 300, layout, false, image);
+    assert.ok(Math.abs(small.x - bbox.x / 4) < 1e-9 && Math.abs(small.width - bbox.width / 4) < 1e-9);
+});
+
+test('原图画幅：指定固定长边时整体等比缩放', () => {
+    const size = engine.computeExportSize({ width: 500, height: 400 }, { ratio: 'original', subjectScale: 1, exportSize: '2000' }, { width: 1600, height: 1200 });
+    assert.deepEqual(size, { width: 2000, height: 1500 });
 });
 
 test('computeExportSize：小主体自动放大到最小长边', () => {
