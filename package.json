@@ -9,7 +9,8 @@
     "build:i18n": "node scripts/build-i18n.mjs",
     "build:assets": "node scripts/stamp-assets.mjs",
     "build": "npm run build:css && npm run build:i18n && npm run build:assets",
-    "og": "node scripts/og/generate.mjs"
+    "og": "node scripts/og/generate.mjs",
+    "test:editor": "node --test tests/editor-engine.test.cjs"
   },
   "devDependencies": {
     "playwright": "^1.59.1",
