@@ -101,7 +101,7 @@ const els = {
   progressCount: $("progress-count"), progressBar: $("progress-bar"), progressNote: $("progress-note"),
   resultsBox: $("results-box"), resReady: $("res-ready"), resFailed: $("res-failed"),
   btnZip: $("btn-zip"), btnRetry: $("btn-retry"), btnNew: $("btn-new"), zipMsg: $("zip-msg"), retryNote: $("retry-note"),
-  runError: $("run-error"), runErrorText: $("run-error-text"), btnErrorRetry: $("btn-error-retry"), errorBuy: $("error-buy"),
+  runError: $("run-error"), runErrorText: $("run-error-text"), btnErrorRetry: $("btn-error-retry"), errorBuy: $("error-buy"), btnErrorNew: $("btn-error-new"),
   runGrid: $("run-grid"), batchKeep: $("batch-keep"),
   demo: $("demo"), demoGrid: $("demo-grid"),
   gate: $("gate"), gatePoint2: $("gate-point-2"), gateKeep: $("gate-keep"),
@@ -464,6 +464,7 @@ async function fetchJob(jobId) {
   try {
     const res = await MiaoCutPro.proFetch(`/v1/batch/${jobId}`);
     if (res.status === 404) return { gone: true };
+    if (res.status === 401) return { auth: true };
     if (!res.ok) return null;
     return await res.json();
   } catch (_) { return null; }
@@ -474,10 +475,19 @@ async function pollJob() {
   state.polling = true;
   try {
     const total = state.job.total;
+    let misses = 0; // 连续查询失败次数：网络断了 / 服务出错时不能无限转圈
     for (;;) {
       const data = await fetchJob(state.job.job_id);
       if (data && data.gone) { forgetJob(); goSelect(); return; }
+      // 登录过期：提示重新登录（任务记录保留，登录回来会自动恢复）
+      if (data && data.auth) { showRunError(new BatchError("errAuth"), "poll"); return; }
+      if (!data && ++misses >= 8) {
+        // 约半分钟都查不到：任务还在服务器上跑，给一个「再查一次」，绝不重新提交（否则会重复扣分）
+        showRunError(new BatchError("errPoll"), "poll");
+        return;
+      }
       if (data) {
+        misses = 0;
         applyJobData(data);
         const resolved = data.succeeded + data.failed;
         setProgress(t("stProcessing", { d: resolved, n: total }), 0.42 + (resolved / total) * 0.58, `${resolved}/${total}`);
@@ -515,15 +525,21 @@ function setProgress(text, frac, count = "") {
 
 const RETRYABLE = new Set(["errNetwork", "errUpload", "errGeneric"]);
 let lastErrorRetryable = false;
+let lastErrorStage = "submit"; // submit = 还没开始处理（可重新提交）；poll = 任务已在服务器上（只能重新查询）
 
-function showRunError(err) {
+function showRunError(err, stage = "submit") {
+  lastErrorStage = stage;
   lastErrorRetryable = RETRYABLE.has(err.key);
   els.runErrorText.textContent = t(err.key, err.vars);
-  els.btnErrorRetry.textContent = t(lastErrorRetryable ? "tryAgain" : "errBack");
+  els.btnErrorRetry.textContent = stage === "poll"
+    ? t(err.key === "errAuth" ? "errBack" : "checkAgain")
+    : t(lastErrorRetryable ? "tryAgain" : "errBack");
   els.runGrid.querySelectorAll("[data-spinner]").forEach((sp) => show(sp, false));
   // 没处理成的图恢复原图不透明度，否则在白底预览上像一张空白卡片
   els.runGrid.querySelectorAll("[data-src-img]").forEach((img) => img.classList.remove("opacity-40"));
   show(els.errorBuy, err.buy);
+  // 查询阶段出错：任务可能真的找不回来了，给一个出口（不取消服务器上的任务，只是不再跟踪它）
+  show(els.btnErrorNew, stage === "poll");
   setPhase("error");
   // 出错时网格保留，用户能看到是哪几张、自己选了什么
   if (err.key === "errNoCredits" || err.key === "errAuth") refreshAuth();
@@ -712,8 +728,24 @@ els.btnNew.addEventListener("click", () => {
   goSelect();
 });
 
+els.btnErrorNew.addEventListener("click", () => {
+  forgetJob();
+  goSelect(); // 已选图片保留
+});
+
 els.btnErrorRetry.addEventListener("click", () => {
-  // 出错时还没扣分：回到选图区，已选图片原样保留
+  if (lastErrorStage === "poll") {
+    if (state.loggedIn && state.job) {
+      // 任务已在服务器上：只重新查询进度，不重新提交
+      setPhase("running");
+      pollJob();
+    } else {
+      // 登录过期：回到选图区登录；任务记录保留，登录后 boot 会自动恢复
+      goSelect();
+    }
+    return;
+  }
+  // 提交阶段出错时还没扣分：回到选图区，已选图片原样保留
   forgetJob();
   goSelect();
   if (lastErrorRetryable && state.files.length && state.loggedIn) startBatch();
