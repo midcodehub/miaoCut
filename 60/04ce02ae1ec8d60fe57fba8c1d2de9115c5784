@@ -1,0 +1,23 @@
+privacy/index.html
+  s_c8dfc96faf2462::t_ae0cbee214cab0 20,68,70,75-76,83,85-99,101,106-107,112-117,132
+  s_c8dfc96faf2462::t_71818e6b0231c5 23
+terms/index.html
+  s_c8dfc96faf2462::t_ae0cbee214cab0 20,68,70,81-111,114,118-119,124,132,134-139
+  s_c8dfc96faf2462::t_eaa497f5c51c5e 23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "6004ce02ae1ec8d60fe57fba8c1d2de9115c5784",
+  "prompts": {},
+  "sessions": {
+    "s_c8dfc96faf2462": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8d4f64c4-4d50-40db-ab2c-f573eacba2a0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "midcodehub <408124546@qq.com>"
+    }
+  }
+}
