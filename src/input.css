@@ -108,6 +108,28 @@
     }
   }
 
+  /* 透明背景棋盘格：DESIGN.md 规定透明结果一律放在棋盘格上展示（批量页结果网格、大图查看）。
+     深色模式用深灰格子，避免一块刺眼的白色。 */
+  .checker {
+    background-color: #ffffff;
+    background-image:
+      linear-gradient(45deg, #e5e7eb 25%, transparent 25%),
+      linear-gradient(-45deg, #e5e7eb 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #e5e7eb 75%),
+      linear-gradient(-45deg, transparent 75%, #e5e7eb 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+  }
+
+  .dark .checker {
+    background-color: #27272a;
+    background-image:
+      linear-gradient(45deg, #3f3f46 25%, transparent 25%),
+      linear-gradient(-45deg, #3f3f46 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #3f3f46 75%),
+      linear-gradient(-45deg, transparent 75%, #3f3f46 75%);
+  }
+
   #dropzone {
     transition: all 0.2s ease-in-out;
   }

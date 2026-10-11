@@ -1,254 +1,438 @@
 // =============================================================================
 // MiaoCut 批量去背景 —— 前端流程
-//   建任务 → 逐张直传 R2(预签名) → 开始(冻结+入队) → 轮询进度 → ZIP 下载
-// 复用 pro-account.js 的登录态;所有 Pro API 调用走 MiaoCutPro.proFetch（自动带 JWT）。
+// -----------------------------------------------------------------------------
+// 页面 = 门面 + 工作台（设计说明见 .impeccable/brief-pro-redesign.md）：
+//   未登录：可以先拖图（暂存在本浏览器 IndexedDB），右侧是登录卡，下方是示例结果
+//   已登录：选边缘精度 → 看消耗和余额 → 开始
+//   处理：建任务 → 逐张直传 R2（预签名）→ 开始（冻结积分 + 入队）→ 轮询进度
+//   结果：网格一直保留；选下载格式（透明 PNG / 白底 JPG / 亚马逊主图）→ ZIP 或单张下载
+//
+// 下载格式在浏览器里合成：GPU 只返回透明图，白底、方图、JPG 用单图编辑器的渲染引擎
+// （/editor/engine.js）在打包时现做，所以不需要改后端，处理完还能随时换格式重新下载。
+//
+// 复用 pro-account.js 的登录态；所有 Pro API 调用走 MiaoCutPro.proFetch（自动带 JWT）。
+// 文案全部在 /pro-i18n.js（中英文），本文件不写死任何用户可见的句子。
 // =============================================================================
 import MiaoCutPro from "/pro-account.js";
 
-// 中英文案见 /pro-i18n.js（页面里先于本文件加载）
 const { t } = window.MiaoCutProI18n;
+const { presets, engine } = window.MiaoCutEditor;
 
+// ---------- 常量 ----------
 const CREDIT_COST = { fast: 1, fur: 2 };
+// 每批上限。⚠️ 与 pro-gateway 的 MAX_BATCH_IMAGES 保持一致；订阅档（Pro / Business 500 张）上线时再按账户档位下发
 const MAX_IMAGES = 200;
-const ALLOWED = ["image/png", "image/jpeg", "image/webp"];
+const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/webp"];
+// 积分包最低单价，展示在登录卡上。⚠️ 与 /pricing/ 的 PACKS（Studio 5000 积分 $79.99）保持一致
+const MIN_PACK_PRICE = "$0.016";
+const UPLOAD_CONCURRENCY = 4;
+const POLL_MS = 2000;
+// 本地存储的 key
+const LS_JOB = "miaocut.batch.job";        // 进行中 / 最近一次任务（刷新后恢复）
+const LS_OUTPUT = "miaocut.batch.output";  // 上次选的下载格式
+const LS_MODE = "miaocut.batch.mode";      // 上次选的边缘精度
+const IDB_FILES = "miaocut.batch.files";   // 已选图片（File 对象），登录跳转、刷新后都还在
+const JOB_TTL_MS = 24 * 3600 * 1000;       // 服务端结果保留 24 小时，超过就不再恢复
 
-const $ = (id) => document.getElementById(id);
-const els = {
-  balance: $("balance"),
-  loginGate: $("login-gate"),
-  btnGoogle: $("btn-google"),
-  btnEmail: $("btn-email"),
-  loginEmail: $("login-email"),
-  loginMsg: $("login-msg"),
-  tool: $("tool"),
-  profileToggle: $("profile-toggle"),
-  dropzone: $("dropzone"),
-  fileInput: $("file-input"),
-  fileList: $("file-list"),
-  costLine: $("cost-line"),
-  btnStart: $("btn-start"),
-  progress: $("progress"),
-  progressText: $("progress-text"),
-  progressBar: $("progress-bar"),
-  imageGrid: $("image-grid"),
-  results: $("results"),
-  resultsSummary: $("results-summary"),
-  resultsMsg: $("results-msg"),
-  btnZip: $("btn-zip"),
+// 下载格式：都是单图编辑器的状态对象，交给 engine.exportImage 渲染
+const OUTPUTS = [
+  {
+    id: "png", labelKey: "outPng", hintKey: "outPngHint",
+    state: () => presets.createDefaultState(),
+  },
+  {
+    id: "white", labelKey: "outWhite", hintKey: "outWhiteHint",
+    state: () => presets.createDefaultState({
+      background: { type: "solid", color: "#FFFFFF" },
+      export: { format: "jpg", quality: 0.92 },
+    }),
+  },
+  {
+    // 亚马逊主图：纯白底、方图、长边 ≥1600 可放大（取 2000）、商品约占画面 85%
+    id: "amazon", labelKey: "outSquare", hintKey: "outSquareHint",
+    state: () => presets.createDefaultState({
+      background: { type: "solid", color: "#FFFFFF" },
+      layout: { ratio: "1:1", subjectScale: 0.85, exportSize: "2000" },
+      export: { format: "jpg", quality: 0.92 },
+    }),
+  },
+];
+
+// 未登录时展示的示例（真实抠图结果，和首页示例同一批图）
+const DEMO = [
+  { src: "/examples/product-cutout.webp", labelKey: "demoProduct" },
+  { src: "/examples/portrait-cutout.webp", labelKey: "demoPortrait" },
+  { src: "/examples/logo-cutout.webp", labelKey: "demoLogo" },
+  { src: "/examples/pet-cutout.webp", labelKey: "demoPet" },
+];
+
+// 服务端单张失败的 error 码 → 文案 key（未知码用通用文案）
+const IMAGE_ERRORS = {
+  enqueue_failed: "errImgEnqueue",
+  expired: "errImgExpired",
+  timeout: "errImgExpired",
 };
 
-let profile = "fast";
-let files = [];        // 选中的 File[]
-let chips = {};        // image_id → 缩略图 chip 元素
-let lastImages = [];   // 最近一次状态的 images(给 ZIP 用)
+// ---------- 页面状态 ----------
+const state = {
+  loggedIn: false,
+  balance: null,          // 当前余额（积分），未知时为 null
+  mode: readLS(LS_MODE) === "fur" ? "fur" : "fast",
+  output: OUTPUTS.some((o) => o.id === readLS(LS_OUTPUT)) ? readLS(LS_OUTPUT) : "png",
+  files: [],              // 已选图片：[{ id, file, url }]，url 是缩略图 objectURL
+  phase: "select",        // select | running | results | error
+  job: null,              // { job_id, total, sources: File[] | null }
+  images: [],             // 服务端返回的每张图状态（按 idx 排序）
+  polling: false,
+};
+let nextFileId = 1;
 
+// ---------- DOM ----------
+const $ = (id) => document.getElementById(id);
+const els = {
+  layout: document.querySelector("main > .grid"),
+  balanceBox: $("balance-box"), balanceText: $("balance-text"), navAuth: $("nav-auth"),
+  selectStage: $("select-stage"), dropzone: $("dropzone"), dzSub: $("batch-dz-sub"), fileInput: $("file-input"),
+  skipNote: $("skip-note"), selection: $("selection"), selCount: $("sel-count"), selGrid: $("sel-grid"),
+  btnAddMore: $("btn-add-more"), btnClear: $("btn-clear"),
+  runStage: $("run-stage"), progressBox: $("progress-box"), progressText: $("progress-text"),
+  progressCount: $("progress-count"), progressBar: $("progress-bar"), progressNote: $("progress-note"),
+  resultsBox: $("results-box"), resReady: $("res-ready"), resFailed: $("res-failed"),
+  btnZip: $("btn-zip"), btnRetry: $("btn-retry"), btnNew: $("btn-new"), zipMsg: $("zip-msg"), retryNote: $("retry-note"),
+  runError: $("run-error"), runErrorText: $("run-error-text"), btnErrorRetry: $("btn-error-retry"), errorBuy: $("error-buy"),
+  runGrid: $("run-grid"),
+  demo: $("demo"), demoGrid: $("demo-grid"),
+  gate: $("gate"), gatePoint2: $("gate-point-2"), gateKeep: $("gate-keep"),
+  btnGoogle: $("btn-google"), emailForm: $("email-form"), loginEmail: $("login-email"), loginMsg: $("login-msg"),
+  side: $("side"), runPanel: $("run-panel"), sumImages: $("sum-images"), sumCost: $("sum-cost"), sumAfter: $("sum-after"),
+  sumShort: $("sum-short"), sumBuy: $("sum-buy"), btnStart: $("btn-start"),
+  viewer: $("viewer"), viewerName: $("viewer-name"), viewerStage: $("viewer-stage"), viewerImg: null, // 第一次打开时创建
+  viewerPrev: $("viewer-prev"), viewerNext: $("viewer-next"), viewerClose: $("viewer-close"),
+  viewerCompare: $("viewer-compare"), viewerDownload: $("viewer-download"),
+};
+
+// 有右侧栏 / 无右侧栏 两种布局（处理中和结果阶段右侧栏没有内容，让网格占满整行）
+const LAYOUT_WITH_ASIDE = "lg:grid-cols-[minmax(0,1fr)_340px]";
+const LAYOUT_FULL = "lg:grid-cols-1";
+
+// =============================================================================
+// 小工具
+// =============================================================================
+function readLS(key) { try { return localStorage.getItem(key); } catch (_) { return null; } }
+function writeLS(key, value) {
+  try { value == null ? localStorage.removeItem(key) : localStorage.setItem(key, value); } catch (_) { /* 隐私模式 */ }
+}
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const show = (el, on = true) => { el.classList.toggle("hidden", !on); };
+const fmt = (n) => Number(n).toLocaleString();
+const outputById = (id) => OUTPUTS.find((o) => o.id === id) || OUTPUTS[0];
 
-// ---------- 登录态 ----------
-async function render() {
-  const logged = MiaoCutPro.isLoggedIn();
-  els.loginGate.classList.toggle("hidden", logged);
-  els.tool.classList.toggle("hidden", !logged);
-  if (logged) {
+// 并发池：同时最多跑 concurrency 个 worker
+async function runPool(items, worker, concurrency) {
+  let i = 0;
+  const run = async () => { while (i < items.length) { const idx = i++; await worker(items[idx], idx); } };
+  await Promise.all(Array.from({ length: Math.min(concurrency, items.length) }, run));
+}
+
+// ---------- IndexedDB：用成熟的 idb-keyval（~600 字节），CDN 失败时退化为「只在内存里」 ----------
+let idbPromise = null;
+function idb() {
+  if (!idbPromise) idbPromise = import("https://esm.sh/idb-keyval@6.2.1").catch(() => null);
+  return idbPromise;
+}
+let persistTimer = null;
+// 已选图片变化后写入 IndexedDB（防抖：连续删图时只写最后一次）
+function persistSelection() {
+  clearTimeout(persistTimer);
+  return new Promise((resolve) => {
+    persistTimer = setTimeout(async () => {
+      const lib = await idb();
+      try {
+        if (lib) {
+          if (state.files.length) await lib.set(IDB_FILES, state.files.map((f) => f.file));
+          else await lib.del(IDB_FILES);
+        }
+      } catch (_) { /* 配额不足等：不影响当前页面使用，只是刷新后不能恢复 */ }
+      resolve();
+    }, 300);
+  });
+}
+async function loadPersistedFiles() {
+  const lib = await idb();
+  if (!lib) return [];
+  try {
+    const arr = await lib.get(IDB_FILES);
+    return Array.isArray(arr) ? arr.filter((f) => f instanceof Blob) : [];
+  } catch (_) { return []; }
+}
+
+// =============================================================================
+// 下载格式：选择器（结果区和示例区各一组，状态同步）+ 预览
+// =============================================================================
+function renderOutputGroups() {
+  document.querySelectorAll("[data-output-group]").forEach((group) => {
+    const name = `output-${group.dataset.outputGroup}`;
+    group.innerHTML = OUTPUTS.map((o) => `
+      <label class="cursor-pointer">
+        <input type="radio" name="${name}" value="${o.id}" class="peer sr-only" ${o.id === state.output ? "checked" : ""}>
+        <span class="inline-flex min-h-9 items-center rounded-full border border-gray-300 bg-white px-3.5 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:border-gray-500 peer-checked:border-gray-900 peer-checked:bg-gray-900 peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-gray-900 peer-focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-zinc-500 dark:peer-checked:border-zinc-50 dark:peer-checked:bg-zinc-50 dark:peer-checked:text-zinc-950 dark:peer-focus-visible:ring-zinc-100 dark:peer-focus-visible:ring-offset-zinc-900">${escapeHtml(t(o.labelKey))}</span>
+      </label>`).join("");
+    group.addEventListener("change", (e) => {
+      if (e.target.name === name) setOutput(e.target.value);
+    });
+  });
+  renderOutputHints();
+}
+
+function renderOutputHints() {
+  const o = outputById(state.output);
+  document.querySelectorAll("[data-output-hint]").forEach((el) => { el.textContent = t(o.hintKey); });
+}
+
+function setOutput(id) {
+  state.output = outputById(id).id;
+  writeLS(LS_OUTPUT, state.output);
+  document.querySelectorAll('[data-output-group] input[type="radio"]').forEach((r) => { r.checked = r.value === state.output; });
+  renderOutputHints();
+  applyOutputPreview(document);
+}
+
+// 网格里的预览：透明 → 棋盘格；白底 → 纯白；亚马逊主图 → 纯白 + 四周留白（商品占约 85%）
+function applyOutputPreview(scope) {
+  const white = state.output !== "png";
+  const square = state.output === "amazon";
+  scope.querySelectorAll("[data-preview-bg]").forEach((el) => {
+    el.classList.toggle("checker", !white);
+    el.classList.toggle("bg-white", white);
+  });
+  scope.querySelectorAll("[data-preview-pad]").forEach((el) => {
+    el.classList.toggle("p-[7.5%]", square);
+  });
+}
+
+function renderDemo() {
+  els.demoGrid.innerHTML = DEMO.map((d) => `
+    <li>
+      <div class="relative aspect-square overflow-hidden rounded-lg border border-gray-200 dark:border-zinc-800" data-preview-bg>
+        <div class="absolute inset-0 flex items-center justify-center transition-[padding] duration-200 ease-out motion-reduce:transition-none" data-preview-pad>
+          <img src="${d.src}" alt="" width="512" height="512" loading="lazy" decoding="async" class="h-full w-full object-contain">
+        </div>
+      </div>
+      <p class="mt-1.5 text-xs text-gray-600 dark:text-zinc-400">${escapeHtml(t(d.labelKey))}</p>
+    </li>`).join("");
+  applyOutputPreview(els.demoGrid);
+}
+
+// =============================================================================
+// 选图
+// =============================================================================
+function addFiles(list) {
+  let skippedType = 0;
+  let skippedLimit = 0;
+  for (const file of list) {
+    if (!ALLOWED_TYPES.includes(file.type)) { skippedType++; continue; }
+    if (state.files.length >= MAX_IMAGES) { skippedLimit++; continue; }
+    state.files.push({ id: nextFileId++, file, url: URL.createObjectURL(file) });
+  }
+  const notes = [];
+  if (skippedType) notes.push(t("skipType", { n: skippedType }));
+  if (skippedLimit) notes.push(t("skipLimit", { n: skippedLimit, max: MAX_IMAGES }));
+  els.skipNote.textContent = notes.join(" ");
+  show(els.skipNote, notes.length > 0);
+  els.fileInput.value = "";
+  renderSelection();
+  persistSelection();
+}
+
+function removeFile(id) {
+  const i = state.files.findIndex((f) => f.id === id);
+  if (i < 0) return;
+  URL.revokeObjectURL(state.files[i].url);
+  state.files.splice(i, 1);
+  renderSelection();
+  persistSelection();
+}
+
+function clearSelection() {
+  state.files.forEach((f) => URL.revokeObjectURL(f.url));
+  state.files = [];
+  show(els.skipNote, false);
+  renderSelection();
+  persistSelection();
+}
+
+function renderSelection() {
+  const n = state.files.length;
+  show(els.selection, n > 0);
+  els.selCount.textContent = n === 1 ? t("selCountOne") : t("selCount", { n: fmt(n) });
+  els.selGrid.innerHTML = state.files.map((f) => `
+    <li class="group relative aspect-square overflow-hidden rounded-lg border border-gray-200 bg-gray-100 dark:border-zinc-800 dark:bg-zinc-800">
+      <img src="${f.url}" alt="" loading="lazy" decoding="async" class="h-full w-full object-cover">
+      <button type="button" data-remove="${f.id}" aria-label="${escapeHtml(t("selRemove", { name: f.file.name }))}" title="${escapeHtml(f.file.name)}"
+        class="absolute right-1 top-1 inline-flex h-7 w-7 items-center justify-center rounded-full bg-gray-900/75 text-white transition-opacity hover:bg-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-white md:opacity-0 md:focus-visible:opacity-100 md:group-hover:opacity-100">
+        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </li>`).join("");
+  // 未登录：提示「登录期间图片会保留」
+  els.gateKeep.textContent = t("gateKeep", { n: fmt(n) });
+  show(els.gateKeep, n > 0);
+  renderSummary();
+}
+
+// 右侧消耗预估：图片数 × 单价，和余额对比；不够就直接提示购买，而不是点了开始才报错
+function renderSummary() {
+  const n = state.files.length;
+  const cost = n * CREDIT_COST[state.mode];
+  els.sumImages.textContent = fmt(n);
+  els.sumCost.textContent = t("sumCredits", { n: fmt(cost) });
+  const known = state.balance != null;
+  els.sumAfter.textContent = known ? t("sumCredits", { n: fmt(state.balance - cost) }) : "—";
+  const short = known && cost > state.balance;
+  els.sumShort.textContent = short ? t("sumShort", { n: fmt(cost - state.balance) }) : "";
+  show(els.sumShort, short);
+  els.sumBuy.classList.toggle("hidden", !short);
+  els.sumBuy.classList.toggle("flex", short);
+  els.btnStart.disabled = n === 0 || short;
+  els.btnStart.textContent = n === 0 ? t("startEmpty") : (n === 1 ? t("startOne") : t("startN", { n: fmt(n) }));
+}
+
+// =============================================================================
+// 阶段切换：一个函数决定每块显示什么，避免各处零散地 show / hide
+// =============================================================================
+function setPhase(phase) {
+  state.phase = phase;
+  const selecting = phase === "select";
+  show(els.selectStage, selecting);
+  show(els.runStage, !selecting);
+  show(els.progressBox, phase === "running");
+  show(els.resultsBox, phase === "results");
+  show(els.runError, phase === "error");
+  // 右侧栏：只有选图阶段才有内容（其他阶段整个隐藏，否则空的第二列还会占位）
+  show(els.side, selecting);
+  show(els.gate, selecting && !state.loggedIn);
+  show(els.runPanel, selecting && state.loggedIn);
+  show(els.demo, selecting && !state.loggedIn);
+  els.layout.classList.toggle(LAYOUT_WITH_ASIDE, selecting);
+  els.layout.classList.toggle(LAYOUT_FULL, !selecting);
+}
+
+// =============================================================================
+// 登录态 + 余额
+// =============================================================================
+async function refreshAuth() {
+  state.loggedIn = MiaoCutPro.isLoggedIn();
+  els.navAuth.textContent = t(state.loggedIn ? "navAccount" : "navLogin");
+  if (state.loggedIn) {
     try {
       const b = await MiaoCutPro.balance();
-      els.balance.innerHTML = t("batchBalance", { n: Number(b.total).toLocaleString() });
-    } catch (_) { /* ignore */ }
+      state.balance = Number(b.total);
+    } catch (_) { state.balance = null; }
   } else {
-    els.balance.textContent = "";
+    state.balance = null;
   }
+  show(els.balanceBox, state.loggedIn && state.balance != null);
+  els.balanceBox.classList.toggle("flex", state.loggedIn && state.balance != null);
+  if (state.balance != null) els.balanceText.textContent = t("batchBalanceShort", { n: fmt(state.balance) });
+  setPhase(state.phase);
+  renderSummary();
 }
+
+function setLoginMsg(key) { els.loginMsg.textContent = key ? t(key) : ""; }
 
 els.btnGoogle.addEventListener("click", async () => {
+  await persistSelection(); // 跳转到 Google 之前确保已选图片写进 IndexedDB
   try { await MiaoCutPro.signInWithGoogle(window.location.href); }
-  catch (e) { els.loginMsg.textContent = e.message === "auth_unavailable" ? t("loginUnavailable") : t("loginGoogleFailed"); }
+  catch (e) { setLoginMsg(e && e.message === "auth_unavailable" ? "loginUnavailable" : "loginGoogleFailed"); }
 });
-els.btnEmail.addEventListener("click", async () => {
+
+els.emailForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
   const email = els.loginEmail.value.trim();
-  if (!email) { els.loginMsg.textContent = t("loginNeedEmail"); return; }
+  if (!email || !els.loginEmail.checkValidity()) { setLoginMsg("loginNeedEmail"); els.loginEmail.focus(); return; }
+  await persistSelection();
   try {
-    await MiaoCutPro.signInWithEmail(email, window.location.href);
-    els.loginMsg.textContent = t("loginSent");
-  } catch (e) {
-    els.loginMsg.textContent = e.message === "auth_unavailable" ? t("loginUnavailable") : t("loginSendFailed");
+    const res = await MiaoCutPro.signInWithEmail(email, window.location.href);
+    if (res && res.error) throw res.error;
+    setLoginMsg("loginSent");
+  } catch (err) {
+    setLoginMsg(err && err.message === "auth_unavailable" ? "loginUnavailable" : "loginSendFailed");
   }
 });
 
-// ---------- profile 切换 ----------
-els.profileToggle.querySelectorAll("button").forEach((b) => {
-  b.addEventListener("click", () => {
-    profile = b.dataset.profile;
-    els.profileToggle.querySelectorAll("button").forEach((x) => x.classList.toggle("active", x === b));
-    updateCost();
-  });
-});
-
-// ---------- 选图 ----------
-els.dropzone.addEventListener("click", () => els.fileInput.click());
-els.fileInput.addEventListener("change", () => addFiles(els.fileInput.files));
-["dragover", "dragenter"].forEach((ev) =>
-  els.dropzone.addEventListener(ev, (e) => { e.preventDefault(); els.dropzone.classList.add("drag"); }));
-["dragleave", "drop"].forEach((ev) =>
-  els.dropzone.addEventListener(ev, (e) => { e.preventDefault(); els.dropzone.classList.remove("drag"); }));
-els.dropzone.addEventListener("drop", (e) => addFiles(e.dataTransfer.files));
-
-function addFiles(fileList) {
-  for (const f of fileList) {
-    if (ALLOWED.includes(f.type) && files.length < MAX_IMAGES) files.push(f);
-  }
-  els.fileInput.value = "";
-  els.fileList.textContent = files.length ? (files.length === 1 ? t("filesOne") : t("filesMany", { n: files.length })) : "";
-  updateCost();
+// =============================================================================
+// 处理：建任务 → 上传 → 开始 → 轮询
+// =============================================================================
+class BatchError extends Error {
+  constructor(key, vars, opts = {}) { super(key); this.key = key; this.vars = vars; this.buy = !!opts.buy; }
 }
 
-function updateCost() {
-  const has = files.length > 0;
-  els.btnStart.classList.toggle("hidden", !has);
-  els.costLine.classList.toggle("hidden", !has);
-  if (has) {
-    const cost = files.length * CREDIT_COST[profile];
-    els.costLine.innerHTML = t("costLine", { n: files.length, c: CREDIT_COST[profile], t: cost });
-  }
+// 把接口的 HTTP 状态翻译成用户能看懂的错误（不再把 create_500 之类的代码直接甩给用户）
+async function toBatchError(res) {
+  if (res.status === 401) return new BatchError("errAuth");
+  if (res.status === 402) return new BatchError("errNoCredits", null, { buy: true });
+  const body = await res.json().catch(() => ({}));
+  if (body.error === "too_many_images") return new BatchError("errTooMany", { max: body.max || MAX_IMAGES });
+  return new BatchError("errGeneric");
 }
 
-// ---------- 主流程 ----------
-els.btnStart.addEventListener("click", start);
-
-async function start() {
-  if (!files.length) return;
-  els.btnStart.disabled = true;
-  els.tool.classList.add("hidden");
-  els.progress.classList.remove("hidden");
-  els.results.classList.add("hidden");
+async function startBatch() {
+  if (!state.files.length || state.phase === "running") return;
+  const sources = state.files.map((f) => f.file);
+  state.job = { job_id: null, total: sources.length, sources };
+  state.images = sources.map((f, idx) => ({ idx, filename: f.name, status: "queued" }));
+  setPhase("running");
+  buildRunGrid();
+  setProgress(t("stPreparing"), 0.02);
+  show(els.progressNote, false);
 
   try {
-    // 1) 建任务 → 拿到每图的预签名 PUT URL
-    setProgress(t("stPreparing"), 0.02);
-    const create = await MiaoCutPro.proFetch("/v1/batch", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ profile, files: files.map((f) => ({ name: f.name, size: f.size })) }),
-    });
-    if (create.status === 402) return paywall();
-    if (!create.ok) throw new Error(`create_${create.status}`);
-    const job = await create.json();
+    // 1) 建任务，拿到每张图的预签名上传地址（顺序与 files 一致）
+    let res;
+    try {
+      res = await MiaoCutPro.proFetch("/v1/batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ profile: state.mode, files: sources.map((f) => ({ name: f.name, size: f.size })) }),
+      });
+    } catch (_) { throw new BatchError("errNetwork"); }
+    if (!res.ok) throw await toBatchError(res);
+    const job = await res.json();
+    state.job.job_id = job.job_id;
 
-    // 建缩略图 chips（按返回顺序对应 files）
-    els.imageGrid.innerHTML = "";
-    chips = {};
-    job.uploads.forEach((up, i) => {
-      const el = document.createElement("div");
-      el.className = "chip";
-      el.dataset.id = up.image_id;
-      el.innerHTML = `
-        <img class="thumb" src="${URL.createObjectURL(files[i])}" alt="">
-        <img class="result" src="" alt="" style="display:none">
-        <div class="overlay"></div>
-        <div class="spinner" style="display:none"></div>
-        <div class="badge">…</div>
-      `;
-      els.imageGrid.appendChild(el);
-      chips[up.image_id] = el;
-    });
-
-    // 2) 逐张直传 R2（限并发 4，绕过 Worker / CF 100MB）
+    // 2) 并发直传 R2；单张失败重试一次，仍失败就整批中止（此时还没点开始，不会冻结任何积分）
     let uploaded = 0;
+    let aborted = false; // 一张彻底失败后，其余并发的上传不再继续
     await runPool(job.uploads, async (up, i) => {
-      const el = chips[up.image_id];
-      if (el) el.querySelector(".spinner").style.display = "block";
-      await putToR2(files[i], up.put_url);
+      if (aborted) return;
+      setTileStatus(i, "uploading");
+      try { await putToR2(sources[i], up.put_url); }
+      catch (_) {
+        await sleep(800);
+        try { await putToR2(sources[i], up.put_url); } catch (__) { aborted = true; throw new BatchError("errUpload"); }
+      }
+      if (aborted) return;
       uploaded++;
-      setBadge(up.image_id, "↑", "");
-      setProgress(t("stUploading", { i: uploaded, n: job.uploads.length }), (uploaded / job.uploads.length) * 0.4);
-    }, 4);
+      setTileStatus(i, "processing");
+      setProgress(t("stUploading", { i: uploaded, n: job.uploads.length }), 0.02 + (uploaded / job.uploads.length) * 0.38, `${uploaded}/${job.uploads.length}`);
+    }, UPLOAD_CONCURRENCY);
 
-    // 3) 开始 → 冻结积分 + 入队 Beam
+    // 3) 开始：冻结积分 + 入队
     setProgress(t("stStarting"), 0.42);
-    const startRes = await MiaoCutPro.proFetch(`/v1/batch/${job.job_id}/start`, { method: "POST" });
-    if (startRes.status === 402) return paywall();
-    if (!startRes.ok) throw new Error(`start_${startRes.status}`);
+    let startRes;
+    try { startRes = await MiaoCutPro.proFetch(`/v1/batch/${job.job_id}/start`, { method: "POST" }); }
+    catch (_) { throw new BatchError("errNetwork"); }
+    if (!startRes.ok) throw await toBatchError(startRes);
 
-    // 4) 轮询进度
-    await poll(job.job_id, job.uploads.length);
+    // 记下任务，刷新 / 离开后回来能继续
+    writeLS(LS_JOB, JSON.stringify({ job_id: job.job_id, total: sources.length, first: sources[0].name, at: Date.now() }));
+    show(els.progressNote, true);
+    await pollJob();
   } catch (e) {
-    setProgress(t("stError", { m: e.message }), 1, true);
-    els.btnStart.disabled = false;
-    showAgainButtonInProgress();
+    showRunError(e instanceof BatchError ? e : new BatchError("errGeneric"));
   }
 }
 
-async function poll(jobId, total) {
-  for (;;) {
-    await sleep(2000);
-    const res = await MiaoCutPro.proFetch(`/v1/batch/${jobId}`);
-    if (!res.ok) { await sleep(2000); continue; }
-    const data = await res.json();
-    lastImages = data.images || [];
-    for (const im of lastImages) {
-      if (im.status === "done") {
-        setBadge(im.image_id, "✓", "done");
-        const el = chips[im.image_id];
-        if (el && !el.dataset.done) {
-          el.dataset.done = "1";
-          el.dataset.url = im.download_url;
-          const resImg = el.querySelector(".result");
-          resImg.src = im.download_url;
-          resImg.style.display = "block";
-          el.querySelector(".spinner").style.display = "none";
-        }
-      }
-      else if (im.status === "failed") {
-        setBadge(im.image_id, "✕", "failed");
-        const el = chips[im.image_id];
-        if (el) el.querySelector(".spinner").style.display = "none";
-      }
-    }
-    const resolved = data.succeeded + data.failed;
-    setProgress(t("stProcessing", { d: resolved, n: total }), 0.4 + (resolved / total) * 0.6);
-    if (data.done) {
-      return showResults(data);
-    }
-  }
-}
-
-function showResults(data) {
-  els.progress.classList.add("hidden");
-  els.results.classList.remove("hidden");
-  els.resultsSummary.textContent = t("resDone", { s: data.succeeded, f: data.failed });
-  els.resultsMsg.textContent = data.failed ? t("resFailedFree") : "";
-  els.btnZip.disabled = data.succeeded === 0;
-  render(); // 刷新余额
-}
-
-els.btnZip.addEventListener("click", async () => {
-  const done = lastImages.filter((im) => im.status === "done" && im.download_url);
-  if (!done.length) return;
-  els.btnZip.disabled = true;
-  els.resultsMsg.textContent = t("zipPacking");
-  try {
-    const zip = new JSZip();
-    let n = 0;
-    await runPool(done, async (im) => {
-      const blob = await (await fetch(im.download_url)).blob();
-      const base = (im.filename || "image").replace(/\.[^.]+$/, "");
-      zip.file(`${base}_removed.webp`, blob);
-      els.resultsMsg.textContent = t("zipPackingN", { i: ++n, n: done.length });
-    }, 4);
-    const out = await zip.generateAsync({ type: "blob" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(out);
-    a.download = "miaocut_batch.zip";
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 3000);
-    els.resultsMsg.textContent = "";
-  } catch (e) {
-    els.resultsMsg.textContent = t("zipFailed", { m: e.message });
-  } finally {
-    els.btnZip.disabled = false;
-  }
-});
-
-// ---------- 工具 ----------
 function putToR2(file, url) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -259,93 +443,449 @@ function putToR2(file, url) {
   });
 }
 
-async function runPool(items, worker, concurrency = 4) {
-  let i = 0;
-  const run = async () => { while (i < items.length) { const idx = i++; await worker(items[idx], idx); } };
-  await Promise.all(Array.from({ length: Math.min(concurrency, items.length) }, run));
+// 拉一次任务状态；网络抖动时返回 null，由调用方决定是否重试
+async function fetchJob(jobId) {
+  try {
+    const res = await MiaoCutPro.proFetch(`/v1/batch/${jobId}`);
+    if (res.status === 404) return { gone: true };
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (_) { return null; }
 }
 
-function setBadge(imageId, text, cls) {
-  const el = chips[imageId];
-  if (!el) return;
-  el.className = "chip" + (cls ? " " + cls : "");
-  const b = el.querySelector(".badge");
-  if (b) b.textContent = text;
+async function pollJob() {
+  if (state.polling) return;
+  state.polling = true;
+  try {
+    const total = state.job.total;
+    for (;;) {
+      const data = await fetchJob(state.job.job_id);
+      if (data && data.gone) { forgetJob(); goSelect(); return; }
+      if (data) {
+        applyJobData(data);
+        const resolved = data.succeeded + data.failed;
+        setProgress(t("stProcessing", { d: resolved, n: total }), 0.42 + (resolved / total) * 0.58, `${resolved}/${total}`);
+        if (data.done) { showResults(); return; }
+      }
+      await sleep(data ? POLL_MS : POLL_MS * 2);
+    }
+  } finally {
+    state.polling = false;
+  }
 }
 
-function setProgress(text, frac, isErr) {
+// 服务端返回的每张图 → 本地状态 + 网格
+function applyJobData(data) {
+  const imgs = (data.images || []).slice().sort((a, b) => a.idx - b.idx);
+  if (!state.images.length || state.images.length !== imgs.length) {
+    state.images = imgs.map((im) => ({ ...im }));
+    state.job.total = imgs.length || state.job.total;
+    buildRunGrid();
+  }
+  imgs.forEach((im) => {
+    const cur = state.images[im.idx] || {};
+    state.images[im.idx] = { ...cur, ...im };
+    if (im.status === "done" || im.status === "failed") setTileStatus(im.idx, im.status);
+  });
+}
+
+function setProgress(text, frac, count = "") {
   els.progressText.textContent = text;
-  els.progressText.style.color = isErr ? "#dc2626" : "";
-  els.progressBar.style.width = Math.max(0, Math.min(1, frac)) * 100 + "%";
+  els.progressCount.textContent = count;
+  const pct = Math.round(Math.max(0, Math.min(1, frac)) * 100);
+  els.progressBar.style.width = pct + "%";
+  els.progressBar.parentElement.setAttribute("aria-valuenow", String(pct));
 }
 
-// 积分不足：提示 + 「去购买积分」链接（不再 1.2 秒后自动跳走，避免用户来不及看清提示）
-function paywall() {
-  setProgress(t("stNoCredits"), 1, true);
-  els.btnStart.disabled = false;
-  const link = document.createElement("a");
-  link.href = "/pricing/";
-  link.textContent = t("buyCreditsLink");
-  link.style.marginLeft = "8px";
-  els.progressText.appendChild(link);
-  showAgainButtonInProgress();
+const RETRYABLE = new Set(["errNetwork", "errUpload", "errGeneric"]);
+let lastErrorRetryable = false;
+
+function showRunError(err) {
+  lastErrorRetryable = RETRYABLE.has(err.key);
+  els.runErrorText.textContent = t(err.key, err.vars);
+  els.btnErrorRetry.textContent = t(lastErrorRetryable ? "tryAgain" : "errBack");
+  els.runGrid.querySelectorAll("[data-spinner]").forEach((sp) => show(sp, false));
+  // 没处理成的图恢复原图不透明度，否则在白底预览上像一张空白卡片
+  els.runGrid.querySelectorAll("[data-src-img]").forEach((img) => img.classList.remove("opacity-40"));
+  show(els.errorBuy, err.buy);
+  setPhase("error");
+  // 出错时网格保留，用户能看到是哪几张、自己选了什么
+  if (err.key === "errNoCredits" || err.key === "errAuth") refreshAuth();
 }
 
-// 进度卡里放一个「返回」按钮（积分不足 / 出错后可以回到选图界面）
-function showAgainButtonInProgress() {
-  if (els.progress.querySelector("#btn-back")) return;
-  const btn = document.createElement("button");
-  btn.id = "btn-back";
-  btn.textContent = t("batchAgain");
-  btn.style.marginTop = "12px";
-  btn.addEventListener("click", resetBatch);
-  els.progress.appendChild(btn);
+function showResults() {
+  const ok = state.images.filter((im) => im.status === "done").length;
+  const failed = state.images.filter((im) => im.status === "failed").length;
+  els.resReady.textContent = t("resReady", { s: fmt(ok) });
+  els.resFailed.textContent = t("resFailedN", { f: fmt(failed) });
+  show(els.resFailed, failed > 0);
+  els.btnZip.disabled = ok === 0;
+  const canRetry = failed > 0 && !!state.job.sources;
+  els.btnRetry.textContent = t("retryFailed", { f: fmt(failed) });
+  els.btnRetry.classList.toggle("hidden", !canRetry);
+  els.btnRetry.classList.toggle("inline-flex", canRetry);
+  show(els.retryNote, failed > 0 && !state.job.sources);
+  show(els.zipMsg, false);
+  setPhase("results");
+  refreshAuth(); // 结算后刷新余额
 }
 
-// 「继续处理更多图片」：清空本批状态，回到选图界面（不刷新页面，保留登录态和余额显示）
-function resetBatch() {
-  files = [];
-  chips = {};
-  lastImages = [];
-  els.imageGrid.innerHTML = "";
-  els.fileList.textContent = "";
-  els.resultsMsg.textContent = "";
-  const back = els.progress.querySelector("#btn-back");
-  if (back) back.remove();
-  els.results.classList.add("hidden");
-  els.progress.classList.add("hidden");
-  els.tool.classList.remove("hidden");
-  els.btnStart.disabled = false;
-  updateCost();
-  render();
+// =============================================================================
+// 处理网格：进度和结果共用，处理完不会消失
+// =============================================================================
+function buildRunGrid() {
+  const sources = state.job && state.job.sources;
+  els.runGrid.innerHTML = state.images.map((im, i) => {
+    const src = sources && sources[i] ? URL.createObjectURL(sources[i]) : "";
+    return `
+    <li data-tile="${i}">
+      <button type="button" data-open="${i}" disabled
+        class="group relative block aspect-square w-full overflow-hidden rounded-lg border border-gray-200 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 enabled:cursor-zoom-in dark:border-zinc-800 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-preview-bg>
+        ${src ? `<img data-src-img src="${src}" alt="" loading="lazy" decoding="async" class="absolute inset-0 h-full w-full object-cover opacity-40 transition-opacity duration-200 motion-reduce:transition-none">` : ""}
+        <span class="absolute inset-0 flex items-center justify-center transition-[padding] duration-200 ease-out motion-reduce:transition-none" data-preview-pad></span>
+        <span data-spinner class="absolute inset-0 flex items-center justify-center">
+          <span class="h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-gray-900 motion-reduce:animate-none dark:border-zinc-600 dark:border-t-zinc-100"></span>
+        </span>
+        <span data-badge class="absolute bottom-1.5 left-1.5 hidden rounded-full bg-red-600 px-2 py-0.5 text-xs font-semibold text-white">${escapeHtml(t("tileFailed"))}</span>
+      </button>
+      <p class="mt-1.5 truncate text-xs text-gray-600 dark:text-zinc-400" title="${escapeHtml(im.filename || "")}">${escapeHtml(im.filename || "")}</p>
+      <p data-reason class="mt-0.5 hidden text-xs text-red-600 dark:text-red-400"></p>
+    </li>`;
+  }).join("");
+  applyOutputPreview(els.runGrid);
+  state.images.forEach((im, i) => { if (im.status === "done" || im.status === "failed") setTileStatus(i, im.status); });
 }
-document.getElementById("btn-again").addEventListener("click", resetBatch);
 
-// ---------- 启动 ----------
-MiaoCutPro.init().then(render).catch(() => render());
-MiaoCutPro.onAuthChange(render);
+function setTileStatus(i, status) {
+  const li = els.runGrid.querySelector(`[data-tile="${i}"]`);
+  if (!li) return;
+  const im = state.images[i] || {};
+  const btn = li.querySelector("[data-open]");
+  const spinner = li.querySelector("[data-spinner]");
+  const badge = li.querySelector("[data-badge]");
+  const reason = li.querySelector("[data-reason]");
+  const srcImg = li.querySelector("[data-src-img]");
+  if (status === "done" && im.download_url) {
+    show(spinner, false);
+    // 结果图出来时才创建 <img>（不留空 src 的占位图），淡入后盖住原图
+    let result = li.querySelector("[data-result]");
+    if (!result) {
+      result = document.createElement("img");
+      result.dataset.result = "";
+      result.alt = "";
+      result.className = "h-full w-full object-contain opacity-0 transition-opacity duration-300 motion-reduce:transition-none";
+      li.querySelector("[data-preview-pad]").appendChild(result);
+    }
+    if (result.dataset.loaded !== im.image_id) {
+      result.dataset.loaded = im.image_id;
+      result.onload = () => {
+        result.classList.remove("opacity-0");
+        // 先去掉 opacity-40 再加 opacity-0：两个类同时存在时 CSS 里后定义的 opacity-40 会赢，原图背景会透出来
+        if (srcImg) { srcImg.classList.remove("opacity-40"); srcImg.classList.add("opacity-0"); }
+      };
+      result.src = im.download_url;
+    }
+    btn.disabled = false;
+    btn.setAttribute("aria-label", im.filename || "");
+  } else if (status === "failed") {
+    show(spinner, false);
+    show(badge, true);
+    reason.textContent = t(IMAGE_ERRORS[im.error] || "errImgDefault");
+    show(reason, true);
+  } else {
+    show(spinner, true);
+  }
+}
 
-// ---------- Lightbox ----------
-const lightbox = document.getElementById("lightbox");
-const lightboxImg = document.getElementById("lightbox-img");
-const lightboxClose = document.getElementById("lightbox-close");
-
-els.imageGrid.addEventListener("click", (e) => {
-  const chip = e.target.closest(".chip.done");
-  if (!chip || !chip.dataset.url) return;
-  lightboxImg.src = chip.dataset.url;
-  lightbox.classList.add("show");
+els.runGrid.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-open]");
+  if (btn && !btn.disabled) openViewer(Number(btn.dataset.open));
 });
 
-function closeLightbox() {
-  lightbox.classList.remove("show");
-  setTimeout(() => { lightboxImg.src = ""; }, 300);
+// =============================================================================
+// 下载：格式转换 + ZIP + 单张
+// =============================================================================
+// 预签名下载地址 1 小时过期：下载前重新拉一次状态，拿到新地址
+async function refreshDownloadUrls() {
+  if (!state.job || !state.job.job_id) return;
+  const data = await fetchJob(state.job.job_id);
+  if (data && !data.gone) {
+    (data.images || []).forEach((im) => { state.images[im.idx] = { ...state.images[im.idx], ...im }; });
+  }
 }
 
-lightboxClose.addEventListener("click", closeLightbox);
-lightbox.addEventListener("click", (e) => {
-  if (e.target === lightbox) closeLightbox();
+// 透明结果 → 选定格式。透明 PNG 也要转一次（服务端给的是 WebP，亚马逊等平台不收 WebP）
+async function renderOutput(blob, basename, outputId) {
+  const bitmap = await createImageBitmap(blob);
+  try {
+    const eng = engine.createEngine({ cutout: bitmap, basename });
+    try {
+      const out = await eng.exportImage(outputById(outputId).state());
+      return { blob: out.blob, ext: out.format };
+    } finally { eng.dispose(); }
+  } finally {
+    if (bitmap.close) bitmap.close();
+  }
+}
+
+const baseName = (name) => String(name || "image").replace(/\.[^.]+$/, "").replace(/[\\/:*?"<>|]+/g, "-").trim() || "image";
+
+async function fetchResult(im) {
+  const res = await fetch(im.download_url);
+  if (!res.ok) throw new Error("download_" + res.status);
+  return res.blob();
+}
+
+function saveBlob(blob, filename) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+
+els.btnZip.addEventListener("click", async () => {
+  els.btnZip.disabled = true;
+  show(els.zipMsg, true);
+  els.zipMsg.textContent = t("zipPackingN", { i: 0, n: "…" });
+  try {
+    await refreshDownloadUrls();
+    const done = state.images.filter((im) => im.status === "done" && im.download_url);
+    const zip = new JSZip();
+    const used = new Map(); // 文件名去重：同名的加 -2、-3
+    let n = 0;
+    // 逐张转换（canvas 很吃内存，200 张不要并发太多）
+    await runPool(done, async (im) => {
+      const { blob, ext } = await renderOutput(await fetchResult(im), im.filename, state.output);
+      const base = baseName(im.filename);
+      let name = `${base}.${ext}`;
+      const count = used.get(name) || 0;
+      used.set(name, count + 1);
+      if (count) name = `${base}-${count + 1}.${ext}`;
+      zip.file(name, blob);
+      els.zipMsg.textContent = t("zipPackingN", { i: ++n, n: done.length });
+    }, 2);
+    const out = await zip.generateAsync({ type: "blob" });
+    const stamp = new Date().toISOString().slice(0, 10);
+    saveBlob(out, `miaocut-batch-${stamp}-${state.output}.zip`);
+    show(els.zipMsg, false);
+  } catch (e) {
+    console.warn("zip failed:", e);
+    els.zipMsg.textContent = t("zipFailed");
+  } finally {
+    els.btnZip.disabled = false;
+  }
 });
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && lightbox.classList.contains("show")) closeLightbox();
+
+// 重试失败的：把失败的原图放回选图区，用户确认消耗后再开始（不悄悄扣分）
+els.btnRetry.addEventListener("click", () => {
+  const sources = state.job && state.job.sources;
+  if (!sources) return;
+  const failed = state.images.filter((im) => im.status === "failed").map((im) => sources[im.idx]).filter(Boolean);
+  forgetJob();
+  clearSelection();
+  addFiles(failed);
+  goSelect();
 });
+
+els.btnNew.addEventListener("click", () => {
+  forgetJob();
+  clearSelection();
+  goSelect();
+});
+
+els.btnErrorRetry.addEventListener("click", () => {
+  // 出错时还没扣分：回到选图区，已选图片原样保留
+  forgetJob();
+  goSelect();
+  if (lastErrorRetryable && state.files.length && state.loggedIn) startBatch();
+});
+
+function forgetJob() {
+  writeLS(LS_JOB, null);
+  state.job = null;
+  state.images = [];
+  els.runGrid.innerHTML = "";
+}
+
+function goSelect() {
+  setPhase("select");
+  renderSelection();
+}
+
+// =============================================================================
+// 大图查看：结果 + 对比原图 + 单张下载 + ←/→ 切换
+// =============================================================================
+let viewerIndex = -1;
+let viewerShowingOriginal = false;
+let viewerOriginalUrl = null;
+
+function doneIndexes() { return state.images.filter((im) => im.status === "done").map((im) => im.idx); }
+
+function openViewer(idx) {
+  viewerIndex = idx;
+  viewerShowingOriginal = false;
+  renderViewer();
+  if (!els.viewer.open) els.viewer.showModal();
+}
+
+function renderViewer() {
+  const im = state.images[viewerIndex];
+  if (!im) return;
+  if (!els.viewerImg) {
+    els.viewerImg = document.createElement("img");
+    els.viewerImg.alt = "";
+    els.viewerImg.className = "max-h-full max-w-full object-contain";
+    els.viewerStage.appendChild(els.viewerImg);
+  }
+  els.viewerName.textContent = im.filename || "";
+  if (viewerOriginalUrl) { URL.revokeObjectURL(viewerOriginalUrl); viewerOriginalUrl = null; }
+  const source = state.job && state.job.sources && state.job.sources[viewerIndex];
+  if (viewerShowingOriginal && source) {
+    viewerOriginalUrl = URL.createObjectURL(source);
+    els.viewerImg.src = viewerOriginalUrl;
+  } else {
+    els.viewerImg.src = im.download_url;
+  }
+  // 预览背景跟随下载格式（原图不需要棋盘格）
+  const white = state.output !== "png" || viewerShowingOriginal;
+  els.viewerStage.classList.toggle("checker", !white);
+  els.viewerStage.classList.toggle("bg-white", white);
+  els.viewerStage.classList.toggle("p-[4%]", state.output === "amazon" && !viewerShowingOriginal);
+  show(els.viewerCompare, !!source);
+  els.viewerCompare.textContent = t(viewerShowingOriginal ? "viewResult" : "viewOriginal");
+  const list = doneIndexes();
+  const pos = list.indexOf(viewerIndex);
+  els.viewerPrev.disabled = pos <= 0;
+  els.viewerNext.disabled = pos < 0 || pos >= list.length - 1;
+  [els.viewerPrev, els.viewerNext].forEach((b) => b.classList.toggle("opacity-30", b.disabled));
+}
+
+function stepViewer(dir) {
+  const list = doneIndexes();
+  const pos = list.indexOf(viewerIndex) + dir;
+  if (pos < 0 || pos >= list.length) return;
+  viewerIndex = list[pos];
+  viewerShowingOriginal = false;
+  renderViewer();
+}
+
+els.viewerPrev.setAttribute("aria-label", t("viewPrev"));
+els.viewerNext.setAttribute("aria-label", t("viewNext"));
+els.viewerClose.setAttribute("aria-label", t("viewClose"));
+els.viewerPrev.addEventListener("click", () => stepViewer(-1));
+els.viewerNext.addEventListener("click", () => stepViewer(1));
+els.viewerClose.addEventListener("click", () => els.viewer.close());
+els.viewerCompare.addEventListener("click", () => { viewerShowingOriginal = !viewerShowingOriginal; renderViewer(); });
+els.viewer.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowLeft") { e.preventDefault(); stepViewer(-1); }
+  if (e.key === "ArrowRight") { e.preventDefault(); stepViewer(1); }
+});
+// 点遮罩关闭（点到 dialog 本身而不是里面的内容）
+els.viewer.addEventListener("click", (e) => { if (e.target === els.viewer) els.viewer.close(); });
+els.viewer.addEventListener("close", () => {
+  if (viewerOriginalUrl) { URL.revokeObjectURL(viewerOriginalUrl); viewerOriginalUrl = null; }
+});
+
+els.viewerDownload.addEventListener("click", async () => {
+  const im = state.images[viewerIndex];
+  if (!im) return;
+  els.viewerDownload.disabled = true;
+  try {
+    await refreshDownloadUrls();
+    const fresh = state.images[viewerIndex];
+    const { blob, ext } = await renderOutput(await fetchResult(fresh), fresh.filename, state.output);
+    saveBlob(blob, `${baseName(fresh.filename)}.${ext}`);
+  } catch (e) {
+    console.warn("download failed:", e);
+  } finally {
+    els.viewerDownload.disabled = false;
+  }
+});
+
+// =============================================================================
+// 交互绑定
+// =============================================================================
+els.dropzone.addEventListener("click", () => els.fileInput.click());
+els.dropzone.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); els.fileInput.click(); }
+});
+els.btnAddMore.addEventListener("click", () => els.fileInput.click());
+els.fileInput.addEventListener("change", () => addFiles(els.fileInput.files));
+els.btnClear.addEventListener("click", clearSelection);
+els.selGrid.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-remove]");
+  if (btn) removeFile(Number(btn.dataset.remove));
+});
+
+// 拖拽高亮：同时接受拖到整个页面（拖偏了也不会让浏览器直接打开图片）
+const DRAG_ON = ["border-gray-900", "bg-gray-100", "dark:border-zinc-300", "dark:bg-zinc-800"];
+["dragenter", "dragover"].forEach((ev) => els.dropzone.addEventListener(ev, (e) => {
+  e.preventDefault();
+  els.dropzone.classList.add(...DRAG_ON);
+}));
+["dragleave", "drop"].forEach((ev) => els.dropzone.addEventListener(ev, (e) => {
+  e.preventDefault();
+  els.dropzone.classList.remove(...DRAG_ON);
+}));
+els.dropzone.addEventListener("drop", (e) => { if (state.phase === "select") addFiles(e.dataTransfer.files); });
+["dragover", "drop"].forEach((ev) => window.addEventListener(ev, (e) => {
+  if (e.dataTransfer && [...(e.dataTransfer.types || [])].includes("Files")) e.preventDefault();
+}));
+
+document.querySelectorAll('input[name="mode"]').forEach((r) => {
+  r.checked = r.value === state.mode;
+  r.addEventListener("change", () => {
+    if (!r.checked) return;
+    state.mode = r.value;
+    writeLS(LS_MODE, state.mode);
+    renderSummary();
+  });
+});
+els.btnStart.addEventListener("click", startBatch);
+
+// =============================================================================
+// 启动
+// =============================================================================
+async function boot() {
+  els.dzSub.textContent = t("dzSub", { max: MAX_IMAGES });
+  els.gatePoint2.textContent = t("gatePoint2", { price: MIN_PACK_PRICE });
+  renderOutputGroups();
+  renderDemo();
+  setPhase("select");
+  renderSelection();
+
+  await MiaoCutPro.init().catch(() => {});
+  await refreshAuth();
+  MiaoCutPro.onAuthChange(() => refreshAuth());
+
+  // 恢复之前选的图（登录跳转回来、刷新页面）
+  const persisted = await loadPersistedFiles();
+  if (persisted.length && !state.files.length) {
+    // IndexedDB 取回来的可能是 Blob（部分浏览器不保留 File 的 name），补一个文件名
+    addFiles(persisted.map((b, i) => (b instanceof File ? b : new File([b], `image-${i + 1}.${(b.type || "image/png").split("/")[1]}`, { type: b.type }))));
+  }
+
+  // 恢复进行中 / 最近一次任务（24 小时内）
+  if (state.loggedIn) {
+    let saved = null;
+    try { saved = JSON.parse(readLS(LS_JOB) || "null"); } catch (_) { saved = null; }
+    if (saved && saved.job_id && Date.now() - saved.at < JOB_TTL_MS) {
+      // 原图还在本地（同一批）就用来显示缩略图、对比和重试
+      const same = state.files.length === saved.total && state.files[0] && state.files[0].file.name === saved.first;
+      const sources = same ? state.files.map((f) => f.file) : null;
+      state.job = { job_id: saved.job_id, total: saved.total, sources };
+      state.images = [];
+      setPhase("running");
+      setProgress(t("stResumed"), 0.42);
+      show(els.progressNote, true);
+      pollJob();
+    } else if (saved) {
+      writeLS(LS_JOB, null);
+    }
+  }
+}
+
+boot();
