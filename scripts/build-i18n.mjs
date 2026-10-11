@@ -106,6 +106,7 @@ const ASSET_PATH_PREFIXES = [
   '/language-menu.js',
   '/feedback.js',
   '/umami-filter.js',
+  '/editor/',
   '/examples/',
   '/og/',
   '/fonts/',

@@ -105,18 +105,14 @@
         "failTitle": "抱歉，处理失败",
         "alertSize": "仅支持 JPG / PNG / WebP 格式的图片",
         "editorHomeTitle": "结果已生成",
-        "editorHomeSub": "下载透明 PNG，或先换一个简单背景再保存。",
+        "editorHomeSub": "直接下载透明 PNG，或先加背景、阴影、调整画布再保存。",
         "editorProductTitle": "商品图已准备好",
         "editorProductSub": "快速生成白底、方形画布和阴影版商品图。",
         "editorPortraitTitle": "人像抠图已准备好",
         "editorPortraitSub": "切换职业头像背景、尺寸和圆形头像预览。",
         "backgroundLabel": "背景",
-        "outputSizeLabel": "输出尺寸",
-        "subjectPaddingLabel": "主体边距",
         "shadowLabel": "阴影",
         "shapeLabel": "形状",
-        "portraitScaleLabel": "头肩占比",
-        "bgImage": "图片",
         "uploadBgImage": "上传背景图",
         "replaceBgImage": "更换背景图",
         "bgScaleLabel": "背景缩放",
@@ -126,26 +122,12 @@
         "bgWhite": "白色",
         "bgBlack": "黑色",
         "bgLightGray": "浅灰",
-        "bgBlue": "蓝色",
-        "bgGradient": "渐变",
         "bgBlur": "虚化原图",
         "bgCustom": "自定义",
-        "sizeOriginal": "原始尺寸",
-        "sizeSquare1080": "1:1 · 1080",
-        "sizeSquare2000": "1:1 · 2000",
-        "sizeSquare2048": "1:1 · 2048",
-        "sizeAvatar512": "头像 · 512",
-        "sizeAvatar1024": "头像 · 1024",
-        "sizeResume": "简历 · 480×640",
         "shadowNone": "无",
-        "shadowSoft": "柔和",
-        "shadowFloat": "悬浮",
         "shapeSquare": "方形",
         "shapeCircle": "圆形",
         "downloadTransparent": "下载透明 PNG",
-        "downloadEdited": "下载当前效果",
-        "downloadSquare": "下载方形 PNG",
-        "downloadCircle": "下载圆形 PNG",
         "startOver": "换一张图",
         "footerToolsTitle": "全部 MiaoCut 工具",
         "footerCatRemove": "AI 抠图",
@@ -190,7 +172,50 @@
         "rateDayModalThanksBody": "Pro 开放后我们会第一时间通知你，并赠送 100 积分。",
         "rateBurstTitle": "手速太快啦",
         "rateBurstBody": "请等约 {s} 秒再试 —— 今天的免费额度还没用完，放心。",
-        "rateBurstProCta": "想更快 / 批量处理？升级 Pro"
+        "rateBurstProCta": "想更快 / 批量处理？升级 Pro",
+        "bgSnow": "极简浅灰",
+        "bgIdBlue": "证件蓝",
+        "bgIdRed": "证件红",
+        "bgStudioLabel": "影棚柔光",
+        "gradStudioTop": "顶部柔光",
+        "gradCove": "无缝背景纸",
+        "gradWarmGray": "轻奢暖灰",
+        "gradSpotlight": "聚光灯",
+        "gradCoolMist": "冷调晨雾",
+        "shadowContact": "轻柔落地",
+        "shadowDrop": "立体投影",
+        "shadowAdvanced": "微调阴影",
+        "contactShadowLabel": "接地阴影",
+        "sliderOpacity": "浓度",
+        "sliderSoftness": "柔和度",
+        "sliderSpread": "宽度",
+        "sliderLength": "影长",
+        "sliderBlur": "模糊",
+        "sliderOffsetX": "水平偏移",
+        "sliderOffsetY": "垂直偏移",
+        "contactShadowCroppedHint": "主体底部被裁切，已自动贴住画布底边，接地阴影不生效。",
+        "canvasLabel": "画布",
+        "ratioOriginal": "原图尺寸",
+        "ratioSquare": "1:1 方图",
+        "ratioPortrait": "4:5 竖图",
+        "ratioStory": "9:16 竖屏",
+        "ratio34": "3:4 证件照",
+        "subjectSizeLabel": "主体大小",
+        "qualityLabel": "画质",
+        "centerH": "水平居中",
+        "centerV": "垂直居中",
+        "dragSubjectHint": "拖动预览图可调整主体位置",
+        "exportLabel": "导出",
+        "exportSizeLabel": "尺寸",
+        "sizeAuto": "自动",
+        "jpgMatteHint": "JPG 不支持透明，透明区域会填充为白色。",
+        "webpFallbackHint": "你的浏览器不支持保存 WebP，已改为下载 PNG。",
+        "exportFailed": "导出失败，请换一个尺寸或格式再试。",
+        "downloadImage": "下载",
+        "exporting": "正在生成…",
+        "editBgShadow": "编辑背景 / 阴影",
+        "homeDoneTitle": "透明 PNG 已下载",
+        "homeDoneSub": "需要白底、阴影或方图？可以在这里继续编辑，或拖入下一张图片。"
     },
     "en": {
         "dropzoneTitle": "Drag & drop image here, or click to upload",
@@ -226,18 +251,14 @@
         "failTitle": "Sorry, processing failed",
         "alertSize": "Only JPG / PNG / WebP formats are supported",
         "editorHomeTitle": "Your cutout is ready",
-        "editorHomeSub": "Download the transparent PNG, or add a simple background first.",
+        "editorHomeSub": "Download the transparent PNG, or add a background, shadow or new canvas size first.",
         "editorProductTitle": "Product photo ready",
         "editorProductSub": "Create a white-background, square-canvas, or shadowed product image.",
         "editorPortraitTitle": "Portrait cutout ready",
         "editorPortraitSub": "Switch profile backgrounds, output sizes, and circular avatar previews.",
         "backgroundLabel": "Background",
-        "outputSizeLabel": "Output size",
-        "subjectPaddingLabel": "Subject padding",
         "shadowLabel": "Shadow",
         "shapeLabel": "Shape",
-        "portraitScaleLabel": "Head / shoulder size",
-        "bgImage": "Image",
         "uploadBgImage": "Upload background",
         "replaceBgImage": "Replace background",
         "bgScaleLabel": "Background scale",
@@ -247,26 +268,12 @@
         "bgWhite": "White",
         "bgBlack": "Black",
         "bgLightGray": "Light gray",
-        "bgBlue": "Blue",
-        "bgGradient": "Gradient",
         "bgBlur": "Blur original",
         "bgCustom": "Custom",
-        "sizeOriginal": "Original size",
-        "sizeSquare1080": "1:1 · 1080",
-        "sizeSquare2000": "1:1 · 2000",
-        "sizeSquare2048": "1:1 · 2048",
-        "sizeAvatar512": "Avatar · 512",
-        "sizeAvatar1024": "Avatar · 1024",
-        "sizeResume": "Resume · 480×640",
         "shadowNone": "None",
-        "shadowSoft": "Soft",
-        "shadowFloat": "Floating",
         "shapeSquare": "Square",
         "shapeCircle": "Circle",
         "downloadTransparent": "Download transparent PNG",
-        "downloadEdited": "Download current version",
-        "downloadSquare": "Download square PNG",
-        "downloadCircle": "Download circular PNG",
         "startOver": "Choose another image",
         "footerToolsTitle": "All MiaoCut Tools",
         "footerCatRemove": "AI Background Removal",
@@ -311,7 +318,50 @@
         "rateDayModalThanksBody": "We'll notify you the moment Pro opens and add 100 free credits.",
         "rateBurstTitle": "Whoa, slow down a little",
         "rateBurstBody": "Please wait about {s}s and try again — you still have free quota left today.",
-        "rateBurstProCta": "Need it faster / in batches? Get Pro"
+        "rateBurstProCta": "Need it faster / in batches? Get Pro",
+        "bgSnow": "Soft gray",
+        "bgIdBlue": "ID blue",
+        "bgIdRed": "ID red",
+        "bgStudioLabel": "Studio lighting",
+        "gradStudioTop": "Top softbox",
+        "gradCove": "Seamless paper",
+        "gradWarmGray": "Warm gray",
+        "gradSpotlight": "Spotlight",
+        "gradCoolMist": "Cool mist",
+        "shadowContact": "Soft ground",
+        "shadowDrop": "Drop shadow",
+        "shadowAdvanced": "Fine-tune shadows",
+        "contactShadowLabel": "Ground shadow",
+        "sliderOpacity": "Opacity",
+        "sliderSoftness": "Softness",
+        "sliderSpread": "Width",
+        "sliderLength": "Length",
+        "sliderBlur": "Blur",
+        "sliderOffsetX": "Horizontal offset",
+        "sliderOffsetY": "Vertical offset",
+        "contactShadowCroppedHint": "The subject is cut off at the bottom, so it sits on the bottom edge and the ground shadow is skipped.",
+        "canvasLabel": "Canvas",
+        "ratioOriginal": "Original",
+        "ratioSquare": "1:1 Square",
+        "ratioPortrait": "4:5 Portrait",
+        "ratioStory": "9:16 Story",
+        "ratio34": "3:4 ID photo",
+        "subjectSizeLabel": "Subject size",
+        "qualityLabel": "Quality",
+        "centerH": "Center horizontally",
+        "centerV": "Center vertically",
+        "dragSubjectHint": "Drag the image to reposition the subject",
+        "exportLabel": "Export",
+        "exportSizeLabel": "Size",
+        "sizeAuto": "Auto",
+        "jpgMatteHint": "JPG has no transparency, so transparent areas will be filled with white.",
+        "webpFallbackHint": "Your browser can't save WebP, so a PNG was downloaded instead.",
+        "exportFailed": "Export failed. Try a smaller size or another format.",
+        "downloadImage": "Download",
+        "exporting": "Preparing…",
+        "editBgShadow": "Edit background & shadow",
+        "homeDoneTitle": "Transparent PNG downloaded",
+        "homeDoneSub": "Need a white background, a shadow or a square canvas? Edit it here, or drop another image."
     },
     "hi": {
         "dropzoneTitle": "छवि को यहां खींचें और छोड़ें, या अपलोड करने के लिए क्लिक करें",
@@ -347,18 +397,14 @@
         "failTitle": "क्षमा करें, प्रसंस्करण विफल रहा",
         "alertSize": "केवल JPG / PNG / WebP प्रारूप समर्थित हैं",
         "editorHomeTitle": "आपका कटआउट तैयार है",
-        "editorHomeSub": "पारदर्शी PNG डाउनलोड करें, या पहले एक साधारण पृष्ठभूमि जोड़ें।",
+        "editorHomeSub": "पारदर्शी PNG डाउनलोड करें, या पहले पृष्ठभूमि, छाया या नया कैनवास आकार जोड़ें।",
         "editorProductTitle": "उत्पाद फोटो तैयार",
         "editorProductSub": "एक सफ़ेद-पृष्ठभूमि, चौकोर-कैनवास, या छायांकित उत्पाद छवि बनाएं।",
         "editorPortraitTitle": "पोर्ट्रेट कटआउट तैयार",
         "editorPortraitSub": "प्रोफ़ाइल पृष्ठभूमि, आउटपुट आकार और गोलाकार अवतार पूर्वावलोकन बदलें।",
         "backgroundLabel": "पृष्ठभूमि",
-        "outputSizeLabel": "आउटपुट आकार",
-        "subjectPaddingLabel": "विषय पैडिंग",
         "shadowLabel": "छाया",
         "shapeLabel": "आकार",
-        "portraitScaleLabel": "सिर/कंधे का आकार",
-        "bgImage": "छवि",
         "uploadBgImage": "पृष्ठभूमि अपलोड करें",
         "replaceBgImage": "पृष्ठभूमि बदलें",
         "bgScaleLabel": "पृष्ठभूमि पैमाना",
@@ -368,26 +414,12 @@
         "bgWhite": "सफ़ेद",
         "bgBlack": "काला",
         "bgLightGray": "हल्का ग्रे",
-        "bgBlue": "नीला",
-        "bgGradient": "ढाल",
         "bgBlur": "मूल को धुंधला करें",
         "bgCustom": "रिवाज़",
-        "sizeOriginal": "मूल आकार",
-        "sizeSquare1080": "1:1 · 1080",
-        "sizeSquare2000": "1:1 · 2000",
-        "sizeSquare2048": "1:1 · 2048",
-        "sizeAvatar512": "अवतार · 512",
-        "sizeAvatar1024": "अवतार · 1024",
-        "sizeResume": "बायोडाटा · 480×640",
         "shadowNone": "कोई नहीं",
-        "shadowSoft": "कोमल",
-        "shadowFloat": "चल",
         "shapeSquare": "वर्ग",
         "shapeCircle": "घेरा",
         "downloadTransparent": "पारदर्शी PNG डाउनलोड करें",
-        "downloadEdited": "वर्तमान संस्करण डाउनलोड करें",
-        "downloadSquare": "वर्ग PNG डाउनलोड करें",
-        "downloadCircle": "परिपत्र PNG डाउनलोड करें",
         "startOver": "कोई अन्य छवि चुनें",
         "footerToolsTitle": "सभी MiaoCut उपकरण",
         "footerCatRemove": "AI पृष्ठभूमि हटाना",
@@ -424,7 +456,50 @@
         "batchModalThanksBody": "लॉन्च पर हम आपको सूचित करेंगे और 100 मुफ्त क्रेडिट देंगे।",
         "batchModalError": "सबमिट नहीं हो पाया। कृपया फिर कोशिश करें।",
         "batchModalInvalidEmail": "मान्य ईमेल दर्ज करें।",
-        "batchModalClose": "बंद करें"
+        "batchModalClose": "बंद करें",
+        "bgSnow": "सॉफ्ट ग्रे",
+        "bgIdBlue": "आईडी नीला",
+        "bgIdRed": "आईडी लाल",
+        "bgStudioLabel": "स्टूडियो लाइटिंग",
+        "gradStudioTop": "टॉप सॉफ्टबॉक्स",
+        "gradCove": "सीमलेस पेपर",
+        "gradWarmGray": "वॉर्म ग्रे",
+        "gradSpotlight": "स्पॉटलाइट",
+        "gradCoolMist": "कूल मिस्ट",
+        "shadowContact": "हल्की ज़मीनी छाया",
+        "shadowDrop": "ड्रॉप शैडो",
+        "shadowAdvanced": "छाया को बारीकी से सेट करें",
+        "contactShadowLabel": "ज़मीनी छाया",
+        "sliderOpacity": "गहराई",
+        "sliderSoftness": "कोमलता",
+        "sliderSpread": "चौड़ाई",
+        "sliderLength": "लंबाई",
+        "sliderBlur": "धुंधलापन",
+        "sliderOffsetX": "क्षैतिज खिसकाव",
+        "sliderOffsetY": "ऊर्ध्वाधर खिसकाव",
+        "contactShadowCroppedHint": "विषय नीचे से कटा हुआ है, इसलिए उसे नीचे के किनारे पर रखा गया है और ज़मीनी छाया लागू नहीं होगी।",
+        "canvasLabel": "कैनवास",
+        "ratioOriginal": "मूल आकार",
+        "ratioSquare": "1:1 वर्ग",
+        "ratioPortrait": "4:5 पोर्ट्रेट",
+        "ratioStory": "9:16 स्टोरी",
+        "ratio34": "3:4 आईडी फ़ोटो",
+        "subjectSizeLabel": "विषय का आकार",
+        "qualityLabel": "गुणवत्ता",
+        "centerH": "क्षैतिज बीच में",
+        "centerV": "ऊर्ध्वाधर बीच में",
+        "dragSubjectHint": "विषय की जगह बदलने के लिए छवि को खींचें",
+        "exportLabel": "एक्सपोर्ट",
+        "exportSizeLabel": "आकार",
+        "sizeAuto": "ऑटो",
+        "jpgMatteHint": "JPG में पारदर्शिता नहीं होती, इसलिए पारदर्शी हिस्से सफ़ेद हो जाएंगे।",
+        "webpFallbackHint": "आपका ब्राउज़र WebP सेव नहीं कर सकता, इसलिए PNG डाउनलोड किया गया।",
+        "exportFailed": "एक्सपोर्ट विफल रहा। छोटा आकार या दूसरा फ़ॉर्मैट आज़माएं।",
+        "downloadImage": "डाउनलोड करें",
+        "exporting": "तैयार हो रहा है…",
+        "editBgShadow": "पृष्ठभूमि और छाया संपादित करें",
+        "homeDoneTitle": "पारदर्शी PNG डाउनलोड हो गया",
+        "homeDoneSub": "सफ़ेद पृष्ठभूमि, छाया या वर्गाकार कैनवास चाहिए? यहीं संपादित करें, या अगली छवि डालें।"
     },
     "id": {
         "dropzoneTitle": "Seret & letakkan gambar di sini, atau klik untuk mengunggah",
@@ -460,18 +535,14 @@
         "failTitle": "Maaf, pemrosesan gagal",
         "alertSize": "Hanya format JPG / PNG / WebP yang didukung",
         "editorHomeTitle": "Potongan Anda sudah siap",
-        "editorHomeSub": "Unduh PNG transparan, atau tambahkan latar belakang sederhana terlebih dahulu.",
+        "editorHomeSub": "Unduh PNG transparan, atau tambahkan latar, bayangan, atau ukuran kanvas baru terlebih dahulu.",
         "editorProductTitle": "Foto produk sudah siap",
         "editorProductSub": "Buat gambar produk berlatar belakang putih, kanvas persegi, atau berbayang.",
         "editorPortraitTitle": "Potongan potret sudah siap",
         "editorPortraitSub": "Ganti latar belakang profil, ukuran keluaran, dan pratinjau avatar melingkar.",
         "backgroundLabel": "Latar belakang",
-        "outputSizeLabel": "Ukuran keluaran",
-        "subjectPaddingLabel": "Bantalan subjek",
         "shadowLabel": "Bayangan",
         "shapeLabel": "Membentuk",
-        "portraitScaleLabel": "Ukuran kepala/bahu",
-        "bgImage": "Gambar",
         "uploadBgImage": "Unggah latar belakang",
         "replaceBgImage": "Ganti latar belakang",
         "bgScaleLabel": "Skala latar belakang",
@@ -481,26 +552,12 @@
         "bgWhite": "Putih",
         "bgBlack": "Hitam",
         "bgLightGray": "Abu-abu muda",
-        "bgBlue": "Biru",
-        "bgGradient": "Gradien",
         "bgBlur": "Buramkan yang asli",
         "bgCustom": "Kebiasaan",
-        "sizeOriginal": "Ukuran asli",
-        "sizeSquare1080": "1:1 · 1080",
-        "sizeSquare2000": "1:1 · 2000",
-        "sizeSquare2048": "1:1 · 2048",
-        "sizeAvatar512": "Avatar · 512",
-        "sizeAvatar1024": "Avatar · 1024",
-        "sizeResume": "Lanjutkan · 480×640",
         "shadowNone": "Tidak ada",
-        "shadowSoft": "Lembut",
-        "shadowFloat": "Mengapung",
         "shapeSquare": "Persegi",
         "shapeCircle": "Lingkaran",
         "downloadTransparent": "Unduh PNG transparan",
-        "downloadEdited": "Unduh versi saat ini",
-        "downloadSquare": "Unduh kotak PNG",
-        "downloadCircle": "Unduh melingkar PNG",
         "startOver": "Pilih gambar lain",
         "footerToolsTitle": "Semua Alat MiaoCut",
         "footerCatRemove": "Penghapusan Latar Belakang AI",
@@ -537,7 +594,50 @@
         "batchModalThanksBody": "Kami akan memberi tahu Anda saat dibuka dan menambahkan 100 kredit gratis.",
         "batchModalError": "Gagal mengirim. Silakan coba lagi.",
         "batchModalInvalidEmail": "Masukkan email yang valid.",
-        "batchModalClose": "Tutup"
+        "batchModalClose": "Tutup",
+        "bgSnow": "Abu-abu lembut",
+        "bgIdBlue": "Biru pasfoto",
+        "bgIdRed": "Merah pasfoto",
+        "bgStudioLabel": "Pencahayaan studio",
+        "gradStudioTop": "Softbox atas",
+        "gradCove": "Kertas latar mulus",
+        "gradWarmGray": "Abu-abu hangat",
+        "gradSpotlight": "Sorotan",
+        "gradCoolMist": "Kabut sejuk",
+        "shadowContact": "Bayangan lantai lembut",
+        "shadowDrop": "Bayangan jatuh",
+        "shadowAdvanced": "Atur bayangan",
+        "contactShadowLabel": "Bayangan lantai",
+        "sliderOpacity": "Ketebalan",
+        "sliderSoftness": "Kelembutan",
+        "sliderSpread": "Lebar",
+        "sliderLength": "Panjang",
+        "sliderBlur": "Blur",
+        "sliderOffsetX": "Geser horizontal",
+        "sliderOffsetY": "Geser vertikal",
+        "contactShadowCroppedHint": "Objek terpotong di bagian bawah, jadi ditempel ke tepi bawah dan bayangan lantai tidak dipakai.",
+        "canvasLabel": "Kanvas",
+        "ratioOriginal": "Asli",
+        "ratioSquare": "1:1 Persegi",
+        "ratioPortrait": "4:5 Potret",
+        "ratioStory": "9:16 Story",
+        "ratio34": "3:4 Pasfoto",
+        "subjectSizeLabel": "Ukuran objek",
+        "qualityLabel": "Kualitas",
+        "centerH": "Tengah horizontal",
+        "centerV": "Tengah vertikal",
+        "dragSubjectHint": "Seret gambar untuk memindahkan objek",
+        "exportLabel": "Ekspor",
+        "exportSizeLabel": "Ukuran",
+        "sizeAuto": "Otomatis",
+        "jpgMatteHint": "JPG tidak mendukung transparansi, jadi area transparan akan diisi putih.",
+        "webpFallbackHint": "Browser Anda tidak bisa menyimpan WebP, jadi PNG yang diunduh.",
+        "exportFailed": "Ekspor gagal. Coba ukuran lebih kecil atau format lain.",
+        "downloadImage": "Unduh",
+        "exporting": "Menyiapkan…",
+        "editBgShadow": "Edit latar & bayangan",
+        "homeDoneTitle": "PNG transparan sudah diunduh",
+        "homeDoneSub": "Perlu latar putih, bayangan, atau kanvas persegi? Edit di sini, atau taruh gambar berikutnya."
     },
     "pt-br": {
         "dropzoneTitle": "Arraste e solte a imagem aqui ou clique para fazer upload",
@@ -573,18 +673,14 @@
         "failTitle": "Desculpe, o processamento falhou",
         "alertSize": "Apenas os formatos JPG/PNG/WebP são suportados",
         "editorHomeTitle": "Seu recorte está pronto",
-        "editorHomeSub": "Baixe o PNG transparente ou adicione primeiro um fundo simples.",
+        "editorHomeSub": "Baixe o PNG transparente ou adicione antes um fundo, sombra ou novo tamanho de tela.",
         "editorProductTitle": "Foto do produto pronta",
         "editorProductSub": "Crie uma imagem de produto com fundo branco, tela quadrada ou sombreada.",
         "editorPortraitTitle": "Recorte de retrato pronto",
         "editorPortraitSub": "Alterne planos de fundo de perfil, tamanhos de saída e visualizações circulares de avatar.",
         "backgroundLabel": "Fundo",
-        "outputSizeLabel": "Tamanho de saída",
-        "subjectPaddingLabel": "Preenchimento de assunto",
         "shadowLabel": "Sombra",
         "shapeLabel": "Forma",
-        "portraitScaleLabel": "Tamanho da cabeça/ombro",
-        "bgImage": "Imagem",
         "uploadBgImage": "Carregar plano de fundo",
         "replaceBgImage": "Substituir plano de fundo",
         "bgScaleLabel": "Escala de fundo",
@@ -594,26 +690,12 @@
         "bgWhite": "Branco",
         "bgBlack": "Preto",
         "bgLightGray": "Cinza claro",
-        "bgBlue": "Azul",
-        "bgGradient": "Gradiente",
         "bgBlur": "Desfocar original",
         "bgCustom": "Personalizado",
-        "sizeOriginal": "Tamanho original",
-        "sizeSquare1080": "1:1 · 1080",
-        "sizeSquare2000": "1:1 · 2000",
-        "sizeSquare2048": "1:1 · 2048",
-        "sizeAvatar512": "Avatar · 512",
-        "sizeAvatar1024": "Avatar · 1024",
-        "sizeResume": "Currículo · 480×640",
         "shadowNone": "Nenhum",
-        "shadowSoft": "Macio",
-        "shadowFloat": "Flutuante",
         "shapeSquare": "Quadrado",
         "shapeCircle": "Círculo",
         "downloadTransparent": "Baixe PNG transparente",
-        "downloadEdited": "Baixe a versão atual",
-        "downloadSquare": "Baixar quadrado PNG",
-        "downloadCircle": "Baixar circular PNG",
         "startOver": "Escolha outra imagem",
         "footerToolsTitle": "Todas as ferramentas MiaoCut",
         "footerCatRemove": "Remoção de fundo AI",
@@ -650,7 +732,50 @@
         "batchModalThanksBody": "Avisaremos quando abrir e adicionaremos 100 créditos grátis.",
         "batchModalError": "Não foi possível enviar. Tente novamente.",
         "batchModalInvalidEmail": "Digite um e-mail válido.",
-        "batchModalClose": "Fechar"
+        "batchModalClose": "Fechar",
+        "bgSnow": "Cinza suave",
+        "bgIdBlue": "Azul documento",
+        "bgIdRed": "Vermelho documento",
+        "bgStudioLabel": "Luz de estúdio",
+        "gradStudioTop": "Softbox superior",
+        "gradCove": "Fundo infinito",
+        "gradWarmGray": "Cinza quente",
+        "gradSpotlight": "Holofote",
+        "gradCoolMist": "Névoa fria",
+        "shadowContact": "Sombra no chão",
+        "shadowDrop": "Sombra projetada",
+        "shadowAdvanced": "Ajustar sombras",
+        "contactShadowLabel": "Sombra de contato",
+        "sliderOpacity": "Opacidade",
+        "sliderSoftness": "Suavidade",
+        "sliderSpread": "Largura",
+        "sliderLength": "Comprimento",
+        "sliderBlur": "Desfoque",
+        "sliderOffsetX": "Deslocamento horizontal",
+        "sliderOffsetY": "Deslocamento vertical",
+        "contactShadowCroppedHint": "O objeto está cortado embaixo, então fica encostado na borda inferior e a sombra de contato não é aplicada.",
+        "canvasLabel": "Tela",
+        "ratioOriginal": "Original",
+        "ratioSquare": "1:1 Quadrado",
+        "ratioPortrait": "4:5 Retrato",
+        "ratioStory": "9:16 Stories",
+        "ratio34": "3:4 Foto 3x4",
+        "subjectSizeLabel": "Tamanho do objeto",
+        "qualityLabel": "Qualidade",
+        "centerH": "Centralizar na horizontal",
+        "centerV": "Centralizar na vertical",
+        "dragSubjectHint": "Arraste a imagem para reposicionar o objeto",
+        "exportLabel": "Exportar",
+        "exportSizeLabel": "Tamanho",
+        "sizeAuto": "Automático",
+        "jpgMatteHint": "JPG não tem transparência, então as áreas transparentes ficarão brancas.",
+        "webpFallbackHint": "Seu navegador não salva WebP, então baixamos um PNG.",
+        "exportFailed": "Falha ao exportar. Tente um tamanho menor ou outro formato.",
+        "downloadImage": "Baixar",
+        "exporting": "Preparando…",
+        "editBgShadow": "Editar fundo e sombra",
+        "homeDoneTitle": "PNG transparente baixado",
+        "homeDoneSub": "Precisa de fundo branco, sombra ou tela quadrada? Edite aqui ou solte a próxima imagem."
     },
     "bn": {
         "dropzoneTitle": "ছবিটি এখানে টেনে আনুন এবং ড্রপ করুন, অথবা আপলোড করতে ক্লিক করুন",
@@ -686,18 +811,14 @@
         "failTitle": "দুঃখিত, প্রক্রিয়াকরণ ব্যর্থ হয়েছে",
         "alertSize": "শুধুমাত্র JPG / PNG / WebP ফর্ম্যাটগুলি সমর্থিত",
         "editorHomeTitle": "আপনার কাটআউট প্রস্তুত",
-        "editorHomeSub": "স্বচ্ছ PNG ডাউনলোড করুন, অথবা প্রথমে একটি সাধারণ পটভূমি যোগ করুন।",
+        "editorHomeSub": "স্বচ্ছ PNG ডাউনলোড করুন, অথবা আগে পটভূমি, ছায়া বা নতুন ক্যানভাস আকার যোগ করুন।",
         "editorProductTitle": "পণ্যের ছবি প্রস্তুত",
         "editorProductSub": "একটি সাদা-পটভূমি, বর্গাকার-ক্যানভাস বা ছায়াযুক্ত পণ্যের ছবি তৈরি করুন।",
         "editorPortraitTitle": "পোর্ট্রেট কাটআউট প্রস্তুত",
         "editorPortraitSub": "প্রোফাইল ব্যাকগ্রাউন্ড, আউটপুট আকার, এবং বৃত্তাকার অবতার পূর্বরূপ পরিবর্তন করুন।",
         "backgroundLabel": "পটভূমি",
-        "outputSizeLabel": "আউটপুট আকার",
-        "subjectPaddingLabel": "বিষয় প্যাডিং",
         "shadowLabel": "ছায়া",
         "shapeLabel": "আকৃতি",
-        "portraitScaleLabel": "মাথা / কাঁধের আকার",
-        "bgImage": "ছবি",
         "uploadBgImage": "পটভূমি আপলোড করুন",
         "replaceBgImage": "পটভূমি প্রতিস্থাপন করুন",
         "bgScaleLabel": "ব্যাকগ্রাউন্ড স্কেল",
@@ -707,26 +828,12 @@
         "bgWhite": "সাদা",
         "bgBlack": "কালো",
         "bgLightGray": "হালকা ধূসর",
-        "bgBlue": "নীল",
-        "bgGradient": "গ্রেডিয়েন্ট",
         "bgBlur": "অস্পষ্ট মূল",
         "bgCustom": "কাস্টম",
-        "sizeOriginal": "আসল আকার",
-        "sizeSquare1080": "1:1 · 1080",
-        "sizeSquare2000": "1:1 · 2000",
-        "sizeSquare2048": "1:1 · 2048",
-        "sizeAvatar512": "অবতার · 512",
-        "sizeAvatar1024": "অবতার · 1024",
-        "sizeResume": "পুনরায় শুরু করুন · 480×640",
         "shadowNone": "কোনোটিই নয়",
-        "shadowSoft": "নরম",
-        "shadowFloat": "ভাসমান",
         "shapeSquare": "বর্গক্ষেত্র",
         "shapeCircle": "বৃত্ত",
         "downloadTransparent": "স্বচ্ছ PNG ডাউনলোড করুন",
-        "downloadEdited": "বর্তমান সংস্করণ ডাউনলোড করুন",
-        "downloadSquare": "স্কোয়ার PNG ডাউনলোড করুন",
-        "downloadCircle": "সার্কুলার PNG ডাউনলোড করুন",
         "startOver": "অন্য ইমেজ চয়ন করুন",
         "footerToolsTitle": "সমস্ত MiaoCut টুল",
         "footerCatRemove": "AI পটভূমি অপসারণ",
@@ -763,7 +870,50 @@
         "batchModalThanksBody": "চালু হলে আমরা আপনাকে জানাব এবং 100টি ফ্রি ক্রেডিট দেব।",
         "batchModalError": "জমা দেওয়া যায়নি। আবার চেষ্টা করুন।",
         "batchModalInvalidEmail": "একটি বৈধ ইমেল লিখুন।",
-        "batchModalClose": "বন্ধ করুন"
+        "batchModalClose": "বন্ধ করুন",
+        "bgSnow": "নরম ধূসর",
+        "bgIdBlue": "আইডি নীল",
+        "bgIdRed": "আইডি লাল",
+        "bgStudioLabel": "স্টুডিও আলো",
+        "gradStudioTop": "উপরের সফটবক্স",
+        "gradCove": "সিমলেস পেপার",
+        "gradWarmGray": "উষ্ণ ধূসর",
+        "gradSpotlight": "স্পটলাইট",
+        "gradCoolMist": "শীতল কুয়াশা",
+        "shadowContact": "নরম মাটির ছায়া",
+        "shadowDrop": "ড্রপ শ্যাডো",
+        "shadowAdvanced": "ছায়া সূক্ষ্মভাবে ঠিক করুন",
+        "contactShadowLabel": "মাটির ছায়া",
+        "sliderOpacity": "গাঢ়তা",
+        "sliderSoftness": "কোমলতা",
+        "sliderSpread": "প্রস্থ",
+        "sliderLength": "দৈর্ঘ্য",
+        "sliderBlur": "ঝাপসা",
+        "sliderOffsetX": "আনুভূমিক সরণ",
+        "sliderOffsetY": "উল্লম্ব সরণ",
+        "contactShadowCroppedHint": "বিষয়টি নিচে কাটা আছে, তাই এটি নিচের প্রান্তে বসানো হয়েছে এবং মাটির ছায়া প্রয়োগ হবে না।",
+        "canvasLabel": "ক্যানভাস",
+        "ratioOriginal": "আসল আকার",
+        "ratioSquare": "1:1 বর্গ",
+        "ratioPortrait": "4:5 পোর্ট্রেট",
+        "ratioStory": "9:16 স্টোরি",
+        "ratio34": "3:4 আইডি ছবি",
+        "subjectSizeLabel": "বিষয়ের আকার",
+        "qualityLabel": "মান",
+        "centerH": "আনুভূমিক মাঝে",
+        "centerV": "উল্লম্ব মাঝে",
+        "dragSubjectHint": "বিষয়ের অবস্থান বদলাতে ছবিটি টেনে নিন",
+        "exportLabel": "এক্সপোর্ট",
+        "exportSizeLabel": "আকার",
+        "sizeAuto": "অটো",
+        "jpgMatteHint": "JPG-তে স্বচ্ছতা নেই, তাই স্বচ্ছ অংশ সাদা হয়ে যাবে।",
+        "webpFallbackHint": "আপনার ব্রাউজার WebP সেভ করতে পারে না, তাই PNG ডাউনলোড হয়েছে।",
+        "exportFailed": "এক্সপোর্ট ব্যর্থ হয়েছে। ছোট আকার বা অন্য ফরম্যাট চেষ্টা করুন।",
+        "downloadImage": "ডাউনলোড",
+        "exporting": "প্রস্তুত হচ্ছে…",
+        "editBgShadow": "পটভূমি ও ছায়া সম্পাদনা",
+        "homeDoneTitle": "স্বচ্ছ PNG ডাউনলোড হয়েছে",
+        "homeDoneSub": "সাদা পটভূমি, ছায়া বা বর্গাকার ক্যানভাস দরকার? এখানে সম্পাদনা করুন, বা পরের ছবিটি দিন।"
     },
     "fil": {
         "dropzoneTitle": "I-drag at i-drop ang larawan dito, o i-click para mag-upload",
@@ -799,18 +949,14 @@
         "failTitle": "Paumanhin, nabigo ang pagproseso",
         "alertSize": "Tanging JPG / PNG / WebP format ang sinusuportahan",
         "editorHomeTitle": "Handa na ang iyong cutout",
-        "editorHomeSub": "I-download ang transparent na PNG, o magdagdag muna ng simpleng background.",
+        "editorHomeSub": "I-download ang transparent na PNG, o magdagdag muna ng background, anino o bagong laki ng canvas.",
         "editorProductTitle": "Handa na ang larawan ng produkto",
         "editorProductSub": "Gumawa ng white-background, square-canvas, o shadowed na larawan ng produkto.",
         "editorPortraitTitle": "Handa na ang portrait cutout",
         "editorPortraitSub": "Lumipat ng mga background ng profile, laki ng output, at pabilog na mga preview ng avatar.",
         "backgroundLabel": "Background",
-        "outputSizeLabel": "Laki ng output",
-        "subjectPaddingLabel": "Padding ng paksa",
         "shadowLabel": "anino",
         "shapeLabel": "Hugis",
-        "portraitScaleLabel": "Laki ng ulo/balikat",
-        "bgImage": "Imahe",
         "uploadBgImage": "Mag-upload ng background",
         "replaceBgImage": "Palitan ang background",
         "bgScaleLabel": "Background scale",
@@ -820,26 +966,12 @@
         "bgWhite": "Puti",
         "bgBlack": "Itim",
         "bgLightGray": "Banayad na kulay abo",
-        "bgBlue": "Asul",
-        "bgGradient": "Gradient",
         "bgBlur": "I-blur ang orihinal",
         "bgCustom": "Custom",
-        "sizeOriginal": "Orihinal na sukat",
-        "sizeSquare1080": "1:1 · 1080",
-        "sizeSquare2000": "1:1 · 2000",
-        "sizeSquare2048": "1:1 · 2048",
-        "sizeAvatar512": "Avatar · 512",
-        "sizeAvatar1024": "Avatar · 1024",
-        "sizeResume": "Ipagpatuloy · 480×640",
         "shadowNone": "wala",
-        "shadowSoft": "Malambot",
-        "shadowFloat": "Lumulutang",
         "shapeSquare": "Square",
         "shapeCircle": "Bilog",
         "downloadTransparent": "I-download ang transparent na PNG",
-        "downloadEdited": "I-download ang kasalukuyang bersyon",
-        "downloadSquare": "I-download ang square PNG",
-        "downloadCircle": "I-download ang pabilog na PNG",
         "startOver": "Pumili ng ibang larawan",
         "footerToolsTitle": "Lahat ng MiaoCut Tools",
         "footerCatRemove": "AI Pag-alis ng Background",
@@ -876,7 +1008,50 @@
         "batchModalThanksBody": "Aabisuhan ka namin kapag inilunsad at bibigyan ka ng 100 libreng credits.",
         "batchModalError": "Hindi maisumite. Pakisubukang muli.",
         "batchModalInvalidEmail": "Maglagay ng valid na email.",
-        "batchModalClose": "Isara"
+        "batchModalClose": "Isara",
+        "bgSnow": "Malambot na gray",
+        "bgIdBlue": "ID blue",
+        "bgIdRed": "ID red",
+        "bgStudioLabel": "Studio lighting",
+        "gradStudioTop": "Softbox sa itaas",
+        "gradCove": "Seamless na papel",
+        "gradWarmGray": "Mainit na gray",
+        "gradSpotlight": "Spotlight",
+        "gradCoolMist": "Malamig na ulap",
+        "shadowContact": "Malambot na anino sa sahig",
+        "shadowDrop": "Drop shadow",
+        "shadowAdvanced": "Ayusin ang anino",
+        "contactShadowLabel": "Anino sa sahig",
+        "sliderOpacity": "Kapal",
+        "sliderSoftness": "Lambot",
+        "sliderSpread": "Lapad",
+        "sliderLength": "Haba",
+        "sliderBlur": "Blur",
+        "sliderOffsetX": "Pahalang na usog",
+        "sliderOffsetY": "Patayong usog",
+        "contactShadowCroppedHint": "Putol ang paksa sa ibaba, kaya nakadikit ito sa ibabang gilid at hindi ilalagay ang anino sa sahig.",
+        "canvasLabel": "Canvas",
+        "ratioOriginal": "Orihinal",
+        "ratioSquare": "1:1 Parisukat",
+        "ratioPortrait": "4:5 Portrait",
+        "ratioStory": "9:16 Story",
+        "ratio34": "3:4 ID photo",
+        "subjectSizeLabel": "Laki ng paksa",
+        "qualityLabel": "Kalidad",
+        "centerH": "Igitna nang pahalang",
+        "centerV": "Igitna nang patayo",
+        "dragSubjectHint": "I-drag ang larawan para ilipat ang paksa",
+        "exportLabel": "I-export",
+        "exportSizeLabel": "Laki",
+        "sizeAuto": "Auto",
+        "jpgMatteHint": "Walang transparency ang JPG, kaya magiging puti ang mga transparent na bahagi.",
+        "webpFallbackHint": "Hindi kayang mag-save ng WebP ng browser mo, kaya PNG ang na-download.",
+        "exportFailed": "Hindi na-export. Subukan ang mas maliit na laki o ibang format.",
+        "downloadImage": "I-download",
+        "exporting": "Inihahanda…",
+        "editBgShadow": "I-edit ang background at anino",
+        "homeDoneTitle": "Na-download na ang transparent na PNG",
+        "homeDoneSub": "Kailangan ng puting background, anino o parisukat na canvas? I-edit dito, o i-drop ang susunod na larawan."
     },
     "ur": {
         "dropzoneTitle": "تصویر کو یہاں گھسیٹیں اور چھوڑیں، یا اپ لوڈ کرنے کے لیے کلک کریں۔",
@@ -912,18 +1087,14 @@
         "failTitle": "معذرت، پروسیسنگ ناکام ہوگئی",
         "alertSize": "صرف JPG / PNG / WebP فارمیٹس تعاون یافتہ ہیں",
         "editorHomeTitle": "آپ کا کٹ آؤٹ تیار ہے۔",
-        "editorHomeSub": "شفاف PNG ڈاؤن لوڈ کریں، یا پہلے ایک سادہ پس منظر شامل کریں۔",
+        "editorHomeSub": "شفاف PNG ڈاؤن لوڈ کریں، یا پہلے پس منظر، سایہ یا نیا کینوس سائز شامل کریں۔",
         "editorProductTitle": "مصنوعات کی تصویر تیار ہے۔",
         "editorProductSub": "ایک سفید پس منظر، مربع کینوس، یا پروڈکٹ کی سایہ دار تصویر بنائیں۔",
         "editorPortraitTitle": "پورٹریٹ کٹ آؤٹ تیار ہے۔",
         "editorPortraitSub": "پروفائل کے پس منظر، آؤٹ پٹ سائز، اور سرکلر اوتار کے پیش نظارہ کو تبدیل کریں۔",
         "backgroundLabel": "پس منظر",
-        "outputSizeLabel": "آؤٹ پٹ سائز",
-        "subjectPaddingLabel": "سبجیکٹ پیڈنگ",
         "shadowLabel": "سایہ",
         "shapeLabel": "شکل",
-        "portraitScaleLabel": "سر / کندھے کا سائز",
-        "bgImage": "تصویر",
         "uploadBgImage": "پس منظر اپ لوڈ کریں۔",
         "replaceBgImage": "پس منظر کو تبدیل کریں۔",
         "bgScaleLabel": "پس منظر کا پیمانہ",
@@ -933,26 +1104,12 @@
         "bgWhite": "سفید",
         "bgBlack": "سیاہ",
         "bgLightGray": "ہلکا بھوری رنگ",
-        "bgBlue": "نیلا",
-        "bgGradient": "میلان",
         "bgBlur": "اصل کو دھندلا کریں۔",
         "bgCustom": "حسب ضرورت",
-        "sizeOriginal": "اصل سائز",
-        "sizeSquare1080": "1:1 · 1080",
-        "sizeSquare2000": "1:1 · 2000",
-        "sizeSquare2048": "1:1 · 2048",
-        "sizeAvatar512": "اوتار · 512",
-        "sizeAvatar1024": "اوتار · 1024",
-        "sizeResume": "دوبارہ شروع کریں · 480×640",
         "shadowNone": "کوئی نہیں۔",
-        "shadowSoft": "نرم",
-        "shadowFloat": "تیرتا ہوا",
         "shapeSquare": "مربع",
         "shapeCircle": "دائرہ",
         "downloadTransparent": "شفاف PNG ڈاؤن لوڈ کریں۔",
-        "downloadEdited": "موجودہ ورژن ڈاؤن لوڈ کریں۔",
-        "downloadSquare": "مربع PNG ڈاؤن لوڈ کریں۔",
-        "downloadCircle": "سرکلر PNG ڈاؤن لوڈ کریں۔",
         "startOver": "دوسری تصویر منتخب کریں۔",
         "footerToolsTitle": "تمام MiaoCut ٹولز",
         "footerCatRemove": "AI پس منظر کو ہٹانا",
@@ -989,7 +1146,50 @@
         "batchModalThanksBody": "لانچ پر ہم آپ کو اطلاع دیں گے اور 100 مفت کریڈٹس دیں گے۔",
         "batchModalError": "جمع نہیں ہو سکا۔ دوبارہ کوشش کریں۔",
         "batchModalInvalidEmail": "درست ای میل درج کریں۔",
-        "batchModalClose": "بند کریں"
+        "batchModalClose": "بند کریں",
+        "bgSnow": "ہلکا سرمئی",
+        "bgIdBlue": "شناختی نیلا",
+        "bgIdRed": "شناختی سرخ",
+        "bgStudioLabel": "اسٹوڈیو روشنی",
+        "gradStudioTop": "اوپری سافٹ باکس",
+        "gradCove": "سیم لیس پیپر",
+        "gradWarmGray": "گرم سرمئی",
+        "gradSpotlight": "اسپاٹ لائٹ",
+        "gradCoolMist": "ٹھنڈی دھند",
+        "shadowContact": "نرم زمینی سایہ",
+        "shadowDrop": "ڈراپ شیڈو",
+        "shadowAdvanced": "سائے کی باریک ترتیب",
+        "contactShadowLabel": "زمینی سایہ",
+        "sliderOpacity": "گہرائی",
+        "sliderSoftness": "نرمی",
+        "sliderSpread": "چوڑائی",
+        "sliderLength": "لمبائی",
+        "sliderBlur": "دھندلاپن",
+        "sliderOffsetX": "افقی کھسکاؤ",
+        "sliderOffsetY": "عمودی کھسکاؤ",
+        "contactShadowCroppedHint": "تصویر کا موضوع نیچے سے کٹا ہوا ہے، اس لیے اسے نیچے کے کنارے پر رکھا گیا ہے اور زمینی سایہ نہیں لگے گا۔",
+        "canvasLabel": "کینوس",
+        "ratioOriginal": "اصل سائز",
+        "ratioSquare": "1:1 مربع",
+        "ratioPortrait": "4:5 پورٹریٹ",
+        "ratioStory": "9:16 اسٹوری",
+        "ratio34": "3:4 شناختی تصویر",
+        "subjectSizeLabel": "موضوع کا سائز",
+        "qualityLabel": "معیار",
+        "centerH": "افقی طور پر درمیان میں",
+        "centerV": "عمودی طور پر درمیان میں",
+        "dragSubjectHint": "موضوع کی جگہ بدلنے کے لیے تصویر کو گھسیٹیں",
+        "exportLabel": "ایکسپورٹ",
+        "exportSizeLabel": "سائز",
+        "sizeAuto": "خودکار",
+        "jpgMatteHint": "JPG میں شفافیت نہیں ہوتی، اس لیے شفاف حصے سفید ہو جائیں گے۔",
+        "webpFallbackHint": "آپ کا براؤزر WebP محفوظ نہیں کر سکتا، اس لیے PNG ڈاؤن لوڈ کیا گیا۔",
+        "exportFailed": "ایکسپورٹ ناکام رہا۔ چھوٹا سائز یا کوئی اور فارمیٹ آزمائیں۔",
+        "downloadImage": "ڈاؤن لوڈ",
+        "exporting": "تیار ہو رہا ہے…",
+        "editBgShadow": "پس منظر اور سایہ ترمیم کریں",
+        "homeDoneTitle": "شفاف PNG ڈاؤن لوڈ ہو گیا",
+        "homeDoneSub": "سفید پس منظر، سایہ یا مربع کینوس چاہیے؟ یہیں ترمیم کریں، یا اگلی تصویر ڈالیں۔"
     }
 };
 
@@ -1027,68 +1227,55 @@
     const dropzone = document.getElementById('dropzone');
     const fileInput = document.getElementById('fileInput');
     const dropzoneContent = document.getElementById('dropzone-content');
-    let resultState = null;
+    // 记下 dropzone 初始 class：打开编辑器会去掉虚线框 / hover 效果，重置时整体还原
+    // （首页用 brand 色 hover、子页用灰色 hover，各页不同，不能写死）
+    const DROPZONE_BASE_CLASS = dropzone ? dropzone.className : '';
+    // ============================================================
+    // 结果页编辑器（背景 / 阴影 / 画幅 / 导出）
+    // ============================================================
+    // 绘制引擎和界面在 /editor/presets.js、engine.js、panel.js（defer 加载，抠图成功后才用到）。
+    // 这里只放「各页面的差异」：显示哪些画幅 / 导出尺寸 / 额外控件，以及打开时的初始状态。
+    // 未列出的页面（如 jpg-to-transparent-png）用 home 配置。
+    let editorSession = null; // 当前打开的编辑器：{ engine, panel, urls }
+    let homeResult = null;    // 首页抠图结果（下载后点「编辑背景/阴影」再打开编辑器用）
 
-    const EDITOR_CONFIGS = {
+    const EDITOR_PAGE_CONFIGS = {
         home: {
             titleKey: 'editorHomeTitle',
             subKey: 'editorHomeSub',
-            backgrounds: ['transparent', 'white', 'black', 'custom'],
-            sizes: ['original'],
-            defaultBg: 'transparent',
-            defaultSize: 'original',
-            defaultMargin: 0,
-            defaultShadow: 'none',
-            showMargin: false,
-            showShadow: false,
-            showShape: false,
-            fitSubject: false,
-            downloadSuffix: 'edited',
+            ratios: ['original', '1:1', '4:5', '9:16'],
+            exportSizes: ['auto', '1080', '2000'],
+            allowBlur: true,
+            allowImage: true,
+            initial: { layout: { ratio: 'original', subjectScale: 0.9 } },
         },
         'product-photo': {
             titleKey: 'editorProductTitle',
             subKey: 'editorProductSub',
-            backgrounds: ['white', 'transparent', 'lightGray', 'image', 'custom'],
-            sizes: ['square2000', 'square2048', 'square1080', 'original'],
-            defaultBg: 'white',
-            defaultSize: 'square2000',
-            defaultMargin: 12,
-            defaultShadow: 'soft',
-            showMargin: true,
-            showShadow: true,
-            showShape: false,
+            ratios: ['1:1', '4:5', '9:16', 'original'],
+            exportSizes: ['2000', '1080', 'auto'],
+            allowImage: true,
             showAmazonPreset: true,
-            showBackgroundUpload: true,
-            fitSubject: true,
-            downloadSuffix: 'product',
-            marginLabelKey: 'subjectPaddingLabel',
+            // 电商默认：白底方图 + 轻柔落地阴影，长边 2000（满足亚马逊放大查看要求）
+            initial: {
+                background: { type: 'solid', color: '#FFFFFF' },
+                layout: { ratio: '1:1', subjectScale: 0.8, exportSize: '2000' },
+                shadowPreset: 'contact',
+            },
         },
         portrait: {
             titleKey: 'editorPortraitTitle',
             subKey: 'editorPortraitSub',
-            backgrounds: ['lightGray', 'white', 'blue', 'gradient', 'blur', 'transparent', 'custom'],
-            sizes: ['avatar1024', 'avatar512', 'resume', 'original'],
-            defaultBg: 'lightGray',
-            defaultSize: 'avatar1024',
-            defaultMargin: 10,
-            defaultShadow: 'none',
-            showMargin: true,
-            showShadow: false,
+            ratios: ['1:1', '3:4', '4:5', 'original'],
+            exportSizes: ['1024', '512', 'auto'],
             showShape: true,
-            showPortraitDownloads: true,
-            fitSubject: true,
-            downloadSuffix: 'portrait',
-            marginLabelKey: 'portraitScaleLabel',
-            defaultShape: 'circle',
+            allowBlur: true,
+            // 头像默认：浅灰底圆形 1024；半身像会被引擎自动贴底（见 engine.js touchesBottom）
+            initial: {
+                background: { type: 'solid', color: '#F5F5F7' },
+                layout: { ratio: '1:1', subjectScale: 0.85, shape: 'circle', exportSize: '1024' },
+            },
         },
-    };
-
-    const BACKGROUND_VALUES = {
-        transparent: null,
-        white: '#ffffff',
-        black: '#111827',
-        lightGray: '#f3f4f6',
-        blue: '#dbeafe',
     };
 
     // dropzone 是核心，缺失就直接放弃后续初始化（子页可能是纯内容页）
@@ -1179,16 +1366,14 @@
         });
 
         // dropzone 处于初始状态时，刷新里面的提示文案
-        if (!dropzone.classList.contains('pointer-events-none') && !resultState) {
+        // （编辑器和首页「已下载」卡片打开时不重置；切语言本身会跳转到另一语种 URL）
+        if (!dropzone.classList.contains('pointer-events-none') && !editorSession && !homeResult) {
             resetDropzone();
-        } else if (resultState) {
-            syncEditorControls();
         }
     }
 
     function resetDropzone() {
-        dropzone.classList.add('cursor-pointer', 'border-dashed', 'hover:border-gray-400', 'hover:bg-gray-50');
-        dropzone.classList.remove('cursor-default', 'border-solid');
+        dropzone.className = DROPZONE_BASE_CLASS;
         dropzoneContent.classList.add('pointer-events-none');
         dropzoneContent.classList.remove('w-full');
         dropzoneContent.innerHTML = `
@@ -1476,7 +1661,7 @@
 
     dropzone.addEventListener('click', () => {
         if (dropzone.classList.contains('pointer-events-none')) return;
-        if (resultState) return;
+        if (editorSession) return;
         fileInput.click();
     });
 
@@ -1674,17 +1859,24 @@
         dropzoneContent.append(wrap);
     }
 
-    function getEditorMode() {
+    function getEditorConfig() {
         const page = window.MIAOCUT_PAGE_KEY || 'home';
-        return EDITOR_CONFIGS[page] ? page : 'home';
+        return EDITOR_PAGE_CONFIGS[page] || EDITOR_PAGE_CONFIGS.home;
     }
 
+    function editorAvailable() {
+        const ed = window.MiaoCutEditor;
+        return !!(ed && ed.engine && ed.createPanel);
+    }
+
+    /** 关闭编辑器 / 清掉首页结果，释放所有 object URL 和 canvas 内存 */
     function cleanupResultState() {
-        if (!resultState) return;
-        if (resultState.cutoutUrl) URL.revokeObjectURL(resultState.cutoutUrl);
-        if (resultState.sourceUrl) URL.revokeObjectURL(resultState.sourceUrl);
-        if (resultState.bgImageUrl) URL.revokeObjectURL(resultState.bgImageUrl);
-        resultState = null;
+        homeResult = null;
+        if (!editorSession) return;
+        editorSession.panel.destroy();
+        editorSession.engine.dispose();
+        editorSession.urls.forEach((url) => URL.revokeObjectURL(url));
+        editorSession = null;
     }
 
     function loadImage(url) {
@@ -1710,596 +1902,82 @@
         document.body.removeChild(a);
     }
 
-    function autoDownloadTransparentResult(file, blob) {
+    function downloadBlob(blob, filename) {
         const url = URL.createObjectURL(blob);
-        downloadUrl(url, `${basenameFromFile(file)}_transparent.png`);
+        downloadUrl(url, filename);
+        // revokeObjectURL 必须等浏览器开始下载；立刻 revoke 在部分浏览器上会得到 0 字节文件
         setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function autoDownloadTransparentResult(file, blob) {
+        downloadBlob(blob, `${basenameFromFile(file)}_transparent.png`);
         // 不在这里报 transparent-download：首页抠图成功必然自动下载，和 cutout-success 一一对应，
         // 再报一次只会白白多消耗一条 Umami 额度。子页「下载透明图」按钮那里的上报保留。
     }
 
-    function bgLabelKey(bg) {
-        return {
-            transparent: 'bgTransparent',
-            white: 'bgWhite',
-            black: 'bgBlack',
-            lightGray: 'bgLightGray',
-            blue: 'bgBlue',
-            image: 'bgImage',
-            gradient: 'bgGradient',
-            blur: 'bgBlur',
-            custom: 'bgCustom',
-        }[bg] || 'bgWhite';
-    }
-
-    function sizeLabelKey(size) {
-        return {
-            original: 'sizeOriginal',
-            square1080: 'sizeSquare1080',
-            square2000: 'sizeSquare2000',
-            square2048: 'sizeSquare2048',
-            avatar512: 'sizeAvatar512',
-            avatar1024: 'sizeAvatar1024',
-            resume: 'sizeResume',
-        }[size] || 'sizeOriginal';
-    }
-
-    function swatchStyle(bg) {
-        if (bg === 'transparent') {
-            return 'background-color:#fff;background-image:linear-gradient(45deg,#d1d5db 25%,transparent 25%),linear-gradient(-45deg,#d1d5db 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#d1d5db 75%),linear-gradient(-45deg,transparent 75%,#d1d5db 75%);background-size:8px 8px;background-position:0 0,0 4px,4px -4px,-4px 0;';
-        }
-        if (bg === 'gradient') return 'background:linear-gradient(135deg,#e0f2fe,#f8fafc 55%,#fce7f3);';
-        if (bg === 'blur') return 'background:linear-gradient(135deg,#dbeafe,#f3f4f6);';
-        if (bg === 'image') return 'background:linear-gradient(135deg,#f3f4f6,#dbeafe);';
-        return `background:${BACKGROUND_VALUES[bg] || '#ffffff'};`;
-    }
-
-    function backgroundOptionHtml(bg) {
-        const key = bgLabelKey(bg);
-        return `
-            <button type="button" data-bg="${bg}" class="bg-option flex items-center gap-2 rounded-lg border border-gray-200 px-2.5 py-2 text-left text-xs font-medium text-gray-700 transition-colors hover:border-gray-400">
-                <span class="h-4 w-4 shrink-0 rounded border border-gray-300" style="${swatchStyle(bg)}"></span>
-                <span data-i18n="${key}">${t(key)}</span>
-            </button>
-        `;
-    }
-
-    function computeAlphaBBox(img) {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.naturalWidth || img.width;
-        canvas.height = img.naturalHeight || img.height;
-        const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        ctx.drawImage(img, 0, 0);
-        const { data, width, height } = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        let minX = width;
-        let minY = height;
-        let maxX = -1;
-        let maxY = -1;
-        for (let y = 0; y < height; y += 1) {
-            for (let x = 0; x < width; x += 1) {
-                if (data[(y * width + x) * 4 + 3] > 8) {
-                    if (x < minX) minX = x;
-                    if (y < minY) minY = y;
-                    if (x > maxX) maxX = x;
-                    if (y > maxY) maxY = y;
-                }
-            }
-        }
-        canvas.width = 0;
-        canvas.height = 0;
-        if (maxX < minX || maxY < minY) {
-            return { x: 0, y: 0, width: img.naturalWidth || img.width, height: img.naturalHeight || img.height };
-        }
-        return { x: minX, y: minY, width: maxX - minX + 1, height: maxY - minY + 1 };
-    }
-
-    function outputDimensions(state) {
-        const img = state.cutoutImage;
-        if (state.size === 'square1080') return { width: 1080, height: 1080 };
-        if (state.size === 'square2000') return { width: 2000, height: 2000 };
-        if (state.size === 'square2048') return { width: 2048, height: 2048 };
-        if (state.size === 'avatar512') return { width: 512, height: 512 };
-        if (state.size === 'avatar1024') return { width: 1024, height: 1024 };
-        if (state.size === 'resume') return { width: 480, height: 640 };
-        return { width: img.naturalWidth || img.width, height: img.naturalHeight || img.height };
-    }
-
-    function previewDimensions(dimensions) {
-        const maxSide = 900;
-        const scale = Math.min(1, maxSide / Math.max(dimensions.width, dimensions.height));
-        return {
-            width: Math.max(1, Math.round(dimensions.width * scale)),
-            height: Math.max(1, Math.round(dimensions.height * scale)),
-        };
-    }
-
-    function drawCover(ctx, img, width, height, overscan = 1) {
-        const iw = img.naturalWidth || img.width;
-        const ih = img.naturalHeight || img.height;
-        const scale = Math.max(width / iw, height / ih) * overscan;
-        const dw = iw * scale;
-        const dh = ih * scale;
-        ctx.drawImage(img, (width - dw) / 2, (height - dh) / 2, dw, dh);
-    }
-
-    function drawTransformedCover(ctx, img, width, height, scaleMultiplier = 1, offsetX = 0, offsetY = 0) {
-        const iw = img.naturalWidth || img.width;
-        const ih = img.naturalHeight || img.height;
-        const baseScale = Math.max(width / iw, height / ih);
-        const scale = baseScale * Math.max(1, scaleMultiplier || 1);
-        const dw = iw * scale;
-        const dh = ih * scale;
-        const maxX = Math.max(0, (dw - width) / 2);
-        const maxY = Math.max(0, (dh - height) / 2);
-        const x = Math.max(-maxX, Math.min(maxX, offsetX || 0));
-        const y = Math.max(-maxY, Math.min(maxY, offsetY || 0));
-        ctx.drawImage(img, (width - dw) / 2 + x, (height - dh) / 2 + y, dw, dh);
-    }
-
-    function drawBackground(ctx, state, width, height) {
-        if (state.bg === 'transparent') return;
-        if (state.bg === 'gradient') {
-            const gradient = ctx.createLinearGradient(0, 0, width, height);
-            gradient.addColorStop(0, '#e0f2fe');
-            gradient.addColorStop(0.55, '#f8fafc');
-            gradient.addColorStop(1, '#fce7f3');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, width, height);
-            return;
-        }
-        if (state.bg === 'blur' && state.sourceImage) {
-            ctx.fillStyle = '#f8fafc';
-            ctx.fillRect(0, 0, width, height);
-            ctx.save();
-            ctx.filter = `blur(${Math.max(14, Math.round(Math.max(width, height) * 0.025))}px)`;
-            drawCover(ctx, state.sourceImage, width, height, 1.08);
-            ctx.restore();
-            ctx.fillStyle = 'rgba(255,255,255,0.35)';
-            ctx.fillRect(0, 0, width, height);
-            return;
-        }
-        if (state.bg === 'image' && state.bgImage) {
-            drawTransformedCover(ctx, state.bgImage, width, height, state.bgScale, (state.bgOffsetX || 0) * width, (state.bgOffsetY || 0) * height);
-            return;
-        }
-        ctx.fillStyle = state.bg === 'custom' ? state.customColor : (BACKGROUND_VALUES[state.bg] || '#ffffff');
-        ctx.fillRect(0, 0, width, height);
-    }
-
-    function drawSubject(ctx, state, width, height) {
-        const img = state.cutoutImage;
-        const iw = img.naturalWidth || img.width;
-        const ih = img.naturalHeight || img.height;
-        const cfg = state.config;
-
-        if (!cfg.fitSubject && state.size === 'original') {
-            ctx.drawImage(img, 0, 0, width, height);
-            return;
-        }
-
-        const bbox = cfg.fitSubject ? state.alphaBBox : { x: 0, y: 0, width: iw, height: ih };
-        const padding = cfg.fitSubject ? Math.min(35, Math.max(0, state.margin)) / 100 : 0;
-        const maxW = width * (1 - padding * 2);
-        const maxH = height * (1 - padding * 2);
-        const scale = Math.min(maxW / bbox.width, maxH / bbox.height);
-        const dw = bbox.width * scale;
-        const dh = bbox.height * scale;
-        const dx = (width - dw) / 2;
-        const dy = (height - dh) / 2;
-
-        ctx.save();
-        if (state.shadow === 'soft') {
-            ctx.shadowColor = 'rgba(17,24,39,0.18)';
-            ctx.shadowBlur = Math.max(18, width * 0.025);
-            ctx.shadowOffsetY = Math.max(10, height * 0.018);
-        } else if (state.shadow === 'float') {
-            ctx.shadowColor = 'rgba(17,24,39,0.24)';
-            ctx.shadowBlur = Math.max(28, width * 0.04);
-            ctx.shadowOffsetY = Math.max(24, height * 0.035);
-        }
-        ctx.drawImage(img, bbox.x, bbox.y, bbox.width, bbox.height, dx, dy, dw, dh);
-        ctx.restore();
-    }
-
-    function drawComposition(canvas, state, dimensions) {
-        canvas.width = dimensions.width;
-        canvas.height = dimensions.height;
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, dimensions.width, dimensions.height);
-
-        const draw = () => {
-            drawBackground(ctx, state, dimensions.width, dimensions.height);
-            drawSubject(ctx, state, dimensions.width, dimensions.height);
-        };
-
-        if (state.shape === 'circle') {
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(dimensions.width / 2, dimensions.height / 2, Math.min(dimensions.width, dimensions.height) / 2, 0, Math.PI * 2);
-            ctx.clip();
-            draw();
-            ctx.restore();
-        } else {
-            draw();
-        }
-    }
-
-    function renderPreview() {
-        if (!resultState) return;
-        const canvas = document.getElementById('result-canvas');
-        if (!canvas) return;
-        drawComposition(canvas, resultState, previewDimensions(outputDimensions(resultState)));
-        syncEditorControls();
-    }
-
-    function syncEditorControls() {
-        if (!resultState) return;
-        document.querySelectorAll('.bg-option').forEach(btn => {
-            const active = btn.dataset.bg === resultState.bg;
-            btn.classList.toggle('border-gray-900', active);
-            btn.classList.toggle('bg-gray-50', active);
-            btn.classList.toggle('border-gray-200', !active);
-        });
-        const customWrap = document.getElementById('editor-custom-wrap');
-        if (customWrap) {
-            const visible = resultState.bg === 'custom';
-            customWrap.hidden = !visible;
-            customWrap.classList.toggle('hidden', !visible);
-            customWrap.classList.toggle('flex', visible);
-        }
-        const bgUploadWrap = document.getElementById('editor-bg-upload-wrap');
-        if (bgUploadWrap) {
-            bgUploadWrap.hidden = false;
-            bgUploadWrap.classList.remove('hidden');
-        }
-        const bgUploadButton = document.getElementById('editor-bg-upload');
-        if (bgUploadButton) bgUploadButton.textContent = resultState.bgImage ? t('replaceBgImage') : t('uploadBgImage');
-        const bgScaleWrap = document.getElementById('editor-bg-scale-wrap');
-        if (bgScaleWrap) {
-            const visible = resultState.bg === 'image' && !!resultState.bgImage;
-            bgScaleWrap.hidden = !visible;
-            bgScaleWrap.classList.toggle('hidden', !visible);
-        }
-        const bgDragHint = document.getElementById('editor-bg-drag-hint');
-        if (bgDragHint) {
-            const visible = resultState.bg === 'image' && !!resultState.bgImage;
-            bgDragHint.hidden = !visible;
-            bgDragHint.classList.toggle('hidden', !visible);
-        }
-        const bgScaleValue = document.getElementById('editor-bg-scale-value');
-        if (bgScaleValue) bgScaleValue.textContent = `${Math.round((resultState.bgScale || 1) * 100)}%`;
-        const previewCanvas = document.getElementById('result-canvas');
-        if (previewCanvas) {
-            const draggable = resultState.bg === 'image' && !!resultState.bgImage;
-            previewCanvas.classList.toggle('cursor-grab', draggable);
-        }
-        const marginValue = document.getElementById('editor-margin-value');
-        if (marginValue) {
-            marginValue.textContent = resultState.config.marginLabelKey === 'portraitScaleLabel'
-                ? `${Math.round((1 - Math.min(35, Math.max(0, resultState.margin)) / 100 * 2) * 100)}%`
-                : `${resultState.margin}%`;
-        }
-    }
-
-    function downloadCurrentVersion(shapeOverride) {
-        if (!resultState) return;
-        const canvas = document.createElement('canvas');
-        let dimensions = outputDimensions(resultState);
-        if ((shapeOverride === 'square' || shapeOverride === 'circle') && dimensions.width !== dimensions.height) {
-            const side = Math.max(dimensions.width, dimensions.height);
-            dimensions = { width: side, height: side };
-        }
-        const drawState = shapeOverride ? Object.assign({}, resultState, { shape: shapeOverride }) : resultState;
-        drawComposition(canvas, drawState, dimensions);
-        canvas.toBlob((blob) => {
-            if (!blob) return;
-            const url = URL.createObjectURL(blob);
-            const suffix = shapeOverride || resultState.config.downloadSuffix;
-            downloadUrl(url, `${resultState.basename}_${suffix}.png`);
-            setTimeout(() => URL.revokeObjectURL(url), 1000);
-            track('edited-download');
-        }, 'image/png');
-    }
-
-    async function setBackgroundImage(file) {
-        if (!resultState || !file) return;
-        if (!ALLOWED_TYPES.includes(file.type)) {
-            alert(t('alertSize'));
-            return;
-        }
-        const nextUrl = URL.createObjectURL(file);
-        let nextImage;
-        try {
-            nextImage = await loadImage(nextUrl);
-        } catch (error) {
-            URL.revokeObjectURL(nextUrl);
-            throw error;
-        }
-        if (resultState.bgImageUrl) URL.revokeObjectURL(resultState.bgImageUrl);
-        resultState.bgImageUrl = nextUrl;
-        resultState.bgImage = nextImage;
-        resultState.bg = 'image';
-        resultState.bgScale = 1;
-        resultState.bgOffsetX = 0;
-        resultState.bgOffsetY = 0;
-        const scaleInput = document.getElementById('editor-bg-scale');
-        if (scaleInput) scaleInput.value = '100';
-        renderPreview();
-        track('background-image-uploaded');
-    }
-
-    function renderResultEditor() {
-        if (!resultState) return;
-        const cfg = resultState.config;
-        const sizeOptions = cfg.sizes.map(size => {
-            const key = sizeLabelKey(size);
-            return `<option value="${size}" data-i18n="${key}">${t(key)}</option>`;
-        }).join('');
-        const shadowControl = cfg.showShadow ? `
-            <label class="block">
-                <span class="mb-1.5 block text-xs font-semibold text-gray-500" data-i18n="shadowLabel">${t('shadowLabel')}</span>
-                <select id="editor-shadow" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800">
-                    <option value="none" data-i18n="shadowNone">${t('shadowNone')}</option>
-                    <option value="soft" data-i18n="shadowSoft">${t('shadowSoft')}</option>
-                    <option value="float" data-i18n="shadowFloat">${t('shadowFloat')}</option>
-                </select>
-            </label>
-        ` : '';
-        const shapeControl = cfg.showShape ? `
-            <div>
-                <span class="mb-1.5 block text-xs font-semibold text-gray-500" data-i18n="shapeLabel">${t('shapeLabel')}</span>
-                <div class="grid grid-cols-2 gap-2">
-                    <button type="button" data-shape="square" class="shape-option rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700" data-i18n="shapeSquare">${t('shapeSquare')}</button>
-                    <button type="button" data-shape="circle" class="shape-option rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700" data-i18n="shapeCircle">${t('shapeCircle')}</button>
-                </div>
-            </div>
-        ` : '';
-        const marginLabelKey = cfg.marginLabelKey || 'subjectPaddingLabel';
-        const marginInputValue = marginLabelKey === 'portraitScaleLabel'
-            ? 30 - resultState.margin
-            : resultState.margin;
-        const marginControl = cfg.showMargin ? `
-            <label class="block">
-                <span class="mb-1.5 flex items-center justify-between text-xs font-semibold text-gray-500">
-                    <span data-i18n="${marginLabelKey}">${t(marginLabelKey)}</span>
-                    <span id="editor-margin-value">${resultState.margin}%</span>
-                </span>
-                <input id="editor-margin" type="range" min="0" max="30" value="${marginInputValue}" class="w-full accent-gray-900">
-            </label>
-        ` : '';
-        const amazonControl = cfg.showAmazonPreset ? `
-            <button type="button" id="amazon-preset" class="w-full rounded-lg border border-gray-900 bg-white px-3 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-50" data-i18n="amazonPreset">${t('amazonPreset')}</button>
-        ` : '';
-        const backgroundUploadControl = cfg.showBackgroundUpload ? `
-            <div id="editor-bg-upload-wrap" class="mt-3">
-                <input id="editor-bg-file" type="file" accept="image/jpeg, image/png, image/webp" class="hidden">
-                <button type="button" id="editor-bg-upload" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-800 transition-colors hover:border-gray-500" data-i18n="uploadBgImage">${resultState.bgImage ? t('replaceBgImage') : t('uploadBgImage')}</button>
-                <p id="editor-bg-drag-hint" class="mt-1.5 hidden text-xs text-gray-400" hidden data-i18n="dragBgHint">${t('dragBgHint')}</p>
-                <label id="editor-bg-scale-wrap" class="mt-3 block hidden" hidden>
-                    <span class="mb-1.5 flex items-center justify-between text-xs font-semibold text-gray-500">
-                        <span data-i18n="bgScaleLabel">${t('bgScaleLabel')}</span>
-                        <span id="editor-bg-scale-value">${Math.round((resultState.bgScale || 1) * 100)}%</span>
-                    </span>
-                    <input id="editor-bg-scale" type="range" min="100" max="300" value="${Math.round((resultState.bgScale || 1) * 100)}" class="w-full accent-gray-900">
-                </label>
-            </div>
-        ` : '';
-        const downloadButtons = cfg.showPortraitDownloads ? `
-            <div class="space-y-2 pt-1">
-                <button type="button" id="download-square" class="w-full rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700" data-i18n="downloadSquare">${t('downloadSquare')}</button>
-                <button type="button" id="download-circle" class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-800 transition-colors hover:border-gray-500" data-i18n="downloadCircle">${t('downloadCircle')}</button>
-                <button type="button" id="download-transparent" class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-800 transition-colors hover:border-gray-500" data-i18n="downloadTransparent">${t('downloadTransparent')}</button>
-                <button type="button" id="editor-start-over" class="w-full rounded-lg px-4 py-2 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900" data-i18n="startOver">${t('startOver')}</button>
-            </div>
-        ` : `
-            <div class="space-y-2 pt-1">
-                <button type="button" id="download-edited" class="w-full rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700" data-i18n="downloadEdited">${t('downloadEdited')}</button>
-                <button type="button" id="download-transparent" class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-800 transition-colors hover:border-gray-500" data-i18n="downloadTransparent">${t('downloadTransparent')}</button>
-                <button type="button" id="editor-start-over" class="w-full rounded-lg px-4 py-2 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900" data-i18n="startOver">${t('startOver')}</button>
-            </div>
-        `;
-
+    /** 打开编辑器时 dropzone 不再是「点击上传」区域：去掉虚线框和 hover 效果 */
+    function setDropzoneEditing() {
         dropzoneContent.classList.remove('pointer-events-none');
         dropzoneContent.classList.add('w-full');
         dropzone.classList.add('cursor-default', 'border-solid');
-        dropzone.classList.remove('cursor-pointer', 'border-dashed', 'hover:border-gray-400', 'hover:bg-gray-50');
-        dropzoneContent.innerHTML = `
-            <div id="result-editor" class="w-full text-left">
-                <div class="mb-5 text-center">
-                    <p class="text-xl font-bold text-gray-900" data-i18n="${cfg.titleKey}">${t(cfg.titleKey)}</p>
-                    <p class="mt-1 text-sm text-gray-500" data-i18n="${cfg.subKey}">${t(cfg.subKey)}</p>
-                </div>
-                <div class="grid gap-5 md:grid-cols-3">
-                    <div class="md:col-span-2">
-                        <div class="flex min-h-[300px] items-center justify-center rounded-xl border border-gray-200 p-3" style="background-color:#f9fafb;background-image:linear-gradient(45deg,#e5e7eb 25%,transparent 25%),linear-gradient(-45deg,#e5e7eb 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e5e7eb 75%),linear-gradient(-45deg,transparent 75%,#e5e7eb 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0;">
-                            <canvas id="result-canvas" class="max-h-[520px] max-w-full rounded-lg shadow-sm"></canvas>
-                        </div>
-                    </div>
-                    <div class="space-y-4">
-                        <div>
-                            <span class="mb-1.5 block text-xs font-semibold text-gray-500" data-i18n="backgroundLabel">${t('backgroundLabel')}</span>
-                            <div class="grid grid-cols-2 gap-2">${cfg.backgrounds.map(backgroundOptionHtml).join('')}</div>
-                            ${backgroundUploadControl}
-                            <div id="editor-custom-wrap" class="mt-3 hidden items-center gap-2" hidden>
-                                <input id="editor-custom-color" type="color" value="${resultState.customColor}" class="h-10 w-14 cursor-pointer rounded border border-gray-300 bg-white p-1">
-                                <input id="editor-custom-text" type="text" value="${resultState.customColor}" class="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-800" maxlength="7">
-                            </div>
-                        </div>
-                        ${amazonControl}
-                        <label class="block">
-                            <span class="mb-1.5 block text-xs font-semibold text-gray-500" data-i18n="outputSizeLabel">${t('outputSizeLabel')}</span>
-                            <select id="editor-size" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800">${sizeOptions}</select>
-                        </label>
-                        ${marginControl}
-                        ${shadowControl}
-                        ${shapeControl}
-                        ${downloadButtons}
-                    </div>
-                </div>
-            </div>
-        `;
-
-        document.getElementById('editor-size').value = resultState.size;
-        const shadow = document.getElementById('editor-shadow');
-        if (shadow) shadow.value = resultState.shadow;
-
-        document.querySelectorAll('.bg-option').forEach(btn => {
-            btn.addEventListener('click', () => {
-                resultState.bg = btn.dataset.bg;
-                renderPreview();
-                if (resultState.bg === 'image' && !resultState.bgImage) {
-                    const bgFile = document.getElementById('editor-bg-file');
-                    if (bgFile) bgFile.click();
-                }
-            });
-        });
-        const bgUploadButton = document.getElementById('editor-bg-upload');
-        const bgFileInput = document.getElementById('editor-bg-file');
-        if (bgUploadButton && bgFileInput) {
-            bgUploadButton.addEventListener('click', () => {
-                resultState.bg = 'image';
-                renderPreview();
-                bgFileInput.click();
-            });
-            bgFileInput.addEventListener('change', async () => {
-                const bgFile = bgFileInput.files && bgFileInput.files[0];
-                try {
-                    await setBackgroundImage(bgFile);
-                } catch (error) {
-                    console.error('Background image load failed:', error);
-                } finally {
-                    bgFileInput.value = '';
-                }
-            });
-        }
-        const bgScale = document.getElementById('editor-bg-scale');
-        if (bgScale) {
-            bgScale.addEventListener('input', () => {
-                resultState.bgScale = Math.max(1, Number(bgScale.value || 100) / 100);
-                renderPreview();
-            });
-        }
-        const previewCanvas = document.getElementById('result-canvas');
-        if (previewCanvas && cfg.showBackgroundUpload) {
-            let draggingBg = false;
-            let lastX = 0;
-            let lastY = 0;
-            const pointerMove = (event) => {
-                if (!draggingBg || !resultState || resultState.bg !== 'image' || !resultState.bgImage) return;
-                const canvas = document.getElementById('result-canvas');
-                if (!canvas) return;
-                const rect = canvas.getBoundingClientRect();
-                resultState.bgOffsetX += (event.clientX - lastX) / rect.width;
-                resultState.bgOffsetY += (event.clientY - lastY) / rect.height;
-                lastX = event.clientX;
-                lastY = event.clientY;
-                renderPreview();
-            };
-            const stopDrag = () => {
-                if (!draggingBg) return;
-                draggingBg = false;
-                previewCanvas.classList.remove('cursor-grabbing');
-                window.removeEventListener('pointermove', pointerMove);
-                window.removeEventListener('pointerup', stopDrag);
-            };
-            previewCanvas.addEventListener('pointerdown', (event) => {
-                if (!resultState || resultState.bg !== 'image' || !resultState.bgImage) return;
-                draggingBg = true;
-                lastX = event.clientX;
-                lastY = event.clientY;
-                previewCanvas.classList.add('cursor-grabbing');
-                previewCanvas.setPointerCapture(event.pointerId);
-                window.addEventListener('pointermove', pointerMove);
-                window.addEventListener('pointerup', stopDrag);
-            });
-        }
-        const amazonPreset = document.getElementById('amazon-preset');
-        if (amazonPreset) {
-            amazonPreset.addEventListener('click', () => {
-                resultState.bg = 'white';
-                resultState.size = 'square2000';
-                resultState.margin = 6;
-                resultState.shadow = 'none';
-                const size = document.getElementById('editor-size');
-                if (size) size.value = resultState.size;
-                const margin = document.getElementById('editor-margin');
-                if (margin) margin.value = resultState.margin;
-                const shadowSelect = document.getElementById('editor-shadow');
-                if (shadowSelect) shadowSelect.value = resultState.shadow;
-                renderPreview();
-                track('amazon-preset-applied');
-            });
-        }
-        const customColor = document.getElementById('editor-custom-color');
-        const customText = document.getElementById('editor-custom-text');
-        const updateCustom = (value) => {
-            if (!/^#[0-9a-fA-F]{6}$/.test(value)) return;
-            resultState.customColor = value;
-            if (customColor) customColor.value = value;
-            if (customText) customText.value = value;
-            renderPreview();
-        };
-        if (customColor) customColor.addEventListener('input', () => updateCustom(customColor.value));
-        if (customText) customText.addEventListener('input', () => updateCustom(customText.value));
-        document.getElementById('editor-size').addEventListener('change', (event) => {
-            resultState.size = event.target.value;
-            renderPreview();
-        });
-        const margin = document.getElementById('editor-margin');
-        if (margin) {
-            margin.addEventListener('input', () => {
-                const rawValue = Number(margin.value || 0);
-                resultState.margin = resultState.config.marginLabelKey === 'portraitScaleLabel'
-                    ? 30 - rawValue
-                    : rawValue;
-                renderPreview();
-            });
-        }
-        if (shadow) {
-            shadow.addEventListener('change', () => {
-                resultState.shadow = shadow.value;
-                renderPreview();
-            });
-        }
-        document.querySelectorAll('.shape-option').forEach(btn => {
-            btn.addEventListener('click', () => {
-                resultState.shape = btn.dataset.shape;
-                document.querySelectorAll('.shape-option').forEach(shapeBtn => {
-                    const active = shapeBtn.dataset.shape === resultState.shape;
-                    shapeBtn.classList.toggle('border-gray-900', active);
-                    shapeBtn.classList.toggle('bg-gray-50', active);
-                });
-                renderPreview();
-            });
-        });
-        document.getElementById('download-transparent').addEventListener('click', () => {
-            downloadUrl(resultState.cutoutUrl, `${resultState.basename}_transparent.png`);
-            track('transparent-download');
-        });
-        const downloadEdited = document.getElementById('download-edited');
-        if (downloadEdited) downloadEdited.addEventListener('click', () => downloadCurrentVersion());
-        const downloadSquare = document.getElementById('download-square');
-        if (downloadSquare) downloadSquare.addEventListener('click', () => downloadCurrentVersion('square'));
-        const downloadCircle = document.getElementById('download-circle');
-        if (downloadCircle) downloadCircle.addEventListener('click', () => downloadCurrentVersion('circle'));
-        document.getElementById('editor-start-over').addEventListener('click', () => {
-            cleanupResultState();
-            resetDropzone();
-            fileInput.click();
-        });
-
-        document.querySelectorAll('.shape-option').forEach(shapeBtn => {
-            const active = shapeBtn.dataset.shape === resultState.shape;
-            shapeBtn.classList.toggle('border-gray-900', active);
-            shapeBtn.classList.toggle('bg-gray-50', active);
-        });
-        renderPreview();
+        // overflow-hidden 会让编辑器里预览图的 sticky 失效（sticky 相对最近的滚动容器），编辑时去掉；
+        // 重置时 resetDropzone 会整体还原初始 class
+        dropzone.classList.remove(
+            'overflow-hidden',
+            'cursor-pointer', 'border-dashed',
+            'hover:border-gray-400', 'hover:bg-gray-50',
+            'hover:border-brand-400', 'hover:bg-brand-50/40', 'dark:hover:bg-brand-500/10',
+            'dark:hover:border-zinc-600', 'dark:hover:bg-zinc-800'
+        );
     }
 
-    async function showResultEditor(originalFile, sourceFile, blob) {
+    /**
+     * 首页：透明 PNG 已自动下载，dropzone 里显示「已下载」卡片，
+     * 提供「编辑背景/阴影」入口；点卡片空白处或拖入新图仍然是上传下一张（不打断老用户的习惯）。
+     */
+    function showHomeDoneCard(originalFile, sourceFile, blob) {
+        homeResult = { originalFile, sourceFile, blob };
+        dropzoneContent.classList.remove('pointer-events-none');
+        const editButton = editorAvailable() ? `
+                <button type="button" data-home-action="edit" class="rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white">${t('editBgShadow')}</button>` : '';
+        dropzoneContent.innerHTML = `
+            <svg class="mb-4 h-12 w-12 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
+            </svg>
+            <p class="mb-1 text-lg font-semibold text-gray-900 dark:text-zinc-50">${t('homeDoneTitle')}</p>
+            <p class="text-sm text-gray-500 dark:text-zinc-400">${t('homeDoneSub')}</p>
+            <div class="mt-5 flex flex-wrap justify-center gap-2">
+                ${editButton}
+                <button type="button" data-home-action="another" class="rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-800 transition-colors hover:border-gray-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:border-zinc-500">${t('startOver')}</button>
+            </div>
+        `;
+        dropzoneContent.querySelectorAll('[data-home-action]').forEach((btn) => {
+            btn.addEventListener('click', (event) => {
+                // 阻止冒泡到 dropzone 的「点击上传」
+                event.stopPropagation();
+                if (btn.dataset.homeAction === 'edit') {
+                    const result = homeResult;
+                    if (!result) return;
+                    track('editor-opened');
+                    openEditor(result.originalFile, result.sourceFile, result.blob).catch((error) => {
+                        console.error('[MiaoCut] 打开编辑器失败', error);
+                    });
+                } else {
+                    fileInput.click();
+                }
+            });
+        });
+    }
+
+    /**
+     * 打开结果编辑器。编辑器脚本没加载到（网络失败 / 被插件拦截）时返回 false，
+     * 调用方降级为直接下载透明 PNG，保证核心功能不受影响。
+     */
+    async function openEditor(originalFile, sourceFile, blob) {
+        if (!editorAvailable()) return false;
+        const Editor = window.MiaoCutEditor;
         cleanupResultState();
-        const mode = getEditorMode();
-        const config = EDITOR_CONFIGS[mode];
+
         const cutoutUrl = URL.createObjectURL(blob);
         const sourceUrl = URL.createObjectURL(sourceFile || originalFile);
         let cutoutImage;
@@ -2307,33 +1985,37 @@
         try {
             [cutoutImage, sourceImage] = await Promise.all([
                 loadImage(cutoutUrl),
-                loadImage(sourceUrl),
+                // 原图只用于「虚化原图」背景，加载失败不影响编辑器
+                loadImage(sourceUrl).catch(() => null),
             ]);
         } catch (error) {
             URL.revokeObjectURL(cutoutUrl);
             URL.revokeObjectURL(sourceUrl);
             throw error;
         }
-        const alphaBBox = computeAlphaBBox(cutoutImage);
-        resultState = {
-            mode,
-            config,
-            cutoutUrl,
-            sourceUrl,
-            cutoutImage,
-            sourceImage,
-            bgImageUrl: null,
-            bgImage: null,
-            alphaBBox,
-            basename: basenameFromFile(originalFile),
-            bg: config.defaultBg,
-            customColor: '#f3f4f6',
-            size: config.defaultSize,
-            margin: config.defaultMargin,
-            shadow: config.defaultShadow,
-            shape: config.defaultShape || 'square',
-        };
-        renderResultEditor();
+
+        const basename = basenameFromFile(originalFile);
+        const engine = Editor.engine.createEngine({ cutout: cutoutImage, original: sourceImage, basename });
+        setDropzoneEditing();
+        const panel = Editor.createPanel({
+            container: dropzoneContent,
+            engine,
+            config: getEditorConfig(),
+            t,
+            track,
+            onDownload: downloadBlob,
+            onDownloadTransparent: () => {
+                downloadUrl(cutoutUrl, `${basename}_transparent.png`);
+                track('transparent-download');
+            },
+            onStartOver: () => {
+                cleanupResultState();
+                resetDropzone();
+                fileInput.click();
+            },
+        });
+        editorSession = { engine, panel, urls: [cutoutUrl, sourceUrl] };
+        return true;
     }
 
     async function handleFiles(files) {
@@ -2372,10 +2054,13 @@
             track('cutout-success');
 
             if (page === 'home') {
+                // 首页保持「抠完直接下载」的零门槛体验，下载后再提供编辑入口
+                autoDownloadTransparentResult(file, blob);
+                showHomeDoneCard(file, uploadFile, blob);
+            } else if (!(await openEditor(file, uploadFile, blob))) {
+                // 编辑器脚本没加载到：降级为直接下载透明 PNG
                 autoDownloadTransparentResult(file, blob);
                 shouldResetDropzone = true;
-            } else {
-                await showResultEditor(file, uploadFile, blob);
             }
             showBookmarkBanner();
 
@@ -2426,7 +2111,7 @@
             fileInput.value = '';
             if (shouldResetDropzone) {
                 setTimeout(() => {
-                    if (!resultState) resetDropzone();
+                    if (!editorSession && !homeResult) resetDropzone();
                 }, 2000);
             }
         }
