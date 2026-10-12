@@ -1,0 +1,40 @@
+account/credits/index.html
+  s_c8dfc96faf2462::t_6ea0812ce577d8 64-67
+  s_c8dfc96faf2462::t_6b6d6a66940060 378-379
+account/batches/index.html
+  s_c8dfc96faf2462::t_6ea0812ce577d8 63-66
+  s_c8dfc96faf2462::t_6b6d6a66940060 216-217
+batch/batch.js
+  s_c8dfc96faf2462::t_6b6d6a66940060 975-976
+pro-i18n.js
+  s_c8dfc96faf2462::t_6b6d6a66940060 35-36,289,291-292
+pro-gateway/auth-email-templates/magic-link.html
+  s_c8dfc96faf2462::t_da860e93a26155 1-26
+pro-gateway/AUTH-SETUP.md
+  s_c8dfc96faf2462::t_1976d872b85ea8 1-80
+pro-account.js
+  s_c8dfc96faf2462::t_6ea0812ce577d8 150-169
+  s_c8dfc96faf2462::t_162a87afedefda 125-149
+pro-gateway/auth-email-templates/confirm-signup.html
+  s_c8dfc96faf2462::t_da860e93a26155 1-26
+batch/index.html
+  s_c8dfc96faf2462::t_6ea0812ce577d8 174-177
+sitemap.xml
+  s_c8dfc96faf2462::t_fe389b85d268b8 7,26,45,64,83,102,121,140,159,178,197,216,235,254,273,292,311,330,349,368,387,406,425,444,463,482,501,520,539,558,577,596,615,634,653,672,691,710,729,748,767,786,805,824,843,862,881,900,919,938,957,976,995,1014,1033,1052,1071,1090,1109,1128,1147,1166,1185,1204,1223,1229,1235,1241,1247,1253,1259,1265
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "f15e076078c9c018a80c40149cfb5204fe6d5bcc",
+  "prompts": {},
+  "sessions": {
+    "s_c8dfc96faf2462": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8d4f64c4-4d50-40db-ab2c-f573eacba2a0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "midcodehub <408124546@qq.com>"
+    }
+  }
+}
