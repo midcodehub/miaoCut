@@ -122,6 +122,51 @@ const MiaoCutPro = {
     });
   },
 
+  /** 其他 OAuth 登录(如 "github")。provider 名称与 Supabase 后台的 Providers 一致 */
+  async signInWithProvider(provider, redirectTo) {
+    const c = await getClient();
+    if (!c) throw new Error("auth_unavailable");
+    return c.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: redirectTo || window.location.href },
+    });
+  },
+
+  /** 读取 Supabase 后台已开启的登录方式(公开接口 /auth/v1/settings),用来决定显示哪些按钮。
+   *  失败时返回空对象:页面只显示 Google + 邮箱(已上线的两种),不会出现点了报错的按钮。 */
+  async enabledProviders() {
+    if (!CFG.SUPABASE_URL || !CFG.SUPABASE_ANON_KEY) return {};
+    if (!this._providersPromise) {
+      this._providersPromise = fetch(`${CFG.SUPABASE_URL}/auth/v1/settings`, {
+        headers: { apikey: CFG.SUPABASE_ANON_KEY },
+      })
+        .then((r) => (r.ok ? r.json() : {}))
+        .then((d) => (d && d.external) || {})
+        .catch(() => ({}));
+    }
+    return this._providersPromise;
+  },
+
+  /** 登录卡上的其他登录按钮(<button data-oauth="github">):后台已开启才显示,点击跳转登录。
+   *  beforeRedirect:跳转前要做的事(批量页先把已选图片存进 IndexedDB);onError:失败提示 */
+  async mountProviderButtons(root = document, { beforeRedirect, onError } = {}) {
+    const enabled = await this.enabledProviders();
+    root.querySelectorAll("[data-oauth]").forEach((btn) => {
+      const provider = btn.dataset.oauth;
+      btn.classList.toggle("hidden", !enabled[provider]);
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = "1";
+      btn.addEventListener("click", async () => {
+        try {
+          if (beforeRedirect) await beforeRedirect();
+          await this.signInWithProvider(provider, window.location.href);
+        } catch (e) {
+          if (onError) onError(e);
+        }
+      });
+    });
+  },
+
   async signOut() {
     const c = await getClient();
     if (c) await c.auth.signOut();

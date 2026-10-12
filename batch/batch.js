@@ -972,6 +972,8 @@ async function boot() {
   renderSelection();
 
   await MiaoCutPro.init().catch(() => {});
+  // 后台开启了的其他登录方式（如 GitHub）才显示；跳转前先把已选图片存好
+  MiaoCutPro.mountProviderButtons(els.gate, { beforeRedirect: persistSelection, onError: () => setLoginMsg("loginOAuthFailed") });
   await refreshAuth();
   MiaoCutPro.onAuthChange(() => refreshAuth());
 
