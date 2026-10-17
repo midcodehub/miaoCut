@@ -68,3 +68,10 @@ benchmark
 /gpu-scheduler/
 /PRODUCT.md
 /.impeccable/brief-*.md
+
+# 密钥文件：本仓库公开，任何密钥都不能提交（Worker 用 wrangler secret put，后端用平台的 Secret 设置）
+secret*.txt
+*.key.txt
+.env
+.env.*
+.dev.vars
