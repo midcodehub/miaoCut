@@ -6,13 +6,18 @@ routes = [
   { pattern = "api2.miaocut.app", custom_domain = true }
 ]
 
+# ⚠️ GATEWAY_SECRET（与 Hugging Face 后端共享、用来封死直连 *.hf.space 的密钥）不能写在这个文件里：
+#    本仓库是公开的。改用 Cloudflare Secret 存放（不会出现在代码里）：
+#      wrangler secret put GATEWAY_SECRET              # 生产 api2.miaocut.app
+#      wrangler secret put GATEWAY_SECRET --env dev    # 测试 dev-api2.miaocut.app
+#    更换步骤和顺序见 url-proxy/README.md。
+
 # Production Environment (default)
 [vars]
 CORS_ALLOW_ORIGIN = "*"
 CN_HOSTS = "midcodex-miao-cut.hf.space,midcodex-miao-cut2.hf.space,midcodex-miao-cut3.hf.space"
 GLOBAL_HOSTS = "midcodex-miao-cut.hf.space,midcodex-miao-cut2.hf.space,midcodex-miao-cut3.hf.space"
 DEFAULT_MAX_CONCURRENCY = "2"
-GATEWAY_SECRET = "b721d02f8389ea4ebc2c22322f75a82f5f18c475365dd51c7068bcf7b14d5bd6"
 HEDGE_DELAY_MS = "25000"
 MAX_PARALLEL_REQUESTS = "2"
 PER_HOST_TIMEOUT_MS = "35000"
@@ -31,7 +36,6 @@ CORS_ALLOW_ORIGIN = "*"
 CN_HOSTS = "wu408124546-miao-cut-dev1.hf.space"
 GLOBAL_HOSTS = "wu408124546-miao-cut-dev1.hf.space"
 DEFAULT_MAX_CONCURRENCY = "2"
-GATEWAY_SECRET = "b721d02f8389ea4ebc2c22322f75a82f5f18c475365dd51c7068bcf7b14d5bd6"
 HEDGE_DELAY_MS = "25000"
 MAX_PARALLEL_REQUESTS = "2"
 PER_HOST_TIMEOUT_MS = "35000"
