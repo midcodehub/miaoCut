@@ -8,7 +8,14 @@ rembg[cpu]>=2.0.57
 pymatting>=1.1.0
 pillow>=9.5,<10
 slowapi>=0.1.9
-mediapipe>=0.10.18,<0.11
+# ⚠️ mediapipe 必须钉在 0.10.18（只在 Linux 上安装）：
+#   证件照的人脸关键点走旧接口 mp.solutions.face_mesh（见 main.py 的 _detect_mediapipe_anchors）。
+#   0.10.30（2025-12）起 PyPI 上的包已经删掉了整个 solutions 目录，只剩新的 tasks 接口；
+#   以前写成 >=0.10.18,<0.11 时，Hugging Face 每次重新构建都会装到 0.10.35，
+#   import 不报错但 face_mesh 不存在 → 被 try 吞掉、静默退回 Haar，证件照裁切精度明显变差。
+#   0.10.18 没有 Mac M 芯片的安装包，所以加 sys_platform 条件：本地 Mac 不装 mediapipe（证件照用 Haar，只影响本地）。
+#   长期方案：把 _detect_mediapipe_anchors 改写成 tasks API（FaceLandmarker），之后再放开版本。
+mediapipe==0.10.18; sys_platform == "linux"
 numpy>=1.26,<2
 opencv-python==4.10.0.84
 opencv-contrib-python==4.10.0.84
