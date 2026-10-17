@@ -97,9 +97,7 @@ const EN_ONLY_PAGES = [
   // 法务页：参与索引但优先级低
   { urlPath: '/privacy/',                             changefreq: 'yearly',  priority: '0.3' },
   { urlPath: '/terms/',                               changefreq: 'yearly',  priority: '0.3' },
-  // Pro 付费页（/account/ 是个人账户页，noindex，不进 sitemap）
-  { urlPath: '/pricing/',                             changefreq: 'monthly', priority: '0.6' },
-  { urlPath: '/batch/',                               changefreq: 'monthly', priority: '0.7' },
+  // Pro 付费页（/pricing/、/batch/）暂不进 sitemap：批量服务后端上线并测试通过后再加回来
 ];
 
 // 资源链接前缀，重写内链时跳过这些（它们只有英文版，不应改成 /zh/...）
