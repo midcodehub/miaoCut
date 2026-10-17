@@ -97,6 +97,9 @@ const EN_ONLY_PAGES = [
   // 法务页：参与索引但优先级低
   { urlPath: '/privacy/',                             changefreq: 'yearly',  priority: '0.3' },
   { urlPath: '/terms/',                               changefreq: 'yearly',  priority: '0.3' },
+  // Pro 付费页（/account/ 是个人账户页，noindex，不进 sitemap）
+  { urlPath: '/pricing/',                             changefreq: 'monthly', priority: '0.6' },
+  { urlPath: '/batch/',                               changefreq: 'monthly', priority: '0.7' },
 ];
 
 // 资源链接前缀，重写内链时跳过这些（它们只有英文版，不应改成 /zh/...）
@@ -124,6 +127,11 @@ const ASSET_PATH_PREFIXES = [
   '/alternatives',
   '/privacy',
   '/terms',
+  // Pro 付费页（定价 / 批量 / 账户）：只有英文 URL，中英文由 /pro-i18n.js 运行时切换
+  '/pricing',
+  '/batch',
+  '/account',
+  '/pro-i18n.js',
 ];
 
 // ============================================================

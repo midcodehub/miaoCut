@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-pi18n-title="creditsDocTitle">
 
 <head>
     <meta charset="UTF-8">
@@ -12,7 +12,8 @@
     <title>Your Credits | MiaoCut</title>
     <meta name="description" content="Manage your MiaoCut credits: balance, transaction history, and top-ups.">
     <meta name="robots" content="noindex,nofollow">
-    <link rel="stylesheet" href="/output.css?v=f673e167">
+    <link rel="stylesheet" href="/output.css?v=aa7fd341">
+    <script src="/pro-i18n.js"></script>
     <script>
         const isDev = window.location.hostname.includes('dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         window.MIAOCUT_PRO_CONFIG = isDev ? {
@@ -29,77 +30,102 @@
     </script>
 </head>
 
-<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col dark:bg-zinc-950 dark:text-zinc-200">
+<body class="flex min-h-screen flex-col bg-gray-50 font-sans text-gray-800 dark:bg-zinc-950 dark:text-zinc-200">
     <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
             <a href="/" class="site-brand" aria-label="MiaoCut home">
                 <img src="/favicon-nav.png" alt="" class="site-brand-mark" width="36" height="36">
                 <span class="site-brand-text">MiaoCut</span>
             </a>
-            <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600 dark:text-zinc-300">
-                <a href="/" class="hover:text-gray-900 dark:hover:text-zinc-100">Background Remover</a>
-                <a href="/pricing/" class="hover:text-gray-900 dark:hover:text-zinc-100">Pricing</a>
-                <a href="/account/credits/" class="text-brand-600 dark:text-brand-400">Account</a>
+            <nav class="flex items-center gap-3 text-sm font-medium text-gray-600 sm:gap-4 dark:text-zinc-300">
+                <a href="/" class="hidden hover:text-gray-900 sm:inline dark:hover:text-zinc-100" data-pi18n="navTools">Background Remover</a>
+                <a href="/batch/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-pi18n="navBatch">Batch</a>
+                <a href="/pricing/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-pi18n="navPricing">Pricing</a>
+                <!-- nav-auth 的文字由下方脚本按登录态设置，不挂 data-pi18n（避免语言脚本覆盖） -->
+                <a id="nav-auth" href="/account/credits/" class="text-gray-900 dark:text-zinc-50" aria-current="page">Sign in</a>
+                <button type="button" data-pi18n-switch class="rounded-full border border-gray-300 px-2.5 py-1 text-xs text-gray-600 hover:border-gray-500 dark:border-zinc-700 dark:text-zinc-300">中文</button>
             </nav>
         </div>
     </header>
 
-    <main class="mx-auto w-full max-w-3xl flex-1 px-5 py-12">
+    <main class="mx-auto w-full max-w-3xl flex-1 px-5 pb-16 pt-10 sm:pt-14">
 
-        <!-- 未登录:登录表单 -->
-        <section id="login-view" class="hidden">
-            <h1 class="text-2xl font-bold">Sign in to MiaoCut</h1>
-            <p class="mt-2 text-gray-600 dark:text-zinc-400">Access your credits, history, and top-ups.</p>
-            <div class="mt-6 max-w-sm space-y-3">
-                <button id="google-btn" class="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 font-medium text-gray-700 transition hover:bg-gray-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
-                    Continue with Google
+        <!-- ========== 未登录：登录卡（与批量页同一套样式） ========== -->
+        <section id="login-view" class="mx-auto hidden max-w-md">
+            <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-zinc-50" data-pi18n="loginH1">Sign in to MiaoCut</h1>
+            <p class="mt-2 text-gray-600 dark:text-zinc-400" data-pi18n="loginSub">Access your credits, history and top-ups. New accounts get 100 free credits.</p>
+            <!-- 从定价页点「购买」过来：说明登录后会直接进入结账 -->
+            <p id="buy-note" class="mt-4 hidden rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300"></p>
+            <div class="mt-6 space-y-3 rounded-xl border border-gray-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+                <button type="button" id="google-btn" class="flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h6.5a5.6 5.6 0 01-2.4 3.6v3h3.9c2.3-2.1 3.5-5.2 3.5-8.7z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.3v3.1A12 12 0 0012 24z"/><path fill="#FBBC05" d="M5.3 14.3a7.2 7.2 0 010-4.6V6.6h-4a12 12 0 000 10.8l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 001.3 6.6l4 3.1c.9-2.9 3.6-4.9 6.7-4.9z"/></svg>
+                    <span data-pi18n="loginGoogle">Continue with Google</span>
                 </button>
-                <div class="text-center text-xs text-gray-400">or</div>
-                <input id="email-input" type="email" placeholder="you@example.com"
-                    class="w-full rounded-lg border border-gray-300 px-4 py-2.5 dark:border-zinc-700 dark:bg-zinc-900">
-                <button id="email-btn" class="w-full rounded-lg bg-brand-600 px-4 py-2.5 font-semibold text-white transition hover:bg-brand-700">
-                    Email me a magic link
+                <button type="button" data-oauth="github" class="hidden flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.48 2 2 6.48 2 12.02c0 4.42 2.87 8.17 6.84 9.5.5.09.68-.22.68-.48 0-.24-.01-.87-.01-1.7-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.03A9.56 9.56 0 0112 6.84c.85 0 1.71.12 2.5.34 1.91-1.3 2.75-1.03 2.75-1.03.55 1.38.2 2.4.1 2.65.64.7 1.03 1.6 1.03 2.69 0 3.85-2.34 4.7-4.57 4.94.36.31.68.92.68 1.85 0 1.34-.01 2.42-.01 2.75 0 .27.18.58.69.48A10.02 10.02 0 0022 12.02C22 6.48 17.52 2 12 2z"/></svg>
+                    <span data-pi18n="loginGitHub">Continue with GitHub</span>
                 </button>
-                <p id="login-msg" class="text-sm text-gray-500"></p>
+                <div class="flex items-center gap-3 text-xs text-gray-500 dark:text-zinc-400" aria-hidden="true">
+                    <span class="h-px flex-1 bg-gray-200 dark:bg-zinc-800"></span><span data-pi18n="loginOr">or</span><span class="h-px flex-1 bg-gray-200 dark:bg-zinc-800"></span>
+                </div>
+                <form id="email-form" class="space-y-3" novalidate>
+                    <label for="email-input" class="sr-only">Email</label>
+                    <input id="email-input" type="email" placeholder="you@example.com" data-pi18n-ph="emailPlaceholder" autocomplete="email" inputmode="email" required
+                        class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-500 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-300">
+                    <button type="submit" class="flex min-h-11 w-full items-center justify-center rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-pi18n="loginEmailBtn">Email me a sign-in link</button>
+                </form>
+                <p id="login-msg" class="text-sm text-gray-600 dark:text-zinc-400" role="status"></p>
             </div>
         </section>
 
-        <!-- 已登录:账户面板 -->
+        <!-- ========== 已登录：余额 + 流水 ========== -->
         <section id="account-view" class="hidden">
-            <div class="flex items-center justify-between">
-                <h1 class="text-2xl font-bold">Your credits</h1>
-                <button id="logout-btn" class="text-sm text-gray-500 hover:text-gray-800 dark:hover:text-zinc-200">Sign out</button>
-            </div>
-            <p id="acct-email" class="mt-1 text-sm text-gray-500"></p>
+            <p id="pay-success" class="mb-6 hidden rounded-lg border border-brand-200 bg-brand-50 px-4 py-3 text-sm text-brand-800 dark:border-brand-500/30 dark:bg-brand-500/10 dark:text-brand-300" role="status">Payment received. Your credits will appear in a few seconds.</p>
+            <p id="checkout-error" class="mb-6 hidden rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300" role="alert" data-pi18n="buyFailed">Checkout failed, please try again.</p>
 
-            <div class="mt-6 grid gap-4 sm:grid-cols-3">
-                <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
-                    <div class="text-sm text-gray-500 dark:text-zinc-400">Total credits</div>
-                    <div id="bal-total" class="mt-1 text-3xl font-bold">—</div>
+            <div class="flex flex-wrap items-start justify-between gap-4">
+                <div class="min-w-0">
+                    <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-zinc-50" data-pi18n="acctH1">Your credits</h1>
+                    <p id="acct-email" class="mt-1 truncate text-sm text-gray-600 dark:text-zinc-400"></p>
                 </div>
-                <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
-                    <div class="text-sm text-gray-500 dark:text-zinc-400">Top-up</div>
-                    <div id="bal-topup" class="mt-1 text-3xl font-bold">—</div>
-                </div>
-                <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
-                    <div class="text-sm text-gray-500 dark:text-zinc-400">Free left today</div>
-                    <div id="bal-free" class="mt-1 text-3xl font-bold">—</div>
-                </div>
+                <button type="button" id="logout-btn" class="text-sm font-medium text-gray-600 underline-offset-4 hover:text-gray-900 hover:underline dark:text-zinc-400 dark:hover:text-zinc-50" data-pi18n="signOut">Sign out</button>
             </div>
 
-            <div class="mt-6">
-                <a href="/pricing/" class="inline-block rounded-lg bg-brand-600 px-5 py-2.5 font-semibold text-white transition hover:bg-brand-700">Buy more credits</a>
+            <div class="mt-6 rounded-xl border border-gray-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+                <p class="text-sm text-gray-600 dark:text-zinc-400" data-pi18n="balTotal">Available credits</p>
+                <p id="bal-total" class="mt-1 text-5xl font-bold tracking-tight tabular-nums text-gray-900 dark:text-zinc-50" aria-live="polite">—</p>
+                <p id="bal-split" class="mt-1 hidden text-sm tabular-nums text-gray-600 dark:text-zinc-400"></p>
+                <p class="mt-3 text-sm text-gray-600 dark:text-zinc-400" data-pi18n="balHint">Credits are used for batch processing. Single images are always free.</p>
+                <div class="mt-6 flex flex-wrap gap-3">
+                    <a href="/batch/" class="inline-flex min-h-11 items-center justify-center rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-pi18n="goBatch">Start a batch</a>
+                    <a href="/pricing/" class="inline-flex min-h-11 items-center justify-center rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-pi18n="buyMore">Buy more credits</a>
+                    <a href="/account/batches/" class="inline-flex min-h-11 items-center text-sm font-medium text-gray-700 underline-offset-4 hover:text-gray-900 hover:underline dark:text-zinc-300 dark:hover:text-zinc-50" data-pi18n="historyLink">Batch history</a>
+                </div>
             </div>
+            <!-- 订阅：有订阅显示档位 / 续费日 / 管理入口；没有订阅且订阅已开放时，一行推荐 -->
+            <section id="sub-panel" class="mt-4 hidden rounded-xl border border-gray-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900" aria-live="polite">
+                <div class="flex flex-wrap items-start justify-between gap-4">
+                    <div class="min-w-0">
+                        <h2 id="sub-name" class="font-semibold text-gray-900 dark:text-zinc-50"></h2>
+                        <p id="sub-line" class="mt-1 text-sm text-gray-600 dark:text-zinc-400"></p>
+                        <p id="sub-warn" class="mt-2 hidden text-sm font-medium text-amber-700 dark:text-amber-400" role="alert"></p>
+                    </div>
+                    <button type="button" id="sub-manage" class="inline-flex min-h-10 items-center justify-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-pi18n="subManage">Manage subscription</button>
+                </div>
+                <p id="sub-error" class="mt-3 hidden text-sm text-red-600 dark:text-red-400" role="alert" data-pi18n="portalFailed">Could not open subscription settings. Please try again.</p>
+            </section>
+            <p id="sub-promo" class="mt-4 hidden text-sm text-gray-600 dark:text-zinc-400"><span data-pi18n="subNone">Listing every month? Plans start at $6.99 for 300 credits.</span> <a href="/pricing/#plans" class="font-medium text-gray-900 underline underline-offset-4 dark:text-zinc-50" data-pi18n="subSeePlans">See monthly plans</a></p>
+            <p id="load-error" class="mt-4 hidden text-sm text-red-600 dark:text-red-400" role="alert" data-pi18n="loadFailed">Could not load your account. Please refresh the page.</p>
 
-            <h2 class="mt-10 text-lg font-semibold">Transaction history</h2>
-            <div class="mt-3 overflow-hidden rounded-2xl border border-gray-200 dark:border-zinc-800">
+            <h2 class="mt-12 text-lg font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="historyH">Credit history</h2>
+            <div class="mt-3 overflow-x-auto rounded-xl border border-gray-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
                 <table class="w-full text-sm">
-                    <thead class="bg-gray-50 text-left text-gray-500 dark:bg-zinc-900 dark:text-zinc-400">
+                    <thead class="border-b border-gray-200 text-left text-gray-600 dark:border-zinc-800 dark:text-zinc-400">
                         <tr>
-                            <th class="px-4 py-2 font-medium">When</th>
-                            <th class="px-4 py-2 font-medium">Reason</th>
-                            <th class="px-4 py-2 text-right font-medium">Change</th>
-                            <th class="px-4 py-2 text-right font-medium">Balance</th>
+                            <th scope="col" class="px-4 py-3 font-medium" data-pi18n="thType">Activity</th>
+                            <th scope="col" class="hidden whitespace-nowrap px-4 py-3 font-medium sm:table-cell" data-pi18n="thWhen">When</th>
+                            <th scope="col" class="whitespace-nowrap px-4 py-3 text-right font-medium" data-pi18n="thChange">Change</th>
+                            <th scope="col" class="whitespace-nowrap px-4 py-3 text-right font-medium" data-pi18n="thBalance">Balance</th>
                         </tr>
                     </thead>
                     <tbody id="ledger-body" class="divide-y divide-gray-100 dark:divide-zinc-800"></tbody>
@@ -108,72 +134,233 @@
         </section>
     </main>
 
-    <footer class="border-t border-gray-200 py-8 text-center text-sm text-gray-500 dark:border-zinc-800 dark:text-zinc-500">
-        MiaoCut · Free, privacy-first AI image tools.
+    <footer class="border-t border-gray-200 py-8 text-center text-sm text-gray-500 dark:border-zinc-800 dark:text-zinc-400">
+        <p data-pi18n="footerTagline">MiaoCut · Free, privacy-first AI image tools.</p>
+        <p class="mt-2 space-x-4">
+            <a href="/terms/" class="hover:text-gray-800 dark:hover:text-zinc-200" data-pi18n="footerTerms">Terms</a>
+            <a href="/privacy/" class="hover:text-gray-800 dark:hover:text-zinc-200" data-pi18n="footerPrivacy">Privacy</a>
+        </p>
     </footer>
 
     <script type="module">
         import MiaoCutPro from "/pro-account.js";
+        const { t, lang } = window.MiaoCutProI18n;
 
         const loginView = document.getElementById("login-view");
         const acctView = document.getElementById("account-view");
+        const nav = document.getElementById("nav-auth");
+        const params = new URLSearchParams(location.search);
+        const paidJustNow = params.get("status") === "success";
+        const PACK_NAMES = { starter_100: "packStarter", creator_500: "packCreator", seller_1500: "packSeller", studio_5000: "packStudio" };
+        const PLAN_NAMES = { basic: "planBasic", pro: "planPro", business: "planBusiness" };
+        const subscribedJustNow = params.get("status") === "subscribed";
+        const show = (el, on) => el.classList.toggle("hidden", !on);
 
-        MiaoCutPro.onAuthChange(render);
-        await MiaoCutPro.init().catch(() => {});
-        await render();
+        // 从定价页带 ?buy=sku 过来但还没登录：说明登录后会直接去结账
+        const buySku = params.get("buy");
+        const planParam = params.get("plan");
+        if (buySku && PACK_NAMES[buySku]) {
+            const note = document.getElementById("buy-note");
+            note.textContent = t("loginBuyNote", { pack: t(PACK_NAMES[buySku]) });
+            show(note, true);
+        } else if (planParam && PLAN_NAMES[planParam]) {
+            const note = document.getElementById("buy-note");
+            note.textContent = t("loginPlanNote", { plan: t(PLAN_NAMES[planParam]) });
+            show(note, true);
+        }
+
 
         async function render() {
-            if (MiaoCutPro.isLoggedIn()) {
-                loginView.classList.add("hidden");
-                acctView.classList.remove("hidden");
-                await loadAccount();
-                // 从 /pricing/ 带 ?buy=sku 过来:登录后自动发起 checkout
-                const buy = new URLSearchParams(location.search).get("buy");
-                if (buy) {
-                    history.replaceState({}, "", location.pathname);
-                    MiaoCutPro.checkout(buy).catch(() => {});
-                }
-            } else {
-                acctView.classList.add("hidden");
-                loginView.classList.remove("hidden");
+            const logged = MiaoCutPro.isLoggedIn();
+            nav.textContent = t(logged ? "navAccount" : "navLogin");
+            show(loginView, !logged);
+            show(acctView, logged);
+            if (!logged) return;
+            await loadAccount();
+            // 从 /pricing/ 带 ?buy=sku 过来：登录后自动发起 checkout
+            const buy = params.get("buy");
+            if (buy) {
+                params.delete("buy");
+                history.replaceState({}, "", location.pathname);
+                MiaoCutPro.checkout(buy).catch(() => show(document.getElementById("checkout-error"), true));
             }
+            // 从 /pricing/ 带 ?plan= 过来：登录后自动发起订阅结账（已有订阅就打开客户门户）
+            const plan = params.get("plan");
+            if (plan && PLAN_NAMES[plan]) {
+                params.delete("plan");
+                history.replaceState({}, "", location.pathname);
+                MiaoCutPro.checkoutPlan(plan).catch((e) => {
+                    if (e && e.message === "already_subscribed") return openPortal();
+                    show(document.getElementById("checkout-error"), true);
+                });
+            }
+            if (paidJustNow || subscribedJustNow) showPaymentSuccess();
+        }
+
+        // Stripe 支付成功跳回 ?status=success。积分由 webhook 异步入账，可能晚几秒到：
+        // 先提示「已支付、马上到账」，再每 3 秒刷新一次余额，最多 30 秒。
+        let polling = false;
+        function showPaymentSuccess() {
+            const el = document.getElementById("pay-success");
+            // 文字由脚本设置（不挂 data-pi18n，避免语言脚本把「订阅已开通」覆盖成默认的「已收到付款」）
+            el.textContent = t(subscribedJustNow ? "subscribedNote" : "paySuccess");
+            show(el, true);
+            if (polling) return;
+            polling = true;
+            history.replaceState({}, "", location.pathname);
+            let tries = 0;
+            const timer = setInterval(async () => {
+                tries += 1;
+                await loadAccount();
+                if (tries >= 10) clearInterval(timer);
+            }, 3000);
+        }
+
+        // 流水类型：数据库里的 reason 代码 → 可读文案；未知代码原样显示
+        function reasonLabel(reason) {
+            const key = `reason_${reason}`;
+            const label = t(key);
+            return label === key ? String(reason) : label;
+        }
+        const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+        // 把同一批的「预扣（freeze）」和随后的「退回（release）」合并成一行。
+        // 数据库里 freeze 的 ref 是任务 id、release 的 ref 是图片 id，前端对不上任务，
+        // 所以按时间归组：release 归到它之前最近的、24 小时内的那次 freeze。
+        // （同时跑两批时可能归错组，但净变化和余额永远是对的）
+        function groupLedger(rows) {
+            const asc = rows.slice().sort((a, b) => Date.parse(a.created_at) - Date.parse(b.created_at));
+            const items = [];
+            let lastBatch = null;
+            for (const r of asc) {
+                const at = Date.parse(r.created_at);
+                if (r.reason === "freeze") {
+                    lastBatch = { kind: "batch", reserved: -r.delta, returned: 0, delta: r.delta, at, balance: r.balance_after };
+                    items.push(lastBatch);
+                } else if (r.reason === "release" && lastBatch && at - lastBatch.at < 24 * 3600 * 1000) {
+                    lastBatch.returned += r.delta;
+                    lastBatch.delta += r.delta;
+                    lastBatch.at = at;
+                    lastBatch.balance = r.balance_after;
+                } else {
+                    items.push({ kind: "row", reason: r.reason, delta: r.delta, at, balance: r.balance_after });
+                }
+            }
+            return items.sort((a, b) => b.at - a.at);
+        }
+
+        function ledgerRow(item) {
+            const locale = lang === "zh" ? "zh-CN" : "en-US"; // 跟随页面语言，而不是浏览器语言
+            const when = new Date(item.at).toLocaleString(locale, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+            let title;
+            let detail = "";
+            if (item.kind === "batch") {
+                title = t("ledgerBatch");
+                const used = item.reserved - item.returned;
+                detail = item.returned > 0
+                    ? t("ledgerBatchReturned", { used, returned: item.returned })
+                    : t("ledgerBatchUsed", { used });
+            } else {
+                title = reasonLabel(item.reason);
+            }
+            const plus = item.delta > 0;
+            return `
+                <tr>
+                    <td class="px-4 py-3">
+                        <span class="font-medium text-gray-900 dark:text-zinc-50">${escapeHtml(title)}</span>
+                        ${detail ? `<span class="mt-0.5 block text-xs text-gray-600 dark:text-zinc-400">${escapeHtml(detail)}</span>` : ""}
+                        <span class="mt-0.5 block text-xs text-gray-600 sm:hidden dark:text-zinc-400">${escapeHtml(when)}</span>
+                    </td>
+                    <td class="hidden whitespace-nowrap px-4 py-3 text-gray-600 sm:table-cell dark:text-zinc-400">${escapeHtml(when)}</td>
+                    <td class="whitespace-nowrap px-4 py-3 text-right font-medium tabular-nums ${plus ? "text-brand-700 dark:text-brand-400" : "text-gray-900 dark:text-zinc-50"}">${plus ? "+" : ""}${item.delta.toLocaleString()}</td>
+                    <td class="whitespace-nowrap px-4 py-3 text-right tabular-nums text-gray-600 dark:text-zinc-400">${Number(item.balance).toLocaleString()}</td>
+                </tr>`;
         }
 
         async function loadAccount() {
+            const errEl = document.getElementById("load-error");
             try {
                 const me = await MiaoCutPro.me();
                 document.getElementById("acct-email").textContent = me.email || "";
-                document.getElementById("bal-total").textContent = me.credits.total;
-                document.getElementById("bal-topup").textContent = me.credits.topup;
-                document.getElementById("bal-free").textContent = me.daily_free_left;
+                document.getElementById("bal-total").textContent = Number(me.credits.total).toLocaleString();
+                // 有套餐积分时拆开显示：两种积分的有效期规则不同
+                const split = document.getElementById("bal-split");
+                split.textContent = t("balSplit", { sub: Number(me.credits.subscription).toLocaleString(), top: Number(me.credits.topup).toLocaleString() });
+                show(split, me.credits.subscription > 0);
+                renderSubscription(me);
 
-                const { ledger } = await MiaoCutPro.ledger(50);
-                const body = document.getElementById("ledger-body");
-                body.innerHTML = (ledger || []).map(row => `
-                    <tr>
-                        <td class="px-4 py-2 text-gray-500">${new Date(row.created_at).toLocaleString()}</td>
-                        <td class="px-4 py-2">${row.reason}</td>
-                        <td class="px-4 py-2 text-right ${row.delta >= 0 ? "text-emerald-600" : "text-rose-600"}">${row.delta >= 0 ? "+" : ""}${row.delta}</td>
-                        <td class="px-4 py-2 text-right text-gray-500">${row.balance_after}</td>
-                    </tr>
-                `).join("") || `<tr><td colspan="4" class="px-4 py-6 text-center text-gray-400">No transactions yet.</td></tr>`;
+                // 取 200 条（接口上限）：失败多的批次会产生很多退回记录，合并后才是一行
+                const { ledger } = await MiaoCutPro.ledger(200);
+                const items = groupLedger(ledger || []);
+                document.getElementById("ledger-body").innerHTML = items.map(ledgerRow).join("")
+                    || `<tr><td colspan="4" class="px-4 py-8 text-center text-gray-600 dark:text-zinc-400">${escapeHtml(t("noTx"))}</td></tr>`;
+                show(errEl, false);
             } catch (e) {
                 console.warn("loadAccount failed:", e);
+                show(errEl, true);
             }
         }
 
-        // 登录交互
-        document.getElementById("google-btn").addEventListener("click", () => {
-            MiaoCutPro.signInWithGoogle().catch(() => setMsg("Google sign-in unavailable."));
-        });
-        document.getElementById("email-btn").addEventListener("click", async () => {
-            const email = document.getElementById("email-input").value.trim();
-            if (!email) return setMsg("Please enter your email.");
+        // ---------- 订阅面板 ----------
+        const ACTIVE = new Set(["active", "trialing", "past_due"]);
+        let subsEnabledPromise = null; // 只在需要显示推荐时才查一次 /plans
+        function renderSubscription(me) {
+            const panel = document.getElementById("sub-panel");
+            const promo = document.getElementById("sub-promo");
+            const sub = me.subscription;
+            const active = sub && ACTIVE.has(sub.status);
+            show(panel, !!active);
+            if (active) {
+                const locale = lang === "zh" ? "zh-CN" : "en-US";
+                const date = sub.current_period_end
+                    ? new Date(sub.current_period_end).toLocaleDateString(locale, { year: "numeric", month: "short", day: "numeric" })
+                    : "—";
+                document.getElementById("sub-name").textContent = t("subPlanName", { plan: t(PLAN_NAMES[sub.plan] || sub.plan) });
+                document.getElementById("sub-line").textContent = sub.cancel_at_period_end
+                    ? t("subEnds", { date })
+                    : t("subRenews", { credits: Number(sub.monthly_credits).toLocaleString(), date });
+                const warn = document.getElementById("sub-warn");
+                warn.textContent = sub.status === "past_due" ? t("subPastDue") : "";
+                show(warn, sub.status === "past_due");
+                show(document.getElementById("sub-manage"), !!me.can_manage_billing);
+                show(promo, false);
+                return;
+            }
+            // 没有有效订阅：订阅开放后才推荐
+            if (!subsEnabledPromise) subsEnabledPromise = MiaoCutPro.plans().then((x) => !!(x && x.subscriptions_enabled));
+            subsEnabledPromise.then((on) => show(promo, on));
+        }
+
+        async function openPortal() {
+            const btn = document.getElementById("sub-manage");
+            btn.disabled = true;
+            show(document.getElementById("sub-error"), false);
             try {
-                await MiaoCutPro.signInWithEmail(email);
-                setMsg("Check your inbox for the magic link.");
+                await MiaoCutPro.billingPortal();
             } catch (e) {
-                setMsg("Could not send link. Try again.");
+                btn.disabled = false;
+                show(document.getElementById("sub-error"), true);
+            }
+        }
+        document.getElementById("sub-manage").addEventListener("click", openPortal);
+
+        // ---------- 登录（登录后回到当前页，?buy= 参数会保留） ----------
+        const setMsg = (key) => { document.getElementById("login-msg").textContent = key ? t(key) : ""; };
+        document.getElementById("google-btn").addEventListener("click", () => {
+            MiaoCutPro.signInWithGoogle(location.href).catch((e) =>
+                setMsg(e && e.message === "auth_unavailable" ? "loginUnavailable" : "loginGoogleFailed"));
+        });
+        document.getElementById("email-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const input = document.getElementById("email-input");
+            const email = input.value.trim();
+            if (!email || !input.checkValidity()) { setMsg("loginNeedEmail"); input.focus(); return; }
+            try {
+                const res = await MiaoCutPro.signInWithEmail(email, location.href);
+                if (res && res.error) throw res.error;
+                setMsg("loginSent");
+            } catch (err) {
+                setMsg(err && err.message === "auth_unavailable" ? "loginUnavailable" : "loginSendFailed");
             }
         });
         document.getElementById("logout-btn").addEventListener("click", async () => {
@@ -181,7 +368,16 @@
             render();
         });
 
-        function setMsg(t) { document.getElementById("login-msg").textContent = t; }
+        // ---------- 启动 ----------
+        // ⚠️ 必须放在脚本最后：上面的 let / const（polling、escapeHtml 等）在声明之前访问会抛
+        // 「Cannot access before initialization」。以前启动代码写在前面，导致支付成功跳回时
+        // showPaymentSuccess 直接报错、余额不刷新。
+        nav.textContent = t("navLogin");
+        MiaoCutPro.onAuthChange(() => render());
+        await MiaoCutPro.init().catch(() => {});
+        // 后台开启了的其他登录方式（如 GitHub）才显示
+        MiaoCutPro.mountProviderButtons(document.getElementById("login-view"), { onError: () => setMsg("loginOAuthFailed") });
+        await render();
     </script>
 </body>
 
