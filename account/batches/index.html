@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" data-pi18n-title="historyDocTitle">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>(function () {
+        try { var s = localStorage.getItem('theme');
+            var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', d); } catch (e) {}
+    })();</script>
+    <title>Batch History | MiaoCut</title>
+    <meta name="description" content="Your recent MiaoCut batch background removal jobs: review and download results.">
+    <meta name="robots" content="noindex,nofollow">
+    <link rel="stylesheet" href="/output.css?v=aa7fd341">
+    <script src="/pro-i18n.js"></script>
+    <script>
+        const isDev = window.location.hostname.includes('dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        window.MIAOCUT_PRO_CONFIG = isDev ? {
+            SUPABASE_URL: "DEV_SUPABASE_URL_HERE", // Replace with Dev Supabase URL
+            SUPABASE_ANON_KEY: "DEV_SUPABASE_ANON_KEY_HERE", // Replace with Dev Anon Key
+            PRO_API_BASE: "https://dev-api.miaocut.app",
+            FREE_API_BASE: "https://dev-api2.miaocut.app"
+        } : {
+            SUPABASE_URL: "https://kaqlfoxselrvriulvlsm.supabase.co",
+            SUPABASE_ANON_KEY: "sb_publishable_MlDRXsrWyxijTUocv4Hq-g_PIi85ZQY",
+            PRO_API_BASE: "https://pro-api.miaocut.app",
+            FREE_API_BASE: "https://api2.miaocut.app"
+        };
+    </script>
+</head>
+</head>
+
+<body class="flex min-h-screen flex-col bg-gray-50 font-sans text-gray-800 dark:bg-zinc-950 dark:text-zinc-200">
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
+            <a href="/" class="site-brand" aria-label="MiaoCut home">
+                <img src="/favicon-nav.png" alt="" class="site-brand-mark" width="36" height="36">
+                <span class="site-brand-text">MiaoCut</span>
+            </a>
+            <nav class="flex items-center gap-3 text-sm font-medium text-gray-600 sm:gap-4 dark:text-zinc-300">
+                <a href="/" class="hidden hover:text-gray-900 sm:inline dark:hover:text-zinc-100" data-pi18n="navTools">Background Remover</a>
+                <a href="/batch/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-pi18n="navBatch">Batch</a>
+                <a href="/pricing/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-pi18n="navPricing">Pricing</a>
+                <!-- nav-auth 的文字由下方脚本按登录态设置，不挂 data-pi18n -->
+                <a id="nav-auth" href="/account/credits/" class="text-gray-900 dark:text-zinc-50">Sign in</a>
+                <button type="button" data-pi18n-switch class="rounded-full border border-gray-300 px-2.5 py-1 text-xs text-gray-600 hover:border-gray-500 dark:border-zinc-700 dark:text-zinc-300">中文</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-4xl flex-1 px-5 pb-16 pt-10 sm:pt-14">
+
+        <!-- ========== 未登录：登录卡（与账户页同一套） ========== -->
+        <section id="login-view" class="mx-auto hidden max-w-md">
+            <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-zinc-50" data-pi18n="loginH1">Sign in to MiaoCut</h1>
+            <p class="mt-2 text-gray-600 dark:text-zinc-400" data-pi18n="historyLoginSub">Sign in to see your recent batches and download the results.</p>
+            <div class="mt-6 space-y-3 rounded-xl border border-gray-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+                <button type="button" id="google-btn" class="flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h6.5a5.6 5.6 0 01-2.4 3.6v3h3.9c2.3-2.1 3.5-5.2 3.5-8.7z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.3v3.1A12 12 0 0012 24z"/><path fill="#FBBC05" d="M5.3 14.3a7.2 7.2 0 010-4.6V6.6h-4a12 12 0 000 10.8l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 001.3 6.6l4 3.1c.9-2.9 3.6-4.9 6.7-4.9z"/></svg>
+                    <span data-pi18n="loginGoogle">Continue with Google</span>
+                </button>
+                <button type="button" data-oauth="github" class="hidden flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.48 2 2 6.48 2 12.02c0 4.42 2.87 8.17 6.84 9.5.5.09.68-.22.68-.48 0-.24-.01-.87-.01-1.7-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.03A9.56 9.56 0 0112 6.84c.85 0 1.71.12 2.5.34 1.91-1.3 2.75-1.03 2.75-1.03.55 1.38.2 2.4.1 2.65.64.7 1.03 1.6 1.03 2.69 0 3.85-2.34 4.7-4.57 4.94.36.31.68.92.68 1.85 0 1.34-.01 2.42-.01 2.75 0 .27.18.58.69.48A10.02 10.02 0 0022 12.02C22 6.48 17.52 2 12 2z"/></svg>
+                    <span data-pi18n="loginGitHub">Continue with GitHub</span>
+                </button>
+                <div class="flex items-center gap-3 text-xs text-gray-500 dark:text-zinc-400" aria-hidden="true">
+                    <span class="h-px flex-1 bg-gray-200 dark:bg-zinc-800"></span><span data-pi18n="loginOr">or</span><span class="h-px flex-1 bg-gray-200 dark:bg-zinc-800"></span>
+                </div>
+                <form id="email-form" class="space-y-3" novalidate>
+                    <label for="email-input" class="sr-only">Email</label>
+                    <input id="email-input" type="email" placeholder="you@example.com" data-pi18n-ph="emailPlaceholder" autocomplete="email" inputmode="email" required
+                        class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-500 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-300">
+                    <button type="submit" class="flex min-h-11 w-full items-center justify-center rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-pi18n="loginEmailBtn">Email me a sign-in link</button>
+                </form>
+                <p id="login-msg" class="text-sm text-gray-600 dark:text-zinc-400" role="status"></p>
+            </div>
+        </section>
+
+        <!-- ========== 已登录：处理记录 ========== -->
+        <section id="history-view" class="hidden">
+            <div class="flex flex-wrap items-end justify-between gap-4">
+                <div class="min-w-0">
+                    <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-zinc-50" data-pi18n="historyH1">Batch history</h1>
+                    <!-- 保留规则：免费积分 24 小时，月度套餐 7 天（文字由脚本按档位设置） -->
+                    <p id="retention-note" class="mt-1 text-sm text-gray-600 dark:text-zinc-400"></p>
+                </div>
+                <a href="/batch/" class="inline-flex min-h-10 items-center justify-center rounded-full bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-950" data-pi18n="goBatch">Start a batch</a>
+            </div>
+
+            <p id="history-loading" class="mt-8 text-sm text-gray-600 dark:text-zinc-400" role="status" data-pi18n="historyLoading">Loading your batches…</p>
+            <p id="history-error" class="mt-8 hidden text-sm text-red-600 dark:text-red-400" role="alert" data-pi18n="historyLoadFailed">Could not load your batches. Please refresh the page.</p>
+
+            <!-- 空状态 -->
+            <div id="history-empty" class="mt-8 hidden rounded-xl border border-dashed border-gray-300 bg-white px-6 py-12 text-center dark:border-zinc-700 dark:bg-zinc-900">
+                <p class="font-medium text-gray-900 dark:text-zinc-50" data-pi18n="historyEmpty">No batches yet.</p>
+                <p class="mt-1 text-sm text-gray-600 dark:text-zinc-400" data-pi18n="historyEmptySub">Batches you process will show up here, ready to download again.</p>
+            </div>
+
+            <ul id="history-list" class="mt-8 hidden divide-y divide-gray-100 overflow-hidden rounded-xl border border-gray-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900" role="list"></ul>
+        </section>
+    </main>
+
+    <footer class="border-t border-gray-200 py-8 text-center text-sm text-gray-500 dark:border-zinc-800 dark:text-zinc-400">
+        <p data-pi18n="footerTagline">MiaoCut · Free, privacy-first AI image tools.</p>
+        <p class="mt-2 space-x-4">
+            <a href="/terms/" class="hover:text-gray-800 dark:hover:text-zinc-200" data-pi18n="footerTerms">Terms</a>
+            <a href="/privacy/" class="hover:text-gray-800 dark:hover:text-zinc-200" data-pi18n="footerPrivacy">Privacy</a>
+        </p>
+    </footer>
+
+    <script type="module">
+        import MiaoCutPro from "/pro-account.js";
+        const { t, lang } = window.MiaoCutProI18n;
+
+        const show = (el, on) => el.classList.toggle("hidden", !on);
+        const $ = (id) => document.getElementById(id);
+        const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+        const locale = lang === "zh" ? "zh-CN" : "en-US";
+        const fmt = (n) => Number(n).toLocaleString(locale);
+
+        // 剩余保留时间：不足 1 小时 / N 小时 / N 天
+        function timeLeft(endIso) {
+            const ms = Date.parse(endIso) - Date.now();
+            if (ms <= 3600 * 1000) return t("leftSoon");
+            const hours = Math.floor(ms / 3600000);
+            return hours < 48 ? t("leftHours", { n: hours }) : t("leftDays", { n: Math.floor(hours / 24) });
+        }
+
+        function coverStrip(b) {
+            // 最多 4 张封面，放在棋盘格上；过期或还没有成功的图时显示空位
+            const cells = Array.from({ length: 4 }, (_, i) => {
+                const src = b.covers[i];
+                return `<span class="${src ? "checker" : "bg-gray-100 dark:bg-zinc-800"} block aspect-square overflow-hidden rounded-md border border-gray-200 dark:border-zinc-800">${src ? `<img src="${escapeHtml(src)}" alt="" loading="lazy" decoding="async" class="h-full w-full object-contain">` : ""}</span>`;
+            }).join("");
+            return `<div class="grid w-28 flex-none grid-cols-2 gap-1 sm:w-32 ${b.expired ? "opacity-50" : ""}" aria-hidden="true">${cells}</div>`;
+        }
+
+        function row(b) {
+            const when = new Date(b.created_at).toLocaleString(locale, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+            const mode = t(b.profile === "fur" ? "modeFine" : "modeStandard");
+            const processing = b.status !== "done";
+            const result = processing
+                ? t("histProcessing", { d: fmt(b.succeeded + b.failed), n: fmt(b.total) })
+                : (b.failed ? t("histDoneFailed", { s: fmt(b.succeeded), f: fmt(b.failed) }) : t("histDone", { s: fmt(b.succeeded) }));
+            const left = b.expired ? t("histExpired") : timeLeft(b.retention_ends_at);
+            const action = b.expired
+                ? `<span class="text-sm text-gray-500 dark:text-zinc-400">${escapeHtml(t("histExpiredNote"))}</span>`
+                : `<a href="/batch/?job=${encodeURIComponent(b.job_id)}" class="inline-flex min-h-10 items-center justify-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900">${escapeHtml(t(processing ? "histView" : "histOpen"))}</a>`;
+            return `
+                <li class="flex flex-wrap items-center gap-x-5 gap-y-3 px-5 py-5 sm:flex-nowrap sm:px-6">
+                    ${coverStrip(b)}
+                    <div class="min-w-0 flex-1">
+                        <p class="font-semibold text-gray-900 dark:text-zinc-50">${escapeHtml(t("histTitle", { n: fmt(b.total), mode }))}</p>
+                        <p class="mt-0.5 text-sm text-gray-600 dark:text-zinc-400">${escapeHtml(when)} · ${escapeHtml(result)}</p>
+                        <p class="mt-0.5 text-xs ${b.expired ? "text-gray-500 dark:text-zinc-500" : "font-medium text-gray-700 dark:text-zinc-300"}">${escapeHtml(left)}</p>
+                    </div>
+                    <div class="w-full sm:w-auto">${action}</div>
+                </li>`;
+        }
+
+        async function load() {
+            show($("history-loading"), true);
+            show($("history-error"), false);
+            try {
+                const res = await MiaoCutPro.proFetch("/v1/batches?limit=30");
+                if (!res.ok) throw new Error("batches_" + res.status);
+                const { batches, limits } = await res.json();
+                const seven = limits && Number(limits.retention_days) >= 7;
+                $("retention-note").innerHTML = seven
+                    ? escapeHtml(t("histKeep7"))
+                    : `${escapeHtml(t("histKeep1"))} <a href="/pricing/#plans" class="font-medium text-gray-900 underline underline-offset-4 dark:text-zinc-50">${escapeHtml(t("subSeePlans"))}</a>`;
+                show($("history-empty"), batches.length === 0);
+                show($("history-list"), batches.length > 0);
+                $("history-list").innerHTML = batches.map(row).join("");
+            } catch (e) {
+                console.warn("load batches failed:", e);
+                show($("history-error"), true);
+            } finally {
+                show($("history-loading"), false);
+            }
+        }
+
+        async function render() {
+            const logged = MiaoCutPro.isLoggedIn();
+            $("nav-auth").textContent = t(logged ? "navAccount" : "navLogin");
+            show($("login-view"), !logged);
+            show($("history-view"), logged);
+            if (logged) await load();
+        }
+
+        // ---------- 登录（登录后回到本页） ----------
+        const setMsg = (key) => { $("login-msg").textContent = key ? t(key) : ""; };
+        $("google-btn").addEventListener("click", () => {
+            MiaoCutPro.signInWithGoogle(location.href).catch((e) =>
+                setMsg(e && e.message === "auth_unavailable" ? "loginUnavailable" : "loginGoogleFailed"));
+        });
+        $("email-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const input = $("email-input");
+            const email = input.value.trim();
+            if (!email || !input.checkValidity()) { setMsg("loginNeedEmail"); input.focus(); return; }
+            try {
+                const res = await MiaoCutPro.signInWithEmail(email, location.href);
+                if (res && res.error) throw res.error;
+                setMsg("loginSent");
+            } catch (err) {
+                setMsg(err && err.message === "auth_unavailable" ? "loginUnavailable" : "loginSendFailed");
+            }
+        });
+
+        // ---------- 启动（放在最后：上面的 const 声明之后才能调用 render） ----------
+        $("nav-auth").textContent = t("navLogin");
+        MiaoCutPro.onAuthChange(() => render());
+        await MiaoCutPro.init().catch(() => {});
+        // 后台开启了的其他登录方式（如 GitHub）才显示
+        MiaoCutPro.mountProviderButtons(document.getElementById("login-view"), { onError: () => setMsg("loginOAuthFailed") });
+        await render();
+    </script>
+</body>
+
+</html>

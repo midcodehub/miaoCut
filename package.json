@@ -10,7 +10,8 @@
     "build:assets": "node scripts/stamp-assets.mjs",
     "build": "npm run build:css && npm run build:i18n && npm run build:assets",
     "og": "node scripts/og/generate.mjs",
-    "test:editor": "node --test tests/editor-engine.test.cjs"
+    "test:editor": "node --test tests/editor-engine.test.cjs",
+    "check:seo": "node scripts/seo-guard.mjs"
   },
   "devDependencies": {
     "playwright": "^1.59.1",

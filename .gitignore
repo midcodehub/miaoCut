@@ -60,3 +60,11 @@ docs/
 .agents/
 scripts/
 benchmark
+
+# Pro 部分已移到私有仓库 midcodehub/miaoCut-pro（闭源）。
+# 本地可以保留这些文件的副本（设计工具会读 PRODUCT.md），但不要提交到公开仓库。
+/pro-gateway/
+/pro-gpu/
+/gpu-scheduler/
+/PRODUCT.md
+/.impeccable/brief-*.md

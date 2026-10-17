@@ -1,13 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-pi18n-title="batchDocTitle">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="noindex" />
-  <title>Batch Background Remover — MiaoCut</title>
-  <!-- MiaoCut Pro 配置：填入真实 Supabase key 后启用登录。PRO_API_BASE 为付费网关。 -->
-  <script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 深色模式：和全站一样读 localStorage.theme，没有则跟随系统；放最前面避免白屏闪烁 -->
+    <script>(function () {
+        try { var s = localStorage.getItem('theme');
+            var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', d); } catch (e) {}
+    })();</script>
+    <title>Batch Background Remover for Product Photos | MiaoCut</title>
+    <meta name="description" content="Remove backgrounds from up to 200 product photos at once. Download transparent PNGs, white-background JPGs or Amazon-ready 2000×2000 images in one ZIP. Pay only for images that succeed; new accounts get 100 free credits.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://miaocut.app/batch/">
+    <link rel="stylesheet" href="/output.css?v=aa7fd341">
+    <!-- 中英文案（运行时切换），须在 batch.js 之前加载 -->
+    <script src="/pro-i18n.js"></script>
+    <!-- MiaoCut Pro 配置：PRO_API_BASE 为付费网关 -->
+    <script>
         const isDev = window.location.hostname.includes('dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         window.MIAOCUT_PRO_CONFIG = isDev ? {
             SUPABASE_URL: "DEV_SUPABASE_URL_HERE", // Replace with Dev Supabase URL
@@ -21,416 +32,242 @@
             FREE_API_BASE: "https://api2.miaocut.app"
         };
     </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <style>
-    :root {
-      --fg: #18181b;
-      --muted: #71717a;
-      --line: #e4e4e7;
-      --brand: #18181b;
-      --ok: #16a34a;
-      --err: #dc2626;
-      --bg: #fafafa;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
-      color: var(--fg);
-      background: var(--bg);
-    }
-
-    .wrap {
-      max-width: 880px;
-      margin: 0 auto;
-      padding: 24px 20px 80px;
-    }
-
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 28px;
-    }
-
-    .logo {
-      font-weight: 700;
-      font-size: 20px;
-      letter-spacing: -.02em;
-      text-decoration: none;
-      color: var(--fg);
-    }
-
-    .logo span {
-      color: #14b8a6;
-    }
-
-    .bal {
-      font-size: 14px;
-      color: var(--muted);
-    }
-
-    .bal b {
-      color: var(--fg);
-    }
-
-    h1 {
-      font-size: 26px;
-      margin: 0 0 6px;
-      letter-spacing: -.02em;
-    }
-
-    .sub {
-      color: var(--muted);
-      margin: 0 0 24px;
-      font-size: 15px;
-    }
-
-    .card {
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 20px;
-      margin-bottom: 16px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    button {
-      font: inherit;
-      cursor: pointer;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      background: #fff;
-      padding: 9px 16px;
-      transition: .15s;
-    }
-
-    button:hover {
-      background: #f4f4f5;
-    }
-
-    button.primary {
-      background: var(--brand);
-      color: #fff;
-      border-color: var(--brand);
-    }
-
-    button.primary:hover {
-      background: #3f3f46;
-    }
-
-    button:disabled {
-      opacity: .5;
-      cursor: not-allowed;
-    }
-
-    .toggle {
-      display: inline-flex;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      overflow: hidden;
-      margin-bottom: 16px;
-    }
-
-    .toggle button {
-      border: none;
-      border-radius: 0;
-      padding: 8px 16px;
-      background: #fff;
-      font-size: 14px;
-    }
-
-    .toggle button.active {
-      background: var(--brand);
-      color: #fff;
-    }
-
-    .dz {
-      border: 2px dashed var(--line);
-      border-radius: 14px;
-      padding: 40px 20px;
-      text-align: center;
-      color: var(--muted);
-      cursor: pointer;
-      transition: .15s;
-    }
-
-    .dz:hover,
-    .dz.drag {
-      border-color: #a1a1aa;
-      background: #f4f4f5;
-    }
-
-    .dz strong {
-      color: var(--fg);
-    }
-
-    .files {
-      margin-top: 14px;
-      font-size: 14px;
-    }
-
-    .cost {
-      margin: 14px 0;
-      font-size: 15px;
-    }
-
-    .cost b {
-      font-size: 17px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
-      gap: 8px;
-      margin-top: 14px;
-    }
-
-    .chip {
-      aspect-ratio: 1;
-      border-radius: 8px;
-      border: 1px solid var(--line);
-      position: relative;
-      overflow: hidden;
-      background: #f4f4f5;
-    }
-
-    .chip img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .chip .badge {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 600;
-      color: #fff;
-      background: rgba(0, 0, 0, .45);
-    }
-
-    .chip.done .badge {
-      background: rgba(22, 163, 74, .55);
-    }
-
-    .chip.failed .badge {
-      background: rgba(220, 38, 38, .6);
-    }
-
-    .bar {
-      height: 8px;
-      background: #e4e4e7;
-      border-radius: 999px;
-      overflow: hidden;
-      margin: 10px 0;
-    }
-
-    .bar>div {
-      height: 100%;
-      background: var(--brand);
-      width: 0;
-      transition: width .3s;
-    }
-
-    .row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .msg {
-      font-size: 14px;
-      color: var(--muted);
-      margin-top: 8px;
-    }
-
-    .msg.err {
-      color: var(--err);
-    }
-
-    input[type=email] {
-      font: inherit;
-      padding: 9px 12px;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      min-width: 240px;
-    }
-
-    a.link {
-      color: #14b8a6;
-      text-decoration: none;
-    }
-
-    /* --- 新增动画与蒙版 --- */
-    @keyframes spin {
-      100% { transform: rotate(360deg); }
-    }
-    .spinner {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 24px;
-      height: 24px;
-      margin: -12px 0 0 -12px;
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: #fff;
-      animation: spin 1s linear infinite;
-      z-index: 10;
-    }
-    .overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.6);
-      transition: opacity 0.5s ease;
-      z-index: 5;
-      pointer-events: none;
-    }
-    .chip.done .overlay {
-      opacity: 0;
-    }
-    .chip.done .badge {
-      display: none; /* 完成后隐藏 badge，完整显示图片 */
-    }
-    .chip.done {
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .chip.done:hover {
-      transform: scale(1.05);
-      z-index: 20;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-    .chip img.result {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="10" height="10" fill="white"/><rect width="5" height="5" fill="%23ccc"/><rect x="5" y="5" width="5" height="5" fill="%23ccc"/></svg>') repeat;
-    }
-
-    /* --- Lightbox 模态框 --- */
-    #lightbox {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.85);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s;
-    }
-    #lightbox.show {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    #lightbox img {
-      max-width: 90vw;
-      max-height: 90vh;
-      object-fit: contain;
-      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><rect width="20" height="20" fill="white"/><rect width="10" height="10" fill="%23e5e5e5"/><rect x="10" y="10" width="10" height="10" fill="%23e5e5e5"/></svg>') repeat;
-    }
-    #lightbox-close {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: rgba(255, 255, 255, 0.1);
-      border: none;
-      color: #fff;
-      font-size: 28px;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s;
-    }
-    #lightbox-close:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
-  </style>
+    <!-- ZIP 打包；编辑器的预设和渲染引擎用来在浏览器里合成白底 / 方图（不改后端） -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="/editor/presets.js?v=87652954"></script>
+    <script src="/editor/engine.js?v=0a2be26a"></script>
 </head>
 
-<body>
-  <div class="wrap">
-    <header>
-      <a class="logo" href="/">miao<span>cut</span></a>
-      <div class="bal" id="balance"></div>
+<body class="flex min-h-screen flex-col bg-gray-50 font-sans text-gray-800 dark:bg-zinc-950 dark:text-zinc-200">
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
+            <a href="/" class="site-brand" aria-label="MiaoCut home">
+                <img src="/favicon-nav.png" alt="" class="site-brand-mark" width="36" height="36">
+                <span class="site-brand-text">MiaoCut</span>
+            </a>
+            <nav class="flex items-center gap-3 text-sm font-medium text-gray-600 sm:gap-4 dark:text-zinc-300">
+                <a href="/" class="hidden hover:text-gray-900 sm:inline dark:hover:text-zinc-100" data-pi18n="navTools">Background Remover</a>
+                <a href="/batch/" class="text-gray-900 dark:text-zinc-50" aria-current="page" data-pi18n="navBatch">Batch</a>
+                <a href="/pricing/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-pi18n="navPricing">Pricing</a>
+                <!-- nav-auth / btn-start / progress-text / btn-error-retry 的文字由 batch.js 按状态设置，不挂 data-pi18n（否则语言脚本会把它覆盖回默认文案） -->
+                <a id="nav-auth" href="/account/credits/" class="hover:text-gray-900 dark:hover:text-zinc-100">Sign in</a>
+                <button type="button" data-pi18n-switch class="rounded-full border border-gray-300 px-2.5 py-1 text-xs text-gray-600 hover:border-gray-500 dark:border-zinc-700 dark:text-zinc-300">中文</button>
+            </nav>
+        </div>
     </header>
 
-    <h1>Batch Background Remover</h1>
-    <p class="sub">Upload many images, remove backgrounds in bulk, download all as a ZIP.</p>
+    <main class="mx-auto w-full max-w-6xl flex-1 px-5 pb-16 pt-8 sm:pt-10">
+        <!-- 标题行：已登录时右侧显示余额 -->
+        <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+            <div class="max-w-2xl">
+                <h1 class="text-3xl font-bold tracking-tight text-gray-900 [text-wrap:balance] dark:text-zinc-50" data-pi18n="batchH1">Batch background remover</h1>
+                <p class="mt-2 text-gray-600 [text-wrap:pretty] dark:text-zinc-400" data-pi18n="batchSub">Drop up to 200 product photos and get them back as clean cutouts in one ZIP. You only pay for images that come out.</p>
+            </div>
+            <div id="balance-box" class="hidden items-center gap-3 text-sm">
+                <span class="font-semibold text-gray-900 tabular-nums dark:text-zinc-50" id="balance-text"></span>
+                <a href="/account/batches/" class="text-gray-600 underline underline-offset-4 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100" data-pi18n="historyLink">Batch history</a>
+                <a href="/pricing/" class="text-gray-600 underline underline-offset-4 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100" data-pi18n="batchBuyMore">Buy credits</a>
+            </div>
+        </div>
 
-    <!-- 登录门 -->
-    <div class="card" id="login-gate">
-      <p style="margin-top:0">Sign in to use batch processing.</p>
-      <div class="row">
-        <button id="btn-google">Continue with Google</button>
-        <input type="email" id="login-email" placeholder="you@example.com" />
-        <button id="btn-email">Send magic link</button>
-      </div>
-      <div class="msg" id="login-msg"></div>
-    </div>
+        <div class="mt-8 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+            <!-- ========== 左：工作区 ========== -->
+            <div class="min-w-0 space-y-6 lg:col-start-1 lg:row-start-1">
+                <!-- 选图阶段：上传区 + 已选文件 -->
+                <section id="select-stage" aria-labelledby="batch-dz-title">
+                    <div id="dropzone" role="button" tabindex="0" aria-describedby="batch-dz-sub"
+                        class="group flex min-h-[240px] cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-white px-6 py-10 text-center transition-colors hover:border-brand-400 hover:bg-brand-50/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-brand-500/10 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-950">
+                        <svg class="mb-4 h-10 w-10 text-gray-400 transition-colors group-hover:text-brand-600 dark:text-zinc-500 dark:group-hover:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                        </svg>
+                        <p id="batch-dz-title" class="text-lg font-medium text-gray-800 dark:text-zinc-100" data-pi18n="dzTitle">Drop product photos here, or click to choose</p>
+                        <p id="batch-dz-sub" class="mt-1 text-sm text-gray-500 dark:text-zinc-400"></p>
+                    </div>
+                    <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" multiple class="hidden">
 
-    <!-- 工具 -->
-    <div class="card hidden" id="tool">
-      <div class="toggle" id="profile-toggle">
-        <button data-profile="fast" class="active">Fast · 1 credit</button>
-        <button data-profile="fur">Fine hair · 2 credits</button>
-      </div>
-      <div class="dz" id="dropzone">
-        <p style="margin:0"><strong>Click or drop images here</strong></p>
-        <p style="margin:6px 0 0; font-size:13px">PNG / JPG / WebP · up to 200 images</p>
-      </div>
-      <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" multiple class="hidden" />
-      <div class="files" id="file-list"></div>
-      <div class="cost hidden" id="cost-line"></div>
-      <button class="primary hidden" id="btn-start">Start processing</button>
-    </div>
+                    <!-- 被跳过的文件（格式不支持 / 超过上限）：明确告诉用户，而不是悄悄丢掉 -->
+                    <p id="skip-note" class="mt-3 hidden text-sm text-amber-700 dark:text-amber-400" role="status"></p>
 
-    <!-- 进度 -->
-    <div class="card hidden" id="progress">
-      <div class="row" style="justify-content:space-between">
-        <strong id="progress-text">Preparing…</strong>
-      </div>
-      <div class="bar">
-        <div id="progress-bar"></div>
-      </div>
-      <div class="grid" id="image-grid"></div>
-    </div>
+                    <div id="selection" class="mt-6 hidden">
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <h2 id="sel-count" class="text-base font-semibold text-gray-900 dark:text-zinc-50"></h2>
+                            <div class="flex items-center gap-4 text-sm">
+                                <button type="button" id="btn-add-more" class="font-medium text-gray-700 underline-offset-4 hover:text-gray-900 hover:underline dark:text-zinc-300 dark:hover:text-zinc-50" data-pi18n="dzAddMore">Add more photos</button>
+                                <button type="button" id="btn-clear" class="font-medium text-gray-700 underline-offset-4 hover:text-gray-900 hover:underline dark:text-zinc-300 dark:hover:text-zinc-50" data-pi18n="selClear">Clear all</button>
+                            </div>
+                        </div>
+                        <ul id="sel-grid" class="mt-3 grid grid-cols-[repeat(auto-fill,minmax(88px,1fr))] gap-2" role="list"></ul>
+                    </div>
+                </section>
 
-    <!-- 结果 -->
-    <div class="card hidden" id="results">
-      <div class="row" style="justify-content:space-between; margin-bottom:8px">
-        <strong id="results-summary"></strong>
-        <button class="primary" id="btn-zip">Download all (ZIP)</button>
-      </div>
-      <div class="msg" id="results-msg"></div>
-    </div>
-  </div>
+                <!-- 处理阶段：进度 + 结果共用同一个网格，处理完结果不会消失 -->
+                <section id="run-stage" class="hidden rounded-xl border border-gray-200 bg-white p-5 sm:p-6 dark:border-zinc-800 dark:bg-zinc-900" aria-live="polite">
+                    <!-- 进度 -->
+                    <div id="progress-box">
+                        <div class="flex items-baseline justify-between gap-4">
+                            <p id="progress-text" class="font-semibold text-gray-900 dark:text-zinc-50">Preparing your batch…</p>
+                            <p id="progress-count" class="text-sm tabular-nums text-gray-500 dark:text-zinc-400"></p>
+                        </div>
+                        <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-gray-100 dark:bg-zinc-800" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-labelledby="progress-text">
+                            <div id="progress-bar" class="h-full w-0 rounded-full bg-gray-900 transition-[width] duration-300 ease-out dark:bg-zinc-100"></div>
+                        </div>
+                        <p id="progress-note" class="mt-2 text-sm text-gray-500 dark:text-zinc-400">You can leave this page. Come back within 24 hours to download.</p>
+                    </div>
 
-  <!-- Lightbox 模态框 -->
-  <div id="lightbox">
-    <button id="lightbox-close">&times;</button>
-    <img id="lightbox-img" src="" alt="">
-  </div>
+                    <!-- 结果头：完成数 + 下载格式 + 操作 -->
+                    <div id="results-box" class="hidden">
+                        <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                            <p id="res-ready" class="text-lg font-semibold text-gray-900 dark:text-zinc-50"></p>
+                            <p id="res-failed" class="hidden text-sm text-gray-600 dark:text-zinc-400"></p>
+                        </div>
+                        <fieldset class="mt-5">
+                            <legend class="text-sm font-medium text-gray-700 dark:text-zinc-300" data-pi18n="outLabel">Download as</legend>
+                            <div class="mt-2 flex flex-wrap gap-2" data-output-group="results"></div>
+                            <p class="mt-2 text-xs text-gray-500 dark:text-zinc-400" data-output-hint="results"></p>
+                        </fieldset>
+                        <div class="mt-5 flex flex-wrap items-center gap-3">
+                            <button type="button" id="btn-zip" class="inline-flex min-h-11 items-center justify-center rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-pi18n="zipBtn">Download ZIP</button>
+                            <button type="button" id="btn-retry" class="hidden min-h-11 items-center justify-center rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900"></button>
+                            <button type="button" id="btn-new" class="text-sm font-medium text-gray-700 underline-offset-4 hover:text-gray-900 hover:underline dark:text-zinc-300 dark:hover:text-zinc-50" data-pi18n="batchNew">Start a new batch</button>
+                        </div>
+                        <p id="zip-msg" class="mt-3 hidden text-sm text-gray-600 dark:text-zinc-400" role="status"></p>
+                        <p id="retry-note" class="mt-3 hidden text-sm text-gray-600 dark:text-zinc-400" data-pi18n="retryNoSource">To retry failed images, add those photos again.</p>
+                        <p id="batch-keep" class="mt-3 text-xs text-gray-500 dark:text-zinc-400">Files are deleted automatically 24 hours after processing.</p>
+                    </div>
 
-  <script type="module" src="/batch/batch.js"></script>
+                    <!-- 整批出错：人话 + 重试 -->
+                    <div id="run-error" class="hidden">
+                        <p id="run-error-text" class="font-medium text-red-600 dark:text-red-400" role="alert"></p>
+                        <div class="mt-4 flex flex-wrap items-center gap-3">
+                            <button type="button" id="btn-error-retry" class="inline-flex min-h-11 items-center justify-center rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200">Try again</button>
+                            <a id="error-buy" href="/pricing/" class="hidden text-sm font-medium text-gray-900 underline underline-offset-4 dark:text-zinc-50" data-pi18n="batchBuyMore">Buy credits</a>
+                            <a id="error-history" href="/account/batches/" class="hidden text-sm font-medium text-gray-900 underline underline-offset-4 dark:text-zinc-50" data-pi18n="historyLink">Batch history</a>
+                            <button type="button" id="btn-error-new" class="hidden text-sm font-medium text-gray-700 underline-offset-4 hover:text-gray-900 hover:underline dark:text-zinc-300 dark:hover:text-zinc-50" data-pi18n="batchNew">Start a new batch</button>
+                        </div>
+                    </div>
+
+                    <!-- 目录：这一批所有图片，每张右上角一个进度圈 -->
+                    <div class="mt-6 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-t border-gray-100 pt-5 dark:border-zinc-800">
+                        <h2 id="dir-title" class="text-base font-semibold text-gray-900 dark:text-zinc-50"></h2>
+                        <p id="dir-counts" class="text-sm tabular-nums text-gray-600 dark:text-zinc-400" aria-live="polite"></p>
+                    </div>
+                    <ul id="run-grid" class="mt-3 grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-3" role="list"></ul>
+                </section>
+
+            </div>
+
+            <!-- ========== 右：登录卡 / 处理设置 ========== -->
+            <aside id="side" class="space-y-6 lg:sticky lg:top-24 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+                <!-- 未登录 -->
+                <section id="gate" class="hidden rounded-xl border border-gray-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900" aria-labelledby="gate-title">
+                    <h2 id="gate-title" class="text-lg font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="gateTitle">Sign in to run this batch</h2>
+                    <ul class="mt-4 space-y-2.5 text-sm text-gray-700 dark:text-zinc-300" role="list">
+                        <li class="flex gap-2.5"><svg class="mt-0.5 h-4 w-4 flex-none text-brand-700 dark:text-brand-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-8 8a1 1 0 01-1.4 0l-4-4a1 1 0 111.4-1.4L8 12.6l7.3-7.3a1 1 0 011.4 0z" clip-rule="evenodd"/></svg><span data-pi18n="gatePoint1">New accounts get 100 free credits, enough for 100 images.</span></li>
+                        <li class="flex gap-2.5"><svg class="mt-0.5 h-4 w-4 flex-none text-brand-700 dark:text-brand-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-8 8a1 1 0 01-1.4 0l-4-4a1 1 0 111.4-1.4L8 12.6l7.3-7.3a1 1 0 011.4 0z" clip-rule="evenodd"/></svg><span id="gate-point-2"></span></li>
+                        <li class="flex gap-2.5"><svg class="mt-0.5 h-4 w-4 flex-none text-brand-700 dark:text-brand-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-8 8a1 1 0 01-1.4 0l-4-4a1 1 0 111.4-1.4L8 12.6l7.3-7.3a1 1 0 011.4 0z" clip-rule="evenodd"/></svg><span data-pi18n="gatePoint3">Failed images are never charged.</span></li>
+                    </ul>
+                    <div class="mt-6 space-y-3">
+                        <button type="button" id="btn-google" class="flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h6.5a5.6 5.6 0 01-2.4 3.6v3h3.9c2.3-2.1 3.5-5.2 3.5-8.7z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.3v3.1A12 12 0 0012 24z"/><path fill="#FBBC05" d="M5.3 14.3a7.2 7.2 0 010-4.6V6.6h-4a12 12 0 000 10.8l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 001.3 6.6l4 3.1c.9-2.9 3.6-4.9 6.7-4.9z"/></svg>
+                            <span data-pi18n="loginGoogle">Continue with Google</span>
+                        </button>
+                        <button type="button" data-oauth="github" class="hidden flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.48 2 2 6.48 2 12.02c0 4.42 2.87 8.17 6.84 9.5.5.09.68-.22.68-.48 0-.24-.01-.87-.01-1.7-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.03A9.56 9.56 0 0112 6.84c.85 0 1.71.12 2.5.34 1.91-1.3 2.75-1.03 2.75-1.03.55 1.38.2 2.4.1 2.65.64.7 1.03 1.6 1.03 2.69 0 3.85-2.34 4.7-4.57 4.94.36.31.68.92.68 1.85 0 1.34-.01 2.42-.01 2.75 0 .27.18.58.69.48A10.02 10.02 0 0022 12.02C22 6.48 17.52 2 12 2z"/></svg>
+                            <span data-pi18n="loginGitHub">Continue with GitHub</span>
+                        </button>
+                        <div class="flex items-center gap-3 text-xs text-gray-500 dark:text-zinc-400" aria-hidden="true">
+                            <span class="h-px flex-1 bg-gray-200 dark:bg-zinc-800"></span><span data-pi18n="loginOr">or</span><span class="h-px flex-1 bg-gray-200 dark:bg-zinc-800"></span>
+                        </div>
+                        <form id="email-form" class="space-y-3" novalidate>
+                            <label for="login-email" class="sr-only">Email</label>
+                            <input type="email" id="login-email" placeholder="you@example.com" data-pi18n-ph="emailPlaceholder" autocomplete="email" inputmode="email" required
+                                class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-500 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-300">
+                            <button type="submit" class="flex min-h-11 w-full items-center justify-center rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-pi18n="loginEmailBtnShort">Email me a sign-in link</button>
+                        </form>
+                        <p id="login-msg" class="text-sm text-gray-600 dark:text-zinc-400" role="status"></p>
+                    </div>
+                    <p id="gate-keep" class="mt-4 hidden border-t border-gray-100 pt-4 text-xs text-gray-500 dark:border-zinc-800 dark:text-zinc-400"></p>
+                    <p class="mt-4 text-sm"><a href="/pricing/" class="font-medium text-gray-700 underline underline-offset-4 hover:text-gray-900 dark:text-zinc-300 dark:hover:text-zinc-50" data-pi18n="gatePricing">See pricing</a></p>
+                </section>
+
+                <!-- 已登录：边缘精度 + 消耗预估 + 开始 -->
+                <section id="run-panel" class="hidden rounded-xl border border-gray-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900" aria-labelledby="run-title">
+                    <fieldset>
+                        <legend id="run-title" class="text-lg font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="runTitle">Edge quality</legend>
+                        <div class="mt-4 space-y-2" id="mode-group">
+                            <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-gray-200 p-3 transition-colors hover:border-gray-400 has-[:checked]:border-gray-900 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-gray-900/20 dark:border-zinc-800 dark:hover:border-zinc-600 dark:has-[:checked]:border-zinc-200">
+                                <input type="radio" name="mode" value="fast" class="mt-1 h-4 w-4 accent-gray-900 dark:accent-zinc-100" checked>
+                                <span class="min-w-0 flex-1">
+                                    <span class="flex items-baseline justify-between gap-2">
+                                        <span class="text-sm font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="modeStandard">Standard</span>
+                                        <span class="text-xs tabular-nums text-gray-600 dark:text-zinc-400" data-pi18n="modeCost1">1 credit / image</span>
+                                    </span>
+                                    <span class="mt-0.5 block text-xs text-gray-600 dark:text-zinc-400" data-pi18n="modeStandardHint">Products, logos, hard edges</span>
+                                </span>
+                            </label>
+                            <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-gray-200 p-3 transition-colors hover:border-gray-400 has-[:checked]:border-gray-900 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-gray-900/20 dark:border-zinc-800 dark:hover:border-zinc-600 dark:has-[:checked]:border-zinc-200">
+                                <input type="radio" name="mode" value="fur" class="mt-1 h-4 w-4 accent-gray-900 dark:accent-zinc-100">
+                                <span class="min-w-0 flex-1">
+                                    <span class="flex items-baseline justify-between gap-2">
+                                        <span class="text-sm font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="modeFine">Fine edges</span>
+                                        <span class="text-xs tabular-nums text-gray-600 dark:text-zinc-400" data-pi18n="modeCost2">2 credits / image</span>
+                                    </span>
+                                    <span class="mt-0.5 block text-xs text-gray-600 dark:text-zinc-400" data-pi18n="modeFineHint">Hair, fur, plush, plants</span>
+                                </span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <dl class="mt-6 space-y-2 border-t border-gray-100 pt-4 text-sm dark:border-zinc-800">
+                        <div class="flex justify-between gap-4"><dt class="text-gray-600 dark:text-zinc-400" data-pi18n="sumImages">Images</dt><dd id="sum-images" class="tabular-nums text-gray-900 dark:text-zinc-50">0</dd></div>
+                        <div class="flex justify-between gap-4"><dt class="text-gray-600 dark:text-zinc-400" data-pi18n="sumCost">Cost</dt><dd id="sum-cost" class="font-semibold tabular-nums text-gray-900 dark:text-zinc-50"></dd></div>
+                        <div class="flex justify-between gap-4"><dt class="text-gray-600 dark:text-zinc-400" data-pi18n="sumAfter">Balance after</dt><dd id="sum-after" class="tabular-nums text-gray-900 dark:text-zinc-50"></dd></div>
+                    </dl>
+                    <p id="sum-short" class="mt-3 hidden text-sm text-amber-700 dark:text-amber-400" role="status"></p>
+                    <button type="button" id="btn-start" class="mt-5 flex min-h-11 w-full items-center justify-center rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900 dark:disabled:bg-zinc-800 dark:disabled:text-zinc-400" disabled>Add photos to start</button>
+                    <a id="sum-buy" href="/pricing/" class="mt-3 hidden w-full items-center justify-center rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500" data-pi18n="batchBuyMore">Buy credits</a>
+                    <p class="mt-3 text-xs text-gray-500 dark:text-zinc-400" data-pi18n="sumFreeFail">Failed images are refunded automatically.</p>
+                </section>
+            </aside>
+                <!-- 未登录时的示例：用真实示例图演示三种下载格式。
+                 放在 aside 之后：手机上排在登录卡下面（先登录再看示例），桌面上用 lg:col-start-1 回到左栏 -->
+                <section id="demo" class="hidden min-w-0 rounded-xl lg:col-start-1 lg:row-start-2 border border-gray-200 bg-white p-5 sm:p-6 dark:border-zinc-800 dark:bg-zinc-900" aria-labelledby="demo-title">
+                    <h2 id="demo-title" class="text-lg font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="demoTitle">What comes back</h2>
+                    <p class="mt-1 text-sm text-gray-600 dark:text-zinc-400" data-pi18n="demoSub">Sample results. Switch the output to preview what lands in your ZIP.</p>
+                    <div class="mt-4 flex flex-wrap gap-2" data-output-group="demo" role="radiogroup" aria-labelledby="demo-title"></div>
+                    <p class="mt-2 text-xs text-gray-500 dark:text-zinc-400" data-output-hint="demo"></p>
+                    <ul id="demo-grid" class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4" role="list"></ul>
+                </section>
+        </div>
+    </main>
+
+    <footer class="border-t border-gray-200 py-8 text-center text-sm text-gray-500 dark:border-zinc-800 dark:text-zinc-400">
+        <p data-pi18n="footerTagline">MiaoCut · Free, privacy-first AI image tools.</p>
+        <p class="mt-2 space-x-4">
+            <a href="/terms/" class="hover:text-gray-800 dark:hover:text-zinc-200" data-pi18n="footerTerms">Terms</a>
+            <a href="/privacy/" class="hover:text-gray-800 dark:hover:text-zinc-200" data-pi18n="footerPrivacy">Privacy</a>
+        </p>
+    </footer>
+
+    <!-- 大图查看：原生 <dialog> 自带 Esc 关闭和焦点管理 -->
+    <dialog id="viewer" class="m-auto w-[min(92vw,960px)] rounded-2xl border border-gray-200 bg-white p-0 text-gray-800 shadow-2xl backdrop:bg-gray-950/60 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200" aria-labelledby="viewer-name">
+        <div class="flex items-center justify-between gap-3 border-b border-gray-100 px-4 py-3 dark:border-zinc-800">
+            <p id="viewer-name" class="min-w-0 truncate text-sm font-medium text-gray-900 dark:text-zinc-50"></p>
+            <div class="flex flex-none items-center gap-1">
+                <button type="button" id="viewer-prev" class="inline-flex h-9 w-9 items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg></button>
+                <button type="button" id="viewer-next" class="inline-flex h-9 w-9 items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></button>
+                <button type="button" id="viewer-close" class="inline-flex h-9 w-9 items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+            </div>
+        </div>
+        <div id="viewer-stage" class="checker flex h-[min(68vh,640px)] items-center justify-center">
+        </div>
+        <div class="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+            <button type="button" id="viewer-compare" class="hidden text-sm font-medium text-gray-700 underline-offset-4 hover:text-gray-900 hover:underline dark:text-zinc-300 dark:hover:text-zinc-50"></button>
+            <button type="button" id="viewer-download" class="ml-auto inline-flex min-h-10 items-center justify-center rounded-full bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-700 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200" data-pi18n="viewDownload">Download this image</button>
+        </div>
+    </dialog>
+
+    <script type="module" src="/batch/batch.js"></script>
 </body>
 
 </html>

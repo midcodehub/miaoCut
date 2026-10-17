@@ -140,6 +140,8 @@ Issues and pull requests are welcome. If MiaoCut is useful to you, a ⭐ on GitH
 
 Released under the [MIT License](LICENSE). You're free to use, modify, and self-host it. Attribution back to [miaocut.app](https://miaocut.app) is appreciated but not required.
 
+The free tools, the website front end, and the CPU background-removal backend (`main.py`) in this repository are MIT-licensed. The paid batch service behind miaocut.app (credits, subscriptions, the GPU pipeline, and its API gateway) is developed in a separate private repository and is not open source.
+
 ---
 
 <p align="center">
