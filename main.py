@@ -1249,12 +1249,39 @@ else:
     )
 
 
+def _log_mediapipe_status() -> None:
+    """
+    启动时记录 mediapipe 版本，以及证件照要用的 face_mesh 是否可用。
+
+    为什么需要：_detect_mediapipe_anchors 用的是旧接口 mp.solutions.face_mesh，
+    mediapipe 0.10.30 起已经删掉 solutions；版本一旦被升上去，证件照会被 try 吞掉异常、
+    静默退回 Haar，结果变差却没有任何报错（2026 年 6 月起线上就这样持续了几个月才被发现）。
+    在启动日志里打一行，以后打开 Space 的 Logs 就能一眼看出来。
+    """
+    try:
+        import mediapipe as mp
+    except Exception as exc:  # 本地 Mac 不装 mediapipe（见 requirements.txt）
+        logger.warning("mediapipe not installed (%s): ID photo face anchors will use Haar fallback", exc)
+        return
+    version = getattr(mp, "__version__", "unknown")
+    has_face_mesh = hasattr(getattr(mp, "solutions", None), "face_mesh")
+    if has_face_mesh:
+        logger.info("mediapipe %s: face_mesh available (ID photo uses MediaPipe anchors)", version)
+    else:
+        logger.error(
+            "mediapipe %s has NO mp.solutions.face_mesh: ID photo will silently fall back to Haar. "
+            "Pin mediapipe==0.10.18 in requirements.txt or migrate to the tasks API.",
+            version,
+        )
+
+
 @app.on_event("startup")
 async def schedule_model_warmup() -> None:
     global lama_executor
     # 安装终止信号日志 + 打印启动时的真实内存配额（定位无声重启是否为 cgroup OOM）
     _install_termination_logging()
     _log_memory_status("startup")
+    _log_mediapipe_status()
     logger.info("Starting isolated ProcessPool for SimpleLama to prevent PyTorch thread contention...")
     
     # 必须使用 spawn，否则 fork 会带上主进程已经被初始化的各种线程锁和状态，容易死锁
