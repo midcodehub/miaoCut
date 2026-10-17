@@ -1,0 +1,23 @@
+url-proxy/wrangler.toml
+  s_c8dfc96faf2462::t_73bfd62e5f03f8 9-14
+.gitignore
+  s_c8dfc96faf2462::t_73bfd62e5f03f8 71-77
+url-proxy/README.md
+  s_c8dfc96faf2462::t_73bfd62e5f03f8 1-26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "ecca07373baf6a75cc2b08158627b89c3eae4b17",
+  "prompts": {},
+  "sessions": {
+    "s_c8dfc96faf2462": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8d4f64c4-4d50-40db-ab2c-f573eacba2a0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "midcodehub <408124546@qq.com>"
+    }
+  }
+}
