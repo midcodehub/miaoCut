@@ -36,6 +36,9 @@ examples/raw/
 # Logs
 *.log
 
+# wrangler 本地缓存（wrangler dev / deploy 时生成）
+.wrangler/
+
 # Node / Tailwind
 node_modules/
 # 注意：output.css 必须提交（CF Pages 直接当静态文件 serve）
