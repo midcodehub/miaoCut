@@ -1,0 +1,21 @@
+requirements.txt
+  s_c8dfc96faf2462::t_afba7463e3573e 11-18
+main.py
+  s_c8dfc96faf2462::t_d20f2809ef1601 1252-1277,1284
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "1f67a4f20bd5841c317197d36b64b357f88e94c7",
+  "prompts": {},
+  "sessions": {
+    "s_c8dfc96faf2462": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8d4f64c4-4d50-40db-ab2c-f573eacba2a0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "midcodehub <408124546@qq.com>"
+    }
+  }
+}
