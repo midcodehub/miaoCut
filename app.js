@@ -79,7 +79,6 @@
         "navBg": "AI 抠图",
         "navId": "证件照",
         "navRestore": "老照片修复",
-        "navPricing": "定价",
         "navWatermark": "去水印",
         "navPortrait": "人像",
         "navProduct": "商品图",
@@ -152,12 +151,25 @@
         "toolWatermarkTitle": "去水印",
         "toolRestoreTitle": "老照片",
         "batchDoorButton": "批量抠图",
-        "batchDoorHint": "一次最多 200 张，打包 ZIP 下载。",
+        "batchDoorBadge": "Pro",
+        "batchDoorHint": "一次处理 20+ 张图片。",
+        "batchModalTitle": "批量抠图 Pro 即将上线",
+        "batchModalBody": "目标速度：每秒 1-2 张。留下邮箱，上线后免费获得 100 积分体验。",
+        "batchModalEmailLabel": "邮箱",
+        "batchModalEmailPlaceholder": "you@example.com",
+        "batchModalSubmit": "加入候补名单",
+        "batchModalSending": "提交中...",
         "batchModalNoThanks": "稍后再说",
+        "batchModalThanksTitle": "已加入名单",
+        "batchModalThanksBody": "上线后我们会通知你，并赠送 100 积分。",
+        "batchModalError": "提交失败，请稍后再试。",
+        "batchModalInvalidEmail": "请输入有效邮箱。",
         "batchModalClose": "关闭",
         "rateDayModalTitle": "今日免费额度已用完",
-        "rateDayModalBody": "免费版单张抠图每天有次数上限，你今天的额度已经用完（明天会自动重置）。现在还要处理更多图片？批量抠图使用积分，新账户注册即送 100 积分。",
-        "rateDayModalSubmit": "试试批量抠图",
+        "rateDayModalBody": "免费版每天有抠图次数上限，你今天的额度已经用完了（明天会自动重置，不是永久用完）。升级 Pro 即可解除每日限制，还能一次性批量处理、享受更高速度与并发。留下邮箱，Pro 开放时第一时间通知你，并赠送 100 积分。",
+        "rateDayModalSubmit": "预约 Pro",
+        "rateDayModalThanksTitle": "已加入 Pro 候补名单",
+        "rateDayModalThanksBody": "Pro 开放后我们会第一时间通知你，并赠送 100 积分。",
         "rateBurstTitle": "手速太快啦",
         "rateBurstBody": "请等约 {s} 秒再试 —— 今天的免费额度还没用完，放心。",
         "rateBurstProCta": "想更快 / 批量处理？升级 Pro",
@@ -213,7 +225,6 @@
         "navBg": "Background Remover",
         "navId": "ID Photo",
         "navRestore": "Old Photo",
-        "navPricing": "Pricing",
         "navWatermark": "Watermark",
         "navPortrait": "Portrait",
         "navProduct": "Product",
@@ -286,12 +297,25 @@
         "toolWatermarkTitle": "Watermark",
         "toolRestoreTitle": "Old Photo",
         "batchDoorButton": "Batch Process",
-        "batchDoorHint": "Up to 200 photos at once, downloaded as one ZIP.",
+        "batchDoorBadge": "Pro",
+        "batchDoorHint": "Remove backgrounds from 20+ images at once.",
+        "batchModalTitle": "Batch Process Pro is coming soon",
+        "batchModalBody": "Target speed: 1-2 images per second. Leave your email and get 100 free credits when it opens.",
+        "batchModalEmailLabel": "Email",
+        "batchModalEmailPlaceholder": "you@example.com",
+        "batchModalSubmit": "Join waitlist",
+        "batchModalSending": "Joining...",
         "batchModalNoThanks": "Maybe later",
+        "batchModalThanksTitle": "You are on the list",
+        "batchModalThanksBody": "We will notify you when it opens and add 100 free credits.",
+        "batchModalError": "Could not submit. Please try again.",
+        "batchModalInvalidEmail": "Enter a valid email.",
         "batchModalClose": "Close",
         "rateDayModalTitle": "Today's free quota is used up",
-        "rateDayModalBody": "The free plan has a daily limit on single images, and you've used today's quota. It resets automatically tomorrow. Need more right now? Batch processing uses credits instead — new accounts get 100 free credits.",
-        "rateDayModalSubmit": "Try batch processing",
+        "rateDayModalBody": "The free plan has a daily limit on cutouts, and you've used today's quota (it resets automatically tomorrow — it's not gone for good). Upgrade to Pro to remove the daily limit, process images in batches, and get higher speed and concurrency. Leave your email and we'll notify you the moment Pro opens — plus 100 free credits.",
+        "rateDayModalSubmit": "Get Pro early access",
+        "rateDayModalThanksTitle": "You're on the Pro list",
+        "rateDayModalThanksBody": "We'll notify you the moment Pro opens and add 100 free credits.",
         "rateBurstTitle": "Whoa, slow down a little",
         "rateBurstBody": "Please wait about {s}s and try again — you still have free quota left today.",
         "rateBurstProCta": "Need it faster / in batches? Get Pro",
@@ -347,7 +371,6 @@
         "navBg": "पृष्ठभूमि हटानेवाला",
         "navId": "ID फोटो",
         "navRestore": "पुरानी फोटो",
-        "navPricing": "मूल्य",
         "navWatermark": "वाटर-मार्क",
         "navPortrait": "चित्र",
         "navProduct": "उत्पाद",
@@ -420,14 +443,27 @@
         "toolWatermarkTitle": "वाटर-मार्क",
         "toolRestoreTitle": "पुरानी फोटो",
         "batchDoorButton": "बैच प्रोसेस",
-        "batchDoorHint": "एक बार में 200 तक तस्वीरें, एक ZIP में डाउनलोड करें।",
+        "batchDoorBadge": "Pro",
+        "batchDoorHint": "एक साथ 20+ छवियों से बैकग्राउंड हटाएं।",
         "rateDayModalTitle": "आज का मुफ़्त कोटा खत्म हो गया",
-        "rateDayModalBody": "मुफ़्त प्लान में हर दिन सिंगल इमेज की सीमा होती है, और आपका आज का कोटा पूरा हो चुका है। यह कल अपने-आप रीसेट हो जाएगा। अभी और चाहिए? बैच प्रोसेसिंग क्रेडिट से चलती है — नए खातों को 100 मुफ्त क्रेडिट मिलते हैं।",
-        "rateDayModalSubmit": "बैच प्रोसेसिंग आज़माएं",
+        "rateDayModalBody": "मुफ़्त प्लान में हर दिन कटआउट की सीमा होती है, और आपका आज का कोटा पूरा हो चुका है (यह कल अपने-आप रीसेट हो जाएगा, हमेशा के लिए खत्म नहीं हुआ है)। Pro में अपग्रेड करने पर दैनिक सीमा हट जाती है, एक साथ कई छवियां प्रोसेस की जा सकती हैं, और ज़्यादा गति व एक साथ ज़्यादा प्रोसेसिंग मिलती है। अपना ईमेल छोड़ें, Pro शुरू होते ही हम आपको सबसे पहले बताएंगे — साथ में 100 मुफ्त क्रेडिट भी।",
+        "rateDayModalSubmit": "Pro की अर्ली एक्सेस पाएं",
+        "rateDayModalThanksTitle": "आप Pro सूची में हैं",
+        "rateDayModalThanksBody": "Pro शुरू होते ही हम आपको सबसे पहले सूचित करेंगे और 100 मुफ्त क्रेडिट जोड़ देंगे।",
         "rateBurstTitle": "थोड़ा धीरे चलें",
         "rateBurstBody": "कृपया लगभग {s} सेकंड रुककर दोबारा कोशिश करें — आज का मुफ़्त कोटा अभी बाकी है।",
         "rateBurstProCta": "तेज़ या बैच में चाहिए? Pro लें",
+        "batchModalTitle": "Batch Process Pro जल्द आ रहा है",
+        "batchModalBody": "लक्ष्य गति: प्रति सेकंड 1-2 छवियां। अपना ईमेल छोड़ें और लॉन्च पर 100 मुफ्त क्रेडिट पाएं।",
+        "batchModalEmailLabel": "ईमेल",
+        "batchModalEmailPlaceholder": "you@example.com",
+        "batchModalSubmit": "प्रतीक्षा सूची में शामिल हों",
+        "batchModalSending": "जुड़ रहे हैं...",
         "batchModalNoThanks": "बाद में",
+        "batchModalThanksTitle": "आप सूची में जुड़ गए हैं",
+        "batchModalThanksBody": "लॉन्च पर हम आपको सूचित करेंगे और 100 मुफ्त क्रेडिट देंगे।",
+        "batchModalError": "सबमिट नहीं हो पाया। कृपया फिर कोशिश करें।",
+        "batchModalInvalidEmail": "मान्य ईमेल दर्ज करें।",
         "batchModalClose": "बंद करें",
         "bgSnow": "सॉफ्ट ग्रे",
         "bgIdBlue": "आईडी नीला",
@@ -481,7 +517,6 @@
         "navBg": "Penghapus Latar Belakang",
         "navId": "Foto ID",
         "navRestore": "Foto lama",
-        "navPricing": "Harga",
         "navWatermark": "Tanda air",
         "navPortrait": "Potret",
         "navProduct": "Produk",
@@ -554,14 +589,27 @@
         "toolWatermarkTitle": "Tanda air",
         "toolRestoreTitle": "Foto lama",
         "batchDoorButton": "Proses Batch",
-        "batchDoorHint": "Hingga 200 foto sekaligus, unduh dalam satu ZIP.",
+        "batchDoorBadge": "Pro",
+        "batchDoorHint": "Hapus latar belakang dari 20+ gambar sekaligus.",
         "rateDayModalTitle": "Kuota gratis hari ini sudah habis",
-        "rateDayModalBody": "Paket gratis memiliki batas harian untuk gambar tunggal, dan kuota Anda hari ini sudah habis. Kuota akan direset otomatis besok. Butuh lebih banyak sekarang? Proses batch memakai kredit — akun baru mendapat 100 kredit gratis.",
-        "rateDayModalSubmit": "Coba proses batch",
+        "rateDayModalBody": "Paket gratis memiliki batas harian untuk cutout, dan kuota Anda hari ini sudah terpakai (akan direset otomatis besok — bukan habis selamanya). Upgrade ke Pro untuk menghapus batas harian, memproses banyak gambar sekaligus, serta mendapatkan kecepatan dan konkurensi lebih tinggi. Tinggalkan email Anda dan kami akan memberi tahu begitu Pro dibuka — plus 100 kredit gratis.",
+        "rateDayModalSubmit": "Dapatkan akses awal Pro",
+        "rateDayModalThanksTitle": "Anda masuk daftar Pro",
+        "rateDayModalThanksBody": "Kami akan memberi tahu Anda begitu Pro dibuka dan menambahkan 100 kredit gratis.",
         "rateBurstTitle": "Pelan-pelan dulu ya",
         "rateBurstBody": "Tunggu sekitar {s} detik lalu coba lagi — kuota gratis Anda hari ini masih ada.",
         "rateBurstProCta": "Butuh lebih cepat / sekaligus banyak? Dapatkan Pro",
+        "batchModalTitle": "Batch Process Pro segera hadir",
+        "batchModalBody": "Target kecepatan: 1-2 gambar per detik. Tinggalkan email Anda dan dapatkan 100 kredit gratis saat dibuka.",
+        "batchModalEmailLabel": "Email",
+        "batchModalEmailPlaceholder": "you@example.com",
+        "batchModalSubmit": "Gabung daftar tunggu",
+        "batchModalSending": "Mengirim...",
         "batchModalNoThanks": "Nanti saja",
+        "batchModalThanksTitle": "Anda masuk daftar",
+        "batchModalThanksBody": "Kami akan memberi tahu Anda saat dibuka dan menambahkan 100 kredit gratis.",
+        "batchModalError": "Gagal mengirim. Silakan coba lagi.",
+        "batchModalInvalidEmail": "Masukkan email yang valid.",
         "batchModalClose": "Tutup",
         "bgSnow": "Abu-abu lembut",
         "bgIdBlue": "Biru pasfoto",
@@ -615,7 +663,6 @@
         "navBg": "Removedor de fundo",
         "navId": "Foto ID",
         "navRestore": "Foto antiga",
-        "navPricing": "Preços",
         "navWatermark": "Marca d’água",
         "navPortrait": "Retrato",
         "navProduct": "Produto",
@@ -688,14 +735,27 @@
         "toolWatermarkTitle": "Marca d’água",
         "toolRestoreTitle": "Foto antiga",
         "batchDoorButton": "Processamento em lote",
-        "batchDoorHint": "Até 200 fotos de uma vez, baixe tudo em um ZIP.",
+        "batchDoorBadge": "Pro",
+        "batchDoorHint": "Remova fundos de mais de 20 imagens de uma vez.",
         "rateDayModalTitle": "A cota gratuita de hoje acabou",
-        "rateDayModalBody": "O plano gratuito tem um limite diário de imagens individuais e você já usou a cota de hoje. Ela é renovada automaticamente amanhã. Precisa de mais agora? O processamento em lote usa créditos — novas contas ganham 100 créditos grátis.",
-        "rateDayModalSubmit": "Experimentar processamento em lote",
+        "rateDayModalBody": "O plano gratuito tem um limite diário de recortes e você já usou a cota de hoje (ela é renovada automaticamente amanhã — não acabou para sempre). Faça upgrade para o Pro para remover o limite diário, processar imagens em lote e ter mais velocidade e simultaneidade. Deixe seu e-mail e avisaremos assim que o Pro abrir — além de 100 créditos grátis.",
+        "rateDayModalSubmit": "Quero acesso antecipado ao Pro",
+        "rateDayModalThanksTitle": "Você está na lista do Pro",
+        "rateDayModalThanksBody": "Avisaremos assim que o Pro abrir e adicionaremos 100 créditos grátis.",
         "rateBurstTitle": "Calma, mais devagar",
         "rateBurstBody": "Aguarde cerca de {s}s e tente de novo — você ainda tem cota gratuita hoje.",
         "rateBurstProCta": "Precisa de mais rapidez / lote? Conheça o Pro",
+        "batchModalTitle": "Batch Process Pro chegará em breve",
+        "batchModalBody": "Velocidade alvo: 1-2 imagens por segundo. Deixe seu e-mail e ganhe 100 créditos grátis quando abrir.",
+        "batchModalEmailLabel": "E-mail",
+        "batchModalEmailPlaceholder": "you@example.com",
+        "batchModalSubmit": "Entrar na lista",
+        "batchModalSending": "Enviando...",
         "batchModalNoThanks": "Talvez depois",
+        "batchModalThanksTitle": "Você entrou na lista",
+        "batchModalThanksBody": "Avisaremos quando abrir e adicionaremos 100 créditos grátis.",
+        "batchModalError": "Não foi possível enviar. Tente novamente.",
+        "batchModalInvalidEmail": "Digite um e-mail válido.",
         "batchModalClose": "Fechar",
         "bgSnow": "Cinza suave",
         "bgIdBlue": "Azul documento",
@@ -749,7 +809,6 @@
         "navBg": "ব্যাকগ্রাউন্ড রিমুভার",
         "navId": "ID ছবি",
         "navRestore": "পুরানো ছবি",
-        "navPricing": "মূল্য",
         "navWatermark": "জলছাপ",
         "navPortrait": "প্রতিকৃতি",
         "navProduct": "পণ্য",
@@ -822,14 +881,27 @@
         "toolWatermarkTitle": "জলছাপ",
         "toolRestoreTitle": "পুরানো ছবি",
         "batchDoorButton": "ব্যাচ প্রসেস",
-        "batchDoorHint": "একসাথে সর্বোচ্চ 200টি ছবি, একটি ZIP-এ ডাউনলোড করুন।",
+        "batchDoorBadge": "Pro",
+        "batchDoorHint": "একসাথে 20+ ছবির ব্যাকগ্রাউন্ড সরান।",
         "rateDayModalTitle": "আজকের বিনামূল্যের কোটা শেষ",
-        "rateDayModalBody": "ফ্রি প্ল্যানে প্রতিদিন একক ছবির একটি সীমা আছে, আর আজকের কোটা আপনার শেষ হয়ে গেছে। কাল নিজে থেকেই রিসেট হবে। এখনই আরও দরকার? ব্যাচ প্রসেসিং ক্রেডিট ব্যবহার করে — নতুন অ্যাকাউন্টে 100টি ফ্রি ক্রেডিট।",
-        "rateDayModalSubmit": "ব্যাচ প্রসেসিং চেষ্টা করুন",
+        "rateDayModalBody": "ফ্রি প্ল্যানে প্রতিদিন কাটআউটের একটি সীমা আছে, আর আজকের কোটা আপনার শেষ হয়ে গেছে (কাল নিজে থেকেই রিসেট হবে — চিরতরে শেষ হয়নি)। Pro-তে আপগ্রেড করলে দৈনিক সীমা উঠে যায়, একসাথে অনেক ছবি প্রসেস করা যায় এবং বেশি গতি ও কনকারেন্সি পাওয়া যায়। আপনার ইমেল দিন, Pro চালু হলেই আমরা সবার আগে আপনাকে জানাব — সঙ্গে 100টি ফ্রি ক্রেডিট।",
+        "rateDayModalSubmit": "Pro-এর আর্লি অ্যাক্সেস নিন",
+        "rateDayModalThanksTitle": "আপনি Pro তালিকায় আছেন",
+        "rateDayModalThanksBody": "Pro চালু হলেই আমরা আপনাকে জানাব এবং 100টি ফ্রি ক্রেডিট যোগ করব।",
         "rateBurstTitle": "একটু ধীরে",
         "rateBurstBody": "অনুগ্রহ করে প্রায় {s} সেকেন্ড অপেক্ষা করে আবার চেষ্টা করুন — আজকের ফ্রি কোটা এখনও বাকি আছে।",
         "rateBurstProCta": "আরও দ্রুত / ব্যাচে চান? Pro নিন",
+        "batchModalTitle": "Batch Process Pro শীঘ্রই আসছে",
+        "batchModalBody": "লক্ষ্য গতি: প্রতি সেকেন্ডে 1-2টি ছবি। আপনার ইমেল দিন এবং চালু হলে 100টি ফ্রি ক্রেডিট পান।",
+        "batchModalEmailLabel": "ইমেল",
+        "batchModalEmailPlaceholder": "you@example.com",
+        "batchModalSubmit": "ওয়েটলিস্টে যোগ দিন",
+        "batchModalSending": "জমা হচ্ছে...",
         "batchModalNoThanks": "পরে",
+        "batchModalThanksTitle": "আপনি তালিকায় আছেন",
+        "batchModalThanksBody": "চালু হলে আমরা আপনাকে জানাব এবং 100টি ফ্রি ক্রেডিট দেব।",
+        "batchModalError": "জমা দেওয়া যায়নি। আবার চেষ্টা করুন।",
+        "batchModalInvalidEmail": "একটি বৈধ ইমেল লিখুন।",
         "batchModalClose": "বন্ধ করুন",
         "bgSnow": "নরম ধূসর",
         "bgIdBlue": "আইডি নীল",
@@ -883,7 +955,6 @@
         "navBg": "Background Remover",
         "navId": "ID Larawan",
         "navRestore": "Lumang Larawan",
-        "navPricing": "Presyo",
         "navWatermark": "Watermark",
         "navPortrait": "Larawan",
         "navProduct": "produkto",
@@ -956,14 +1027,27 @@
         "toolWatermarkTitle": "Watermark",
         "toolRestoreTitle": "Lumang Larawan",
         "batchDoorButton": "Batch Process",
-        "batchDoorHint": "Hanggang 200 larawan nang sabay, i-download sa isang ZIP.",
+        "batchDoorBadge": "Pro",
+        "batchDoorHint": "Alisin ang background ng 20+ larawan nang sabay.",
         "rateDayModalTitle": "Naubos na ang libreng quota ngayong araw",
-        "rateDayModalBody": "May pang-araw-araw na limitasyon ang libreng plan sa mga solong larawan, at naubos mo na ang quota ngayong araw. Awtomatiko itong mare-reset bukas. Kailangan pa ngayon? Gumagamit ng credits ang batch processing — may 100 libreng credits ang mga bagong account.",
-        "rateDayModalSubmit": "Subukan ang batch processing",
+        "rateDayModalBody": "May pang-araw-araw na limitasyon ang libreng plan sa mga cutout, at nagamit mo na ang quota mo ngayon (awtomatiko itong mare-reset bukas — hindi ito permanenteng naubos). Mag-upgrade sa Pro para alisin ang daily limit, magproseso ng maraming larawan nang sabay-sabay, at makakuha ng mas mabilis na bilis at mas maraming sabayang proseso. Iwan ang email mo at aabisuhan ka namin sa sandaling magbukas ang Pro — dagdag pa ang 100 libreng credits.",
+        "rateDayModalSubmit": "Kunin ang maagang access sa Pro",
+        "rateDayModalThanksTitle": "Nasa listahan ka na ng Pro",
+        "rateDayModalThanksBody": "Aabisuhan ka namin sa sandaling magbukas ang Pro at idadagdag ang 100 libreng credits.",
         "rateBurstTitle": "Dahan-dahan lang",
         "rateBurstBody": "Maghintay ng mga {s} segundo at subukan ulit — may natitira ka pang libreng quota ngayong araw.",
         "rateBurstProCta": "Kailangan ng mas mabilis / batch? Kunin ang Pro",
+        "batchModalTitle": "Malapit na ang Batch Process Pro",
+        "batchModalBody": "Target na bilis: 1-2 larawan bawat segundo. Iwan ang email mo at makakuha ng 100 libreng credits kapag inilunsad.",
+        "batchModalEmailLabel": "Email",
+        "batchModalEmailPlaceholder": "you@example.com",
+        "batchModalSubmit": "Sumali sa waitlist",
+        "batchModalSending": "Ipinapadala...",
         "batchModalNoThanks": "Mamaya na lang",
+        "batchModalThanksTitle": "Nasa listahan ka na",
+        "batchModalThanksBody": "Aabisuhan ka namin kapag inilunsad at bibigyan ka ng 100 libreng credits.",
+        "batchModalError": "Hindi maisumite. Pakisubukang muli.",
+        "batchModalInvalidEmail": "Maglagay ng valid na email.",
         "batchModalClose": "Isara",
         "bgSnow": "Malambot na gray",
         "bgIdBlue": "ID blue",
@@ -1017,7 +1101,6 @@
         "navBg": "پس منظر ہٹانے والا",
         "navId": "ID تصویر",
         "navRestore": "پرانی تصویر",
-        "navPricing": "قیمتیں",
         "navWatermark": "واٹر مارک",
         "navPortrait": "پورٹریٹ",
         "navProduct": "پروڈکٹ",
@@ -1090,14 +1173,27 @@
         "toolWatermarkTitle": "واٹر مارک",
         "toolRestoreTitle": "پرانی تصویر",
         "batchDoorButton": "بیچ پروسیس",
-        "batchDoorHint": "ایک ساتھ 200 تک تصاویر، ایک ZIP میں ڈاؤن لوڈ کریں۔",
+        "batchDoorBadge": "Pro",
+        "batchDoorHint": "ایک ساتھ 20+ تصاویر کے پس منظر ہٹائیں۔",
         "rateDayModalTitle": "آج کا مفت کوٹہ ختم ہو گیا",
-        "rateDayModalBody": "مفت پلان میں ایک ایک تصویر کی روزانہ حد ہوتی ہے، اور آپ کا آج کا کوٹہ ختم ہو گیا ہے۔ یہ کل خود بخود ری سیٹ ہو جائے گا۔ ابھی اور چاہیے؟ بیچ پروسیسنگ کریڈٹس استعمال کرتی ہے — نئے اکاؤنٹس کو 100 مفت کریڈٹس ملتے ہیں۔",
-        "rateDayModalSubmit": "بیچ پروسیسنگ آزمائیں",
+        "rateDayModalBody": "مفت پلان میں روزانہ کٹ آؤٹ کی حد ہوتی ہے، اور آپ کا آج کا کوٹہ پورا ہو چکا ہے (یہ کل خود بخود ری سیٹ ہو جائے گا — ہمیشہ کے لیے ختم نہیں ہوا)۔ Pro میں اپ گریڈ کرنے سے روزانہ کی حد ہٹ جاتی ہے، ایک ساتھ کئی تصاویر پروسیس کی جا سکتی ہیں، اور زیادہ رفتار اور بیک وقت زیادہ پروسیسنگ ملتی ہے۔ اپنا ای میل چھوڑیں، Pro کھلتے ہی ہم سب سے پہلے آپ کو اطلاع دیں گے — ساتھ میں 100 مفت کریڈٹس بھی۔",
+        "rateDayModalSubmit": "Pro کی ابتدائی رسائی حاصل کریں",
+        "rateDayModalThanksTitle": "آپ Pro فہرست میں ہیں",
+        "rateDayModalThanksBody": "Pro کھلتے ہی ہم آپ کو اطلاع دیں گے اور 100 مفت کریڈٹس شامل کر دیں گے۔",
         "rateBurstTitle": "ذرا آہستہ",
         "rateBurstBody": "براہِ کرم تقریباً {s} سیکنڈ رک کر دوبارہ کوشش کریں — آج کا مفت کوٹہ ابھی باقی ہے۔",
         "rateBurstProCta": "زیادہ تیز / بیچ میں چاہیے؟ Pro حاصل کریں",
+        "batchModalTitle": "Batch Process Pro جلد آ رہا ہے",
+        "batchModalBody": "ہدف رفتار: فی سیکنڈ 1-2 تصاویر۔ اپنا ای میل چھوڑیں اور لانچ پر 100 مفت کریڈٹس حاصل کریں۔",
+        "batchModalEmailLabel": "ای میل",
+        "batchModalEmailPlaceholder": "you@example.com",
+        "batchModalSubmit": "ویٹ لسٹ میں شامل ہوں",
+        "batchModalSending": "جمع ہو رہا ہے...",
         "batchModalNoThanks": "بعد میں",
+        "batchModalThanksTitle": "آپ فہرست میں شامل ہیں",
+        "batchModalThanksBody": "لانچ پر ہم آپ کو اطلاع دیں گے اور 100 مفت کریڈٹس دیں گے۔",
+        "batchModalError": "جمع نہیں ہو سکا۔ دوبارہ کوشش کریں۔",
+        "batchModalInvalidEmail": "درست ای میل درج کریں۔",
         "batchModalClose": "بند کریں",
         "bgSnow": "ہلکا سرمئی",
         "bgIdBlue": "شناختی نیلا",
@@ -1405,55 +1501,187 @@
     const API_BASE = (window.MIAOCUT_PRO_CONFIG && window.MIAOCUT_PRO_CONFIG.FREE_API_BASE) || (_isLocal ? 'http://localhost:8000' : 'https://api2.miaocut.app');
 
     // ============================================================
-    // 每日免费额度用尽 → 引导去批量抠图（积分）
+    // Batch Process Pro fake door（同一个弹窗复用为 3 种场景，见 openWaitlistModal）
     // ============================================================
-    // Pro 已上线（2026-10）：首页「批量处理」按钮直接链到 /batch/（index.html 里是 <a>），
-    // 不再收集候补邮箱。这里只保留「今日免费额度用尽」的提示弹窗，由抠图 429(day) 调用。
-    // 弹窗在第一次需要时才创建，所以首页以外的工具页（商品图 / 人像 / JPG 转透明）也能弹出
-    // ——旧版只在首页创建，其他页面撞到每日上限时没有任何提示。
-    let rateDayModal = null;
-    let rateDayLastFocus = null;
+    // 暴露给抠图 429 处理调用：
+    //   openWaitlistModal('rateDay')   今日额度用尽 → 引导升级 Pro
+    //   openWaitlistModal('rateBurst') 手速太快、想批量/更快 → 引导升级 Pro（复用批量文案）
+    let openWaitlistModal = null;
+    function initBatchWaitlist() {
+        // 首页才有「批量处理」按钮；工具子页没有，但仍要创建弹窗，额度用尽时（rateDay）要能弹出
+        const trigger = document.getElementById('batch-pro-trigger');
 
-    function closeRateDayModal() {
-        if (!rateDayModal) return;
-        rateDayModal.classList.add('hidden');
-        rateDayModal.classList.remove('flex');
-        document.body.classList.remove('overflow-hidden');
-        if (rateDayLastFocus && typeof rateDayLastFocus.focus === 'function') rateDayLastFocus.focus();
-    }
-
-    function openRateDayModal() {
-        if (!rateDayModal) {
-            rateDayModal = document.createElement('div');
-            rateDayModal.className = 'fixed inset-0 z-50 hidden items-center justify-center px-4 py-6';
-            rateDayModal.innerHTML = `
-                <div data-rate-backdrop class="absolute inset-0 bg-gray-950/45 backdrop-blur-sm"></div>
-                <div role="dialog" aria-modal="true" aria-labelledby="rate-day-title" class="relative w-full max-w-md rounded-2xl border border-gray-200 bg-white p-5 text-start shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
-                    <button type="button" data-rate-close class="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-full text-xl leading-none text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 dark:focus:ring-zinc-100" aria-label="${t('batchModalClose')}">&times;</button>
-                    <h2 id="rate-day-title" class="pr-10 text-xl font-bold text-gray-950 dark:text-zinc-50">${t('rateDayModalTitle')}</h2>
-                    <p class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-zinc-300">${t('rateDayModalBody')}</p>
-                    <div class="mt-5 flex flex-col gap-2 sm:flex-row">
-                        <a href="/batch/" data-rate-cta class="inline-flex min-h-11 flex-1 items-center justify-center rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus:ring-zinc-100">${t('rateDayModalSubmit')}</a>
-                        <button type="button" data-rate-close class="inline-flex min-h-11 items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-800 transition-colors hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:border-zinc-500 dark:focus:ring-zinc-100">${t('batchModalNoThanks')}</button>
-                    </div>
+        const modal = document.createElement('div');
+        modal.id = 'batch-pro-modal';
+        modal.className = 'fixed inset-0 z-50 hidden items-center justify-center px-4 py-6';
+        modal.innerHTML = `
+            <div data-batch-backdrop class="absolute inset-0 bg-gray-950/45 backdrop-blur-sm"></div>
+            <div role="dialog" aria-modal="true" aria-labelledby="batch-modal-title" class="relative w-full max-w-md rounded-2xl border border-gray-200 bg-white p-5 text-start shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
+                <button type="button" id="batch-modal-close" class="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-full text-xl leading-none text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 dark:focus:ring-zinc-100" aria-label="${t('batchModalClose')}">&times;</button>
+                <div id="batch-modal-form-wrap">
+                    <p class="mb-2 inline-flex rounded-full bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand-700 dark:bg-brand-500/10 dark:text-brand-300">${t('batchDoorBadge')}</p>
+                    <h2 id="batch-modal-title" class="pr-10 text-xl font-bold text-gray-950 dark:text-zinc-50">${t('batchModalTitle')}</h2>
+                    <p id="batch-modal-subtitle" class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-zinc-300">${t('batchModalBody')}</p>
+                    <form id="batch-waitlist-form" class="mt-5" novalidate>
+                        <label for="batch-waitlist-email" class="mb-1.5 block text-sm font-semibold text-gray-800 dark:text-zinc-100">${t('batchModalEmailLabel')}</label>
+                        <input id="batch-waitlist-email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="${t('batchModalEmailPlaceholder')}" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/15 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-100 dark:focus:ring-zinc-100/20">
+                        <p id="batch-waitlist-error" class="mt-2 hidden text-sm text-red-600 dark:text-red-400"></p>
+                        <div class="mt-4 flex flex-col gap-2 sm:flex-row">
+                            <button id="batch-waitlist-submit" type="submit" class="inline-flex min-h-11 flex-1 items-center justify-center rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-400 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus:ring-zinc-100">${t('batchModalSubmit')}</button>
+                            <button id="batch-modal-cancel" type="button" class="inline-flex min-h-11 items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-800 transition-colors hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:border-zinc-500 dark:focus:ring-zinc-100">${t('batchModalNoThanks')}</button>
+                        </div>
+                    </form>
                 </div>
-            `;
-            document.body.appendChild(rateDayModal);
-            rateDayModal.querySelector('[data-rate-backdrop]').addEventListener('click', closeRateDayModal);
-            rateDayModal.querySelectorAll('[data-rate-close]').forEach((btn) => btn.addEventListener('click', closeRateDayModal));
-            rateDayModal.querySelector('[data-rate-cta]').addEventListener('click', () => track('rate-day-to-batch'));
-            document.addEventListener('keydown', (event) => {
-                if (event.key === 'Escape' && rateDayModal && !rateDayModal.classList.contains('hidden')) closeRateDayModal();
-            });
+                <div id="batch-waitlist-thanks" class="hidden py-3">
+                    <p id="batch-thanks-title" class="text-xl font-bold text-gray-950 dark:text-zinc-50">${t('batchModalThanksTitle')}</p>
+                    <p id="batch-thanks-body" class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-zinc-300">${t('batchModalThanksBody')}</p>
+                    <button type="button" id="batch-thanks-close" class="mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus:ring-zinc-100">${t('batchModalClose')}</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        const formWrap = modal.querySelector('#batch-modal-form-wrap');
+        const form = modal.querySelector('#batch-waitlist-form');
+        const emailInput = modal.querySelector('#batch-waitlist-email');
+        const submitButton = modal.querySelector('#batch-waitlist-submit');
+        const errorEl = modal.querySelector('#batch-waitlist-error');
+        const thanksEl = modal.querySelector('#batch-waitlist-thanks');
+        const closeButtons = [
+            modal.querySelector('#batch-modal-close'),
+            modal.querySelector('#batch-modal-cancel'),
+            modal.querySelector('#batch-thanks-close'),
+        ].filter(Boolean);
+        let lastFocus = null;
+
+        function setError(message) {
+            errorEl.textContent = message || '';
+            errorEl.classList.toggle('hidden', !message);
         }
-        rateDayLastFocus = document.activeElement;
-        rateDayModal.classList.remove('hidden');
-        rateDayModal.classList.add('flex');
-        document.body.classList.add('overflow-hidden');
-        track('rate-day-modal-shown');
-        const cta = rateDayModal.querySelector('[data-rate-cta]');
-        setTimeout(() => cta && cta.focus(), 0);
+
+        // 三种场景共用这个弹窗，靠 variant 切换文案与提交时的来源标记：
+        //   'batch'     批量抠图 fake door（首页按钮）
+        //   'rateDay'   今日额度用尽（每日额度文案）
+        //   'rateBurst' 手速太快、想更快/批量（复用批量卖点文案，仅来源不同）
+        let currentVariant = 'batch';
+        const titleEl = modal.querySelector('#batch-modal-title');
+        const subtitleEl = modal.querySelector('#batch-modal-subtitle');
+        const thanksTitleEl = modal.querySelector('#batch-thanks-title');
+        const thanksBodyEl = modal.querySelector('#batch-thanks-body');
+
+        function applyVariantText(variant) {
+            // rateDay 用专属"额度用尽"文案；batch / rateBurst 共用批量卖点文案
+            const k = variant === 'rateDay'
+                ? { title: 'rateDayModalTitle', body: 'rateDayModalBody', submit: 'rateDayModalSubmit', tT: 'rateDayModalThanksTitle', tB: 'rateDayModalThanksBody' }
+                : { title: 'batchModalTitle', body: 'batchModalBody', submit: 'batchModalSubmit', tT: 'batchModalThanksTitle', tB: 'batchModalThanksBody' };
+            titleEl.textContent = t(k.title);
+            subtitleEl.textContent = t(k.body);
+            submitButton.textContent = t(k.submit);
+            thanksTitleEl.textContent = t(k.tT);
+            thanksBodyEl.textContent = t(k.tB);
+        }
+
+        function openModal(variant) {
+            currentVariant = ['rateDay', 'rateBurst'].includes(variant) ? variant : 'batch';
+            applyVariantText(currentVariant);
+            lastFocus = document.activeElement;
+            formWrap.classList.remove('hidden');
+            thanksEl.classList.add('hidden');
+            form.reset();
+            setError('');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.classList.add('overflow-hidden');
+            track('waitlist-opened');
+            setTimeout(() => emailInput.focus(), 0);
+        }
+        openWaitlistModal = openModal;  // 暴露给外部（抠图 429 调用）
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.classList.remove('overflow-hidden');
+            if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+        }
+
+        function isValidEmail(value) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        }
+
+        if (trigger) trigger.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            openModal('batch');
+        });
+
+        modal.querySelector('[data-batch-backdrop]').addEventListener('click', () => {
+            track('batch-door-dismissed');
+            closeModal();
+        });
+
+        closeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                track('batch-door-dismissed');
+                closeModal();
+            });
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key !== 'Escape' || modal.classList.contains('hidden')) return;
+            track('batch-door-dismissed');
+            closeModal();
+        });
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const email = emailInput.value.trim();
+            if (!isValidEmail(email)) {
+                setError(t('batchModalInvalidEmail'));
+                emailInput.focus();
+                return;
+            }
+
+            submitButton.disabled = true;
+            submitButton.textContent = t('batchModalSending');
+            setError('');
+
+            try {
+                const resp = await fetch(`${API_BASE}/api/feedback`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: 'Pro waitlist signup',
+                        email,
+                        page: window.MIAOCUT_PAGE_KEY || 'unknown',
+                        profile: currentProfile,
+                        feature: currentVariant === 'rateDay' ? 'rate-limit-upgrade'
+                            : currentVariant === 'rateBurst' ? 'rate-burst-upgrade'
+                            : 'batch-process-pro',
+                        intent: currentVariant === 'batch' ? 'waitlist' : 'pro_waitlist',
+                        source_variant: currentVariant,
+                        locale: currentLang,
+                        path: window.location.pathname,
+                        page_title: document.title,
+                    }),
+                });
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                track('batch-waitlist-submitted');
+                formWrap.classList.add('hidden');
+                thanksEl.classList.remove('hidden');
+                const doneButton = modal.querySelector('#batch-thanks-close');
+                if (doneButton) doneButton.focus();
+            } catch (error) {
+                console.warn('[MiaoCut] Batch waitlist submit failed:', error);
+                setError(t('batchModalError'));
+                track('batch-waitlist-failed');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = t('batchModalSubmit');
+            }
+        });
     }
+
+    initBatchWaitlist();
 
     // ============================================================
     // 拖拽 / 点击交互
@@ -1598,10 +1826,7 @@
     function uploadWithProgress(formData) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            // 单图一律走免费网关（CPU），登录与否都一样、不扣积分。
-            // 产品决策（2026-10）：积分只用于批量（/batch/）。早期版本里登录用户单图会走 Pro 网关
-            // 的 GPU 并扣分，等于「登录反而失去免费额度」，会劝退注册，已取消。
-            // Pro 网关的 /v1/remove-background 仍保留在服务端，以后若做「单图高清 GPU」可按需接回。
+            // 单张抠图一律走免费网关（CPU，含 localhost dev），登录与否都一样、不扣积分。
             const url = `${API_BASE}/api/remove-background?profile=${encodeURIComponent(currentProfile)}`;
             xhr.open('POST', url);
             xhr.responseType = 'blob';
@@ -1647,7 +1872,7 @@
         });
     }
 
-    // 手速太快（minute 限流）时的温和提示：强调"今天还有额度"，并给一个直达批量页的入口。
+    // 手速太快（minute 限流）时的温和提示：强调"今天还有额度"，并给一个升级 Pro 的批量入口。
     // 与"每日额度用尽"区分开，避免让用户误以为额度被永久用光。
     function showRateBurstNotice(secs) {
         dropzoneContent.innerHTML = '';
@@ -1665,11 +1890,13 @@
         const body = document.createElement('p');
         body.className = 'text-sm text-gray-500 dark:text-zinc-400 max-w-xs mb-3';
         body.textContent = t('rateBurstBody').replace('{s}', secs);
-        const proBtn = document.createElement('a');
-        proBtn.href = '/batch/';
+        const proBtn = document.createElement('button');
+        proBtn.type = 'button';
         proBtn.className = 'inline-flex items-center justify-center rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-700 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200';
         proBtn.textContent = t('rateBurstProCta');
-        proBtn.addEventListener('click', () => track('rate-burst-to-batch'));
+        proBtn.addEventListener('click', () => {
+            if (typeof openWaitlistModal === 'function') openWaitlistModal('rateBurst');
+        });
         wrap.append(icon, title, body, proBtn);
         dropzoneContent.append(wrap);
     }
@@ -1885,7 +2112,7 @@
                     // 今日免费额度用尽（明天重置）→ 引导升级 Pro（弹预约弹窗）
                     track('cutout-rate-limited');
                     resetDropzone();
-                    openRateDayModal();
+                    if (typeof openWaitlistModal === 'function') openWaitlistModal('rateDay');
                 } else {
                     // 手速太快（minute）：当天还有额度，给温和提示 + 可选 Pro 批量入口。
                     // 保留提示（不让 finally 的延时 reset 把它清掉），用户读完可点 Pro 或重新拖图。
