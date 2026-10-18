@@ -1,0 +1,53 @@
+pro-i18n.js
+  s_d68abd4a9001d4::t_83fb432cbf94df 236-237
+  s_d68abd4a9001d4::t_a127d9162d505c 562-605
+  s_d68abd4a9001d4::t_9639ab7fd5f1af 206-235,238-250
+account/credits/index.html
+  s_d68abd4a9001d4::t_bf11ae8891ffad 85-88
+  s_d68abd4a9001d4::t_cd5694c48533e9 15
+  s_d68abd4a9001d4::t_7f78549bfd1414 84
+account/batches/index.html
+  s_d68abd4a9001d4::t_bf11ae8891ffad 84-87
+  s_d68abd4a9001d4::t_7f78549bfd1414 83
+  s_d68abd4a9001d4::t_cd5694c48533e9 15
+dev/pro-mock.js
+  s_d68abd4a9001d4::t_fc3202c553706b 6-8,12-13,19-35,64-67,86,110-163,215-226
+pro-account.js
+  s_d68abd4a9001d4::t_14d06192dffdd2 249-269
+account/index.html
+  s_d68abd4a9001d4::t_617d925295d6e3 181,189-205
+  s_d68abd4a9001d4::t_585d898fab57d1 215-216,218-219,223,225
+  s_d68abd4a9001d4::t_bf11ae8891ffad 82-85
+  s_d68abd4a9001d4::t_cd5694c48533e9 15
+  s_d68abd4a9001d4::t_7f78549bfd1414 81
+  s_d68abd4a9001d4::t_25bab0d6cef921 117-123,125-126
+  s_d68abd4a9001d4::t_bbd08ff8c66ec9 206
+tailwind.config.js
+  s_d68abd4a9001d4::t_036e87c7bdcdb8 33-34,36
+account/checkin/index.html
+  s_d68abd4a9001d4::t_6cc0cc8fdaadc5 1-14,16-62,64-80,86-262
+  s_d68abd4a9001d4::t_0b9eb794e936a3 63
+  s_d68abd4a9001d4::t_cd5694c48533e9 15
+  s_d68abd4a9001d4::t_bf11ae8891ffad 82-85
+  s_d68abd4a9001d4::t_7f78549bfd1414 81
+account/checkin-ui.js
+  s_d68abd4a9001d4::t_a59c2776582bf7 1-64,66,68-69,71-122,124-244
+  s_d68abd4a9001d4::t_7f78549bfd1414 65,67,70
+  s_d68abd4a9001d4::t_6d791635e36d3c 123
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "24f03d5f5cbb0a5f6c348d70acb37eac0ed86d64",
+  "prompts": {},
+  "sessions": {
+    "s_d68abd4a9001d4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7f01a002-54a3-4986-9505-34fd709ba9f0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "midcodehub <408124546@qq.com>"
+    }
+  }
+}
