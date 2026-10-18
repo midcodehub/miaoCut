@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" data-pi18n-title="checkinDocTitle">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>(function () {
+        try { var s = localStorage.getItem('theme');
+            var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', d); } catch (e) {}
+    })();</script>
+    <title>Daily check-in | MiaoCut</title>
+    <meta name="description" content="Check in every day to earn free MiaoCut credits.">
+    <meta name="robots" content="noindex,nofollow">
+    <link rel="stylesheet" href="/output.css?v=55663e6c">
+    <script src="/pro-i18n.js"></script>
+    <script>
+        const isDev = window.location.hostname.includes('dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        window.MIAOCUT_PRO_CONFIG = isDev ? {
+            SUPABASE_URL: "DEV_SUPABASE_URL_HERE", // Replace with Dev Supabase URL
+            SUPABASE_ANON_KEY: "DEV_SUPABASE_ANON_KEY_HERE", // Replace with Dev Anon Key
+            PRO_API_BASE: "https://dev-api.miaocut.app",
+            FREE_API_BASE: "https://dev-api2.miaocut.app"
+        } : {
+            SUPABASE_URL: "https://kaqlfoxselrvriulvlsm.supabase.co",
+            SUPABASE_ANON_KEY: "sb_publishable_MlDRXsrWyxijTUocv4Hq-g_PIi85ZQY",
+            PRO_API_BASE: "https://pro-api.miaocut.app",
+            FREE_API_BASE: "https://api2.miaocut.app"
+        };
+    </script>
+</head>
+
+<body class="flex min-h-screen flex-col bg-gray-50 font-sans text-gray-800 dark:bg-zinc-950 dark:text-zinc-200">
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
+            <a href="/" class="site-brand" aria-label="MiaoCut home">
+                <img src="/favicon-nav.png" alt="" class="site-brand-mark" width="36" height="36">
+                <span class="site-brand-text">MiaoCut</span>
+            </a>
+            <nav class="flex items-center gap-3 text-sm font-medium text-gray-600 sm:gap-4 dark:text-zinc-300">
+                <a href="/" class="hidden hover:text-gray-900 sm:inline dark:hover:text-zinc-100" data-pi18n="navTools">Background Remover</a>
+                <a href="/batch/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-pi18n="navBatch">Batch</a>
+                <a href="/pricing/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-pi18n="navPricing">Pricing</a>
+                <!-- nav-auth 的文字由下方脚本按登录态设置，不挂 data-pi18n（避免语言脚本覆盖） -->
+                <a id="nav-auth" href="/account/" class="text-gray-900 dark:text-zinc-50">Sign in</a>
+                <button type="button" data-pi18n-switch class="rounded-full border border-gray-300 px-2.5 py-1 text-xs text-gray-600 hover:border-gray-500 dark:border-zinc-700 dark:text-zinc-300">中文</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-4xl flex-1 px-5 pb-16 pt-10 sm:pt-14">
+
+        <!-- ========== 未登录：登录卡（与会员中心同一套样式和逻辑） ========== -->
+        <section id="login-view" class="mx-auto hidden max-w-md">
+            <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-zinc-50" data-pi18n="loginH1">Sign in to MiaoCut</h1>
+            <p class="mt-2 text-gray-600 dark:text-zinc-400" data-pi18n="checkinLoginSub">Sign in to check in every day and earn free credits.</p>
+            <div class="mt-6 space-y-3 rounded-xl border border-gray-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+                <button type="button" data-login-google class="flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h6.5a5.6 5.6 0 01-2.4 3.6v3h3.9c2.3-2.1 3.5-5.2 3.5-8.7z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.3v3.1A12 12 0 0012 24z"/><path fill="#FBBC05" d="M5.3 14.3a7.2 7.2 0 010-4.6V6.6h-4a12 12 0 000 10.8l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 001.3 6.6l4 3.1c.9-2.9 3.6-4.9 6.7-4.9z"/></svg>
+                    <span data-pi18n="loginGoogle">Continue with Google</span>
+                </button>
+                <button type="button" data-oauth="github" class="hidden flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.48 2 2 6.48 2 12.02c0 4.42 2.87 8.17 6.84 9.5.5.09.68-.22.68-.48 0-.24-.01-.87-.01-1.7-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.03A9.56 9.56 0 0112 6.84c.85 0 1.71.12 2.5.34 1.91-1.3 2.75-1.03 2.75-1.03.55 1.38.2 2.4.1 2.65.64.7 1.03 1.6 1.03 2.69 0 3.85-2.34 4.7-4.57 4.94.36.31.68.92.68 1.85 0 1.34-.01 2.42-.01 2.75 0 .27.18.58.69.48A10.02 10.02 0 0022 12.02C22 6.48 17.52 2 12 2z"/></svg>
+                    <span data-pi18n="loginGitHub">Continue with GitHub</span>
+                </button>
+                <div class="flex items-center gap-3 text-xs text-gray-500 dark:text-zinc-400" aria-hidden="true">
+                    <span class="h-px flex-1 bg-gray-200 dark:bg-zinc-800"></span><span data-pi18n="loginOr">or</span><span class="h-px flex-1 bg-gray-200 dark:bg-zinc-800"></span>
+                </div>
+                <form data-login-email class="space-y-3" novalidate>
+                    <label for="ci-email-input" class="sr-only">Email</label>
+                    <input id="ci-email-input" type="email" placeholder="you@example.com" data-pi18n-ph="emailPlaceholder" autocomplete="email" inputmode="email" required
+                        class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-500 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-300">
+                    <button type="submit" class="flex min-h-11 w-full items-center justify-center rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-pi18n="loginEmailBtn">Email me a sign-in link</button>
+                </form>
+                <p data-login-msg class="text-sm text-gray-600 dark:text-zinc-400" role="status"></p>
+            </div>
+        </section>
+
+        <!-- ========== 已登录：签到 ========== -->
+        <section id="checkin-view" class="hidden">
+            <nav class="-mx-1 mb-8 flex gap-1 overflow-x-auto overflow-y-hidden border-b [scrollbar-width:none] [&::-webkit-scrollbar]:hidden border-gray-200 text-sm font-medium dark:border-zinc-800" aria-label="Account" data-pi18n-aria="tabsLabel">
+                <a href="/account/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 sm:px-3 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabOverview">Overview</a>
+                <a href="/account/checkin/" aria-current="page" class="-mb-px whitespace-nowrap border-b-2 border-gray-900 px-2 py-2.5 sm:px-3 text-gray-900 dark:border-zinc-50 dark:text-zinc-50" data-pi18n="tabCheckin">Check-in</a>
+                <a href="/account/credits/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 sm:px-3 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabCredits">Credits</a>
+                <a href="/account/batches/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 sm:px-3 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabBatches">Batch history</a>
+            </nav>
+
+            <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-zinc-50" data-pi18n="checkinH1">Daily check-in</h1>
+            <p class="mt-1 text-sm text-gray-600 dark:text-zinc-400" data-pi18n="checkinSub">Check in once a day for free credits. The longer your streak, the more you get.</p>
+            <p id="ci-error" class="mt-4 hidden text-sm text-red-600 dark:text-red-400" role="alert" data-pi18n="loadFailed">Could not load your account. Please refresh the page.</p>
+            <p id="ci-loading" class="mt-6 text-sm text-gray-500 dark:text-zinc-400" role="status" data-pi18n="ledgerLoading">Loading…</p>
+
+            <!-- 签到还没开放 -->
+            <div id="ci-soon" class="mt-6 hidden rounded-2xl border border-gray-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+                <span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-zinc-800 dark:text-zinc-400" data-pi18n="hubSoon">Coming soon</span>
+                <h2 class="mt-3 font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="checkinSoonH">Daily check-in is coming soon</h2>
+                <p class="mt-1 text-sm text-gray-600 dark:text-zinc-400" data-pi18n="perkCheckinD">Check in every day for 10–20 free credits. Keep your streak going to earn more.</p>
+            </div>
+
+            <div id="ci-main" class="hidden">
+                <!-- 今日签到（与会员中心同一张卡片） -->
+                <section class="mt-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6 dark:border-zinc-800 dark:bg-zinc-900" aria-labelledby="ci-card-title">
+                    <h2 id="ci-card-title" class="sr-only" data-pi18n="perkCheckinT">Daily check-in</h2>
+                    <div id="ci-card"></div>
+                </section>
+
+                <!-- 签到日历 -->
+                <section class="mt-6 rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 dark:border-zinc-800 dark:bg-zinc-900" aria-labelledby="ci-month">
+                    <div class="flex items-center justify-between gap-3">
+                        <button type="button" id="ci-prev" class="grid h-10 w-10 place-items-center rounded-full text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 dark:focus-visible:ring-zinc-100" aria-label="Previous month" data-pi18n-aria="checkinPrevMonth">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+                        </button>
+                        <div class="min-w-0 text-center">
+                            <h2 id="ci-month" class="font-semibold text-gray-900 dark:text-zinc-50" aria-live="polite"></h2>
+                            <p id="ci-month-summary" class="mt-0.5 text-sm text-gray-600 dark:text-zinc-400"></p>
+                        </div>
+                        <button type="button" id="ci-next" class="grid h-10 w-10 place-items-center rounded-full text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 dark:focus-visible:ring-zinc-100" aria-label="Next month" data-pi18n-aria="checkinNextMonth">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                        </button>
+                    </div>
+                    <div id="ci-calendar" class="mt-4 transition-opacity"></div>
+                    <div class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-gray-100 pt-4 text-xs text-gray-600 dark:border-zinc-800 dark:text-zinc-400">
+                        <span class="inline-flex items-center gap-1.5"><span class="h-3 w-3 rounded bg-brand-50 ring-1 ring-inset ring-brand-200 dark:bg-brand-500/10 dark:ring-brand-500/30" aria-hidden="true"></span><span data-pi18n="checkinLegendDone">Checked in</span></span>
+                        <span class="inline-flex items-center gap-1.5"><span class="h-3 w-3 rounded ring-2 ring-inset ring-brand-600 dark:ring-brand-400" aria-hidden="true"></span><span data-pi18n="checkinLegendToday">Today</span></span>
+                        <span id="ci-totals" class="sm:ml-auto"></span>
+                    </div>
+                </section>
+
+                <!-- 规则 -->
+                <section class="mt-6 rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 dark:border-zinc-800 dark:bg-zinc-900">
+                    <h2 class="font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="checkinRulesH">How it works</h2>
+                    <ul id="ci-rules" class="mt-3 list-disc space-y-1.5 pl-5 text-sm text-gray-600 marker:text-gray-400 dark:text-zinc-400 dark:marker:text-zinc-600"></ul>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <footer class="border-t border-gray-200 py-8 text-center text-sm text-gray-500 dark:border-zinc-800 dark:text-zinc-400">
+        <p data-pi18n="footerTagline">MiaoCut · Free, privacy-first AI image tools.</p>
+        <p class="mt-2 space-x-4">
+            <a href="/terms/" class="hover:text-gray-800 dark:hover:text-zinc-200" data-pi18n="footerTerms">Terms</a>
+            <a href="/privacy/" class="hover:text-gray-800 dark:hover:text-zinc-200" data-pi18n="footerPrivacy">Privacy</a>
+        </p>
+    </footer>
+
+    <script type="module">
+        import MiaoCutPro from "/pro-account.js";
+        import { escapeHtml, fmt, mountLogin, mockBanner } from "/account/account-ui.js";
+        import { mountCheckinCard, calendarHTML, monthTitle, shiftMonth, resetClock } from "/account/checkin-ui.js";
+        const { t, lang } = window.MiaoCutProI18n;
+
+        const $ = (id) => document.getElementById(id);
+        const show = (el, on) => el.classList.toggle("hidden", !on);
+        const MONTHS_BACK = 12; // 日历最多往前翻几个月
+
+        // 页面状态：today 是签到日（服务端算的），view 是日历正在看的月份 "YYYY-MM"
+        const state = { status: null, view: null, seq: 0 };
+
+        const card = mountCheckinCard($("ci-card"), MiaoCutPro, {
+            t, lang, calendarLink: false,
+            // 签到成功：重新取本月数据（日历上今天变成“已签”、统计更新），卡片保持本地已签状态
+            onDone: async () => {
+                const s = await MiaoCutPro.checkinStatus(state.view);
+                state.status = s;
+                renderCalendar(s);
+                renderTotals(s);
+            },
+            onDisabled: () => { show($("ci-main"), false); show($("ci-soon"), true); },
+        });
+
+        async function render() {
+            const logged = MiaoCutPro.isLoggedIn();
+            $("nav-auth").textContent = t(logged ? "navAccount" : "navLogin");
+            show($("login-view"), !logged);
+            show($("checkin-view"), logged);
+            if (logged) await load();
+        }
+
+        async function load() {
+            show($("ci-loading"), true);
+            try {
+                const s = await MiaoCutPro.checkinStatus();
+                show($("ci-error"), false);
+                if (!s.enabled) {
+                    show($("ci-main"), false);
+                    show($("ci-soon"), true);
+                    return;
+                }
+                state.status = s;
+                state.view = s.month;
+                card.render(s);
+                renderCalendar(s);
+                renderTotals(s);
+                renderRules(s);
+                show($("ci-soon"), false);
+                show($("ci-main"), true);
+            } catch (e) {
+                console.warn("checkin load failed:", e);
+                show($("ci-error"), true);
+            } finally {
+                show($("ci-loading"), false);
+            }
+        }
+
+        // 日历 + 月份标题 + 当月小结；“下个月”到本月为止，“上个月”最多往前 12 个月
+        function renderCalendar(s) {
+            $("ci-month").textContent = monthTitle(s.month, lang);
+            $("ci-month-summary").textContent = t("checkinMonthSummary", { days: fmt(s.month_days), n: fmt(s.month_credits) });
+            $("ci-calendar").innerHTML = calendarHTML(s, { t, lang });
+            const current = s.today.slice(0, 7);
+            $("ci-next").disabled = s.month >= current;
+            $("ci-prev").disabled = s.month <= shiftMonth(current, -MONTHS_BACK);
+        }
+
+        function renderTotals(s) {
+            $("ci-totals").textContent = t("checkinTotals", { best: fmt(s.best_streak), days: fmt(s.total_days), n: fmt(s.total_credits) });
+        }
+
+        // 规则说明：数字（起始 / 封顶 / 换日时间 / 月上限）都来自网关，不在页面里写死
+        function renderRules(s) {
+            const rules = [
+                t("checkinRule1", { time: resetClock(s.next_reset_at, lang) }),
+                t("checkinRule2", { base: s.rule.base, max: s.rule.max }),
+                t("checkinRule3", { base: s.rule.base }),
+                t("checkinRule4"),
+            ];
+            if (s.monthly_cap > 0) rules.push(t("checkinRuleCap", { cap: fmt(s.monthly_cap), used: fmt(s.cap_used) }));
+            rules.push(t("checkinRuleVerify"));
+            $("ci-rules").innerHTML = rules.map((r) => `<li>${escapeHtml(r)}</li>`).join("");
+        }
+
+        // 翻月：只重画日历；快速连点时以最后一次为准（seq）
+        async function go(delta) {
+            if (!state.view) return;
+            const month = shiftMonth(state.view, delta);
+            const seq = ++state.seq;
+            state.view = month;
+            $("ci-calendar").classList.add("opacity-50");
+            try {
+                const s = await MiaoCutPro.checkinStatus(month);
+                if (seq !== state.seq) return;
+                renderCalendar(s);
+            } catch (e) {
+                console.warn("checkin month load failed:", e);
+            } finally {
+                if (seq === state.seq) $("ci-calendar").classList.remove("opacity-50");
+            }
+        }
+        $("ci-prev").addEventListener("click", () => go(-1));
+        $("ci-next").addEventListener("click", () => go(1));
+
+        // ---------- 启动（放在脚本最后：先绑好事件，再等登录态） ----------
+        $("nav-auth").textContent = t("navLogin");
+        mockBanner(MiaoCutPro, { t });
+        mountLogin($("login-view"), MiaoCutPro, { t });
+        MiaoCutPro.onAuthChange(() => render());
+        await MiaoCutPro.init().catch(() => {});
+        await render();
+    </script>
+</body>
+
+</html>

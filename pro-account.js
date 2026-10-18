@@ -246,6 +246,27 @@ const MiaoCutPro = {
     return res.json();
   },
 
+  /** 签到状态 + 某个月的日历(month 为 "YYYY-MM",不传 = 本月)。
+   *  签到没开放时返回 {enabled:false};开放时见网关 /member/checkins 的说明
+   *  {enabled, email_verified, today, checked_today, today_credits, streak, next_credits, next_reset_at,
+   *   month, days:[{day, streak, credits}], month_days, month_credits, best_streak, total_days, total_credits,
+   *   rule:{base, max}, monthly_cap, cap_used} */
+  async checkinStatus(month) {
+    const q = month ? `?month=${encodeURIComponent(month)}` : "";
+    const res = await this.proFetch(`/member/checkins${q}`);
+    if (!res.ok) throw new Error(`checkin_status_failed_${res.status}`);
+    return res.json();
+  },
+
+  /** 签到 → {status: "ok"|"already", streak, credits, reward, capped, tomorrow_credits, next_reset_at}
+   *  失败时抛 Error,message 是网关的错误码(email_not_verified / checkin_disabled / checkin_unavailable …) */
+  async checkin() {
+    const res = await this.proFetch("/member/checkin", { method: "POST" });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(body.error || `checkin_failed_${res.status}`);
+    return body;
+  },
+
   /** 发起充值:返回 Stripe Checkout URL 并跳转 */
   async checkout(sku) {
     const res = await this.proFetch("/checkout", {

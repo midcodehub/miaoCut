@@ -12,7 +12,7 @@
     <title>Your Credits | MiaoCut</title>
     <meta name="description" content="Manage your MiaoCut credits: balance, transaction history, and top-ups.">
     <meta name="robots" content="noindex,nofollow">
-    <link rel="stylesheet" href="/output.css?v=4b826305">
+    <link rel="stylesheet" href="/output.css?v=55663e6c">
     <script src="/pro-i18n.js"></script>
     <script>
         const isDev = window.location.hostname.includes('dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -81,10 +81,11 @@
         <!-- ========== 已登录：余额 + 流水 ========== -->
         <section id="account-view" class="hidden">
             <!-- 会员页面之间的切换（会员中心 / 积分 / 处理记录） -->
-            <nav class="-mx-1 mb-8 flex gap-1 overflow-x-auto overflow-y-hidden border-b border-gray-200 text-sm font-medium dark:border-zinc-800" aria-label="Account" data-pi18n-aria="tabsLabel">
-                <a href="/account/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-3 py-2.5 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabOverview">Overview</a>
-                <a href="/account/credits/" aria-current="page" class="-mb-px whitespace-nowrap border-b-2 border-gray-900 px-3 py-2.5 text-gray-900 dark:border-zinc-50 dark:text-zinc-50" data-pi18n="tabCredits">Credits</a>
-                <a href="/account/batches/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-3 py-2.5 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabBatches">Batch history</a>
+            <nav class="-mx-1 mb-8 flex gap-1 overflow-x-auto overflow-y-hidden border-b [scrollbar-width:none] [&::-webkit-scrollbar]:hidden border-gray-200 text-sm font-medium dark:border-zinc-800" aria-label="Account" data-pi18n-aria="tabsLabel">
+                <a href="/account/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 sm:px-3 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabOverview">Overview</a>
+                <a href="/account/checkin/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 sm:px-3 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabCheckin">Check-in</a>
+                <a href="/account/credits/" aria-current="page" class="-mb-px whitespace-nowrap border-b-2 border-gray-900 px-2 py-2.5 sm:px-3 text-gray-900 dark:border-zinc-50 dark:text-zinc-50" data-pi18n="tabCredits">Credits</a>
+                <a href="/account/batches/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 sm:px-3 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabBatches">Batch history</a>
             </nav>
 
             <p id="pay-success" class="mb-6 hidden rounded-lg border border-brand-200 bg-brand-50 px-4 py-3 text-sm text-brand-800 dark:border-brand-500/30 dark:bg-brand-500/10 dark:text-brand-300" role="status">Payment received. Your credits will appear in a few seconds.</p>
