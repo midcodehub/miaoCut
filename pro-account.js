@@ -18,11 +18,26 @@ const CFG = window.MIAOCUT_PRO_CONFIG || {};
 const PRO_API_BASE = CFG.PRO_API_BASE || "https://pro-api.miaocut.app";
 const FREE_API_BASE = CFG.FREE_API_BASE || "https://api2.miaocut.app";
 
+// 本地预览专用的模拟模式：只在 localhost / 127.0.0.1 上、URL 带 ?mock（或 localStorage.mcMock = "1"）时生效，
+// 线上域名永远不会进入。进入后用假的登录态，网关请求交给 /dev/pro-mock.js 返回假数据，
+// 用来在没有真实登录、没有网关跨域许可的本机上预览会员页面。?mock=empty 模拟刚注册的新用户。
+const MOCK = (() => {
+  try {
+    if (!["localhost", "127.0.0.1"].includes(location.hostname)) return false;
+    const q = new URLSearchParams(location.search);
+    if (q.has("mock")) localStorage.setItem("mcMock", q.get("mock") || "1");
+    return localStorage.getItem("mcMock") || false;
+  } catch (_) {
+    return false;
+  }
+})();
+
 let _supabase = null;
-let _session = null;
+let _session = MOCK ? { access_token: "mock-token", user: { email: "demo@example.com" } } : null;
 const _listeners = new Set();
 
 async function getClient() {
+  if (MOCK) return null;
   if (_supabase) return _supabase;
   if (!CFG.SUPABASE_URL || !CFG.SUPABASE_ANON_KEY) {
     console.warn("[MiaoCutPro] Supabase 未配置;登录功能不可用。");
@@ -102,6 +117,11 @@ const MiaoCutPro = {
     return _session;
   },
 
+  /** 是否处于本地模拟模式（页面可以显示一个小提示，避免把假数据当真） */
+  isMock() {
+    return !!MOCK;
+  },
+
   /** 发送邮箱魔法链接 */
   async signInWithEmail(email, redirectTo) {
     const c = await getClient();
@@ -135,7 +155,7 @@ const MiaoCutPro = {
   /** 读取 Supabase 后台已开启的登录方式(公开接口 /auth/v1/settings),用来决定显示哪些按钮。
    *  失败时返回空对象:页面只显示 Google + 邮箱(已上线的两种),不会出现点了报错的按钮。 */
   async enabledProviders() {
-    if (!CFG.SUPABASE_URL || !CFG.SUPABASE_ANON_KEY) return {};
+    if (MOCK || !CFG.SUPABASE_URL || !CFG.SUPABASE_ANON_KEY) return {};
     if (!this._providersPromise) {
       this._providersPromise = fetch(`${CFG.SUPABASE_URL}/auth/v1/settings`, {
         headers: { apikey: CFG.SUPABASE_ANON_KEY },
@@ -170,11 +190,16 @@ const MiaoCutPro = {
   async signOut() {
     const c = await getClient();
     if (c) await c.auth.signOut();
+    if (MOCK) localStorage.removeItem("mcMock"); // 模拟模式下“退出”就是退出模拟
     _session = null;
   },
 
   /** 带鉴权调用 Pro 网关 */
   async proFetch(path, opts = {}) {
+    if (MOCK) {
+      const mock = await import("/dev/pro-mock.js");
+      return mock.handle(path, opts, MOCK);
+    }
     await getClient();
     const headers = new Headers(opts.headers || {});
     if (_session?.access_token) {
@@ -198,6 +223,25 @@ const MiaoCutPro = {
 
   async ledger(limit = 50) {
     const res = await this.proFetch(`/credits/ledger?limit=${limit}`);
+    if (!res.ok) throw new Error(`ledger_failed_${res.status}`);
+    return res.json();
+  },
+
+  /** 积分汇总：各桶余额 + 30 天内将过期的赠送积分 {subscription, bonus, topup, frozen, total, expiring_30d, next_bonus_expiry} */
+  async summary() {
+    const res = await this.proFetch("/credits/summary");
+    if (!res.ok) throw new Error(`summary_failed_${res.status}`);
+    return res.json();
+  },
+
+  /** 分页 + 筛选取流水 → {ledger, next_cursor}
+   *  opts：{limit, cursor（上一页的 next_cursor）, type: "in"|"out", reason: "freeze,release", month: "YYYY-MM"} */
+  async ledgerPage(opts = {}) {
+    const q = new URLSearchParams();
+    for (const k of ["limit", "cursor", "type", "reason", "month"]) {
+      if (opts[k] !== undefined && opts[k] !== null && opts[k] !== "") q.set(k, String(opts[k]));
+    }
+    const res = await this.proFetch(`/credits/ledger?${q}`);
     if (!res.ok) throw new Error(`ledger_failed_${res.status}`);
     return res.json();
   },
