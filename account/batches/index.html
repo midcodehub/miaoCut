@@ -12,7 +12,7 @@
     <title>Batch History | MiaoCut</title>
     <meta name="description" content="Your recent MiaoCut batch background removal jobs: review and download results.">
     <meta name="robots" content="noindex,nofollow">
-    <link rel="stylesheet" href="/output.css?v=4b826305">
+    <link rel="stylesheet" href="/output.css?v=55663e6c">
     <script src="/pro-i18n.js"></script>
     <script>
         const isDev = window.location.hostname.includes('dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -80,10 +80,11 @@
         <!-- ========== 已登录：处理记录 ========== -->
         <section id="history-view" class="hidden">
             <!-- 会员页面之间的切换（会员中心 / 积分 / 处理记录） -->
-            <nav class="-mx-1 mb-8 flex gap-1 overflow-x-auto overflow-y-hidden border-b border-gray-200 text-sm font-medium dark:border-zinc-800" aria-label="Account" data-pi18n-aria="tabsLabel">
-                <a href="/account/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-3 py-2.5 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabOverview">Overview</a>
-                <a href="/account/credits/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-3 py-2.5 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabCredits">Credits</a>
-                <a href="/account/batches/" aria-current="page" class="-mb-px whitespace-nowrap border-b-2 border-gray-900 px-3 py-2.5 text-gray-900 dark:border-zinc-50 dark:text-zinc-50" data-pi18n="tabBatches">Batch history</a>
+            <nav class="-mx-1 mb-8 flex gap-1 overflow-x-auto overflow-y-hidden border-b [scrollbar-width:none] [&::-webkit-scrollbar]:hidden border-gray-200 text-sm font-medium dark:border-zinc-800" aria-label="Account" data-pi18n-aria="tabsLabel">
+                <a href="/account/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 sm:px-3 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabOverview">Overview</a>
+                <a href="/account/checkin/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 sm:px-3 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabCheckin">Check-in</a>
+                <a href="/account/credits/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 sm:px-3 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabCredits">Credits</a>
+                <a href="/account/batches/" aria-current="page" class="-mb-px whitespace-nowrap border-b-2 border-gray-900 px-2 py-2.5 sm:px-3 text-gray-900 dark:border-zinc-50 dark:text-zinc-50" data-pi18n="tabBatches">Batch history</a>
             </nav>
             <div class="flex flex-wrap items-end justify-between gap-4">
                 <div class="min-w-0">
