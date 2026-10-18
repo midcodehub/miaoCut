@@ -328,3 +328,54 @@
   }
 
 }
+
+/* ── 批量页：完成特效 ────────────────────────────────────────────────
+   一张图处理完成时，抠图结果先放在原图「下面」（同一格、同样 object-contain，主体完全重合），
+   然后给原图加 .batch-reveal：一个从中心向外扩大的透明圆洞（径向遮罩，边缘有 24% 的柔和过渡），
+   约 0.8 秒把原图的背景「擦掉」，露出下面棋盘格上的透明结果；主体因为和结果重合，看起来纹丝不动。
+   结束后 batch.js 把原图隐藏，再让进度圈里的对勾弹出来（.batch-check-in）。
+
+   为什么要 @property：未注册的自定义属性在动画里只能「跳变」，注册成 <percentage> 后浏览器才会逐帧插值。
+   不支持 @property 的旧浏览器（Firefox 128 以前）会在动画一半时一下子切过去，功能不受影响。 */
+@property --batch-reveal-hole {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+
+@keyframes batch-reveal {
+  /* -24%：洞的柔和边缘也在圆心以内 = 完全不透明；100%：洞覆盖到最远的角 = 完全透明 */
+  from { --batch-reveal-hole: -24%; }
+  to { --batch-reveal-hole: 100%; }
+}
+
+@keyframes batch-check-in {
+  from { opacity: 0; transform: scale(0.4); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@layer components {
+  .batch-reveal {
+    -webkit-mask-image: radial-gradient(circle farthest-corner at 50% 50%, transparent var(--batch-reveal-hole), #000 calc(var(--batch-reveal-hole) + 24%));
+    mask-image: radial-gradient(circle farthest-corner at 50% 50%, transparent var(--batch-reveal-hole), #000 calc(var(--batch-reveal-hole) + 24%));
+    /* ease-out-cubic：开头干脆、结尾放缓，不用弹跳曲线；延迟（同批错开）由 batch.js 写在 animation-delay 上 */
+    animation: batch-reveal 800ms cubic-bezier(0.33, 1, 0.68, 1) both;
+  }
+
+  .batch-check-in {
+    animation: batch-check-in 240ms cubic-bezier(0.25, 1, 0.5, 1) both;
+  }
+
+  /* 减少动画：batch.js 本来就不会加这两个类；这里再兜一层底（比如动画进行到一半用户切换了系统设置） */
+  @media (prefers-reduced-motion: reduce) {
+    .batch-reveal {
+      -webkit-mask-image: none;
+      mask-image: none;
+      animation: none;
+    }
+
+    .batch-check-in {
+      animation: none;
+    }
+  }
+}
