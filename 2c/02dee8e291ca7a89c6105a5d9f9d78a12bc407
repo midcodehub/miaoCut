@@ -1,0 +1,25 @@
+batch/batch.js
+  s_44f3a193ae05c7::t_f2b121a4feb724 930-932
+  s_44f3a193ae05c7::t_629e2b68716ddf 644-645,711,713-719,721,725-726,728,747
+  s_44f3a193ae05c7::t_8b5a4cc8955e81 861-865
+  s_44f3a193ae05c7::t_5b707b69ae5740 451,704-705,821,854-856
+  s_44f3a193ae05c7::t_6672a1623b4a0a 889-891
+output.css
+  s_44f3a193ae05c7::t_5dded366092a86 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "2c02dee8e291ca7a89c6105a5d9f9d78a12bc407",
+  "prompts": {},
+  "sessions": {
+    "s_44f3a193ae05c7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23cd151b-c9f0-4927-94bc-301f944cbf3d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "midcodehub <408124546@qq.com>"
+    }
+  }
+}
