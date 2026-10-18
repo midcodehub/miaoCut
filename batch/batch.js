@@ -448,6 +448,7 @@ async function startBatch() {
     if (!res.ok) throw await toBatchError(res);
     const job = await res.json();
     state.job.job_id = job.job_id;
+    setProgress(t("stUploading", { i: 0, n: job.uploads.length }), `0/${job.uploads.length}`);
 
     // 2) 并发直传 R2；单张失败重试一次，仍失败就整批中止（此时还没点开始，不会冻结任何积分）
     let uploaded = 0;
@@ -640,7 +641,8 @@ function showResults() {
 //   stalled     整批出错   圈停在原处变灰，不再前进
 let tiles = [];       // 进度模型，下标 = 图片 idx
 let tileUrls = [];    // 缩略图的 objectURL，换一批时释放，避免内存泄漏
-let progressRaf = 0;  // 已预约的动画帧（0 = 循环已停）
+let progressRaf = 0;  // 已预约的动画帧（0 = 没有）
+let progressTimer = 0; // 动画帧不来时的兜底计时器（见 scheduleFrame）
 let lastFrameAt = 0;
 let barDrawn = -1;    // 顶部进度条上次画的值（没变就不碰 DOM）
 let barPct = -1;
@@ -699,19 +701,31 @@ function tileTarget(tile, now) {
     }
     case "done":
     case "failed": return 1;
-    default: return tile.shown; // waiting（还是 0）/ stalled（停在原处）
+    case "stalled": return tile.frozen; // 停在出错那一刻的真实进度（见 setTileStatus）
+    default: return tile.shown; // waiting：还是 0
   }
 }
 
 // 有进度要画时调用：启动动画循环（已经在跑就什么都不做）
 function kickProgress() {
-  if (progressRaf) return;
+  if (progressRaf || progressTimer) return;
   lastFrameAt = performance.now();
+  scheduleFrame();
+}
+
+// 预约下一帧：正常靠 requestAnimationFrame（跟屏幕刷新同步，最省电）。
+// 兜底：有些环境里页面仍算「可见」，浏览器却不发动画帧（窗口被别的窗口完全挡住、部分内嵌 WebView），
+// 250ms 还没来就用普通计时器画一帧，保证进度数字和读屏用的 aria-valuenow 不会卡住。两者谁先到谁画，另一个取消
+function scheduleFrame() {
   progressRaf = requestAnimationFrame(progressFrame);
+  progressTimer = setTimeout(() => progressFrame(performance.now()), 250);
 }
 
 function progressFrame(now) {
+  cancelAnimationFrame(progressRaf);
+  clearTimeout(progressTimer);
   progressRaf = 0;
+  progressTimer = 0;
   // 切到后台再回来时两帧间隔可能很大：限制一下追赶系数（目标值本身按真实时间算，不受影响）
   const dt = Math.min(100, Math.max(0, now - lastFrameAt));
   lastFrameAt = now;
@@ -730,7 +744,7 @@ function progressFrame(now) {
     sum += tile.shown;
   });
   drawBar(tiles.length ? sum / tiles.length : 0);
-  if (busy) progressRaf = requestAnimationFrame(progressFrame);
+  if (busy) scheduleFrame();
 }
 
 // 画一张图：进度弧 + 上传时的模糊（只在数值变了时才写 DOM，200 张也不卡）
@@ -804,7 +818,7 @@ function buildRunGrid(fromServer = false) {
     const li = els.runGrid.querySelector(`[data-tile="${i}"]`);
     return {
       li, arc: li.querySelector("[data-arc]"), img: li.querySelector("[data-src-img]"),
-      phase: null, upload: 0, procStart: 0, shown: 0, drawn: -1, blur: -1, stalledKey: "",
+      phase: null, upload: 0, procStart: 0, shown: 0, drawn: -1, blur: -1, stalledKey: "", frozen: 0,
     };
   });
   state.images.forEach((im, i) => setTileStatus(i, fromServer ? phaseOf(im.status) : "waiting", { instant: true }));
@@ -837,11 +851,18 @@ function setTileStatus(i, phase, opts = {}) {
   const { li } = tile;
   const im = state.images[i] || {};
   const changed = tile.phase !== phase;
+  // 整批出错：记下出错那一刻按「原来的阶段」算出的真实进度，圈追到这里就停。
+  // 不能直接停在 shown：它可能还在追赶途中（比如已经传完、圈才画到 47%），停在那里就是少报了进度
+  if (phase === "stalled" && changed) tile.frozen = Math.max(tile.shown, tileTarget(tile, performance.now()));
   tile.phase = phase;
   if (phase === "uploading") tile.upload = Math.max(0, Math.min(1, opts.frac || 0));
   // 「开始处理」的时间 = 第一次看到 processing 的时刻（接口不提供，前端自己记；出错后恢复时沿用第一次的时间）
   if (phase === "processing" && !tile.procStart) tile.procStart = performance.now();
-  if (opts.instant) tile.shown = Math.max(tile.shown, tileTarget(tile, performance.now()));
+  // instant（恢复任务）或减少动画：不追赶，直接跳到这个阶段的进度并立刻画出来，和状态文字、对勾同步出现
+  if (opts.instant || reduceMotion) {
+    tile.shown = Math.max(tile.shown, tileTarget(tile, performance.now()));
+    drawTile(tile);
+  }
 
   const ring = li.querySelector("[data-ring]");
   const line = li.querySelector("[data-line]");
@@ -865,6 +886,9 @@ function setTileStatus(i, phase, opts = {}) {
     btn.classList.toggle("dark:border-zinc-800", !failed);
     btn.classList.toggle("border-red-300", failed);
     btn.classList.toggle("dark:border-red-500/50", failed);
+    // 失败原因（如「处理超时，未扣积分，可重试」）最多显示两行：后半句「没扣分、能重试」正是用户最需要看到的
+    line.classList.toggle("truncate", !failed);
+    line.classList.toggle("line-clamp-2", failed);
     show(ring.querySelector("[data-ring-fail]"), failed);
     show(ring.querySelector("[data-ring-done]"), false); // 对勾等完成特效播完再出现（见 finishResult）
     if (phase === "done") showResult(tile, im, opts);
@@ -903,7 +927,9 @@ function showResult(tile, im, { instant = false, delay = 0 } = {}) {
       finishResult(tile, true);
     };
     src.addEventListener("animationend", finish, { once: true });
-    setTimeout(finish, delay + 1500); // 兜底：元素被隐藏等情况下 animationend 不会触发，到时间也收尾
+    // 动画被中途取消（比如播放时用户打开了系统的「减少动画」，CSS 把 animation 设成 none）不会有 animationend，
+    // 会有 animationcancel：同样收尾。不用固定时长的计时器兜底，免得和 CSS 里的时长写成两份、改一处漏一处
+    src.addEventListener("animationcancel", finish, { once: true });
     src.style.animationDelay = `${delay}ms`;
     src.classList.add("batch-reveal");
   };
