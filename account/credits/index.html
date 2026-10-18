@@ -12,7 +12,7 @@
     <title>Your Credits | MiaoCut</title>
     <meta name="description" content="Manage your MiaoCut credits: balance, transaction history, and top-ups.">
     <meta name="robots" content="noindex,nofollow">
-    <link rel="stylesheet" href="/output.css?v=a8c3d39e">
+    <link rel="stylesheet" href="/output.css?v=4b826305">
     <script src="/pro-i18n.js"></script>
     <script>
         const isDev = window.location.hostname.includes('dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -42,7 +42,7 @@
                 <a href="/batch/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-pi18n="navBatch">Batch</a>
                 <a href="/pricing/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-pi18n="navPricing">Pricing</a>
                 <!-- nav-auth 的文字由下方脚本按登录态设置，不挂 data-pi18n（避免语言脚本覆盖） -->
-                <a id="nav-auth" href="/account/credits/" class="text-gray-900 dark:text-zinc-50" aria-current="page">Sign in</a>
+                <a id="nav-auth" href="/account/" class="text-gray-900 dark:text-zinc-50">Sign in</a>
                 <button type="button" data-pi18n-switch class="rounded-full border border-gray-300 px-2.5 py-1 text-xs text-gray-600 hover:border-gray-500 dark:border-zinc-700 dark:text-zinc-300">中文</button>
             </nav>
         </div>
@@ -57,7 +57,7 @@
             <!-- 从定价页点「购买」过来：说明登录后会直接进入结账 -->
             <p id="buy-note" class="mt-4 hidden rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300"></p>
             <div class="mt-6 space-y-3 rounded-xl border border-gray-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-                <button type="button" id="google-btn" class="flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900">
+                <button type="button" id="google-btn" data-login-google class="flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h6.5a5.6 5.6 0 01-2.4 3.6v3h3.9c2.3-2.1 3.5-5.2 3.5-8.7z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.3v3.1A12 12 0 0012 24z"/><path fill="#FBBC05" d="M5.3 14.3a7.2 7.2 0 010-4.6V6.6h-4a12 12 0 000 10.8l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 001.3 6.6l4 3.1c.9-2.9 3.6-4.9 6.7-4.9z"/></svg>
                     <span data-pi18n="loginGoogle">Continue with Google</span>
                 </button>
@@ -68,18 +68,25 @@
                 <div class="flex items-center gap-3 text-xs text-gray-500 dark:text-zinc-400" aria-hidden="true">
                     <span class="h-px flex-1 bg-gray-200 dark:bg-zinc-800"></span><span data-pi18n="loginOr">or</span><span class="h-px flex-1 bg-gray-200 dark:bg-zinc-800"></span>
                 </div>
-                <form id="email-form" class="space-y-3" novalidate>
+                <form id="email-form" data-login-email class="space-y-3" novalidate>
                     <label for="email-input" class="sr-only">Email</label>
                     <input id="email-input" type="email" placeholder="you@example.com" data-pi18n-ph="emailPlaceholder" autocomplete="email" inputmode="email" required
                         class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-500 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-300">
                     <button type="submit" class="flex min-h-11 w-full items-center justify-center rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-pi18n="loginEmailBtn">Email me a sign-in link</button>
                 </form>
-                <p id="login-msg" class="text-sm text-gray-600 dark:text-zinc-400" role="status"></p>
+                <p id="login-msg" data-login-msg class="text-sm text-gray-600 dark:text-zinc-400" role="status"></p>
             </div>
         </section>
 
         <!-- ========== 已登录：余额 + 流水 ========== -->
         <section id="account-view" class="hidden">
+            <!-- 会员页面之间的切换（会员中心 / 积分 / 处理记录） -->
+            <nav class="-mx-1 mb-8 flex gap-1 overflow-x-auto overflow-y-hidden border-b border-gray-200 text-sm font-medium dark:border-zinc-800" aria-label="Account" data-pi18n-aria="tabsLabel">
+                <a href="/account/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-3 py-2.5 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabOverview">Overview</a>
+                <a href="/account/credits/" aria-current="page" class="-mb-px whitespace-nowrap border-b-2 border-gray-900 px-3 py-2.5 text-gray-900 dark:border-zinc-50 dark:text-zinc-50" data-pi18n="tabCredits">Credits</a>
+                <a href="/account/batches/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-3 py-2.5 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabBatches">Batch history</a>
+            </nav>
+
             <p id="pay-success" class="mb-6 hidden rounded-lg border border-brand-200 bg-brand-50 px-4 py-3 text-sm text-brand-800 dark:border-brand-500/30 dark:bg-brand-500/10 dark:text-brand-300" role="status">Payment received. Your credits will appear in a few seconds.</p>
             <p id="checkout-error" class="mb-6 hidden rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300" role="alert" data-pi18n="buyFailed">Checkout failed, please try again.</p>
 
@@ -91,19 +98,20 @@
                 <button type="button" id="logout-btn" class="text-sm font-medium text-gray-600 underline-offset-4 hover:text-gray-900 hover:underline dark:text-zinc-400 dark:hover:text-zinc-50" data-pi18n="signOut">Sign out</button>
             </div>
 
-            <div class="mt-6 rounded-xl border border-gray-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+            <!-- 余额卡：总数 + 各桶（订阅 / 赠送 / 充值 / 冻结中）+ 即将过期提醒 -->
+            <div class="mt-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-7 dark:border-zinc-800 dark:bg-zinc-900">
                 <p class="text-sm text-gray-600 dark:text-zinc-400" data-pi18n="balTotal">Available credits</p>
                 <p id="bal-total" class="mt-1 text-5xl font-bold tracking-tight tabular-nums text-gray-900 dark:text-zinc-50" aria-live="polite">—</p>
-                <p id="bal-split" class="mt-1 hidden text-sm tabular-nums text-gray-600 dark:text-zinc-400"></p>
-                <p class="mt-3 text-sm text-gray-600 dark:text-zinc-400" data-pi18n="balHint">Credits are used for batch processing. Single images are always free.</p>
+                <ul id="bal-buckets" class="mt-4 flex hidden flex-wrap gap-2 text-sm" aria-label="Credit types" data-pi18n-aria="bucketsLabel"></ul>
+                <p id="bal-expiring" class="mt-4 hidden rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800 dark:bg-amber-500/10 dark:text-amber-300" role="status"></p>
+                <p class="mt-4 text-sm text-gray-600 dark:text-zinc-400" data-pi18n="balHint">Credits are used for batch processing. Single images are always free.</p>
                 <div class="mt-6 flex flex-wrap gap-3">
                     <a href="/batch/" class="inline-flex min-h-11 items-center justify-center rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-pi18n="goBatch">Start a batch</a>
                     <a href="/pricing/" class="inline-flex min-h-11 items-center justify-center rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-pi18n="buyMore">Buy more credits</a>
-                    <a href="/account/batches/" class="inline-flex min-h-11 items-center text-sm font-medium text-gray-700 underline-offset-4 hover:text-gray-900 hover:underline dark:text-zinc-300 dark:hover:text-zinc-50" data-pi18n="historyLink">Batch history</a>
                 </div>
             </div>
             <!-- 订阅：有订阅显示档位 / 续费日 / 管理入口；没有订阅且订阅已开放时，一行推荐 -->
-            <section id="sub-panel" class="mt-4 hidden rounded-xl border border-gray-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900" aria-live="polite">
+            <section id="sub-panel" class="mt-4 hidden rounded-2xl border border-gray-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900" aria-live="polite">
                 <div class="flex flex-wrap items-start justify-between gap-4">
                     <div class="min-w-0">
                         <h2 id="sub-name" class="font-semibold text-gray-900 dark:text-zinc-50"></h2>
@@ -117,19 +125,36 @@
             <p id="sub-promo" class="mt-4 hidden text-sm text-gray-600 dark:text-zinc-400"><span data-pi18n="subNone">Listing every month? Plans start at $6.99 for 300 credits.</span> <a href="/pricing/#plans" class="font-medium text-gray-900 underline underline-offset-4 dark:text-zinc-50" data-pi18n="subSeePlans">See monthly plans</a></p>
             <p id="load-error" class="mt-4 hidden text-sm text-red-600 dark:text-red-400" role="alert" data-pi18n="loadFailed">Could not load your account. Please refresh the page.</p>
 
+            <!-- ========== 积分记录：收入 / 支出 / 类型 / 月份筛选 + 分页加载 ========== -->
             <h2 class="mt-12 text-lg font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="historyH">Credit history</h2>
-            <div class="mt-3 overflow-x-auto rounded-xl border border-gray-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-                <table class="w-full text-sm">
-                    <thead class="border-b border-gray-200 text-left text-gray-600 dark:border-zinc-800 dark:text-zinc-400">
-                        <tr>
-                            <th scope="col" class="px-4 py-3 font-medium" data-pi18n="thType">Activity</th>
-                            <th scope="col" class="hidden whitespace-nowrap px-4 py-3 font-medium sm:table-cell" data-pi18n="thWhen">When</th>
-                            <th scope="col" class="whitespace-nowrap px-4 py-3 text-right font-medium" data-pi18n="thChange">Change</th>
-                            <th scope="col" class="whitespace-nowrap px-4 py-3 text-right font-medium" data-pi18n="thBalance">Balance</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ledger-body" class="divide-y divide-gray-100 dark:divide-zinc-800"></tbody>
-                </table>
+            <div class="mt-3 flex flex-wrap items-center gap-3">
+                <div class="inline-flex rounded-full border border-gray-200 bg-white p-0.5 text-sm dark:border-zinc-800 dark:bg-zinc-900" role="group" aria-label="Direction" data-pi18n-aria="filterDirLabel" id="dir-filter">
+                    <button type="button" data-dir="all" aria-pressed="true" class="rounded-full px-3.5 py-1.5 font-medium" data-pi18n="filterAll">All</button>
+                    <button type="button" data-dir="in" aria-pressed="false" class="rounded-full px-3.5 py-1.5 font-medium" data-pi18n="filterIn">Earned</button>
+                    <button type="button" data-dir="out" aria-pressed="false" class="rounded-full px-3.5 py-1.5 font-medium" data-pi18n="filterOut">Spent</button>
+                </div>
+                <label class="sr-only" for="type-filter" data-pi18n="filterTypeLabel">Type</label>
+                <select id="type-filter" class="min-h-9 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-800 focus:border-gray-900 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200">
+                    <option value="all" data-pi18n="filterTypeAll">All types</option>
+                    <option value="batch" data-pi18n="filterTypeBatch">Batch processing</option>
+                    <option value="purchase" data-pi18n="filterTypePurchase">Purchases &amp; plans</option>
+                    <option value="bonus" data-pi18n="filterTypeBonus">Bonuses &amp; rewards</option>
+                    <option value="expired" data-pi18n="filterTypeExpired">Expired</option>
+                    <option value="refund" data-pi18n="filterTypeRefund">Refunds</option>
+                </select>
+                <label class="sr-only" for="month-filter" data-pi18n="filterMonthLabel">Month</label>
+                <select id="month-filter" class="min-h-9 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-800 focus:border-gray-900 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200">
+                    <option value="" data-pi18n="filterMonthAll">All time</option>
+                </select>
+            </div>
+            <div class="mt-3 overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+                <ul id="ledger-list" class="divide-y divide-gray-100 dark:divide-zinc-800" aria-live="polite"></ul>
+                <p id="ledger-loading" class="px-5 py-8 text-center text-sm text-gray-500 dark:text-zinc-400" role="status" data-pi18n="ledgerLoading">Loading…</p>
+                <p id="ledger-empty" class="hidden px-5 py-10 text-center text-sm text-gray-600 dark:text-zinc-400"></p>
+                <p id="ledger-error" class="hidden px-5 py-6 text-center text-sm text-red-600 dark:text-red-400" role="alert" data-pi18n="loadFailed">Could not load your account. Please refresh the page.</p>
+            </div>
+            <div class="mt-4 text-center">
+                <button type="button" id="ledger-more" class="hidden min-h-10 rounded-full border border-gray-300 bg-white px-5 py-2 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-500 disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500" data-pi18n="ledgerMore">Load more</button>
             </div>
         </section>
     </main>
@@ -144,11 +169,13 @@
 
     <script type="module">
         import MiaoCutPro from "/pro-account.js";
+        import { groupLedger, ledgerItemHTML, renderBalance, mountLogin, mockBanner, LEDGER_FILTERS, escapeHtml, localeOf } from "/account/account-ui.js";
         const { t, lang } = window.MiaoCutProI18n;
 
-        const loginView = document.getElementById("login-view");
-        const acctView = document.getElementById("account-view");
-        const nav = document.getElementById("nav-auth");
+        const $ = (id) => document.getElementById(id);
+        const loginView = $("login-view");
+        const acctView = $("account-view");
+        const nav = $("nav-auth");
         const params = new URLSearchParams(location.search);
         const paidJustNow = params.get("status") === "success";
         const PACK_NAMES = { starter_100: "packStarter", creator_500: "packCreator", seller_1500: "packSeller", studio_5000: "packStudio" };
@@ -160,15 +187,12 @@
         const buySku = params.get("buy");
         const planParam = params.get("plan");
         if (buySku && PACK_NAMES[buySku]) {
-            const note = document.getElementById("buy-note");
-            note.textContent = t("loginBuyNote", { pack: t(PACK_NAMES[buySku]) });
-            show(note, true);
+            $("buy-note").textContent = t("loginBuyNote", { pack: t(PACK_NAMES[buySku]) });
+            show($("buy-note"), true);
         } else if (planParam && PLAN_NAMES[planParam]) {
-            const note = document.getElementById("buy-note");
-            note.textContent = t("loginPlanNote", { plan: t(PLAN_NAMES[planParam]) });
-            show(note, true);
+            $("buy-note").textContent = t("loginPlanNote", { plan: t(PLAN_NAMES[planParam]) });
+            show($("buy-note"), true);
         }
-
 
         async function render() {
             const logged = MiaoCutPro.isLoggedIn();
@@ -177,12 +201,13 @@
             show(acctView, logged);
             if (!logged) return;
             await loadAccount();
+            resetLedger();
             // 从 /pricing/ 带 ?buy=sku 过来：登录后自动发起 checkout
             const buy = params.get("buy");
             if (buy) {
                 params.delete("buy");
                 history.replaceState({}, "", location.pathname);
-                MiaoCutPro.checkout(buy).catch(() => show(document.getElementById("checkout-error"), true));
+                MiaoCutPro.checkout(buy).catch(() => show($("checkout-error"), true));
             }
             // 从 /pricing/ 带 ?plan= 过来：登录后自动发起订阅结账（已有订阅就打开客户门户）
             const plan = params.get("plan");
@@ -191,7 +216,7 @@
                 history.replaceState({}, "", location.pathname);
                 MiaoCutPro.checkoutPlan(plan).catch((e) => {
                     if (e && e.message === "already_subscribed") return openPortal();
-                    show(document.getElementById("checkout-error"), true);
+                    show($("checkout-error"), true);
                 });
             }
             if (paidJustNow || subscribedJustNow) showPaymentSuccess();
@@ -201,7 +226,7 @@
         // 先提示「已支付、马上到账」，再每 3 秒刷新一次余额，最多 30 秒。
         let polling = false;
         function showPaymentSuccess() {
-            const el = document.getElementById("pay-success");
+            const el = $("pay-success");
             // 文字由脚本设置（不挂 data-pi18n，避免语言脚本把「订阅已开通」覆盖成默认的「已收到付款」）
             el.textContent = t(subscribedJustNow ? "subscribedNote" : "paySuccess");
             show(el, true);
@@ -212,88 +237,19 @@
             const timer = setInterval(async () => {
                 tries += 1;
                 await loadAccount();
-                if (tries >= 10) clearInterval(timer);
+                if (tries >= 10) { clearInterval(timer); resetLedger(); }
             }, 3000);
         }
 
-        // 流水类型：数据库里的 reason 代码 → 可读文案；未知代码原样显示
-        function reasonLabel(reason) {
-            const key = `reason_${reason}`;
-            const label = t(key);
-            return label === key ? String(reason) : label;
-        }
-        const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-
-        // 把同一批的「预扣（freeze）」和随后的「退回（release）」合并成一行。
-        // 数据库里 freeze 的 ref 是任务 id、release 的 ref 是图片 id，前端对不上任务，
-        // 所以按时间归组：release 归到它之前最近的、24 小时内的那次 freeze。
-        // （同时跑两批时可能归错组，但净变化和余额永远是对的）
-        function groupLedger(rows) {
-            const asc = rows.slice().sort((a, b) => Date.parse(a.created_at) - Date.parse(b.created_at));
-            const items = [];
-            let lastBatch = null;
-            for (const r of asc) {
-                const at = Date.parse(r.created_at);
-                if (r.reason === "freeze") {
-                    lastBatch = { kind: "batch", reserved: -r.delta, returned: 0, delta: r.delta, at, balance: r.balance_after };
-                    items.push(lastBatch);
-                } else if (r.reason === "release" && lastBatch && at - lastBatch.at < 24 * 3600 * 1000) {
-                    lastBatch.returned += r.delta;
-                    lastBatch.delta += r.delta;
-                    lastBatch.at = at;
-                    lastBatch.balance = r.balance_after;
-                } else {
-                    items.push({ kind: "row", reason: r.reason, delta: r.delta, at, balance: r.balance_after });
-                }
-            }
-            return items.sort((a, b) => b.at - a.at);
-        }
-
-        function ledgerRow(item) {
-            const locale = lang === "zh" ? "zh-CN" : "en-US"; // 跟随页面语言，而不是浏览器语言
-            const when = new Date(item.at).toLocaleString(locale, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
-            let title;
-            let detail = "";
-            if (item.kind === "batch") {
-                title = t("ledgerBatch");
-                const used = item.reserved - item.returned;
-                detail = item.returned > 0
-                    ? t("ledgerBatchReturned", { used, returned: item.returned })
-                    : t("ledgerBatchUsed", { used });
-            } else {
-                title = reasonLabel(item.reason);
-            }
-            const plus = item.delta > 0;
-            return `
-                <tr>
-                    <td class="px-4 py-3">
-                        <span class="font-medium text-gray-900 dark:text-zinc-50">${escapeHtml(title)}</span>
-                        ${detail ? `<span class="mt-0.5 block text-xs text-gray-600 dark:text-zinc-400">${escapeHtml(detail)}</span>` : ""}
-                        <span class="mt-0.5 block text-xs text-gray-600 sm:hidden dark:text-zinc-400">${escapeHtml(when)}</span>
-                    </td>
-                    <td class="hidden whitespace-nowrap px-4 py-3 text-gray-600 sm:table-cell dark:text-zinc-400">${escapeHtml(when)}</td>
-                    <td class="whitespace-nowrap px-4 py-3 text-right font-medium tabular-nums ${plus ? "text-brand-700 dark:text-brand-400" : "text-gray-900 dark:text-zinc-50"}">${plus ? "+" : ""}${item.delta.toLocaleString()}</td>
-                    <td class="whitespace-nowrap px-4 py-3 text-right tabular-nums text-gray-600 dark:text-zinc-400">${Number(item.balance).toLocaleString()}</td>
-                </tr>`;
-        }
-
+        // ---------- 余额 ----------
         async function loadAccount() {
-            const errEl = document.getElementById("load-error");
+            const errEl = $("load-error");
             try {
-                const me = await MiaoCutPro.me();
-                document.getElementById("acct-email").textContent = me.email || "";
-                document.getElementById("bal-total").textContent = Number(me.credits.total).toLocaleString();
-                // 有套餐积分时拆开显示：两种积分的有效期规则不同
-                const split = document.getElementById("bal-split");
-                split.textContent = t("balSplit", { sub: Number(me.credits.subscription).toLocaleString(), top: Number(me.credits.topup).toLocaleString() });
-                show(split, me.credits.subscription > 0);
+                const [me, summary] = await Promise.all([MiaoCutPro.me(), MiaoCutPro.summary().catch(() => null)]);
+                $("acct-email").textContent = me.email || "";
+                renderBalance({ total: $("bal-total"), buckets: $("bal-buckets"), expiring: $("bal-expiring") },
+                    summary || me.credits, summary, { t, lang });
                 renderSubscription(me);
-
-                // 取 200 条（接口上限）：失败多的批次会产生很多退回记录，合并后才是一行
-                const { ledger } = await MiaoCutPro.ledger(200);
-                const items = groupLedger(ledger || []);
-                document.getElementById("ledger-body").innerHTML = items.map(ledgerRow).join("")
-                    || `<tr><td colspan="4" class="px-4 py-8 text-center text-gray-600 dark:text-zinc-400">${escapeHtml(t("noTx"))}</td></tr>`;
                 show(errEl, false);
             } catch (e) {
                 console.warn("loadAccount failed:", e);
@@ -301,28 +257,112 @@
             }
         }
 
+        // ---------- 积分记录：筛选 + 分页 ----------
+        // 已加载的原始流水全部留在内存里：翻页后整体重新合并，跨页的“预扣 + 退回”也能合成一行
+        const PAGE = 30;
+        const ledger = { rows: [], cursor: null, loading: false, seq: 0, dir: "all", type: "all", month: "" };
+
+        // 月份下拉：最近 12 个月（UTC，与网关一致）
+        (function fillMonths() {
+            const sel = $("month-filter");
+            const now = new Date();
+            for (let i = 0; i < 12; i++) {
+                const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - i, 1));
+                const value = d.toISOString().slice(0, 7);
+                const opt = document.createElement("option");
+                opt.value = value;
+                opt.textContent = d.toLocaleDateString(localeOf(lang), { year: "numeric", month: "long", timeZone: "UTC" });
+                sel.appendChild(opt);
+            }
+        })();
+
+        function paintDirButtons() {
+            document.querySelectorAll("#dir-filter [data-dir]").forEach((b) => {
+                const on = b.dataset.dir === ledger.dir;
+                b.setAttribute("aria-pressed", String(on));
+                b.className = "rounded-full px-3.5 py-1.5 font-medium transition-colors " + (on
+                    ? "bg-gray-900 text-white dark:bg-zinc-50 dark:text-zinc-950"
+                    : "text-gray-600 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100");
+            });
+        }
+
+        function paintLedger() {
+            // 只看收入 / 只看支出时不合并（预扣和退回分属两边，合并后数字会误导）
+            const items = groupLedger(ledger.rows, ledger.dir === "all");
+            $("ledger-list").innerHTML = items.map((it) => ledgerItemHTML(it, { t, lang })).join("");
+            const empty = !ledger.loading && items.length === 0;
+            const filtered = ledger.dir !== "all" || ledger.type !== "all" || ledger.month;
+            $("ledger-empty").textContent = t(filtered ? "noTxFiltered" : "noTx");
+            show($("ledger-empty"), empty);
+            show($("ledger-loading"), ledger.loading && items.length === 0);
+            const more = $("ledger-more");
+            show(more, !!ledger.cursor);
+            more.disabled = ledger.loading;
+            more.textContent = t(ledger.loading ? "ledgerLoading" : "ledgerMore");
+        }
+
+        async function loadLedger() {
+            const seq = ++ledger.seq; // 筛选条件变了，旧请求回来也不要了
+            ledger.loading = true;
+            show($("ledger-error"), false);
+            paintLedger();
+            try {
+                const page = await MiaoCutPro.ledgerPage({
+                    limit: PAGE,
+                    cursor: ledger.cursor || "",
+                    type: ledger.dir === "all" ? "" : ledger.dir,
+                    reason: LEDGER_FILTERS[ledger.type] || "",
+                    month: ledger.month,
+                });
+                if (seq !== ledger.seq) return;
+                ledger.rows = ledger.rows.concat(page.ledger || []);
+                ledger.cursor = page.next_cursor || null;
+            } catch (e) {
+                if (seq !== ledger.seq) return;
+                console.warn("ledger failed:", e);
+                show($("ledger-error"), true);
+            }
+            ledger.loading = false;
+            paintLedger();
+        }
+
+        function resetLedger() {
+            ledger.rows = [];
+            ledger.cursor = null;
+            paintDirButtons();
+            loadLedger();
+        }
+
+        document.querySelectorAll("#dir-filter [data-dir]").forEach((b) => b.addEventListener("click", () => {
+            if (ledger.dir === b.dataset.dir) return;
+            ledger.dir = b.dataset.dir;
+            resetLedger();
+        }));
+        $("type-filter").addEventListener("change", (e) => { ledger.type = e.target.value; resetLedger(); });
+        $("month-filter").addEventListener("change", (e) => { ledger.month = e.target.value; resetLedger(); });
+        $("ledger-more").addEventListener("click", () => { if (!ledger.loading && ledger.cursor) loadLedger(); });
+
         // ---------- 订阅面板 ----------
         const ACTIVE = new Set(["active", "trialing", "past_due"]);
         let subsEnabledPromise = null; // 只在需要显示推荐时才查一次 /plans
         function renderSubscription(me) {
-            const panel = document.getElementById("sub-panel");
-            const promo = document.getElementById("sub-promo");
+            const panel = $("sub-panel");
+            const promo = $("sub-promo");
             const sub = me.subscription;
             const active = sub && ACTIVE.has(sub.status);
             show(panel, !!active);
             if (active) {
-                const locale = lang === "zh" ? "zh-CN" : "en-US";
                 const date = sub.current_period_end
-                    ? new Date(sub.current_period_end).toLocaleDateString(locale, { year: "numeric", month: "short", day: "numeric" })
+                    ? new Date(sub.current_period_end).toLocaleDateString(localeOf(lang), { year: "numeric", month: "short", day: "numeric" })
                     : "—";
-                document.getElementById("sub-name").textContent = t("subPlanName", { plan: t(PLAN_NAMES[sub.plan] || sub.plan) });
-                document.getElementById("sub-line").textContent = sub.cancel_at_period_end
+                $("sub-name").textContent = t("subPlanName", { plan: t(PLAN_NAMES[sub.plan] || sub.plan) });
+                $("sub-line").textContent = sub.cancel_at_period_end
                     ? t("subEnds", { date })
                     : t("subRenews", { credits: Number(sub.monthly_credits).toLocaleString(), date });
-                const warn = document.getElementById("sub-warn");
+                const warn = $("sub-warn");
                 warn.textContent = sub.status === "past_due" ? t("subPastDue") : "";
                 show(warn, sub.status === "past_due");
-                show(document.getElementById("sub-manage"), !!me.can_manage_billing);
+                show($("sub-manage"), !!me.can_manage_billing);
                 show(promo, false);
                 return;
             }
@@ -332,51 +372,32 @@
         }
 
         async function openPortal() {
-            const btn = document.getElementById("sub-manage");
+            const btn = $("sub-manage");
             btn.disabled = true;
-            show(document.getElementById("sub-error"), false);
+            show($("sub-error"), false);
             try {
                 await MiaoCutPro.billingPortal();
             } catch (e) {
                 btn.disabled = false;
-                show(document.getElementById("sub-error"), true);
+                show($("sub-error"), true);
             }
         }
-        document.getElementById("sub-manage").addEventListener("click", openPortal);
+        $("sub-manage").addEventListener("click", openPortal);
 
-        // ---------- 登录（登录后回到当前页，?buy= 参数会保留） ----------
-        const setMsg = (key) => { document.getElementById("login-msg").textContent = key ? t(key) : ""; };
-        document.getElementById("google-btn").addEventListener("click", () => {
-            MiaoCutPro.signInWithGoogle(location.href).catch((e) =>
-                setMsg(e && e.message === "auth_unavailable" ? "loginUnavailable" : "loginGoogleFailed"));
-        });
-        document.getElementById("email-form").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const input = document.getElementById("email-input");
-            const email = input.value.trim();
-            if (!email || !input.checkValidity()) { setMsg("loginNeedEmail"); input.focus(); return; }
-            try {
-                const res = await MiaoCutPro.signInWithEmail(email, location.href);
-                if (res && res.error) throw res.error;
-                setMsg("loginSent");
-            } catch (err) {
-                setMsg(err && err.message === "auth_unavailable" ? "loginUnavailable" : "loginSendFailed");
-            }
-        });
-        document.getElementById("logout-btn").addEventListener("click", async () => {
+        $("logout-btn").addEventListener("click", async () => {
             await MiaoCutPro.signOut();
             render();
         });
 
         // ---------- 启动 ----------
-        // ⚠️ 必须放在脚本最后：上面的 let / const（polling、escapeHtml 等）在声明之前访问会抛
+        // ⚠️ 必须放在脚本最后：上面的 let / const（polling、ledger 等）在声明之前访问会抛
         // 「Cannot access before initialization」。以前启动代码写在前面，导致支付成功跳回时
         // showPaymentSuccess 直接报错、余额不刷新。
         nav.textContent = t("navLogin");
+        mockBanner(MiaoCutPro, { t });
+        mountLogin(loginView, MiaoCutPro, { t });
         MiaoCutPro.onAuthChange(() => render());
         await MiaoCutPro.init().catch(() => {});
-        // 后台开启了的其他登录方式（如 GitHub）才显示
-        MiaoCutPro.mountProviderButtons(document.getElementById("login-view"), { onError: () => setMsg("loginOAuthFailed") });
         await render();
     </script>
 </body>

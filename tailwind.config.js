@@ -27,8 +27,11 @@ module.exports = {
     './feedback.js',
     // Pro 付费页：定价 / 账户（class 写在 HTML 和内联模板字符串里）+ 中英文案里的链接 class
     './pricing/index.html',
+    './account/index.html',
     './account/credits/index.html',
     './account/batches/index.html',
+    // 会员页面共用模块：余额卡、流水列表的 class 写在 JS 模板字符串里
+    './account/account-ui.js',
     // 批量页：class 同时写在 HTML 和 batch.js 的模板字符串里
     './batch/index.html',
     './batch/batch.js',
