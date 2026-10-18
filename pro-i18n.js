@@ -193,6 +193,7 @@
             stUploading: 'Uploading {i} of {n}',
             stStarting: 'Starting…',
             stProcessing: 'Removing backgrounds · {d} of {n}',
+            stGpuStarting: 'Starting a GPU · about {s}s',
             stLeaveOk: 'You can leave this page. Come back within 24 hours to download.',
             stResumed: 'Picked up your last batch.',
             // 结果
@@ -440,6 +441,7 @@
             stUploading: '正在上传 {i}/{n}',
             stStarting: '正在启动…',
             stProcessing: '正在去背景 · {d}/{n}',
+            stGpuStarting: '正在启动 GPU，约 {s} 秒',
             stLeaveOk: '可以离开这个页面，24 小时内回来都能下载。',
             stResumed: '已恢复你上一次的批量任务。',
             resReady: '{s} 张已完成',

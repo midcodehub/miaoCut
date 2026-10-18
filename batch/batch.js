@@ -497,7 +497,12 @@ async function pollJob() {
         applyJobData(data);
         const total = state.job.total || 1; // 从处理记录打开时，总数要等第一次查询才知道
         const resolved = data.succeeded + data.failed;
-        setProgress(t("stProcessing", { d: resolved, n: total }), 0.42 + (resolved / total) * 0.58, `${resolved}/${total}`);
+        // 还没有一张开始处理、且 GPU 正在启动：告诉用户大约要等多久，而不是一直显示 0/N
+        const gpuWait = resolved === 0 && data.gpu && data.gpu.state !== "online";
+        const label = gpuWait
+          ? t("stGpuStarting", { s: Math.max(10, Math.round(Number(data.gpu.eta_seconds) || 60)) })
+          : t("stProcessing", { d: resolved, n: total });
+        setProgress(label, 0.42 + (resolved / total) * 0.58, `${resolved}/${total}`);
         if (data.done) { showResults(); return; }
       }
       await sleep(data ? POLL_MS : POLL_MS * 2);
@@ -519,6 +524,8 @@ function applyJobData(data) {
     const cur = state.images[im.idx] || {};
     state.images[im.idx] = { ...cur, ...im };
     if (im.status === "done" || im.status === "failed") setTileStatus(im.idx, im.status);
+    // 排队 → 处理中：进度圈开始转动（服务端区分 queued / processing，转动就表示真的在处理）
+    else if (im.status !== cur.status) setTileStatus(im.idx, im.status === "queued" ? "queued" : "processing");
   });
   updateCounts();
 }
