@@ -100,15 +100,18 @@
                 </section>
 
                 <!-- 处理阶段：进度 + 结果共用同一个网格，处理完结果不会消失 -->
-                <section id="run-stage" class="hidden rounded-xl border border-gray-200 bg-white p-5 sm:p-6 dark:border-zinc-800 dark:bg-zinc-900" aria-live="polite">
+                <!-- 不在整块区域上挂 aria-live：每张卡片的上传百分比和状态都在变，整块播报会让读屏软件念个不停。
+                     只播报进度文字（progress-text）、目录计数（dir-counts）和结果（res-ready），出错由 run-error-text 的 role="alert" 播报 -->
+                <section id="run-stage" class="hidden rounded-xl border border-gray-200 bg-white p-5 sm:p-6 dark:border-zinc-800 dark:bg-zinc-900">
                     <!-- 进度 -->
                     <div id="progress-box">
                         <div class="flex items-baseline justify-between gap-4">
-                            <p id="progress-text" class="font-semibold text-gray-900 dark:text-zinc-50">Preparing your batch…</p>
-                            <p id="progress-count" class="text-sm tabular-nums text-gray-500 dark:text-zinc-400"></p>
+                            <p id="progress-text" class="font-semibold text-gray-900 dark:text-zinc-50" aria-live="polite">Preparing your batch…</p>
+                            <p id="progress-count" class="text-sm font-medium tabular-nums text-gray-600 dark:text-zinc-400"></p>
                         </div>
                         <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-gray-100 dark:bg-zinc-800" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-labelledby="progress-text">
-                            <div id="progress-bar" class="h-full w-0 rounded-full bg-gray-900 transition-[width] duration-300 ease-out dark:bg-zinc-100"></div>
+                            <!-- 长度 = 所有进度圈的平均值，batch.js 每帧用 transform: scaleX() 画（不改 width，不触发重新布局）；左端圆角由外层轨道裁出 -->
+                            <div id="progress-bar" class="h-full w-full origin-left bg-gray-900 dark:bg-zinc-100" style="transform: scaleX(0)"></div>
                         </div>
                         <p id="progress-note" class="mt-2 text-sm text-gray-500 dark:text-zinc-400">You can leave this page. Come back within 24 hours to download.</p>
                     </div>
@@ -116,7 +119,7 @@
                     <!-- 结果头：完成数 + 下载格式 + 操作 -->
                     <div id="results-box" class="hidden">
                         <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                            <p id="res-ready" class="text-lg font-semibold text-gray-900 dark:text-zinc-50"></p>
+                            <p id="res-ready" class="text-lg font-semibold text-gray-900 dark:text-zinc-50" role="status"></p>
                             <p id="res-failed" class="hidden text-sm text-gray-600 dark:text-zinc-400"></p>
                         </div>
                         <fieldset class="mt-5">
@@ -148,9 +151,9 @@
                     <!-- 目录：这一批所有图片，每张右上角一个进度圈 -->
                     <div class="mt-6 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-t border-gray-100 pt-5 dark:border-zinc-800">
                         <h2 id="dir-title" class="text-base font-semibold text-gray-900 dark:text-zinc-50"></h2>
-                        <p id="dir-counts" class="text-sm tabular-nums text-gray-600 dark:text-zinc-400" aria-live="polite"></p>
+                        <p id="dir-counts" class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm tabular-nums text-gray-600 dark:text-zinc-400" aria-live="polite"></p>
                     </div>
-                    <ul id="run-grid" class="mt-3 grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-3" role="list"></ul>
+                    <ul id="run-grid" class="mt-4 grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-x-3 gap-y-5" role="list"></ul>
                 </section>
 
             </div>

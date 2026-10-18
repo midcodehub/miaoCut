@@ -27,6 +27,30 @@ const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/webp"];
 const MIN_PACK_PRICE = "$0.016";
 const UPLOAD_CONCURRENCY = 4;
 const POLL_MS = 2000;
+
+// ---------- 进度圈 / 动效 ----------
+// 服务端只告诉我们每张图的状态（queued / processing / done / failed），没有百分比。
+// 所以进度圈按「阶段」分段，每段的含义都是真的：
+//   上传 0→50%（按真实上传字节）→ 排队停在 50% → 处理中从 50% 往 95% 缓动 → 服务端确认 done 才补到 100%。
+// 「处理中」这一段是估算，规则是「只会慢、不会骗」：最多到 95%，永远不会自己显示完成；
+// 比预计慢时越走越慢（指数逼近 95%），不会倒退。
+//
+// 预计耗时的出处：2026-10-18 线上实测，快速档单张 GPU 处理约 1.5 秒，2 张从入队到出图约 4 秒。
+// 前端每 POLL_MS（2 秒）轮询一次，「看到处理中」和「看到完成」都会晚最多 2 秒，所以快速档按 3 秒估。
+// 细腻档（fur）多一步 alpha matting，暂按快速档的 2 倍（6 秒）估，还没有单独实测，实测后改这里。
+// 另外「处理中」= GPU 节点已领走这张图，节点可能一次领几张、按顺序处理，排在后面的图会比预计慢，
+// 这正是上面「越走越慢、不提前完成」要兜住的情况。
+const EXPECTED_PROCESS_MS = { fast: 3000, fur: 6000 };
+const RING_UPLOAD_END = 0.5;      // 上传占进度圈的前一半
+const RING_PROCESS_CAP = 0.95;    // 处理中最多走到 95%，剩下的 5% 只有服务端确认完成才补上
+// 处理中曲线：p(t) = 1 - e^(-k·t/预计耗时)。k = 3 时，到预计耗时那一刻走完这一段的 95%（总进度约 93%），
+// 之后每多一个预计耗时只再走剩余的 95%，所以越来越慢、永远到不了 95%。
+const PROCESS_CURVE_K = 3;
+// 圈上显示的数字追赶目标值的时间常数：上传进度事件是一跳一跳的，追赶一下看起来才是连续的
+const RING_SMOOTH_MS = 120;
+const UPLOAD_BLUR_PX = 12;        // 还没上传时缩略图的模糊程度，随上传字节降到 0（传完就完全清晰）
+const REVEAL_STAGGER_MS = 90;     // 同一次轮询里同时完成的几张图，完成特效依次错开一点，最多错开 5 张
+// 完成特效本身（原图背景从中心向外变透明，约 0.8 秒）写在 src/input.css 的 .batch-reveal 里
 // 本地存储的 key
 const LS_JOB = "miaocut.batch.job";        // 进行中 / 最近一次任务（刷新后恢复）
 const LS_OUTPUT = "miaocut.batch.output";  // 上次选的下载格式
@@ -116,6 +140,14 @@ const els = {
 // 有右侧栏 / 无右侧栏 两种布局（处理中和结果阶段右侧栏没有内容，让网格占满整行）
 const LAYOUT_WITH_ASIDE = "lg:grid-cols-[minmax(0,1fr)_340px]";
 const LAYOUT_FULL = "lg:grid-cols-1";
+
+// 系统开了「减少动画」：不模糊、不缓动、不做完成特效，进度圈直接显示每个阶段的状态。
+// 用户可能在页面打开期间切换这个设置，所以监听 change。
+const motionQuery = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
+let reduceMotion = !!(motionQuery && motionQuery.matches);
+if (motionQuery && motionQuery.addEventListener) {
+  motionQuery.addEventListener("change", (e) => { reduceMotion = e.matches; kickProgress(); });
+}
 
 // =============================================================================
 // 小工具
@@ -395,11 +427,12 @@ async function toBatchError(res) {
 async function startBatch() {
   if (!state.files.length || state.phase === "running") return;
   const sources = state.files.map((f) => f.file);
-  state.job = { job_id: null, total: sources.length, sources };
+  // profile 用来选「处理中」的预计耗时；轮询结果里的 profile 会覆盖它（以服务端为准）
+  state.job = { job_id: null, total: sources.length, sources, profile: state.mode };
   state.images = sources.map((f, idx) => ({ idx, filename: f.name, status: "queued" }));
   setPhase("running");
-  buildRunGrid();
-  setProgress(t("stPreparing"), 0.02);
+  buildRunGrid(); // 新的一批：每张图都从「等待上传」开始
+  setProgress(t("stPreparing"));
   show(els.progressNote, false);
 
   try {
@@ -421,8 +454,9 @@ async function startBatch() {
     let aborted = false; // 一张彻底失败后，其余并发的上传不再继续
     await runPool(job.uploads, async (up, i) => {
       if (aborted) return;
-      const onProgress = (f) => setTileStatus(i, "uploading", f);
-      setTileStatus(i, "uploading", 0);
+      // 整批已中止时，还在路上的上传可能继续回报进度：不再更新，否则停住的圈又会动起来
+      const onProgress = (f) => { if (!aborted) setTileStatus(i, "uploading", { frac: f }); };
+      setTileStatus(i, "uploading", { frac: 0 });
       try { await putToR2(sources[i], up.put_url, onProgress); }
       catch (_) {
         await sleep(800);
@@ -430,12 +464,13 @@ async function startBatch() {
       }
       if (aborted) return;
       uploaded++;
-      setTileStatus(i, "processing");
-      setProgress(t("stUploading", { i: uploaded, n: job.uploads.length }), 0.02 + (uploaded / job.uploads.length) * 0.38, `${uploaded}/${job.uploads.length}`);
+      // 传完 = 排队（停在 50%）。真正开始处理要等服务端说 processing，这里不能让圈继续走
+      setTileStatus(i, "queued");
+      setProgress(t("stUploading", { i: uploaded, n: job.uploads.length }), `${uploaded}/${job.uploads.length}`);
     }, UPLOAD_CONCURRENCY);
 
     // 3) 开始：冻结积分 + 入队
-    setProgress(t("stStarting"), 0.42);
+    setProgress(t("stStarting"));
     let startRes;
     try { startRes = await MiaoCutPro.proFetch(`/v1/batch/${job.job_id}/start`, { method: "POST" }); }
     catch (_) { throw new BatchError("errNetwork"); }
@@ -502,7 +537,8 @@ async function pollJob() {
         const label = gpuWait
           ? t("stGpuStarting", { s: Math.max(10, Math.round(Number(data.gpu.eta_seconds) || 60)) })
           : t("stProcessing", { d: resolved, n: total });
-        setProgress(label, 0.42 + (resolved / total) * 0.58, `${resolved}/${total}`);
+        // 进度条的长度不在这里算：它是所有进度圈的平均值，由 drawProgress 每帧画（见「处理网格」）
+        setProgress(label, `${resolved}/${total}`);
         if (data.done) { showResults(); return; }
       }
       await sleep(data ? POLL_MS : POLL_MS * 2);
@@ -515,27 +551,30 @@ async function pollJob() {
 // 服务端返回的每张图 → 本地状态 + 网格
 function applyJobData(data) {
   const imgs = (data.images || []).slice().sort((a, b) => a.idx - b.idx);
+  if (data.profile) state.job.profile = data.profile;
   if (!state.images.length || state.images.length !== imgs.length) {
+    // 从处理记录 / 刷新后恢复：网格按服务端当前状态直接画出来（已完成的不再播放完成特效）
     state.images = imgs.map((im) => ({ ...im }));
     state.job.total = imgs.length || state.job.total;
-    buildRunGrid();
+    buildRunGrid(true);
   }
+  let revealOrder = 0; // 这一次轮询里新完成的第几张：完成特效依次错开
   imgs.forEach((im) => {
     const cur = state.images[im.idx] || {};
     state.images[im.idx] = { ...cur, ...im };
-    if (im.status === "done" || im.status === "failed") setTileStatus(im.idx, im.status);
-    // 排队 → 处理中：进度圈开始转动（服务端区分 queued / processing，转动就表示真的在处理）
-    else if (im.status !== cur.status) setTileStatus(im.idx, im.status === "queued" ? "queued" : "processing");
+    const tile = tiles[im.idx];
+    const phase = phaseOf(im.status);
+    // 和进度模型里的阶段比（而不是和上一次的 status 比）：整批出错后「再查一次」时，停住的圈也能恢复
+    if (!tile || tile.phase === phase) return;
+    setTileStatus(im.idx, phase, phase === "done" ? { delay: Math.min(revealOrder++, 5) * REVEAL_STAGGER_MS } : {});
   });
   updateCounts();
 }
 
-function setProgress(text, frac, count = "") {
+// 顶部进度条的文字和计数；进度条长度由 drawProgress 按所有进度圈的平均值画
+function setProgress(text, count = "") {
   els.progressText.textContent = text;
   els.progressCount.textContent = count;
-  const pct = Math.round(Math.max(0, Math.min(1, frac)) * 100);
-  els.progressBar.style.width = pct + "%";
-  els.progressBar.parentElement.setAttribute("aria-valuenow", String(pct));
 }
 
 const RETRYABLE = new Set(["errNetwork", "errUpload", "errGeneric"]);
@@ -549,16 +588,17 @@ function showRunError(err, stage = "submit") {
   els.btnErrorRetry.textContent = stage === "poll"
     ? t(err.key === "errAuth" ? "errBack" : "checkAgain")
     : t(lastErrorRetryable ? "tryAgain" : "errBack");
-  els.runGrid.querySelectorAll("[data-tile]").forEach((li) => {
-    const im = state.images[Number(li.dataset.tile)] || {};
-    if (im.status !== "done" && im.status !== "failed") setRing(li, "queued");
+  // 还没完成的图：进度圈停在原处、变灰，不再前进（不倒退也不假装还在走）。
+  //   提交阶段出错 = 这批没处理，也没扣分；查询阶段出错 = 服务器上可能还在处理，只是暂时查不到
+  tiles.forEach((tile, i) => {
+    if (tile.phase === "done" || tile.phase === "failed") return;
+    tile.stalledKey = stage === "submit" ? "tile_stopped" : "tile_unknown";
+    setTileStatus(i, "stalled");
   });
-  // 没处理成的图恢复原图不透明度，否则在白底预览上像一张空白卡片
-  els.runGrid.querySelectorAll("[data-src-img]").forEach((img) => img.classList.remove("opacity-60"));
   show(els.errorBuy, err.buy);
   // 查询阶段出错：任务可能真的找不回来了，给一个出口（不取消服务器上的任务，只是不再跟踪它）
   show(els.btnErrorNew, stage === "poll" || stage === "expired");
-  if (stage === "expired") { state.images = []; els.runGrid.innerHTML = ""; updateCounts(); }
+  if (stage === "expired") { state.images = []; resetRunGrid(); updateCounts(); }
   show(els.btnErrorRetry, stage !== "expired"); // 已过期：没有可重试的
   show(els.errorHistory, stage === "expired");
   setPhase("error");
@@ -586,118 +626,298 @@ function showResults() {
 // =============================================================================
 // 处理网格：进度和结果共用，处理完不会消失
 // =============================================================================
+// 每张图一张卡片：缩略图（原图）+ 右上角进度圈 + 文件名 + 状态行。
+// 前端给每张图记一个进度模型 tiles[i]，由一个 requestAnimationFrame 循环统一画所有进度圈和顶部总进度条。
+// 两者用的是同一组数字（总进度 = 所有圈的平均值），所以永远对得上。
+//
+// 阶段（tile.phase）和进度圈：
+//   waiting     等待上传   0%，灰弧；缩略图最模糊
+//   uploading   上传中     0→50%，按真实上传字节；缩略图随之从模糊变清晰
+//   queued      排队中     停在 50%，灰弧
+//   processing  处理中     50% → 最多 95%，按预计耗时缓动（估算，见 EXPECTED_PROCESS_MS）
+//   done        完成       补满 100%（绿）→ 原图背景从中心向外变透明，露出棋盘格上的抠图结果 → 出现对勾
+//   failed      失败       红圈 + ✕
+//   stalled     整批出错   圈停在原处变灰，不再前进
+let tiles = [];       // 进度模型，下标 = 图片 idx
+let tileUrls = [];    // 缩略图的 objectURL，换一批时释放，避免内存泄漏
+let progressRaf = 0;  // 已预约的动画帧（0 = 循环已停）
+let lastFrameAt = 0;
+let barDrawn = -1;    // 顶部进度条上次画的值（没变就不碰 DOM）
+let barPct = -1;
+
+// 服务端 status → 进度模型的阶段
+function phaseOf(status) {
+  if (status === "done" || status === "failed" || status === "processing") return status;
+  return "queued";
+}
+
+// 圈和状态行的颜色：灰 = 在等；墨黑 = 正在动；绿 = 完成；红 = 失败（完整类名写出来，Tailwind 才扫描得到）
+const ARC_TONES = {
+  muted: ["stroke-gray-400", "dark:stroke-zinc-500"],
+  ink: ["stroke-gray-900", "dark:stroke-zinc-100"],
+  done: ["stroke-brand-600", "dark:stroke-brand-400"],
+  failed: ["stroke-red-600", "dark:stroke-red-400"],
+};
+const LINE_TONES = {
+  muted: ["text-gray-500", "dark:text-zinc-400"],
+  ink: ["text-gray-700", "dark:text-zinc-300"],
+  done: ["text-brand-700", "dark:text-brand-400"],
+  failed: ["text-red-600", "dark:text-red-400"],
+};
+const PHASE_TONE = { waiting: "muted", uploading: "ink", queued: "muted", processing: "ink", done: "done", failed: "failed", stalled: "muted" };
+function setTone(el, tones, tone) {
+  Object.values(tones).forEach((cls) => el.classList.remove(...cls));
+  el.classList.add(...tones[tone]);
+}
+
 // 进度圈（SVG）：底圈 + 进度弧。pathLength=100，stroke-dasharray 直接用百分比。
-//   排队 → 空圈；上传 → 按真实字节填到 50%；抠图 → 弧线转动（服务端没有百分比，不做假进度）；
-//   完成 → 补满 + 打勾；失败 → 红圈 + ✕
+// 弧长每帧由 drawTile 设置，所以不给 dasharray 加 CSS 过渡（只给颜色加过渡）。
 function ringHTML() {
   return `
     <span data-ring role="img" class="absolute right-1.5 top-1.5 grid h-8 w-8 place-items-center rounded-full bg-white/90 shadow-sm dark:bg-zinc-900/90">
-      <svg data-ring-svg viewBox="0 0 36 36" class="h-7 w-7 -rotate-90" aria-hidden="true">
+      <svg viewBox="0 0 36 36" class="h-7 w-7 -rotate-90" aria-hidden="true">
         <circle cx="18" cy="18" r="14" fill="none" stroke-width="3.5" class="stroke-gray-200 dark:stroke-zinc-700"></circle>
         <circle data-arc cx="18" cy="18" r="14" fill="none" stroke-width="3.5" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100"
-          class="stroke-gray-900 transition-[stroke-dasharray] duration-200 ease-out motion-reduce:transition-none dark:stroke-zinc-100"></circle>
+          class="transition-colors duration-200 motion-reduce:transition-none"></circle>
       </svg>
       <svg data-ring-done class="absolute hidden h-3.5 w-3.5 text-brand-700 dark:text-brand-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-8 8a1 1 0 01-1.4 0l-4-4a1 1 0 111.4-1.4L8 12.6l7.3-7.3a1 1 0 011.4 0z" clip-rule="evenodd"/></svg>
       <svg data-ring-fail class="absolute hidden h-3 w-3 text-red-600 dark:text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
     </span>`;
 }
 
-// 改变某张图的进度圈。state: queued | uploading | processing | done | failed；frac = 上传进度 0~1
-function setRing(li, ringState, frac = 0) {
-  const ring = li.querySelector("[data-ring]");
-  if (!ring) return;
-  const svg = ring.querySelector("[data-ring-svg]");
-  const arc = ring.querySelector("[data-arc]");
-  const SPIN = ["animate-spin", "motion-reduce:animate-none"];
-  svg.classList.remove(...SPIN);
-  arc.classList.remove("stroke-brand-600", "dark:stroke-brand-400", "stroke-red-600", "dark:stroke-red-400");
-  arc.classList.add("stroke-gray-900", "dark:stroke-zinc-100");
-  show(ring.querySelector("[data-ring-done]"), ringState === "done");
-  show(ring.querySelector("[data-ring-fail]"), ringState === "failed");
-  let dash = 0;
-  if (ringState === "uploading") dash = Math.round(Math.max(0, Math.min(1, frac)) * 50);
-  else if (ringState === "processing") { dash = 30; svg.classList.add(...SPIN); }
-  else if (ringState === "done" || ringState === "failed") {
-    dash = 100;
-    arc.classList.remove("stroke-gray-900", "dark:stroke-zinc-100");
-    arc.classList.add(...(ringState === "done" ? ["stroke-brand-600", "dark:stroke-brand-400"] : ["stroke-red-600", "dark:stroke-red-400"]));
+// 某张图此刻「应该」显示的进度（0~1）。真正画出来的 tile.shown 会平滑地追上它，而且只增不减
+function tileTarget(tile, now) {
+  switch (tile.phase) {
+    case "uploading": return RING_UPLOAD_END * tile.upload;
+    case "queued": return RING_UPLOAD_END;
+    case "processing": {
+      // 减少动画：不做随时间走的估算，停在 50%，靠墨黑色的弧和「正在抠图」文字表示在处理
+      if (reduceMotion) return RING_UPLOAD_END;
+      const expected = EXPECTED_PROCESS_MS[state.job && state.job.profile] || EXPECTED_PROCESS_MS.fast;
+      const p = 1 - Math.exp((-PROCESS_CURVE_K * Math.max(0, now - tile.procStart)) / expected);
+      return RING_UPLOAD_END + (RING_PROCESS_CAP - RING_UPLOAD_END) * p;
+    }
+    case "done":
+    case "failed": return 1;
+    default: return tile.shown; // waiting（还是 0）/ stalled（停在原处）
   }
-  arc.setAttribute("stroke-dasharray", `${dash} 100`);
-  const label = ringState === "uploading" ? t("tileUploading", { p: Math.round(frac * 100) }) : t(`tile_${ringState}`);
-  ring.setAttribute("aria-label", label);
-  const line = li.querySelector("[data-line]");
-  if (line && ringState !== "failed") line.textContent = label;
 }
 
-function buildRunGrid() {
+// 有进度要画时调用：启动动画循环（已经在跑就什么都不做）
+function kickProgress() {
+  if (progressRaf) return;
+  lastFrameAt = performance.now();
+  progressRaf = requestAnimationFrame(progressFrame);
+}
+
+function progressFrame(now) {
+  progressRaf = 0;
+  // 切到后台再回来时两帧间隔可能很大：限制一下追赶系数（目标值本身按真实时间算，不受影响）
+  const dt = Math.min(100, Math.max(0, now - lastFrameAt));
+  lastFrameAt = now;
+  const ease = reduceMotion ? 1 : 1 - Math.exp(-dt / RING_SMOOTH_MS);
+  let busy = false;
+  let sum = 0;
+  tiles.forEach((tile) => {
+    const target = tileTarget(tile, now);
+    if (target > tile.shown) {
+      const next = tile.shown + (target - tile.shown) * ease;
+      tile.shown = target - next < 0.001 ? target : next; // 足够接近就直接对齐，循环才停得下来
+    }
+    // 还没追上目标，或者正在处理（目标值本身随时间在走）：下一帧继续
+    if (tile.shown < target || (tile.phase === "processing" && !reduceMotion)) busy = true;
+    drawTile(tile);
+    sum += tile.shown;
+  });
+  drawBar(tiles.length ? sum / tiles.length : 0);
+  if (busy) progressRaf = requestAnimationFrame(progressFrame);
+}
+
+// 画一张图：进度弧 + 上传时的模糊（只在数值变了时才写 DOM，200 张也不卡）
+function drawTile(tile) {
+  const v = Math.round(tile.shown * 1000) / 10; // 百分比，保留 1 位小数
+  if (v !== tile.drawn) {
+    tile.drawn = v;
+    tile.arc.setAttribute("stroke-dasharray", `${v} 100`);
+    tile.arc.style.opacity = v > 0 ? "" : "0"; // 0% 时圆头线帽会画出一个小点，干脆隐藏
+  }
+  if (tile.img) {
+    // 上传进度 → 模糊程度：一个字节都没传是 12px，传完是 0（按 0.25px 取整，减少无意义的重绘）。
+    // 用 shown（只增不减）而不是原始上传进度，所以上传失败重试时缩略图不会重新变糊
+    const left = Math.max(0, 1 - tile.shown / RING_UPLOAD_END);
+    const blur = reduceMotion ? 0 : Math.round(UPLOAD_BLUR_PX * left * 4) / 4;
+    if (blur !== tile.blur) {
+      tile.blur = blur;
+      tile.img.style.filter = blur ? `blur(${blur}px)` : "";
+    }
+  }
+}
+
+// 顶部总进度条 = 所有进度圈的平均值
+function drawBar(frac) {
+  const v = Math.round(frac * 1000) / 1000;
+  if (v === barDrawn) return;
+  barDrawn = v;
+  // 用 transform 缩放而不是改 width：不触发重新布局，每帧更新也便宜
+  els.progressBar.style.transform = `scaleX(${v})`;
+  const pct = Math.round(v * 100);
+  if (pct !== barPct) {
+    barPct = pct;
+    els.progressBar.parentElement.setAttribute("aria-valuenow", String(pct));
+  }
+}
+
+// 清空网格：释放缩略图、丢掉进度模型，进度条归零
+function resetRunGrid() {
+  tileUrls.forEach((u) => URL.revokeObjectURL(u));
+  tileUrls = [];
+  tiles = [];
+  els.runGrid.innerHTML = "";
+  kickProgress();
+}
+
+// 画网格。fromServer = 按服务端返回的状态直接画（刷新 / 从处理记录恢复时，不重播已经发生的动效）；
+// 否则是刚提交的新一批，全部从「等待上传」开始
+function buildRunGrid(fromServer = false) {
+  resetRunGrid();
   const sources = state.job && state.job.sources;
   els.runGrid.innerHTML = state.images.map((im, i) => {
-    const src = sources && sources[i] ? URL.createObjectURL(sources[i]) : "";
+    let src = "";
+    if (sources && sources[i]) { src = URL.createObjectURL(sources[i]); tileUrls.push(src); }
+    // 原图和结果图都放在 data-preview-pad 这个 1×1 网格的同一格里、都用 object-contain：
+    // 两张图比例相同，主体位置完全重合，完成特效里原图背景消失时，主体看起来纹丝不动
     return `
     <li data-tile="${i}">
       <button type="button" data-open="${i}" disabled
-        class="group relative block aspect-square w-full overflow-hidden rounded-lg border border-gray-200 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 enabled:cursor-zoom-in dark:border-zinc-800 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-preview-bg>
-        ${src ? `<img data-src-img src="${src}" alt="" loading="lazy" decoding="async" class="absolute inset-0 h-full w-full object-cover opacity-60 transition-opacity duration-200 motion-reduce:transition-none">` : ""}
-        <span class="absolute inset-0 flex items-center justify-center transition-[padding] duration-200 ease-out motion-reduce:transition-none" data-preview-pad></span>
+        class="group relative block aspect-square w-full overflow-hidden rounded-lg border border-gray-200 text-left transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 enabled:cursor-zoom-in motion-reduce:transition-none dark:border-zinc-800 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-preview-bg>
+        <span class="absolute inset-0 grid grid-cols-1 grid-rows-1 place-items-center transition-[padding] duration-200 ease-out motion-reduce:transition-none" data-preview-pad>
+          ${src ? `<img data-src-img src="${src}" alt="" loading="lazy" decoding="async" class="col-start-1 row-start-1 h-full w-full object-contain">` : ""}
+        </span>
         ${ringHTML()}
       </button>
-      <p class="mt-1.5 truncate text-xs font-medium text-gray-800 dark:text-zinc-200" title="${escapeHtml(im.filename || "")}">${escapeHtml(im.filename || "")}</p>
-      <p data-line class="mt-0.5 truncate text-xs text-gray-600 dark:text-zinc-400"></p>
+      <p class="mt-2 truncate text-xs font-medium text-gray-900 dark:text-zinc-100" title="${escapeHtml(im.filename || "")}">${escapeHtml(im.filename || "")}</p>
+      <p data-line class="mt-0.5 truncate text-xs tabular-nums"></p>
     </li>`;
   }).join("");
   applyOutputPreview(els.runGrid);
-  state.images.forEach((im, i) => setTileStatus(i, im.status === "done" || im.status === "failed" ? im.status : (im.status === "queued" ? "queued" : "processing")));
+  tiles = state.images.map((im, i) => {
+    const li = els.runGrid.querySelector(`[data-tile="${i}"]`);
+    return {
+      li, arc: li.querySelector("[data-arc]"), img: li.querySelector("[data-src-img]"),
+      phase: null, upload: 0, procStart: 0, shown: 0, drawn: -1, blur: -1, stalledKey: "",
+    };
+  });
+  state.images.forEach((im, i) => setTileStatus(i, fromServer ? phaseOf(im.status) : "waiting", { instant: true }));
   updateCounts();
 }
 
-// 目录顶部计数：已完成 / 处理中 / 失败
+// 目录顶部计数：已完成 / 进行中 / 失败（失败为 0 时不显示）。每项前面一个和进度圈同色的小圆点
+let countsHTML = "";
 function updateCounts() {
   const total = state.images.length;
   const done = state.images.filter((im) => im.status === "done").length;
   const failed = state.images.filter((im) => im.status === "failed").length;
   show(els.dirTitle.parentElement, total > 0); // 没有图片（如已过期）时不显示空目录头
   els.dirTitle.textContent = t("dirTitle", { n: fmt(total) });
-  els.dirCounts.textContent = t("dirCounts", { d: fmt(done), p: fmt(Math.max(0, total - done - failed)), f: fmt(failed) });
+  const items = [
+    ["dirDone", done, "bg-brand-500"],
+    ["dirActive", Math.max(0, total - done - failed), "bg-gray-400 dark:bg-zinc-500"],
+  ];
+  if (failed) items.push(["dirFailed", failed, "bg-red-500"]);
+  const html = items.map(([key, n, dot]) =>
+    `<span class="inline-flex items-center gap-1.5"><span class="h-1.5 w-1.5 rounded-full ${dot}" aria-hidden="true"></span>${escapeHtml(t(key, { n: fmt(n) }))}</span>`).join("");
+  // 数字没变就不重写：这一行是 aria-live，重写会让读屏软件每次轮询都念一遍
+  if (html !== countsHTML) { countsHTML = html; els.dirCounts.innerHTML = html; }
 }
 
-function setTileStatus(i, status, frac = 0) {
-  const li = els.runGrid.querySelector(`[data-tile="${i}"]`);
-  if (!li) return;
+// 改变某张图的阶段。opts：frac = 上传进度 0~1；instant = 直接跳到该阶段的进度、不播放动效；delay = 完成特效的延迟（毫秒）
+function setTileStatus(i, phase, opts = {}) {
+  const tile = tiles[i];
+  if (!tile) return;
+  const { li } = tile;
   const im = state.images[i] || {};
-  const btn = li.querySelector("[data-open]");
+  const changed = tile.phase !== phase;
+  tile.phase = phase;
+  if (phase === "uploading") tile.upload = Math.max(0, Math.min(1, opts.frac || 0));
+  // 「开始处理」的时间 = 第一次看到 processing 的时刻（接口不提供，前端自己记；出错后恢复时沿用第一次的时间）
+  if (phase === "processing" && !tile.procStart) tile.procStart = performance.now();
+  if (opts.instant) tile.shown = Math.max(tile.shown, tileTarget(tile, performance.now()));
+
+  const ring = li.querySelector("[data-ring]");
   const line = li.querySelector("[data-line]");
-  const srcImg = li.querySelector("[data-src-img]");
-  if (status === "done" && im.download_url) {
-    setRing(li, "done");
-    // 结果图出来时才创建 <img>（不留空 src 的占位图），淡入后盖住原图
-    let result = li.querySelector("[data-result]");
-    if (!result) {
-      result = document.createElement("img");
-      result.dataset.result = "";
-      result.alt = "";
-      result.className = "h-full w-full object-contain opacity-0 transition-opacity duration-300 motion-reduce:transition-none";
-      li.querySelector("[data-preview-pad]").appendChild(result);
-    }
-    if (result.dataset.loaded !== im.image_id) {
-      result.dataset.loaded = im.image_id;
-      result.onload = () => {
-        result.classList.remove("opacity-0");
-        // 先去掉 opacity-60 再加 opacity-0：两个类同时存在时 CSS 里后定义的会赢，原图背景会透出来
-        if (srcImg) { srcImg.classList.remove("opacity-60"); srcImg.classList.add("opacity-0"); }
-      };
-      result.src = im.download_url;
-    }
-    btn.disabled = false;
-    btn.setAttribute("aria-label", im.filename || "");
-  } else if (status === "failed") {
-    setRing(li, "failed");
-    line.textContent = t(IMAGE_ERRORS[im.error] || "errImgDefault");
-    line.classList.add("text-red-600", "dark:text-red-400");
-    line.classList.remove("text-gray-600", "dark:text-zinc-400");
-    line.title = line.textContent;
-  } else {
-    setRing(li, status, frac);
+  let label;
+  if (phase === "uploading") label = t("tileUploading", { p: Math.round(tile.upload * 100) });
+  else if (phase === "failed") label = t(IMAGE_ERRORS[im.error] || "errImgDefault");
+  else if (phase === "stalled") label = t(tile.stalledKey || "tile_stopped");
+  else label = t(`tile_${phase}`);
+  line.textContent = label;
+  line.title = phase === "failed" ? label : ""; // 失败原因可能被截断，悬停能看全
+  ring.setAttribute("aria-label", phase === "failed" ? t("tile_failed") : label);
+
+  if (changed) {
+    const tone = PHASE_TONE[phase];
+    setTone(tile.arc, ARC_TONES, tone);
+    setTone(line, LINE_TONES, tone);
+    // 失败的卡片描边变红：200 张里一眼能找到是哪几张
+    const btn = li.querySelector("[data-open]");
+    const failed = phase === "failed";
+    btn.classList.toggle("border-gray-200", !failed);
+    btn.classList.toggle("dark:border-zinc-800", !failed);
+    btn.classList.toggle("border-red-300", failed);
+    btn.classList.toggle("dark:border-red-500/50", failed);
+    show(ring.querySelector("[data-ring-fail]"), failed);
+    show(ring.querySelector("[data-ring-done]"), false); // 对勾等完成特效播完再出现（见 finishResult）
+    if (phase === "done") showResult(tile, im, opts);
   }
+  kickProgress();
+}
+
+// 完成：把抠图结果放在原图「下面」，加载好后让原图背景从中心向外变透明（src/input.css 的 .batch-reveal），
+// 露出棋盘格上的抠图结果，最后出现对勾
+function showResult(tile, im, { instant = false, delay = 0 } = {}) {
+  const btn = tile.li.querySelector("[data-open]");
+  btn.disabled = false;
+  btn.setAttribute("aria-label", im.filename || "");
+  if (!im.download_url) { finishResult(tile, false); return; }
+  const result = document.createElement("img");
+  result.dataset.result = "";
+  result.alt = "";
+  result.decoding = "async";
+  // 没有原图（从处理记录打开）时结果图淡入；有原图时它被原图盖着，淡入看不见，不影响
+  result.className = "col-start-1 row-start-1 h-full w-full object-contain opacity-0 transition-opacity duration-200 motion-reduce:transition-none";
+  tile.li.querySelector("[data-preview-pad]").prepend(result); // 排在原图前面 = 画在原图下面
+  result.onload = () => {
+    result.classList.remove("opacity-0");
+    const src = tile.img;
+    if (!src || instant || reduceMotion) {
+      if (src) src.classList.add("hidden");
+      finishResult(tile, false);
+      return;
+    }
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      src.classList.add("hidden");
+      src.classList.remove("batch-reveal");
+      finishResult(tile, true);
+    };
+    src.addEventListener("animationend", finish, { once: true });
+    setTimeout(finish, delay + 1500); // 兜底：元素被隐藏等情况下 animationend 不会触发，到时间也收尾
+    src.style.animationDelay = `${delay}ms`;
+    src.classList.add("batch-reveal");
+  };
+  // 结果图加载失败（网络问题）：保留原图，只标记完成；大图查看和下载前会重新拉下载地址
+  result.onerror = () => finishResult(tile, false);
+  result.src = im.download_url;
+}
+
+// 完成特效收尾：出现对勾（pop = 播放一个很短的弹出动画）
+function finishResult(tile, pop) {
+  if (tile.phase !== "done") return;
+  const check = tile.li.querySelector("[data-ring-done]");
+  show(check, true);
+  check.classList.toggle("batch-check-in", pop && !reduceMotion);
 }
 
 els.runGrid.addEventListener("click", (e) => {
@@ -828,7 +1048,7 @@ function forgetJob() {
   if (new URLSearchParams(location.search).has("job")) history.replaceState({}, "", location.pathname);
   state.job = null;
   state.images = [];
-  els.runGrid.innerHTML = "";
+  resetRunGrid();
 }
 
 function goSelect() {
@@ -1007,7 +1227,7 @@ async function boot() {
       state.job = { job_id: saved.job_id, total: saved.total, sources };
       state.images = [];
       setPhase("running");
-      setProgress(t("stResumed"), 0.42);
+      setProgress(t("stResumed"));
       show(els.progressNote, true);
       pollJob();
     } else if (saved) {
