@@ -1,0 +1,31 @@
+pro-i18n.js
+  s_d68abd4a9001d4::t_d70e61de8f69ad 39-40,460-461
+tests/login-redirect.test.mjs
+  s_d68abd4a9001d4::t_3af312b39d1d10 27,156-265
+pro-account.js
+  s_d68abd4a9001d4::t_d70e61de8f69ad 325,327-331
+  s_d68abd4a9001d4::t_8d3449a927ef08 108-111,118-184,322-324
+  s_d68abd4a9001d4::t_5705b4792c10f8 326
+account/batches/index.html
+  s_d68abd4a9001d4::t_b4bf75dd04fbf0 207-209
+batch/batch.js
+  s_d68abd4a9001d4::t_d70e61de8f69ad 1230-1232
+account/account-ui.js
+  s_d68abd4a9001d4::t_d70e61de8f69ad 221-224
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "2a819a81af07c9496783a577e0fd380ccd4be132",
+  "prompts": {},
+  "sessions": {
+    "s_d68abd4a9001d4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7f01a002-54a3-4986-9505-34fd709ba9f0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "midcodehub <408124546@qq.com>"
+    }
+  }
+}
