@@ -204,6 +204,9 @@
 
         // ---------- 登录（登录后回到本页） ----------
         const setMsg = (key) => { $("login-msg").textContent = key ? t(key) : ""; };
+        // 上一次登录没有完成（用户取消授权 / 公司管理员还没批准……）：给个提示
+        const loginFailed = MiaoCutPro.authErrorKind && MiaoCutPro.authErrorKind();
+        if (loginFailed) setMsg(loginFailed === "declined" ? "loginDeclined" : "loginIncomplete");
         $("google-btn").addEventListener("click", () => {
             MiaoCutPro.signInWithGoogle(location.href).catch((e) =>
                 setMsg(e && e.message === "auth_unavailable" ? "loginUnavailable" : "loginGoogleFailed"));

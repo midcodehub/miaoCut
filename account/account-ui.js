@@ -218,6 +218,10 @@ export function mountLogin(root, MiaoCutPro, { t }) {
     }
   });
   MiaoCutPro.mountProviderButtons(root, { onError: () => setMsg("loginOAuthFailed") });
+
+  // 上一次登录没有完成（用户取消了授权 / 公司管理员还没批准 MiaoCut……）：给个提示，别让人对着登录页发懵
+  const failed = MiaoCutPro.authErrorKind && MiaoCutPro.authErrorKind();
+  if (failed) setMsg(failed === "declined" ? "loginDeclined" : "loginIncomplete");
 }
 
 /** 本地模拟模式：页面顶部一条提示，免得把假数据当真 */
