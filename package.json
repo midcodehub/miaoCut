@@ -11,6 +11,7 @@
     "build": "npm run build:css && npm run build:i18n && npm run build:assets",
     "og": "node scripts/og/generate.mjs",
     "test:editor": "node --test tests/editor-engine.test.cjs",
+    "test:login": "node --test tests/login-redirect.test.mjs",
     "check:seo": "node scripts/seo-guard.mjs"
   },
   "devDependencies": {

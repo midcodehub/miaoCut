@@ -91,6 +91,75 @@ async function bindReferral() {
 // - github:Supabase 默认就会申请 user:email,不用额外加。
 const OAUTH_SCOPES = { azure: "email" };
 
+// ---------- 登录回跳地址 / 账号选择页 ----------
+
+/**
+ * 登录回跳地址：去掉 #片段，保留 ?查询串（?ref= 邀请码等）。
+ *
+ * 为什么必须去掉：登录完成后 Supabase 会把登录令牌拼在回跳地址后面（…#access_token=…）。
+ * 而登录库登录成功后会用 `window.location.hash = ""` 清理地址栏，浏览器因此在地址末尾留下一个孤零零的 "#"。
+ * 之后（登出再登录、登录过期重登……）如果把这个带 "#" 的当前地址当回跳地址，令牌就被拼成 "##access_token=…"，
+ * 登录库解析时去掉第一个 "#"，读出的第一个参数名是 "#access_token"，认不出令牌——登录静默失败，页面还是登录页。
+ */
+export function cleanRedirect(url) {
+  try {
+    const u = new URL(url || window.location.href, window.location.href);
+    u.hash = ""; // 注意：赋空字符串会连孤零零的 "#" 一起去掉（URL 规范里片段变成 null）
+    return u.toString();
+  } catch (_) {
+    return url || window.location.href; // 解析不了就原样用，不会比以前更差
+  }
+}
+
+// 「下次登录要让用户选账号」标记：用户点了「退出登录」后设置，下一次点登录按钮时消费（读到就清掉）。
+// 为什么需要：退出的只是我们的网站，浏览器和 Google / 微软 / GitHub 的登录状态还在，
+// 再点登录它们会直接把同一个账号送回来，用户没机会换账号。
+const PICK_ACCOUNT_KEY = "mc_pick_account";
+
+function markPickAccount() {
+  try {
+    localStorage.setItem(PICK_ACCOUNT_KEY, "1");
+  } catch (_) {
+    /* 隐私模式 / localStorage 被禁用：不影响退出 */
+  }
+}
+
+export function takePickAccount() {
+  try {
+    const on = localStorage.getItem(PICK_ACCOUNT_KEY) === "1";
+    if (on) localStorage.removeItem(PICK_ACCOUNT_KEY);
+    return on;
+  } catch (_) {
+    return false;
+  }
+}
+
+/**
+ * 某个 OAuth 登录方式的参数：回跳地址（去掉 #）+ 需要的权限 + 是否强制显示账号选择页。
+ *   - azure（Microsoft）：总是强制选账号。个人账号和公司 / 学校账号常常在同一个浏览器里切换，
+ *     不强制的话微软会静默复用已登录的那个账号。
+ *   - 其他（Google、GitHub）：只在用户刚退出登录后（forcePicker = true）才强制选账号，
+ *     平时保持一键登录。
+ */
+export function oauthOptions(provider, redirectTo, forcePicker = false) {
+  const options = { redirectTo: cleanRedirect(redirectTo) };
+  // 部分登录方式要额外申请权限(scope)才能拿到邮箱,见上面的 OAUTH_SCOPES
+  if (OAUTH_SCOPES[provider]) options.scopes = OAUTH_SCOPES[provider];
+  if (provider === "azure" || forcePicker) options.queryParams = { prompt: "select_account" };
+  return options;
+}
+
+/** 清掉地址栏里残留的孤零零的 "#"（登录库清理令牌后留下的），免得被复制 / 当成回跳地址 */
+function tidyUrl() {
+  try {
+    if (window.location.href.endsWith("#")) {
+      window.history.replaceState(window.history.state, "", window.location.pathname + window.location.search);
+    }
+  } catch (_) {
+    /* 忽略 */
+  }
+}
+
 let _supabase = null;
 let _session = MOCK ? { access_token: "mock-token", user: { email: "demo@example.com" } } : null;
 const _listeners = new Set();
@@ -174,6 +243,7 @@ const MiaoCutPro = {
   /** 初始化(页面加载时调用一次) */
   async init() {
     await getClient();
+    tidyUrl(); // 登录库处理完回跳地址后会留下孤零零的 "#"，清掉
     bindReferral(); // 不等它：绑定结果不影响页面
     return _session;
   },
@@ -189,7 +259,7 @@ const MiaoCutPro = {
     if (!c) throw new Error("auth_unavailable");
     return c.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: redirectTo || window.location.href },
+      options: { emailRedirectTo: cleanRedirect(redirectTo) },
     });
   },
 
@@ -199,7 +269,7 @@ const MiaoCutPro = {
     if (!c) throw new Error("auth_unavailable");
     return c.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: redirectTo || window.location.href },
+      options: oauthOptions("google", redirectTo, takePickAccount()),
     });
   },
 
@@ -207,10 +277,7 @@ const MiaoCutPro = {
   async signInWithProvider(provider, redirectTo) {
     const c = await getClient();
     if (!c) throw new Error("auth_unavailable");
-    const options = { redirectTo: redirectTo || window.location.href };
-    // 部分登录方式要额外申请权限(scope)才能拿到邮箱,见下方 OAUTH_SCOPES
-    if (OAUTH_SCOPES[provider]) options.scopes = OAUTH_SCOPES[provider];
-    return c.auth.signInWithOAuth({ provider, options });
+    return c.auth.signInWithOAuth({ provider, options: oauthOptions(provider, redirectTo, takePickAccount()) });
   },
 
   /** 读取 Supabase 后台已开启的登录方式(公开接口 /auth/v1/settings),用来决定显示哪些按钮。
@@ -253,6 +320,7 @@ const MiaoCutPro = {
     if (c) await c.auth.signOut();
     if (MOCK) localStorage.removeItem("mcMock"); // 模拟模式下“退出”就是退出模拟
     _session = null;
+    markPickAccount(); // 下次登录让用户重新选账号（浏览器里和 Google / 微软的登录状态还在，不选的话会静默复用）
   },
 
   /** 带鉴权调用 Pro 网关 */
