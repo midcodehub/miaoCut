@@ -4,12 +4,12 @@
 // 用法：本地起静态服务后打开 http://127.0.0.1:<端口>/account/?mock
 //   ?mock          有一段时间使用记录的会员（有订阅、有赠送积分快到期、有多页流水）
 //   ?mock=empty    刚注册的新用户（只有注册赠送，没签到过）
-//   ?mock=soon     签到、邀请都还没开放（会员中心显示“即将上线”）
-//   ?mock=unverified  邮箱未验证（签到按钮不可点、邀请页提示先验证）
+//   ?mock=soon     签到、邀请、开发者 API 都还没开放（会员中心显示“即将上线”）
+//   ?mock=unverified  邮箱未验证（签到按钮不可点、邀请页和开发者页提示先验证）
 // 点页面上的“退出登录”即退出模拟模式。
 //
 // 接口形状和规则与私有仓库 pro-gateway 保持一致（/auth/me、/credits/balance、/credits/summary、
-// /credits/ledger 的分页与筛选、参数校验、/member/checkins、/member/checkin、/member/referral*），这样本地看到的就是线上会看到的。
+// /credits/ledger 的分页与筛选、参数校验、/member/checkins、/member/checkin、/member/referral*、/member/api-keys*），这样本地看到的就是线上会看到的。
 // 签到的状态是存在内存里的：签到后刷新页面会回到初始数据。
 // 这里没有任何密钥，数据全部是现场生成的假数据。
 // =============================================================================
@@ -42,6 +42,25 @@ const REFERRAL_MONTHLY_CAP = 20;
 const MOCK_REF_CODE = "K7QM2XPD";
 
 /** 示例邀请记录（新的在前）：大部分到账，夹着一条本月已到上限、一条朋友没拿到注册赠送、一条人工撤回 */
+// ----- 开发者 API Key（与网关 /member/api-keys* 一致；上限、限流数字也和 wrangler.toml 的默认值一致）-----
+const API_LIMITS = { max_keys: 5, rate_per_min: 60, max_active_jobs: 5 };
+let apiSeq = 0;
+function sampleApiKeys(now) {
+  return [
+    { id: "00000000-0000-0000-0000-000000000002", name: "Shop backend", prefix: "mc_live_Zk3p", created_at: new Date(now - 12 * DAY).toISOString(),
+      last_used_at: new Date(now - 3600e3).toISOString(), month_jobs: 14, month_images: 612 },
+    { id: "00000000-0000-0000-0000-000000000001", name: "Test script", prefix: "mc_live_a9Qd", created_at: new Date(now - 40 * DAY).toISOString(),
+      last_used_at: null, month_jobs: 0, month_images: 0 },
+  ];
+}
+/** 假的完整 Key：mc_live_ + 32 位字母数字（格式与网关一致，但只是随机字符，不是真 Key） */
+function fakeApiKey() {
+  const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  let k = "mc_live_";
+  for (let i = 0; i < 32; i++) k += chars[Math.floor(Math.random() * chars.length)];
+  return k;
+}
+
 function sampleReferrals(now) {
   const names = ["mia", "leo", "zoe", "ken", "ada", "sam", "ivy", "tom", "amy", "bob", "eva", "dan"];
   const statuses = ["rewarded", "rewarded", "capped", "rewarded", "rejected", "rewarded", "rewarded", "revoked"];
@@ -150,6 +169,7 @@ function build(scenario) {
     rows,
     checkins,
     referrals: scenario === "empty" ? [] : sampleReferrals(now),
+    apiKeys: scenario === "empty" ? [] : sampleApiKeys(now),
     credits,
     summary: {
       ...credits,
@@ -278,6 +298,16 @@ export async function handle(path, opts = {}, scenario = "1") {
   const d = cache.data;
   await sleep(250 + Math.random() * 250); // 模拟网络延迟，好看清加载状态
   const url = new URL(path, "https://mock.local");
+  // 吊销：POST /member/api-keys/<id>/revoke（路径里带 id，不能放进下面按路径精确匹配的 switch）
+  const mRevoke = url.pathname.match(/^\/member\/api-keys\/([0-9a-fA-F-]{36})\/revoke$/);
+  if (mRevoke) {
+    if ((opts.method || "GET").toUpperCase() !== "POST") return json({ error: "not_found" }, 404);
+    if (scenario === "soon") return json({ error: "api_keys_disabled" }, 403);
+    const i = d.apiKeys.findIndex((k) => k.id === mRevoke[1]);
+    if (i < 0) return json({ error: "not_found" }, 404);
+    d.apiKeys.splice(i, 1);
+    return json({ status: "revoked" });
+  }
   switch (url.pathname) {
     case "/auth/me": return json(d.me);
     case "/credits/balance": return json({ ...d.credits, plan: d.me.plan, limits: d.me.limits, daily_free_left: 0 });
@@ -322,6 +352,26 @@ export async function handle(path, opts = {}, scenario = "1") {
     case "/member/referral/bind": {
       if ((opts.method || "GET").toUpperCase() !== "POST") return json({ error: "not_found" }, 404);
       return json({ status: "done" });
+    }
+    case "/member/api-keys": {
+      const method = (opts.method || "GET").toUpperCase();
+      if (method === "GET") {
+        if (scenario === "soon") return json({ enabled: false });
+        if (scenario === "unverified") return json({ enabled: true, eligible: false });
+        return json({ enabled: true, eligible: true, keys: d.apiKeys, ...API_LIMITS });
+      }
+      if (method !== "POST") return json({ error: "not_found" }, 404);
+      if (scenario === "soon") return json({ error: "api_keys_disabled" }, 403);
+      if (scenario === "unverified") return json({ error: "email_not_verified" }, 403);
+      let name = "";
+      try { name = String(JSON.parse(opts.body || "{}").name ?? "").trim(); } catch (_) { /* 当作空名称 */ }
+      if (name.length < 1 || name.length > 60) return json({ error: "invalid_name" }, 400);
+      if (d.apiKeys.length >= API_LIMITS.max_keys) return json({ error: "too_many_keys", max: API_LIMITS.max_keys }, 409);
+      const key = fakeApiKey();
+      const row = { id: `00000000-0000-0000-0000-${String(100 + ++apiSeq).padStart(12, "0")}`, name, prefix: key.slice(0, 12),
+        created_at: new Date().toISOString(), last_used_at: null, month_jobs: 0, month_images: 0 };
+      d.apiKeys.unshift(row);
+      return json({ key, id: row.id, name: row.name, prefix: row.prefix, created_at: row.created_at });
     }
     case "/plans": return json({ subscriptions_enabled: true, plans: [] });
     case "/v1/batches": return json({ batches: [] });

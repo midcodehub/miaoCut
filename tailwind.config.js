@@ -32,12 +32,16 @@ module.exports = {
     './account/batches/index.html',
     './account/checkin/index.html',
     './account/invite/index.html',
+    './account/api/index.html',
+    // 开发者 API 文档页（公开静态页，class 都在 HTML 里）
+    './api-docs/index.html',
     // 邀请落地页（公开页，noindex）
     './invite/index.html',
     // 会员页面共用模块：余额卡、流水列表、签到卡片和日历的 class 写在 JS 模板字符串里
     './account/account-ui.js',
     './account/checkin-ui.js',
     './account/referral-ui.js',
+    './account/api-ui.js',
     // 批量页：class 同时写在 HTML 和 batch.js 的模板字符串里
     './batch/index.html',
     './batch/batch.js',
