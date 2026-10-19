@@ -153,7 +153,9 @@ export function mountCheckinCard(root, MiaoCutPro, ctx) {
       flash = {
         tone: "ok",
         text: r.status === "already" ? t("checkinAlready")
-          : r.credits > 0 ? t("checkinSuccess", { n: fmt(r.credits) }) : t("checkinSuccessZero"),
+          : r.credits > 0
+            ? (r.valid_days ? t("checkinSuccessValid", { n: fmt(r.credits), d: r.valid_days }) : t("checkinSuccess", { n: fmt(r.credits) }))
+            : t("checkinSuccessZero"),
       };
       render({
         ...status,

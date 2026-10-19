@@ -13,9 +13,6 @@ export const fmt = (n) => Number(n || 0).toLocaleString();
 export const localeOf = (lang) => (lang === "zh" ? "zh-CN" : "en-US"); // 跟随页面语言，不跟浏览器
 const DAY = 86400e3;
 
-// 赠送积分每一笔的有效天数：与数据库 / 网关一致（私有仓库 docs/design-membership.md §3）
-export const BONUS_VALID_DAYS = 365;
-
 // 流水“类型”筛选 → 网关的 reason 参数（逗号分隔）
 export const LEDGER_FILTERS = {
   all: "",
@@ -26,7 +23,10 @@ export const LEDGER_FILTERS = {
   refund: "refund,dispute",
 };
 
-// 新到账的赠送积分类型：显示“有效期至”
+// 同一次“过期清理”写出的多条过期流水时间戳相同；相差不到 5 秒的合并成一行
+const EXPIRE_MERGE_MS = 5000;
+
+// 新到账的赠送积分类型：显示“有效期至”（每笔的真实到期日来自网关返回的 expires_at，不在这里推算）
 const BONUS_GRANTS = new Set(["signup_bonus", "checkin", "referral_reward", "promo", "admin"]);
 
 export function dateText(ms, lang, withTime = false) {
@@ -42,15 +42,20 @@ export function dateText(ms, lang, withTime = false) {
  *   数据库里 freeze 的 ref 是任务 id、release 的 ref 是图片 id，前端对不上任务，
  *   所以按时间归组：release 归到它之前最近的、24 小时内的那次 freeze（同时跑两批时可能归错组，
  *   但净变化和余额永远是对的）。翻页时把已加载的全部行一起重新整理，跨页的也能合并。
+ * 同样在“全部”视图里：赠送积分是按笔过期的（签到积分 30 天），不花积分的人几乎每天都有一笔到期，
+ *   同一次清理写出的多条「赠送积分过期」（时间戳相同）合并成一行，免得流水里每天多出一堆。
  * merge = false（只看收入 / 只看支出时）：一行一条，不合并（否则预扣和退回分属两边，合并后数字会误导）。
  */
 export function groupLedger(rows, merge = true) {
   const asc = rows.slice().sort((a, b) => Date.parse(a.created_at) - Date.parse(b.created_at) || a.id - b.id);
   const items = [];
   let lastBatch = null;
+  let lastExpired = null; // 上一条是“赠送积分过期”时指向它，用来把紧挨着的同一次清理的过期合并进来
   for (const r of asc) {
     const at = Date.parse(r.created_at);
+    const expiredOn = r.reason === "bonus_expired" ? /expires:(\d{4}-\d{2}-\d{2})/.exec(r.ref || "") : null;
     if (merge && r.reason === "freeze") {
+      lastExpired = null;
       lastBatch = { kind: "batch", reserved: -r.delta, returned: 0, delta: r.delta, at, balance: r.balance_after };
       items.push(lastBatch);
     } else if (merge && r.reason === "release" && lastBatch && at - lastBatch.at < DAY) {
@@ -58,8 +63,21 @@ export function groupLedger(rows, merge = true) {
       lastBatch.delta += r.delta;
       lastBatch.at = at;
       lastBatch.balance = r.balance_after;
+    } else if (merge && r.reason === "bonus_expired" && lastExpired && Math.abs(at - lastExpired.at) < EXPIRE_MERGE_MS) {
+      lastExpired.delta += r.delta;
+      lastExpired.balance = r.balance_after;
+      lastExpired.count += 1;
+      if (expiredOn) lastExpired.expiredDates.push(expiredOn[1]);
     } else {
-      items.push({ kind: "row", reason: r.reason, bucket: r.bucket, ref: r.ref, delta: r.delta, at, balance: r.balance_after });
+      lastExpired = null;
+      const item = {
+        kind: "row", reason: r.reason, bucket: r.bucket, ref: r.ref, delta: r.delta, at, balance: r.balance_after,
+        expires: r.expires_at ? Date.parse(r.expires_at) : null, // 赠送积分到账：这一笔的真实到期时间
+        count: 1,
+        expiredDates: expiredOn ? [expiredOn[1]] : [], // “赠送积分过期”：每笔当初的到期日（YYYY-MM-DD）
+      };
+      items.push(item);
+      if (merge && r.reason === "bonus_expired") lastExpired = item;
     }
   }
   return items.sort((a, b) => b.at - a.at);
@@ -107,11 +125,14 @@ export function ledgerItemHTML(item, { t, lang }) {
     title = reasonLabel(item.reason, t);
     kind = item.reason === "bonus_expired" || item.reason === "subscription_expired" ? "expired" : item.delta > 0 ? "in" : "out";
     if (BONUS_GRANTS.has(item.reason) && item.delta > 0) {
-      // 赠送积分：每笔 1 年有效，到账日 + 365 天
-      detail = t("ledgerValidUntil", { date: dateText(item.at + BONUS_VALID_DAYS * DAY, lang) });
-    } else if (item.reason === "bonus_expired") {
-      const m = /expires:(\d{4}-\d{2}-\d{2})/.exec(item.ref || "");
-      if (m) detail = t("ledgerExpiredOn", { date: dateText(Date.parse(m[1] + "T00:00:00Z"), lang) });
+      // 赠送积分：这一笔的真实到期日（网关返回；没有就不显示，宁可不写也不写错）
+      if (item.expires) detail = t("ledgerValidUntil", { date: dateText(item.expires, lang) });
+    } else if (item.reason === "bonus_expired" && item.expiredDates && item.expiredDates.length) {
+      const dates = item.expiredDates.slice().sort();
+      const day = (d) => dateText(Date.parse(d + "T00:00:00Z"), lang);
+      if (item.count <= 1) detail = t("ledgerExpiredOn", { date: day(dates[0]) });
+      else if (dates[0] === dates[dates.length - 1]) detail = t("ledgerExpiredManySame", { k: item.count, date: day(dates[0]) });
+      else detail = t("ledgerExpiredMany", { k: item.count, from: day(dates[0]), to: day(dates[dates.length - 1]) });
     }
   }
   const plus = item.delta > 0;
@@ -152,13 +173,27 @@ export function renderBalance(els, credits, summary, { t, lang }) {
     </li>`).join("") + frozen;
   els.buckets.classList.toggle("hidden", !chips.length && !frozen);
 
-  // 30 天内要过期的赠送积分：提醒尽快用掉
-  const soon = (summary && summary.expiring_30d) || [];
-  const n = soon.reduce((s, x) => s + (x.credits || 0), 0);
-  if (n > 0) {
-    els.expiring.textContent = t("expiringSoon", { n: fmt(n), date: dateText(Date.parse(soon[0].date + "T00:00:00Z"), lang) });
+  // 赠送积分的到期提醒（summary.expiring_30d：30 天内到期的批次，按到期日分组、日期升序）：
+  //   · 7 天内有批次到期 → 黄色提醒，说清楚多少、最早哪天，催用户尽快用掉；
+  //   · 否则只要 30 天内还有批次 → 灰色小字，告诉最早一批哪天到期（不吵人）；
+  //   · 没有 → 不显示。
+  const list = (summary && summary.expiring_30d) || [];
+  const limit = new Date(Date.now() + 7 * DAY).toISOString().slice(0, 10); // 7 天后的 UTC 日期，和 summary 里的日期同口径
+  const soon = list.filter((x) => x.date <= limit);
+  const nSoon = soon.reduce((s, x) => s + (x.credits || 0), 0);
+  const el = els.expiring;
+  const dayOf = (x) => dateText(Date.parse(x.date + "T00:00:00Z"), lang);
+  if (nSoon > 0) {
+    el.textContent = t("expiringSoon", { n: fmt(nSoon), date: dayOf(soon[0]) });
+  } else if (list.length > 0) {
+    el.textContent = t("expiringLater", { n: fmt(list[0].credits || 0), date: dayOf(list[0]) });
   }
-  els.expiring.classList.toggle("hidden", !(n > 0));
+  // 两套配色都写成完整字符串，Tailwind 才会生成对应的 class
+  const warn = "bg-amber-50 text-amber-800 dark:bg-amber-500/10 dark:text-amber-300".split(" ");
+  const calm = "bg-gray-100 text-gray-600 dark:bg-zinc-800 dark:text-zinc-400".split(" ");
+  el.classList.remove(...warn, ...calm);
+  el.classList.add(...(nSoon > 0 ? warn : calm));
+  el.classList.toggle("hidden", !(nSoon > 0 || list.length > 0));
 }
 
 /** 登录卡：Google、邮箱链接、后台开启了的其他登录方式（GitHub 等）。登录后回到当前页 */
