@@ -85,6 +85,12 @@ async function bindReferral() {
   }
 }
 
+// 各 OAuth 登录方式要额外申请的权限(scope),键名 = Supabase 的 provider 名。
+// - azure(Microsoft):不带 "email" 时,微软返回的 ID Token 里经常没有邮箱,Supabase 会报
+//   "Error getting user email from external provider" 登录失败;个人账号(outlook.com / hotmail.com)尤其常见。
+// - github:Supabase 默认就会申请 user:email,不用额外加。
+const OAUTH_SCOPES = { azure: "email" };
+
 let _supabase = null;
 let _session = MOCK ? { access_token: "mock-token", user: { email: "demo@example.com" } } : null;
 const _listeners = new Set();
@@ -197,14 +203,14 @@ const MiaoCutPro = {
     });
   },
 
-  /** 其他 OAuth 登录(如 "github")。provider 名称与 Supabase 后台的 Providers 一致 */
+  /** 其他 OAuth 登录(如 "github"、"azure")。provider 名称与 Supabase 后台的 Providers 一致 */
   async signInWithProvider(provider, redirectTo) {
     const c = await getClient();
     if (!c) throw new Error("auth_unavailable");
-    return c.auth.signInWithOAuth({
-      provider,
-      options: { redirectTo: redirectTo || window.location.href },
-    });
+    const options = { redirectTo: redirectTo || window.location.href };
+    // 部分登录方式要额外申请权限(scope)才能拿到邮箱,见下方 OAUTH_SCOPES
+    if (OAUTH_SCOPES[provider]) options.scopes = OAUTH_SCOPES[provider];
+    return c.auth.signInWithOAuth({ provider, options });
   },
 
   /** 读取 Supabase 后台已开启的登录方式(公开接口 /auth/v1/settings),用来决定显示哪些按钮。
