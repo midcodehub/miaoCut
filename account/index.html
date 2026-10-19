@@ -12,7 +12,7 @@
     <title>Account | MiaoCut</title>
     <meta name="description" content="Your MiaoCut account: credits, rewards and batch history.">
     <meta name="robots" content="noindex,nofollow">
-    <link rel="stylesheet" href="/output.css?v=55663e6c">
+    <link rel="stylesheet" href="/output.css?v=76ef820b">
     <script src="/pro-i18n.js"></script>
     <script>
         const isDev = window.location.hostname.includes('dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -81,6 +81,7 @@
             <nav class="-mx-1 mb-8 flex gap-1 overflow-x-auto overflow-y-hidden border-b [scrollbar-width:none] [&::-webkit-scrollbar]:hidden border-gray-200 text-sm font-medium dark:border-zinc-800" aria-label="Account" data-pi18n-aria="tabsLabel">
                 <a href="/account/" aria-current="page" class="-mb-px whitespace-nowrap border-b-2 border-gray-900 px-2 py-2.5 sm:px-3 text-gray-900 dark:border-zinc-50 dark:text-zinc-50" data-pi18n="tabOverview">Overview</a>
                 <a href="/account/checkin/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 sm:px-3 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabCheckin">Check-in</a>
+                <a href="/account/invite/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 text-gray-600 hover:border-gray-300 hover:text-gray-900 sm:px-3 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabInvite">Invite</a>
                 <a href="/account/credits/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 sm:px-3 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabCredits">Credits</a>
                 <a href="/account/batches/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 sm:px-3 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabBatches">Batch history</a>
             </nav>
@@ -120,7 +121,12 @@
                 <div data-checkin-body></div>
             </section>
 
-            <!-- 会员权益：签到 / 邀请 / 开发者 API（还没上线的显示“即将上线”；签到开放后它的卡片换成上面的今日签到） -->
+            <!-- 邀请好友（邀请开放后显示；内容由 /account/referral-ui.js 渲染） -->
+            <section id="invite-card" class="mt-4 hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6 dark:border-zinc-800 dark:bg-zinc-900" aria-label="Invite friends" data-pi18n-aria="perkInviteT">
+                <div data-invite-body></div>
+            </section>
+
+            <!-- 会员权益：签到 / 邀请 / 开发者 API（还没上线的显示“即将上线”；开放后换成上面对应的卡片） -->
             <h2 class="mt-10 text-lg font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="hubPerksH">Earn and build</h2>
             <ul id="perks-grid" class="mt-3 grid gap-3 sm:grid-cols-3">
                 <li id="perk-checkin" class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
@@ -133,7 +139,7 @@
                     <h3 class="mt-4 font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="perkCheckinT">Daily check-in</h3>
                     <p class="mt-1 text-sm text-gray-600 dark:text-zinc-400" data-pi18n="perkCheckinD">Check in every day for 10–20 free credits. Keep your streak going to earn more.</p>
                 </li>
-                <li class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+                <li id="perk-invite" class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
                     <div class="flex items-center justify-between">
                         <span class="grid h-9 w-9 place-items-center rounded-xl bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400" aria-hidden="true">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M19 8v6M16 11h6"/></svg>
@@ -177,8 +183,9 @@
 
     <script type="module">
         import MiaoCutPro from "/pro-account.js";
-        import { groupLedger, ledgerItemHTML, renderBalance, mountLogin, mockBanner } from "/account/account-ui.js";
+        import { groupLedger, ledgerItemHTML, renderBalance, mountLogin, mockBanner, revealActiveTab } from "/account/account-ui.js";
         import { mountCheckinCard } from "/account/checkin-ui.js";
+        import { mountInviteCard } from "/account/referral-ui.js";
         const { t, lang } = window.MiaoCutProI18n;
 
         const $ = (id) => document.getElementById(id);
@@ -193,15 +200,38 @@
             onDisabled: () => showCheckin(null),
         });
 
-        // 签到开放（status.enabled）→ 显示今日签到卡片，权益区只剩邀请和 API 两张“即将上线”；
-        // 没开放 / 取不到 → 隐藏卡片，权益区保留签到的“即将上线”
+        // 邀请卡片（只显示邀请链接和复制 / 分享；统计和记录在邀请页）
+        const inviteCard = mountInviteCard($("invite-card").querySelector("[data-invite-body]"), { t, compact: true });
+
+        // 「赚积分 · 接入开发」区里还有几张“即将上线”的小卡片：签到 / 邀请开放后，对应的小卡片换成上面的大卡片，
+        // 剩下的小卡片按数量排成 1~3 列（Tailwind 的 class 必须写成完整字符串才会生成）
+        const perk = { checkin: false, invite: false }; // true = 已开放
+        function layoutPerks() {
+            show($("perk-checkin"), !perk.checkin);
+            show($("perk-invite"), !perk.invite);
+            const left = 1 + (perk.checkin ? 0 : 1) + (perk.invite ? 0 : 1); // 开发者 API 一直是“即将上线”
+            const cols = { 1: "sm:grid-cols-1", 2: "sm:grid-cols-2", 3: "sm:grid-cols-3" };
+            $("perks-grid").classList.remove(...Object.values(cols));
+            $("perks-grid").classList.add(cols[left]);
+        }
+
+        // 签到开放（status.enabled）→ 显示今日签到卡片；没开放 / 取不到 → 隐藏卡片，保留“即将上线”小卡片
         function showCheckin(status) {
             const on = !!(status && status.enabled);
             show($("checkin-card"), on);
-            show($("perk-checkin"), !on);
-            $("perks-grid").classList.toggle("sm:grid-cols-3", !on);
-            $("perks-grid").classList.toggle("sm:grid-cols-2", on);
+            perk.checkin = on;
+            layoutPerks();
             if (on) checkinCard.render(status);
+        }
+
+        // 邀请开放且账户可用（邮箱已验证）→ 显示邀请卡片；开放但邮箱没验证 → 什么都不显示（签到卡片会提示去验证）；没开放 → 保留小卡片
+        function showInvite(data) {
+            const open = !!(data && data.enabled);
+            const ready = open && data.eligible !== false && !!data.link;
+            show($("invite-card"), ready);
+            perk.invite = open;
+            layoutPerks();
+            if (ready) inviteCard.render(data);
         }
 
         async function render() {
@@ -216,13 +246,15 @@
         async function load({ keepCheckin = false } = {}) {
             try {
                 // 余额、汇总、最近流水、签到状态并行取；后三个失败都不影响页面主体
-                const [me, summary, page, checkin] = await Promise.all([
+                const [me, summary, page, checkin, referral] = await Promise.all([
                     MiaoCutPro.me(),
                     MiaoCutPro.summary().catch(() => null),
                     MiaoCutPro.ledgerPage({ limit: 30 }).catch(() => null),
                     keepCheckin ? Promise.resolve(undefined) : MiaoCutPro.checkinStatus().catch(() => null),
+                    keepCheckin ? Promise.resolve(undefined) : MiaoCutPro.referral().catch(() => null),
                 ]);
                 if (checkin !== undefined) showCheckin(checkin);
+                if (referral !== undefined) showInvite(referral);
                 $("hub-email").textContent = me.email || "";
                 const plan = $("hub-plan");
                 plan.textContent = t(PLAN_NAMES[me.plan] || "planFree");
@@ -259,6 +291,7 @@
         MiaoCutPro.onAuthChange(() => render());
         await MiaoCutPro.init().catch(() => {});
         await render();
+        revealActiveTab(); // 手机上标签栏可横滑：把当前标签滚到中间
     </script>
 </body>
 

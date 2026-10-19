@@ -4,12 +4,12 @@
 // 用法：本地起静态服务后打开 http://127.0.0.1:<端口>/account/?mock
 //   ?mock          有一段时间使用记录的会员（有订阅、有赠送积分快到期、有多页流水）
 //   ?mock=empty    刚注册的新用户（只有注册赠送，没签到过）
-//   ?mock=soon     签到还没开放（会员中心显示“即将上线”）
-//   ?mock=unverified  邮箱未验证（签到按钮不可点）
+//   ?mock=soon     签到、邀请都还没开放（会员中心显示“即将上线”）
+//   ?mock=unverified  邮箱未验证（签到按钮不可点、邀请页提示先验证）
 // 点页面上的“退出登录”即退出模拟模式。
 //
 // 接口形状和规则与私有仓库 pro-gateway 保持一致（/auth/me、/credits/balance、/credits/summary、
-// /credits/ledger 的分页与筛选、参数校验、/member/checkins、/member/checkin），这样本地看到的就是线上会看到的。
+// /credits/ledger 的分页与筛选、参数校验、/member/checkins、/member/checkin、/member/referral*），这样本地看到的就是线上会看到的。
 // 签到的状态是存在内存里的：签到后刷新页面会回到初始数据。
 // 这里没有任何密钥，数据全部是现场生成的假数据。
 // =============================================================================
@@ -34,6 +34,45 @@ function sampleCheckins(now) {
     }
   }
   return rows;
+}
+
+const REFERRAL_REWARD = 50;
+const REFERRAL_VALID_DAYS = 90;
+const REFERRAL_MONTHLY_CAP = 20;
+const MOCK_REF_CODE = "K7QM2XPD";
+
+/** 示例邀请记录（新的在前）：大部分到账，夹着一条本月已到上限、一条朋友没拿到注册赠送、一条人工撤回 */
+function sampleReferrals(now) {
+  const names = ["mia", "leo", "zoe", "ken", "ada", "sam", "ivy", "tom", "amy", "bob", "eva", "dan"];
+  const statuses = ["rewarded", "rewarded", "capped", "rewarded", "rejected", "rewarded", "rewarded", "revoked"];
+  const rows = [];
+  for (let i = 0; i < 23; i++) {
+    const status = statuses[i % statuses.length];
+    rows.push({
+      id: 23 - i, // 新的 id 大
+      email: `${names[i % names.length][0]}***@${i % 3 === 0 ? "gmail.com" : i % 3 === 1 ? "outlook.com" : "qq.com"}`,
+      status,
+      credits: status === "rewarded" ? REFERRAL_REWARD : null,
+      created_at: new Date(now - (i * 2.6 + 0.3) * DAY).toISOString(),
+    });
+  }
+  return rows;
+}
+
+/** 和数据库 referral_summary 同样的统计 */
+function referralSummary(rows, now) {
+  const month = utcDay(now).slice(0, 7);
+  const rewarded = rows.filter((r) => r.status === "rewarded");
+  const used = rewarded.filter((r) => r.created_at.slice(0, 7) === month).length;
+  return {
+    code: MOCK_REF_CODE,
+    invited: rows.length,
+    rewarded: rewarded.length,
+    credits_earned: rewarded.reduce((sum, r) => sum + r.credits, 0),
+    rewarded_this_month: used,
+    monthly_cap: REFERRAL_MONTHLY_CAP,
+    remaining_this_month: Math.max(REFERRAL_MONTHLY_CAP - used, 0),
+  };
 }
 
 function build(scenario) {
@@ -110,6 +149,7 @@ function build(scenario) {
   return {
     rows,
     checkins,
+    referrals: scenario === "empty" ? [] : sampleReferrals(now),
     credits,
     summary: {
       ...credits,
@@ -257,6 +297,31 @@ export async function handle(path, opts = {}, scenario = "1") {
       if (scenario === "soon") return json({ error: "checkin_disabled" }, 403);
       if (scenario === "unverified") return json({ error: "email_not_verified" }, 403);
       return json({ ...doCheckin(d), next_reset_at: checkinStatus(d, utcDay(Date.now()).slice(0, 7), scenario).next_reset_at });
+    }
+    case "/member/referral": {
+      if (scenario === "soon") return json({ enabled: false });
+      if (scenario === "unverified") return json({ enabled: true, eligible: false });
+      return json({
+        enabled: true,
+        eligible: true,
+        link: `${location.origin}/invite/?ref=${MOCK_REF_CODE}`,
+        reward: REFERRAL_REWARD,
+        valid_days: REFERRAL_VALID_DAYS,
+        ...referralSummary(d.referrals, Date.now()),
+      });
+    }
+    case "/member/referral/list": {
+      if (scenario === "soon") return json({ enabled: false, items: [], next_cursor: null });
+      const cursor = url.searchParams.get("cursor");
+      if (cursor && !/^\d{1,18}$/.test(cursor)) return json({ error: "invalid_cursor" }, 400);
+      const rawLimit = url.searchParams.get("limit");
+      const limit = rawLimit === null || rawLimit === "" ? 20 : Math.min(Math.max(Math.floor(Number(rawLimit)) || 20, 1), 50);
+      const items = d.referrals.filter((r) => !cursor || r.id < Number(cursor)).slice(0, limit);
+      return json({ enabled: true, eligible: scenario !== "unverified", items, next_cursor: items.length === limit ? items[items.length - 1].id : null });
+    }
+    case "/member/referral/bind": {
+      if ((opts.method || "GET").toUpperCase() !== "POST") return json({ error: "not_found" }, 404);
+      return json({ status: "done" });
     }
     case "/plans": return json({ subscriptions_enabled: true, plans: [] });
     case "/v1/batches": return json({ batches: [] });

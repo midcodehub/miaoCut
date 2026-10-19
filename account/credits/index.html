@@ -12,7 +12,7 @@
     <title>Your Credits | MiaoCut</title>
     <meta name="description" content="Manage your MiaoCut credits: balance, transaction history, and top-ups.">
     <meta name="robots" content="noindex,nofollow">
-    <link rel="stylesheet" href="/output.css?v=55663e6c">
+    <link rel="stylesheet" href="/output.css?v=76ef820b">
     <script src="/pro-i18n.js"></script>
     <script>
         const isDev = window.location.hostname.includes('dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -84,6 +84,7 @@
             <nav class="-mx-1 mb-8 flex gap-1 overflow-x-auto overflow-y-hidden border-b [scrollbar-width:none] [&::-webkit-scrollbar]:hidden border-gray-200 text-sm font-medium dark:border-zinc-800" aria-label="Account" data-pi18n-aria="tabsLabel">
                 <a href="/account/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 sm:px-3 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabOverview">Overview</a>
                 <a href="/account/checkin/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 sm:px-3 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabCheckin">Check-in</a>
+                <a href="/account/invite/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 text-gray-600 hover:border-gray-300 hover:text-gray-900 sm:px-3 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabInvite">Invite</a>
                 <a href="/account/credits/" aria-current="page" class="-mb-px whitespace-nowrap border-b-2 border-gray-900 px-2 py-2.5 sm:px-3 text-gray-900 dark:border-zinc-50 dark:text-zinc-50" data-pi18n="tabCredits">Credits</a>
                 <a href="/account/batches/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 sm:px-3 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabBatches">Batch history</a>
             </nav>
@@ -170,7 +171,7 @@
 
     <script type="module">
         import MiaoCutPro from "/pro-account.js";
-        import { groupLedger, ledgerItemHTML, renderBalance, mountLogin, mockBanner, LEDGER_FILTERS, escapeHtml, localeOf } from "/account/account-ui.js";
+        import { groupLedger, ledgerItemHTML, renderBalance, mountLogin, mockBanner, LEDGER_FILTERS, escapeHtml, localeOf, revealActiveTab } from "/account/account-ui.js";
         const { t, lang } = window.MiaoCutProI18n;
 
         const $ = (id) => document.getElementById(id);
@@ -400,6 +401,7 @@
         MiaoCutPro.onAuthChange(() => render());
         await MiaoCutPro.init().catch(() => {});
         await render();
+        revealActiveTab(); // 手机上标签栏可横滑：把当前标签滚到中间
     </script>
 </body>
 
