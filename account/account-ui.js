@@ -229,3 +229,15 @@ export function mockBanner(MiaoCutPro, { t }) {
   p.textContent = t("mockBanner");
   document.body.prepend(p);
 }
+
+/**
+ * 会员页顶部标签栏（概览 / 签到 / 邀请 / 积分 / 处理记录）在手机上放不下时会横向滑动；
+ * 这个函数把当前页的标签滚到标签栏中间，免得进到「处理记录」页时当前标签在屏幕外。
+ * 只改标签栏自己的横向滚动位置，不会让整个页面上下滚动。
+ */
+export function revealActiveTab() {
+  const nav = document.querySelector("nav[aria-label] [aria-current='page']")?.closest("nav");
+  const cur = nav && nav.querySelector("[aria-current='page']");
+  if (!nav || !cur) return;
+  nav.scrollLeft = Math.max(0, cur.offsetLeft - (nav.clientWidth - cur.offsetWidth) / 2);
+}

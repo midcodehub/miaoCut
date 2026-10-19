@@ -32,6 +32,59 @@ const MOCK = (() => {
   }
 })();
 
+// ---------- 邀请码（会员体系 P3）----------
+// 朋友点邀请链接（/invite/?ref=XXXXXXXX；会员页、定价页、批量页上带 ?ref= 也行）时，把邀请码存进浏览器 30 天
+// （最后一次点击生效）；朋友登录后自动提交绑定，网关判断能不能给邀请人发奖励。
+// 页面只会知道「已处理 / 被忽略」，不会知道有没有奖励、为什么没有（见网关 handleReferralBind）。
+const REF_KEY = "mc_ref";
+const REF_TTL = 30 * 86400e3;
+const REF_RE = /^[A-Za-z0-9]{8}$/; // 宽松检查格式；严格的字母表（没有 I L O 0 1）由网关判断
+
+(function captureRef() {
+  try {
+    const c = (new URLSearchParams(location.search).get("ref") || "").trim();
+    if (REF_RE.test(c)) localStorage.setItem(REF_KEY, JSON.stringify({ c: c.toUpperCase(), t: Date.now() }));
+  } catch (_) {
+    /* 隐私模式 / localStorage 被禁用：不影响页面 */
+  }
+})();
+
+/** 取出还有效的邀请码；过期（超过 30 天）或格式不对的顺手清掉 */
+function storedRef() {
+  try {
+    const o = JSON.parse(localStorage.getItem(REF_KEY) || "null");
+    if (o && REF_RE.test(o.c) && Date.now() - o.t < REF_TTL) return o.c;
+    localStorage.removeItem(REF_KEY);
+  } catch (_) {
+    /* 忽略 */
+  }
+  return null;
+}
+
+let _binding = false; // 同一时刻只提交一次（init 和登录事件可能几乎同时触发）
+async function bindReferral() {
+  if (_binding || !_session) return;
+  const code = storedRef();
+  if (!code) return;
+  _binding = true;
+  try {
+    const res = await MiaoCutPro.proFetch("/member/referral/bind", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code }),
+    });
+    // 已处理（200）或这个码不会再成功（4xx）：清掉。登录过期（401）、限流（429）、服务端出错（5xx）、
+    // 网络错误：保留，下次打开页面再试。
+    if (res.ok || (res.status >= 400 && res.status < 500 && res.status !== 401 && res.status !== 429)) {
+      localStorage.removeItem(REF_KEY);
+    }
+  } catch (_) {
+    /* 网络错误：保留邀请码，下次再试 */
+  } finally {
+    _binding = false;
+  }
+}
+
 let _supabase = null;
 let _session = MOCK ? { access_token: "mock-token", user: { email: "demo@example.com" } } : null;
 const _listeners = new Set();
@@ -51,6 +104,7 @@ async function getClient() {
   _session = data.session || null;
   _supabase.auth.onAuthStateChange((_event, session) => {
     _session = session;
+    if (session) bindReferral(); // 刚登录（邮箱链接 / Google 跳回来）：有邀请码就提交绑定
     _listeners.forEach((fn) => {
       try {
         fn(session);
@@ -114,6 +168,7 @@ const MiaoCutPro = {
   /** 初始化(页面加载时调用一次) */
   async init() {
     await getClient();
+    bindReferral(); // 不等它：绑定结果不影响页面
     return _session;
   },
 
@@ -265,6 +320,23 @@ const MiaoCutPro = {
     const body = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(body.error || `checkin_failed_${res.status}`);
     return body;
+  },
+
+  /** 我的邀请码 / 链接 / 统计。邀请没开放返回 {enabled:false}；邮箱没验证返回 {enabled:true, eligible:false}；
+   *  可用时 {enabled, eligible, code, link, reward, valid_days, monthly_cap, invited, rewarded, credits_earned,
+   *  rewarded_this_month, remaining_this_month} */
+  async referral() {
+    const res = await this.proFetch("/member/referral");
+    if (!res.ok) throw new Error(`referral_failed_${res.status}`);
+    return res.json();
+  },
+
+  /** 邀请记录（对方邮箱已打码）→ {items:[{id, email, status, credits, created_at}], next_cursor}；cursor 是上一页的 next_cursor */
+  async referralList(cursor) {
+    const q = cursor ? `?cursor=${encodeURIComponent(cursor)}` : "";
+    const res = await this.proFetch(`/member/referral/list${q}`);
+    if (!res.ok) throw new Error(`referral_list_failed_${res.status}`);
+    return res.json();
   },
 
   /** 发起充值:返回 Stripe Checkout URL 并跳转 */
