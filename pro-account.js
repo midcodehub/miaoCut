@@ -105,11 +105,82 @@ export function cleanRedirect(url) {
   try {
     const u = new URL(url || window.location.href, window.location.href);
     u.hash = ""; // 注意：赋空字符串会连孤零零的 "#" 一起去掉（URL 规范里片段变成 null）
+    // 上一次登录失败（用户取消授权、公司管理员没批准……）时，回跳地址的查询串里会带 error=… 参数。
+    // 登录库看到地址里有 error / error_description / error_code，就会把这次回跳当成失败，
+    // 哪怕同时带着有效的登录令牌也一样（auth-js 的 _getSessionFromURL 先抛错）。所以绝不能把它们带进下一次回跳地址。
+    AUTH_ERROR_KEYS.forEach((k) => u.searchParams.delete(k));
     return u.toString();
   } catch (_) {
     return url || window.location.href; // 解析不了就原样用，不会比以前更差
   }
 }
+
+// ---------- 登录失败的回跳（?error=… / #error=…）----------
+// 用户在第三方的授权页点了「取消」，或者公司账号被管理员拦下（微软：AADSTS65004 用户拒绝授权、需要管理员批准……），
+// Supabase 会把错误原样带回我们的页面：既放在查询串里（?error=access_denied&error_description=…），
+// 也放在 # 片段里（#error=…&sb=）。这些参数留在地址栏会出两个问题：
+//   1. 之后换一种方式登录（比如改点 Google），回跳地址又带着它们，登录库一看到 error 就判失败，
+//      哪怕 Google 已经成功、令牌就在地址里也一样——页面还是登录页，也不会跳转（2026-10-20 实测）；
+//   2. 用户看不到任何提示，不知道发生了什么。
+// 所以页面加载时先把错误参数取出来记住，并把地址栏清干净（要赶在登录库读地址之前，所以放在模块加载时做）。
+const AUTH_ERROR_KEYS = ["error", "error_code", "error_description", "error_uri"];
+let _authError = null;
+
+/** 把 URL 编码的错误说明还原成人能读的文字（微软的说明在 # 片段里被编码了两次：%253A → %3A → ":"） */
+function decodeDescription(v) {
+  let out = String(v || "").replace(/\+/g, " ");
+  for (let i = 0; i < 2; i++) {
+    try {
+      out = decodeURIComponent(out);
+    } catch (_) {
+      break;
+    }
+  }
+  return out;
+}
+
+/**
+ * 取出地址里的登录失败信息并清掉地址栏。没有错误参数就什么都不做，返回 null。
+ * 注意：# 片段可能有好几个 "#"（上一次失败的片段 + 之后又一次成功登录追加的令牌片段），
+ * 所以按 "#" 切成几段分别看；如果某一段带着登录令牌（access_token），保留最后一段，这样已经卡在这种地址上的人
+ * 刷新一下页面就能直接登录成功，不用再点一次登录。
+ */
+export function takeAuthErrorFromUrl() {
+  try {
+    const u = new URL(window.location.href);
+    const found = {};
+    AUTH_ERROR_KEYS.forEach((k) => {
+      if (u.searchParams.has(k)) found[k] = u.searchParams.get(k);
+    });
+    const segments = u.hash.split("#").filter(Boolean);
+    for (const seg of segments) {
+      const p = new URLSearchParams(seg);
+      AUTH_ERROR_KEYS.forEach((k) => {
+        if (p.has(k) && !(k in found)) found[k] = p.get(k);
+      });
+    }
+    if (!Object.keys(found).length) return null;
+
+    AUTH_ERROR_KEYS.forEach((k) => u.searchParams.delete(k));
+    const tokenSegment = segments.slice().reverse().find((seg) => /(^|&)access_token=/.test(seg));
+    const search = u.searchParams.toString() ? `?${u.searchParams.toString()}` : "";
+    window.history.replaceState(window.history.state, "", u.pathname + search + (tokenSegment ? `#${tokenSegment}` : ""));
+    return { code: found.error_code || found.error, description: decodeDescription(found.error_description) };
+  } catch (_) {
+    return null;
+  }
+}
+
+/**
+ * 这次失败是不是「用户没同意 / 管理员没批准」（而不是别的故障）。
+ * 微软：AADSTS65004（用户拒绝授权）、AADSTS65001（没有授权过）、AADSTS90094 / AADSTS650056（需要管理员批准）。
+ */
+export function isConsentDeclined(err) {
+  if (!err) return false;
+  return err.code === "access_denied" || /AADSTS(65004|65001|90094|650056)|consent|approval/i.test(err.description || "");
+}
+
+_authError = takeAuthErrorFromUrl();
 
 // 「下次登录要让用户选账号」标记：用户点了「退出登录」后设置，下一次点登录按钮时消费（读到就清掉）。
 // 为什么需要：退出的只是我们的网站，浏览器和 Google / 微软 / GitHub 的登录状态还在，
@@ -246,6 +317,16 @@ const MiaoCutPro = {
     tidyUrl(); // 登录库处理完回跳地址后会留下孤零零的 "#"，清掉
     bindReferral(); // 不等它：绑定结果不影响页面
     return _session;
+  },
+
+  /** 这次打开页面时，地址里带的登录失败信息 {code, description}（没有就是 null）。登录卡据此显示提示 */
+  authError() {
+    return _authError;
+  },
+
+  /** 上面这个登录失败信息属于哪一类："declined" = 用户没同意 / 管理员没批准；"other" = 别的故障；没有失败就是 null */
+  authErrorKind() {
+    return _authError ? (isConsentDeclined(_authError) ? "declined" : "other") : null;
   },
 
   /** 是否处于本地模拟模式（页面可以显示一个小提示，避免把假数据当真） */

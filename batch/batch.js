@@ -1227,6 +1227,9 @@ async function boot() {
   await MiaoCutPro.init().catch(() => {});
   // 后台开启了的其他登录方式（如 GitHub）才显示；跳转前先把已选图片存好
   MiaoCutPro.mountProviderButtons(els.gate, { beforeRedirect: persistSelection, onError: () => setLoginMsg("loginOAuthFailed") });
+  // 上一次登录没有完成（用户取消授权 / 公司管理员还没批准……）：给个提示
+  const loginFailed = MiaoCutPro.authErrorKind && MiaoCutPro.authErrorKind();
+  if (loginFailed) setLoginMsg(loginFailed === "declined" ? "loginDeclined" : "loginIncomplete");
   await refreshAuth();
   MiaoCutPro.onAuthChange(() => refreshAuth());
 

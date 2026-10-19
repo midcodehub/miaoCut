@@ -24,7 +24,7 @@ const def = (name, value) => Object.defineProperty(globalThis, name, { value, co
 
 def("window", globalThis);
 def("localStorage", fakeStorage);
-def("history", { state: null, replaceState: (_s, _t, url) => replaced.push(url) });
+def("history", { state: null, replaceState: (_s, _t, url) => { replaced.push(url); currentHref = new URL(url, currentHref).toString(); } });
 // location 的各个字段都从 currentHref 现算，测试里改 currentHref 就等于“换了个地址”
 def("location", {
   get href() { return currentHref; },
@@ -152,4 +152,114 @@ test("init：地址栏本来就干净，或者带着真正的令牌片段，都�
   currentHref = "https://miaocut.app/account/#access_token=T"; // 正在处理中的回跳，不能碰
   await mod.default.init();
   assert.deepEqual(replaced, []);
+});
+
+// =============================================================================
+// 5. 登录失败的回跳（2026-10-20：企业账号被管理员拦下后，再点 Google 登录，页面不跳转、一直是登录页）
+// =============================================================================
+// 现场的地址（令牌换成了假的）：查询串里有 error，# 片段里先是上次失败的 error，
+// 后面又追加了两次成功登录的令牌片段。
+const STUCK =
+  "https://miaocut.app/account/?error=access_denied&error_description=AADSTS65004%3A+User+declined+to+consent+to+access+the+app." +
+  "#error=access_denied&error_description=AADSTS65004%253A+User+declined+to+consent+to+access+the+app.&sb=" +
+  "#access_token=T1&expires_at=1&sb=&token_type=bearer" +
+  "#access_token=T2&expires_at=2&sb=&token_type=bearer";
+
+let fresh = 0;
+// 重新加载一遍 pro-account.js（带不同的查询串就是一个新模块），让它在“打开页面”的瞬间读到当前地址
+async function loadPageAt(href) {
+  currentHref = href;
+  replaced.length = 0;
+  return import(`../pro-account.js?fresh=${++fresh}`);
+}
+
+test("复现问题：带着上次的 error=… 的地址当回跳地址，登录库就把这次回跳判为失败，即使令牌就在地址里", () => {
+  // 和 auth-js 一样：查询串和 # 片段里的参数合在一起看，只要有 error / error_description / error_code 就抛错
+  const params = (href) => {
+    const out = {};
+    const u = new URL(href);
+    if (u.hash && u.hash[0] === "#") new URLSearchParams(u.hash.substring(1)).forEach((v, k) => (out[k] = v));
+    u.searchParams.forEach((v, k) => (out[k] = v));
+    return out;
+  };
+  const redirectBefore = "https://miaocut.app/account/?error=access_denied&error_description=declined"; // 旧做法：保留了查询串
+  const callback = redirectBefore + "#access_token=T";
+  const p = params(callback);
+  assert.equal(p.access_token, "T", "令牌在");
+  assert.ok(p.error || p.error_description, "但同时带着 error → 登录库先抛错，不会建立登录");
+});
+
+test("cleanRedirect：去掉查询串里残留的登录错误参数，保留 ?ref= 等其他参数", () => {
+  assert.equal(
+    mod.cleanRedirect("https://miaocut.app/account/?error=access_denied&error_description=AADSTS65004%3A+x&error_code=c&error_uri=u&ref=ABCD2345&lang=zh#error=x"),
+    "https://miaocut.app/account/?ref=ABCD2345&lang=zh",
+  );
+  assert.equal(mod.cleanRedirect("https://miaocut.app/account/?error=access_denied"), "https://miaocut.app/account/");
+});
+
+test("oauthOptions：回跳地址里没有残留的错误参数（Google / Microsoft 都一样）", () => {
+  for (const provider of ["google", "azure", "github"]) {
+    assert.equal(mod.oauthOptions(provider, STUCK).redirectTo, "https://miaocut.app/account/");
+  }
+});
+
+test("页面加载：现场那种地址 → 错误参数清掉，只留最后一次登录的令牌片段（刷新就能登录成功）", async () => {
+  const page = await loadPageAt(STUCK);
+  assert.equal(currentHref, "https://miaocut.app/account/#access_token=T2&expires_at=2&sb=&token_type=bearer");
+  const parsed = parseCallback(currentHref);
+  assert.equal(parsed.access_token, "T2");
+  assert.equal(parsed.error, undefined);
+  assert.equal(parsed.error_description, undefined);
+  assert.deepEqual(page.default.authError(), {
+    code: "access_denied",
+    description: "AADSTS65004: User declined to consent to access the app.", // 双重编码的 %253A 也还原成了 ":"
+  });
+  assert.equal(page.default.authErrorKind(), "declined");
+});
+
+test("页面加载：只有错误、没有令牌 → 错误参数连同 # 片段一起清掉；别的查询参数保留", async () => {
+  const page = await loadPageAt("https://miaocut.app/invite/?ref=ABCD2345&error=server_error&error_description=Something+broke#error=server_error&sb=");
+  assert.equal(currentHref, "https://miaocut.app/invite/?ref=ABCD2345");
+  assert.equal(page.default.authError().description, "Something broke");
+  assert.equal(page.default.authErrorKind(), "other");
+});
+
+test("页面加载：error_code 优先作为错误代码", async () => {
+  const page = await loadPageAt("https://miaocut.app/account/?error=server_error&error_code=unexpected_failure&error_description=x");
+  assert.equal(page.default.authError().code, "unexpected_failure");
+});
+
+test("页面加载：没有错误参数就什么都不动（包括正在处理的登录回跳）", async () => {
+  for (const href of ["https://miaocut.app/account/", "https://miaocut.app/account/?lang=zh", "https://miaocut.app/account/#access_token=T&expires_at=1"]) {
+    const page = await loadPageAt(href);
+    assert.equal(currentHref, href);
+    assert.equal(page.default.authError(), null);
+    assert.equal(page.default.authErrorKind(), null);
+    assert.equal(replaced.length, 0);
+  }
+});
+
+test("isConsentDeclined：没同意 / 管理员没批准算 declined，别的故障不算", () => {
+  assert.equal(mod.isConsentDeclined({ code: "access_denied", description: "" }), true);
+  assert.equal(mod.isConsentDeclined({ code: "x", description: "AADSTS90094: admin consent required" }), true);
+  assert.equal(mod.isConsentDeclined({ code: "x", description: "AADSTS650056: Misconfigured application" }), true);
+  assert.equal(mod.isConsentDeclined({ code: "server_error", description: "Something broke" }), false);
+  assert.equal(mod.isConsentDeclined(null), false);
+});
+
+test("登录卡：上次登录失败时显示提示（declined 和其他故障用不同文案），没失败就不显示", async () => {
+  const ui = await import("../account/account-ui.js");
+  const run = (kind) => {
+    const els = new Map();
+    const el = (sel) => {
+      if (!els.has(sel)) els.set(sel, { textContent: "", addEventListener() {}, querySelector: () => ({ value: "", checkValidity: () => true }) });
+      return els.get(sel);
+    };
+    const root = { querySelector: el };
+    ui.mountLogin(root, { authErrorKind: () => kind, mountProviderButtons() {}, signInWithGoogle: async () => {}, signInWithEmail: async () => ({}) }, { t: (k) => k });
+    return el("[data-login-msg]").textContent;
+  };
+  assert.equal(run("declined"), "loginDeclined");
+  assert.equal(run("other"), "loginIncomplete");
+  assert.equal(run(null), "");
 });
