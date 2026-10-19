@@ -1,0 +1,24 @@
+tests/login-redirect.test.mjs
+  s_d68abd4a9001d4::t_4c6a4c2fbd0899 1-155
+pro-account.js
+  s_d68abd4a9001d4::t_0899aae79b104c 94-126,128-162,246,262,272,280,323
+  s_d68abd4a9001d4::t_1cc2d8ba702b49 127
+package.json
+  s_d68abd4a9001d4::t_bfa95aa12d6498 14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "5c4b3d5924725dc6820657e51068ac6fe36dffc9",
+  "prompts": {},
+  "sessions": {
+    "s_d68abd4a9001d4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7f01a002-54a3-4986-9505-34fd709ba9f0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "midcodehub <408124546@qq.com>"
+    }
+  }
+}
