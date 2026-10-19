@@ -15,7 +15,9 @@
 // =============================================================================
 
 const DAY = 86400e3;
-const BONUS_VALID_DAYS = 365; // 与数据库一致：赠送积分每笔 1 年有效
+// 每个来源的赠送积分每笔有效多少天，与数据库 / 网关一致：注册 1 年、签到 30 天、邀请 90 天
+// （promo 只是演示用的一个短期活动，真实环境里活动积分的有效期由活动自己定）
+const VALID_DAYS = { signup_bonus: 365, checkin: 30, referral_reward: 90, promo: 3 };
 const CHECKIN_RULE = { base: 10, max: 20 }; // 与数据库 checkin_reward 一致：第 1 天 10，每天 +1，最多 20
 const reward = (n) => Math.min(CHECKIN_RULE.base + Math.max(n, 1) - 1, CHECKIN_RULE.max);
 // 签到日按 UTC 0 点换日（网关默认 CHECKIN_TZ_OFFSET_MIN = 0）
@@ -25,7 +27,7 @@ const utcDay = (ms) => new Date(ms).toISOString().slice(0, 10);
 function sampleCheckins(now) {
   const rows = [];
   // [从几天前开始, 连续几天]
-  for (const [from, len] of [[40, 8], [20, 7], [10, 3], [5, 5]]) {
+  for (const [from, len] of [[34, 8], [20, 7], [10, 3], [5, 5]]) {
     for (let i = 0; i < len; i++) {
       const streak = i + 1;
       rows.push({ day: utcDay(now - (from - i) * DAY), streak, credits: reward(streak) });
@@ -36,10 +38,18 @@ function sampleCheckins(now) {
 
 function build(scenario) {
   const now = Date.now();
-  const events = []; // [时间, reason, delta, bucket, ref]
+  const events = []; // [时间, reason, delta, bucket, ref, 到期时间（只有赠送积分到账才有）]
   const at = (daysAgo, hour = 10) => now - daysAgo * DAY + (hour - 12) * 3600e3;
 
-  events.push([at(240), "signup_bonus", 100, "bonus", null]);
+  // 赠送积分：每一笔是一个“批次”，有自己的到期时间（来源不同有效期不同）。记下来用于算余额、到期提醒和过期流水
+  const lots = [];
+  const grant = (t, source, amount, ref) => {
+    const expires = t + VALID_DAYS[source] * DAY;
+    events.push([t, source, amount, "bonus", ref, expires]);
+    lots.push({ source, amount, expires });
+  };
+
+  grant(scenario === "empty" ? at(0, 8) : at(240), "signup_bonus", 100, null);
   if (scenario !== "empty") {
     events.push([at(238), "purchase", 500, "topup", "cs_demo_1"]);
     // 过去半年每个月几批批量处理：预扣 + 少量失败退回
@@ -52,35 +62,51 @@ function build(scenario) {
     events.push([at(70), "subscription_grant", 300, "subscription", "in_demo_1"]);
     events.push([at(40), "subscription_grant", 300, "subscription", "in_demo_2"]);
     events.push([at(40) + 1000, "subscription_expired", -45, "subscription", "in_demo_2"]);
-    events.push([at(36), "promo", 20, "bonus", "PROMO-DEMO"]);
-    events.push([at(33), "bonus_expired", -20, "bonus", "lot:9;expires:" + new Date(at(33)).toISOString().slice(0, 10)]);
+    grant(at(36), "promo", 20, "PROMO-DEMO");
     events.push([at(12), "subscription_grant", 300, "subscription", "in_demo_3"]);
-    events.push([at(2), "referral_reward", 50, "bonus", null]);
+    grant(at(2), "referral_reward", 50, null);
     events.push([at(1, 15), "freeze", -8, "subscription", "job_y"]);
     events.push([at(1, 15) + 90e3, "release", 1, "subscription", "img_y_0"]);
     events.push([at(0, 11), "freeze", -24, "subscription", "job_today"]); // 还在处理中：冻结 24
   }
 
-  // 签到：每一天一条流水（签到日上午 9 点）
+  // 签到：每一天一条流水（签到日上午 9 点），每笔 30 天有效
   const checkins = scenario === "empty" ? [] : sampleCheckins(now);
-  for (const c of checkins) events.push([Date.parse(c.day + "T09:00:00Z"), "checkin", c.credits, "bonus", "checkin:" + c.day]);
+  for (const c of checkins) grant(Date.parse(c.day + "T09:00:00Z"), "checkin", c.credits, "checkin:" + c.day);
+
+  // 过期：真实系统没有定时任务，过期是在用户下一次访问时“顺便”清理的，同一次清理的多笔过期流水时间戳相同。
+  // 这里假设用户上次访问是 5 天前、昨天，以及现在（打开页面）：过期的批次记在它之后的第一次访问上。
+  // 很久以前就过期的（比如那个 3 天有效的活动积分）按它自己的到期时间记。
+  const visits = [at(5, 10), at(1, 10), now];
+  const expired = lots.filter((l) => l.expires <= now);
+  for (const l of expired) {
+    const t = l.expires < at(6) ? l.expires : visits.find((v) => v >= l.expires);
+    events.push([t, "bonus_expired", -l.amount, "bonus", "lot:mock;expires:" + utcDay(l.expires)]);
+  }
+  const live = lots.filter((l) => l.expires > now);
 
   events.sort((a, b) => a[0] - b[0]);
   let balance = 0;
-  const rows = events.map(([t, reason, delta, bucket, ref], i) => {
+  const rows = events.map(([t, reason, delta, bucket, ref, expires], i) => {
     balance += delta;
-    return { id: i + 1, delta, bucket, reason, ref, balance_after: balance, created_at: new Date(t).toISOString() };
+    return {
+      id: i + 1, delta, bucket, reason, ref, balance_after: balance, created_at: new Date(t).toISOString(),
+      expires_at: expires ? new Date(expires).toISOString() : null, // 赠送积分到账：这一笔的到期时间（网关从 credit_lots 带出）
+    };
   });
 
-  // 当前各桶：总数和最后一条流水的余额对得上
+  // 当前各桶：赠送积分 = 还没过期的批次之和（假设都没花）；总数和最后一条流水的余额对得上
   const total = balance;
+  const bonus = live.reduce((sum, l) => sum + l.amount, 0);
   const credits = scenario === "empty"
-    ? { subscription: 0, bonus: 100, topup: 0, frozen: 0, total: 100 }
-    : { subscription: 214, bonus: 83, topup: total - 214 - 83, frozen: 24, total };
-  const expiring = scenario === "empty" ? [] : [
-    { date: new Date(now + 12 * DAY).toISOString().slice(0, 10), credits: 20 },
-    { date: new Date(now + 26 * DAY).toISOString().slice(0, 10), credits: 13 },
-  ];
+    ? { subscription: 0, bonus, topup: 0, frozen: 0, total }
+    : { subscription: 214, bonus, topup: total - 214 - bonus, frozen: 24, total };
+  // 30 天内到期的批次，按到期日（UTC）分组、日期升序（和数据库 credit_summary 的 expiring_30d 一样）
+  const byDate = new Map();
+  for (const l of live.filter((x) => x.expires <= now + 30 * DAY)) {
+    byDate.set(utcDay(l.expires), (byDate.get(utcDay(l.expires)) || 0) + l.amount);
+  }
+  const expiring = [...byDate.entries()].sort(([a], [b]) => (a < b ? -1 : 1)).map(([date, c]) => ({ date, credits: c }));
   return {
     rows,
     checkins,
@@ -88,7 +114,7 @@ function build(scenario) {
     summary: {
       ...credits,
       expiring_30d: expiring,
-      next_bonus_expiry: expiring.length ? new Date(now + 12 * DAY).toISOString() : new Date(Date.parse(rows[0].created_at) + BONUS_VALID_DAYS * DAY).toISOString(),
+      next_bonus_expiry: live.length ? new Date(Math.min(...live.map((l) => l.expires))).toISOString() : null,
     },
     me: {
       user_id: "demo-user",
@@ -120,6 +146,7 @@ function checkinStatus(d, month, scenario) {
   const next = new Date(now);
   return {
     enabled: true,
+    valid_days: VALID_DAYS.checkin, // 每笔签到积分从领取起几天有效（网关的 CHECKIN_VALID_DAYS）
     email_verified: scenario !== "unverified",
     tz_offset_min: 0,
     next_reset_at: new Date(Date.UTC(next.getUTCFullYear(), next.getUTCMonth(), next.getUTCDate() + 1)).toISOString(),
@@ -153,12 +180,19 @@ function doCheckin(d) {
   const credits = reward(streak);
   d.checkins.push({ day: today, streak, credits });
   const last = d.rows.reduce((a, b) => (b.id > a.id ? b : a));
-  d.rows.push({ id: last.id + 1, delta: credits, bucket: "bonus", reason: "checkin", ref: "checkin:" + today, balance_after: last.balance_after + credits, created_at: new Date(now).toISOString() });
+  const expires = now + VALID_DAYS.checkin * DAY;
+  d.rows.push({ id: last.id + 1, delta: credits, bucket: "bonus", reason: "checkin", ref: "checkin:" + today, balance_after: last.balance_after + credits, created_at: new Date(now).toISOString(), expires_at: new Date(expires).toISOString() });
   d.credits.bonus += credits;
   d.credits.total += credits;
   d.summary.bonus += credits;
   d.summary.total += credits;
-  return { status: "ok", day: today, streak, credits, reward: credits, capped: false, tomorrow_credits: reward(streak + 1) };
+  // 这一笔 30 天后到期：加进“30 天内到期”的分组（同一天到期的合并）
+  const date = utcDay(expires);
+  const hit = d.summary.expiring_30d.find((x) => x.date === date);
+  if (hit) hit.credits += credits;
+  else d.summary.expiring_30d.push({ date, credits });
+  d.summary.expiring_30d.sort((a, b) => (a.date < b.date ? -1 : 1));
+  return { status: "ok", day: today, streak, credits, reward: credits, capped: false, tomorrow_credits: reward(streak + 1), valid_days: VALID_DAYS.checkin };
 }
 
 const json = (v, status = 200) => new Response(JSON.stringify(v), { status, headers: { "content-type": "application/json" } });

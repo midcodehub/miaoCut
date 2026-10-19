@@ -222,8 +222,8 @@
                 t("checkinRule1", { time: resetClock(s.next_reset_at, lang) }),
                 t("checkinRule2", { base: s.rule.base, max: s.rule.max }),
                 t("checkinRule3", { base: s.rule.base }),
-                t("checkinRule4"),
-            ];
+                s.valid_days ? t("checkinRule4", { days: s.valid_days }) : "", // 有效天数来自网关（CHECKIN_VALID_DAYS）
+            ].filter(Boolean);
             if (s.monthly_cap > 0) rules.push(t("checkinRuleCap", { cap: fmt(s.monthly_cap), used: fmt(s.cap_used) }));
             rules.push(t("checkinRuleVerify"));
             $("ci-rules").innerHTML = rules.map((r) => `<li>${escapeHtml(r)}</li>`).join("");
