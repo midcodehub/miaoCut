@@ -1,0 +1,31 @@
+account/checkin-ui.js
+  s_d68abd4a9001d4::t_c03e4ac18b400d 156-158
+terms/index.html
+  s_d68abd4a9001d4::t_c9b1859ede70ae 68,93
+dev/pro-mock.js
+  s_d68abd4a9001d4::t_348afcfcca0644 18-20,30,41,44-52,65,67,73,75-86,90,92-95,98,100,102-109,117,149,183-184,189-195
+pro-i18n.js
+  s_d68abd4a9001d4::t_c03e4ac18b400d 150,179-180,185-186,189-190,228,252,540,545-546,549-550,587,611
+account/checkin/index.html
+  s_d68abd4a9001d4::t_c03e4ac18b400d 225-226
+privacy/index.html
+  s_d68abd4a9001d4::t_c9b1859ede70ae 68,86-87
+account/account-ui.js
+  s_d68abd4a9001d4::t_b3eb21767e5796 26-29,45-46,53,56,58,66-70,72-80,128-135,176-189,191-196
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "6546f0e953eed3b2d1a329f5642d62eead89e914",
+  "prompts": {},
+  "sessions": {
+    "s_d68abd4a9001d4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7f01a002-54a3-4986-9505-34fd709ba9f0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "midcodehub <408124546@qq.com>"
+    }
+  }
+}
