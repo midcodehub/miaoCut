@@ -1,0 +1,60 @@
+pro-i18n.js
+  s_d68abd4a9001d4::t_68911d4c40bb72 255-305,665-714
+account/checkin/index.html
+  s_d68abd4a9001d4::t_12755b310f21a2 149,260
+  s_d68abd4a9001d4::t_94d03daf427d96 15
+  s_d68abd4a9001d4::t_98baed9fecec43 84
+account/invite/index.html
+  s_d68abd4a9001d4::t_2e9379ff547305 1-14,16-287
+  s_d68abd4a9001d4::t_94d03daf427d96 15
+account/index.html
+  s_d68abd4a9001d4::t_94d03daf427d96 15
+  s_d68abd4a9001d4::t_12755b310f21a2 294
+  s_d68abd4a9001d4::t_98baed9fecec43 84
+  s_d68abd4a9001d4::t_892e9ba9f7baf3 124-129,142,186,188,203-218,222-223,227-236,249,254,257
+terms/index.html
+  s_d68abd4a9001d4::t_94d03daf427d96 23,94
+account/referral-ui.js
+  s_d68abd4a9001d4::t_04a2d7016d6539 1-134
+output.css
+  s_d68abd4a9001d4::t_94d03daf427d96 1
+tailwind.config.js
+  s_d68abd4a9001d4::t_94d03daf427d96 34-36,40
+privacy/index.html
+  s_d68abd4a9001d4::t_94d03daf427d96 23,88
+account/account-ui.js
+  s_d68abd4a9001d4::t_98baed9fecec43 232-243
+account/credits/index.html
+  s_d68abd4a9001d4::t_12755b310f21a2 174,404
+  s_d68abd4a9001d4::t_94d03daf427d96 15
+  s_d68abd4a9001d4::t_98baed9fecec43 87
+dev/pro-mock.js
+  s_d68abd4a9001d4::t_d6bdcda8d94683 7-8,12,39-77,152,301-325
+account/batches/index.html
+  s_d68abd4a9001d4::t_94d03daf427d96 15
+  s_d68abd4a9001d4::t_98baed9fecec43 86
+  s_d68abd4a9001d4::t_12755b310f21a2 122,228
+invite/index.html
+  s_d68abd4a9001d4::t_94d03daf427d96 15
+  s_d68abd4a9001d4::t_eefef3b3ea8f56 47,124-131
+  s_d68abd4a9001d4::t_67b6aa283723c2 1-14,16-46,48-123,132-141
+pro-account.js
+  s_d68abd4a9001d4::t_02953a55fbdbcf 35-87,107,171,325-340
+  s_d68abd4a9001d4::t_e4f5bbfaf3ffec 341
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "cad7a0514fa2eb14de7f17078579dd154d69d454",
+  "prompts": {},
+  "sessions": {
+    "s_d68abd4a9001d4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7f01a002-54a3-4986-9505-34fd709ba9f0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "midcodehub <408124546@qq.com>"
+    }
+  }
+}
