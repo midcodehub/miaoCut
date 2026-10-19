@@ -1,0 +1,36 @@
+invite/index.html
+  s_ccc47f0996ae72::t_8943b1a8dc9b9d 73-76
+batch/index.html
+  s_ccc47f0996ae72::t_8943b1a8dc9b9d 180-183
+pro-i18n.js
+  s_ccc47f0996ae72::t_8943b1a8dc9b9d 37,456
+account/invite/index.html
+  s_ccc47f0996ae72::t_8943b1a8dc9b9d 66-69
+account/credits/index.html
+  s_ccc47f0996ae72::t_8943b1a8dc9b9d 68-71
+account/index.html
+  s_ccc47f0996ae72::t_8943b1a8dc9b9d 66-69
+pro-account.js
+  s_ccc47f0996ae72::t_8943b1a8dc9b9d 88-93
+  s_ccc47f0996ae72::t_aaacfa77930700 206,210-213
+account/batches/index.html
+  s_ccc47f0996ae72::t_8943b1a8dc9b9d 67-70
+account/checkin/index.html
+  s_ccc47f0996ae72::t_8943b1a8dc9b9d 66-69
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "58cc5e9294671a79f4ca6769a3e422bb38698bcf",
+  "prompts": {},
+  "sessions": {
+    "s_ccc47f0996ae72": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9c5e140a-b6ba-43d6-adfc-fc71de440e37",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "midcodehub <408124546@qq.com>"
+    }
+  }
+}
