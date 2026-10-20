@@ -12,7 +12,7 @@
     <title>Account | MiaoCut</title>
     <meta name="description" content="Your MiaoCut account: credits, rewards and batch history.">
     <meta name="robots" content="noindex,nofollow">
-    <link rel="stylesheet" href="/output.css?v=76ef820b">
+    <link rel="stylesheet" href="/output.css?v=6d928eb3">
     <script src="/pro-i18n.js"></script>
     <script>
         const isDev = window.location.hostname.includes('dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -153,15 +153,17 @@
                     <h3 class="mt-4 font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="perkInviteT">Invite friends</h3>
                     <p class="mt-1 text-sm text-gray-600 dark:text-zinc-400" data-pi18n="perkInviteD">Get 50 credits for every friend who signs up with your link.</p>
                 </li>
-                <li class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+                <li id="perk-api" class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
                     <div class="flex items-center justify-between">
                         <span class="grid h-9 w-9 place-items-center rounded-xl bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400" aria-hidden="true">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 9-4 3 4 3M16 9l4 3-4 3M13.5 6l-3 12"/></svg>
                         </span>
-                        <span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-zinc-800 dark:text-zinc-400" data-pi18n="hubSoon">Coming soon</span>
+                        <span id="perk-api-soon" class="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-zinc-800 dark:text-zinc-400" data-pi18n="hubSoon">Coming soon</span>
                     </div>
                     <h3 class="mt-4 font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="perkApiT">Developer API</h3>
                     <p class="mt-1 text-sm text-gray-600 dark:text-zinc-400" data-pi18n="perkApiD">Create API keys and remove backgrounds from your own apps, using the same credits.</p>
+                    <!-- 开发者 API 开放后才显示：进入 Key 管理页 -->
+                    <a id="perk-api-link" href="/account/api/" class="mt-3 hidden items-center gap-1 text-sm font-medium text-gray-700 underline-offset-4 hover:text-gray-900 hover:underline dark:text-zinc-300 dark:hover:text-zinc-50"><span data-pi18n="perkApiOpen">Manage keys</span><span aria-hidden="true">→</span></a>
                 </li>
             </ul>
 
@@ -213,7 +215,7 @@
         function layoutPerks() {
             show($("perk-checkin"), !perk.checkin);
             show($("perk-invite"), !perk.invite);
-            const left = 1 + (perk.checkin ? 0 : 1) + (perk.invite ? 0 : 1); // 开发者 API 一直是“即将上线”
+            const left = 1 + (perk.checkin ? 0 : 1) + (perk.invite ? 0 : 1); // 开发者 API 的小卡片一直在（没开放时是“即将上线”，开放后是进入 Key 管理页的入口）
             const cols = { 1: "sm:grid-cols-1", 2: "sm:grid-cols-2", 3: "sm:grid-cols-3" };
             $("perks-grid").classList.remove(...Object.values(cols));
             $("perks-grid").classList.add(cols[left]);
@@ -229,6 +231,14 @@
         }
 
         // 邀请开放且账户可用（邮箱已验证）→ 显示邀请卡片；开放但邮箱没验证 → 什么都不显示（签到卡片会提示去验证）；没开放 → 保留小卡片
+        // 开发者 API 开放（enabled）→ 小卡片的“即将上线”换成进入 Key 管理页的链接；没开放 / 取不到 → 保持“即将上线”
+        function showApi(data) {
+            const open = !!(data && data.enabled);
+            show($("perk-api-soon"), !open);
+            $("perk-api-link").classList.toggle("hidden", !open);
+            $("perk-api-link").classList.toggle("inline-flex", open);
+        }
+
         function showInvite(data) {
             const open = !!(data && data.enabled);
             const ready = open && data.eligible !== false && !!data.link;
@@ -250,15 +260,17 @@
         async function load({ keepCheckin = false } = {}) {
             try {
                 // 余额、汇总、最近流水、签到状态并行取；后三个失败都不影响页面主体
-                const [me, summary, page, checkin, referral] = await Promise.all([
+                const [me, summary, page, checkin, referral, apiKeys] = await Promise.all([
                     MiaoCutPro.me(),
                     MiaoCutPro.summary().catch(() => null),
                     MiaoCutPro.ledgerPage({ limit: 30 }).catch(() => null),
                     keepCheckin ? Promise.resolve(undefined) : MiaoCutPro.checkinStatus().catch(() => null),
                     keepCheckin ? Promise.resolve(undefined) : MiaoCutPro.referral().catch(() => null),
+                    keepCheckin ? Promise.resolve(undefined) : MiaoCutPro.apiKeys().catch(() => null),
                 ]);
                 if (checkin !== undefined) showCheckin(checkin);
                 if (referral !== undefined) showInvite(referral);
+                if (apiKeys !== undefined) showApi(apiKeys);
                 $("hub-email").textContent = me.email || "";
                 const plan = $("hub-plan");
                 plan.textContent = t(PLAN_NAMES[me.plan] || "planFree");
