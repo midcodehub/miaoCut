@@ -15,13 +15,13 @@ export function keyRowHTML(k, { t, lang }) {
   const used = k.last_used_at ? t("apiLastUsed", { date: dateText(Date.parse(k.last_used_at), lang, true) }) : t("apiNeverUsed");
   return `
     <li class="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 px-4 py-4 sm:px-5" data-api-key="${escapeHtml(k.id)}">
-      <div class="flex min-w-0 items-start gap-3">
+      <div class="flex min-w-0 flex-1 items-start gap-3">
         <span class="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400">${KEY_ICON}</span>
         <div class="min-w-0">
-          <p class="truncate font-medium text-gray-900 dark:text-zinc-50">${escapeHtml(k.name)}</p>
-          <p class="mt-0.5 font-mono text-xs text-gray-600 dark:text-zinc-400">${escapeHtml(k.prefix)}…</p>
-          <p class="mt-1 text-xs text-gray-500 dark:text-zinc-500">${escapeHtml(t("apiCreatedOn", { date: dateText(Date.parse(k.created_at), lang) }))} · ${escapeHtml(used)}</p>
-          <p class="mt-0.5 text-xs text-gray-500 dark:text-zinc-500">${escapeHtml(t("apiMonthUsage", { jobs: fmt(k.month_jobs), images: fmt(k.month_images) }))}</p>
+          <p class="break-words font-medium text-gray-900 dark:text-zinc-50">${escapeHtml(k.name)}</p>
+          <p dir="ltr" class="mt-0.5 font-mono text-xs text-gray-600 dark:text-zinc-400">${escapeHtml(k.prefix)}…</p>
+          <p class="mt-1 text-xs text-gray-500 dark:text-zinc-400">${escapeHtml(t("apiCreatedOn", { date: dateText(Date.parse(k.created_at), lang) }))} · ${escapeHtml(used)}</p>
+          <p class="mt-0.5 text-xs text-gray-500 dark:text-zinc-400">${escapeHtml(t("apiMonthUsage", { jobs: fmt(k.month_jobs), images: fmt(k.month_images) }))}</p>
         </div>
       </div>
       <button type="button" data-api-revoke="${escapeHtml(k.id)}" data-api-name="${escapeHtml(k.name)}"
@@ -37,7 +37,7 @@ export function revealHTML(created, { t }) {
     <p class="mt-1 text-sm text-emerald-900/90 dark:text-emerald-200/90">${escapeHtml(t("apiRevealWarn"))}</p>
     <div class="mt-4 flex flex-col gap-2 sm:flex-row">
       <label class="sr-only" for="api-new-key">${escapeHtml(t("apiRevealH"))}</label>
-      <input id="api-new-key" data-api-new-key readonly value="${escapeHtml(created.key)}" spellcheck="false" autocomplete="off"
+      <input id="api-new-key" data-api-new-key readonly value="${escapeHtml(created.key)}" dir="ltr" spellcheck="false" autocomplete="off"
         class="block min-w-0 flex-1 rounded-lg border border-emerald-300 bg-white px-3 py-2.5 font-mono text-sm text-gray-900 focus:border-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-700/20 dark:border-emerald-500/40 dark:bg-zinc-950 dark:text-zinc-50">
       <button type="button" data-api-copy class="${btn} bg-gray-900 text-white hover:bg-gray-700 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200">${escapeHtml(t("apiCopy"))}</button>
     </div>

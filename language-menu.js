@@ -57,7 +57,8 @@
         const options = Array.from(panel.querySelectorAll('[data-lang-option]'));
         if (!options.length) return;
 
-        let currentLang = localeFromHtmlLang(document.documentElement.lang);
+        const runtime = window.MiaoCutProI18n;
+        let currentLang = runtime ? runtime.lang : localeFromHtmlLang(document.documentElement.lang);
 
         const setOpen = (open, focusOption = false) => {
             root.classList.toggle('is-open', open);
@@ -94,7 +95,12 @@
                 } catch (_) { /* analytics must not affect navigation */ }
             }
 
-            localStorage.setItem('lang', targetLang);
+            if (runtime) {
+                runtime.switchLang(targetLang);
+                return;
+            }
+
+            try { localStorage.setItem('lang', targetLang); } catch (_) { /* Navigation works without storage. */ }
             const target = alternateUrlFor(targetLang) + window.location.search + window.location.hash;
             window.location.assign(target);
         };
@@ -165,9 +171,15 @@
         syncActiveOption();
     }
 
+    const start = () => {
+        const ready = window.MiaoCutProI18n?.ready;
+        if (ready) ready.then(initLanguageMenu);
+        else initLanguageMenu();
+    };
+
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initLanguageMenu, { once: true });
+        document.addEventListener('DOMContentLoaded', start, { once: true });
     } else {
-        initLanguageMenu();
+        start();
     }
 })();

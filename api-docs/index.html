@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-pi18n-title="docsTitle">
 
 <head>
     <meta charset="UTF-8">
@@ -13,59 +13,144 @@
     <meta name="description" content="Documentation for the MiaoCut developer API: create jobs, upload images, start processing and download transparent PNG results.">
     <!-- 开发者 API 还没对外开放：先不让搜索引擎收录。开放那天把这一行删掉，再把 /api-docs/ 加进 sitemap -->
     <meta name="robots" content="noindex,nofollow">
-    <link rel="stylesheet" href="/output.css?v=6d928eb3">
-    <script src="/pro-i18n.js"></script>
+    <link rel="stylesheet" href="/output.css?v=51b2cd6e">
+    <script src="/pro-i18n.js?v=51c00c16"></script>
+<script src="/account/workspace.js?v=71f3b771" defer></script>
+<script src="/language-menu.js?v=218641ac" defer></script>
 </head>
 
-<body class="flex min-h-screen flex-col bg-gray-50 font-sans text-gray-800 dark:bg-zinc-950 dark:text-zinc-200">
-    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
+<body class="flex min-h-screen flex-col bg-gray-50 font-sans text-gray-800 dark:bg-zinc-950 dark:text-zinc-200 member-page">
+    <header
+        class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
             <a href="/" class="site-brand" aria-label="MiaoCut home">
                 <img src="/favicon-nav.png" alt="" class="site-brand-mark" width="36" height="36">
                 <span class="site-brand-text">MiaoCut</span>
             </a>
-            <nav class="flex items-center gap-3 text-sm font-medium text-gray-600 sm:gap-4 dark:text-zinc-300">
-                <a href="/" class="hidden hover:text-gray-900 sm:inline dark:hover:text-zinc-100" data-pi18n="navTools">Background Remover</a>
-                <a href="/pricing/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-pi18n="navPricing">Pricing</a>
-                <a href="/account/api/" class="text-gray-900 dark:text-zinc-50" data-pi18n="navAccount">Account</a>
-                <button type="button" data-pi18n-switch class="rounded-full border border-gray-300 px-2.5 py-1 text-xs text-gray-600 hover:border-gray-500 dark:border-zinc-700 dark:text-zinc-300">中文</button>
-            </nav>
+            <div class="flex items-center gap-4">
+                <nav aria-label="Image tools" data-pi18n-aria="siteToolsLabel" class="hidden items-center gap-4 text-sm font-medium text-gray-600 lg:flex dark:text-zinc-300">
+                    <a href="/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-pi18n="navBg">Background Remover</a>
+                    <a href="/product-photo-background-remover/"
+                        class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100"
+                        data-pi18n="navProduct">Product</a>
+                    <a href="/portrait-background-remover/"
+                        class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100"
+                        data-pi18n="navPortrait">Portrait</a>
+                    <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100"
+                        data-pi18n="navWatermark">Watermark</a>
+                    <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100"
+                        data-pi18n="navId">ID Photo</a>
+                    <a href="/old-photo-restoration/"
+                        class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100"
+                        data-pi18n="navRestore">Old Photo</a>
+                </nav>
+                <a href="https://github.com/midcodehub/miaoCut" target="_blank" rel="noopener"
+                    aria-label="MiaoCut on GitHub (open source)" title="View source on GitHub"
+                    class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><svg
+                        class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z" />
+                    </svg></a>
+                <button id="theme-toggle" type="button" aria-label="Toggle dark mode" data-pi18n-aria="memberTheme"
+                    class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors">
+                    <svg class="h-5 w-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.5"
+                        viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                    </svg>
+                    <svg class="h-5 w-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.5"
+                        viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                    </svg>
+                </button>
+                <div class="language-select" data-language-menu>
+                    <button id="lang-switch" type="button" class="language-select-control" aria-label="Language" data-pi18n-aria="languageLabel"
+                        aria-haspopup="listbox" aria-expanded="false" aria-controls="language-options">
+                        <svg class="language-select-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3.6 9h16.8M3.6 15h16.8M12 3c2.1 2.1 3.2 5.2 3.2 9S14.1 18.9 12 21M12 3C9.9 5.1 8.8 8.2 8.8 12s1.1 6.9 3.2 9" />
+                        </svg>
+                        <span class="language-select-label" data-lang-current>English</span>
+                        <svg class="language-select-chevron" width="16" height="16" viewBox="0 0 20 20" fill="none"
+                            stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m5 7.5 5 5 5-5" />
+                        </svg>
+                    </button>
+                    <div id="language-options" class="language-select-options" role="listbox"
+                        aria-label="Language options" data-pi18n-aria="languageOptionsLabel" hidden>
+                        <button type="button" class="language-select-option" role="option" aria-selected="true"
+                            data-lang-option="en" dir="auto">English</button>
+                        <button type="button" class="language-select-option" role="option" aria-selected="false"
+                            data-lang-option="zh" dir="auto">简体中文</button>
+                        <button type="button" class="language-select-option" role="option" aria-selected="false"
+                            data-lang-option="hi" dir="auto">हिन्दी</button>
+                        <button type="button" class="language-select-option" role="option" aria-selected="false"
+                            data-lang-option="id" dir="auto">Bahasa Indonesia</button>
+                        <button type="button" class="language-select-option" role="option" aria-selected="false"
+                            data-lang-option="pt-br" dir="auto">Português (BR)</button>
+                        <button type="button" class="language-select-option" role="option" aria-selected="false"
+                            data-lang-option="bn" dir="auto">বাংলা</button>
+                        <button type="button" class="language-select-option" role="option" aria-selected="false"
+                            data-lang-option="fil" dir="auto">Filipino</button>
+                        <button type="button" class="language-select-option" role="option" aria-selected="false"
+                            data-lang-option="ur" dir="auto">اردو</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
+<nav class="site-member-navigation" aria-label="Member services" data-pi18n-aria="memberMenuLabel">
+        <div class="site-member-navigation-inner">
+            <div class="site-mobile-tools">
+        <a href="/" class="shrink-0" data-pi18n="navBg">Background Remover</a>
+        <a href="/product-photo-background-remover/" class="shrink-0" data-pi18n="navProduct">Product</a>
+        <a href="/portrait-background-remover/" class="shrink-0" data-pi18n="navPortrait">Portrait</a>
+        <a href="/watermark-remover/" class="shrink-0" data-pi18n="navWatermark">Watermark</a>
+        <a href="/id-photo-maker/" class="shrink-0" data-pi18n="navId">ID Photo</a>
+        <a href="/old-photo-restoration/" class="shrink-0" data-pi18n="navRestore">Old Photo</a>
+    </div>
+            <span class="site-member-divider" aria-hidden="true"></span>
+            <div class="site-member-links"><a href="/batch/" class="site-member-link" data-pi18n="navBatch">Batch</a><a href="/pricing/" class="site-member-link" data-pi18n="navPricing">Pricing</a><a id="nav-auth" data-pi18n="navAccount" href="/account/" class="site-member-link" aria-current="page">Account</a></div>
+        </div>
+    </nav>
 
-    <main class="mx-auto w-full max-w-3xl flex-1 px-5 pb-16 pt-10 sm:pt-14">
-<div data-doc="en">
+    <main class="member-main member-api-docs">
+<div class="member-doc-body">
 
 <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50">MiaoCut API</h1>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300">Remove image backgrounds from your own apps. The API runs on the same pipeline as the website's batch tool, so credits, result retention and refunds work the same way.</p>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300">Base URL: <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">https://pro-api.miaocut.app</code>. All requests and responses are JSON, except the image upload and download links.</p>
+<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText1">Remove image backgrounds from your own apps. The API runs on the same pipeline as the website's batch tool, so credits, result retention and refunds work the same way.</p>
+<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText2">Base URL: <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">https://pro-api.miaocut.app</code>. All requests and responses are JSON, except the image upload and download links.</p>
 
-<h2 class="mt-10 text-xl font-semibold tracking-tight text-gray-900 dark:text-zinc-50">Quick start</h2>
+<h2 class="mt-10 text-xl font-semibold tracking-tight text-gray-900 dark:text-zinc-50" data-pi18n-html="docsText3">Quick start</h2>
 <ol class="mt-3 list-decimal space-y-1.5 pl-5 text-sm text-gray-700 marker:text-gray-400 dark:text-zinc-300">
-  <li>Create an API key on the <a class="font-medium underline underline-offset-4" href="/account/api/">Developer API page</a> (sign-in required).</li>
-  <li>Create a job with the file names, and get an upload link for each image.</li>
-  <li>Upload each image to its link, then start the job.</li>
-  <li>Poll the job until it is done, then download the transparent PNG results.</li>
+  <li data-pi18n-html="docsText4">Create an API key on the <a class="font-medium underline underline-offset-4" href="/account/api/">Developer API page</a> (sign-in required).</li>
+  <li data-pi18n-html="docsText5">Create a job with the file names, and get an upload link for each image.</li>
+  <li data-pi18n-html="docsText6">Upload each image to its link, then start the job.</li>
+  <li data-pi18n-html="docsText7">Poll the job until it is done, then download the transparent PNG results.</li>
 </ol>
 
-<h2 class="mt-10 text-xl font-semibold tracking-tight text-gray-900 dark:text-zinc-50">Authentication</h2>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300">Send your key in the <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">Authorization</code> header: <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">Authorization: Bearer mc_live_YOUR_API_KEY</code>. Keys start with <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">mc_live_</code>. The full key is shown only once when you create it. Keep it secret: anyone with the key can spend your credits. If a key leaks, revoke it on the Developer API page and it stops working immediately.</p>
+<h2 class="mt-10 text-xl font-semibold tracking-tight text-gray-900 dark:text-zinc-50" data-pi18n-html="docsText8">Authentication</h2>
+<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText9">Send your key in the <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">Authorization</code> header: <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">Authorization: Bearer mc_live_YOUR_API_KEY</code>. Keys start with <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">mc_live_</code>. The full key is shown only once when you create it. Keep it secret: anyone with the key can spend your credits. If a key leaks, revoke it on the Developer API page and it stops working immediately.</p>
 
-<h2 class="mt-10 text-xl font-semibold tracking-tight text-gray-900 dark:text-zinc-50">Credits</h2>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300">API calls use the same credits as the website. Credits are reserved for the whole job when you call <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">start</code>. Images that fail to process are refunded automatically.</p>
-<table class="mt-3 w-full overflow-hidden rounded-xl border border-gray-200 text-sm dark:border-zinc-800"><thead class="bg-gray-50 dark:bg-zinc-900"><tr><th class="px-3 py-2 text-left font-semibold text-gray-900 dark:text-zinc-50">profile</th><th class="px-3 py-2 text-left font-semibold text-gray-900 dark:text-zinc-50">Mode</th><th class="px-3 py-2 text-left font-semibold text-gray-900 dark:text-zinc-50">Credits per image</th></tr></thead><tbody class="divide-y divide-gray-100 dark:divide-zinc-800">
-<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">fast</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">Standard mode</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">1</td></tr>
-<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">fur</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">Fine edges mode (hair, fur, plush, plants)</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">2</td></tr>
-</tbody></table>
+<h2 class="mt-10 text-xl font-semibold tracking-tight text-gray-900 dark:text-zinc-50" data-pi18n-html="docsText10">Credits</h2>
+<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText11">API calls use the same credits as the website. Credits are reserved for the whole job when you call <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">start</code>. Images that fail to process are refunded automatically.</p>
+<div class="member-doc-table"><table class="mt-3 w-full overflow-hidden rounded-xl border border-gray-200 text-sm dark:border-zinc-800"><thead class="bg-gray-50 dark:bg-zinc-900"><tr><th class="px-3 py-2 text-left font-semibold text-gray-900 dark:text-zinc-50">profile</th><th class="px-3 py-2 text-left font-semibold text-gray-900 dark:text-zinc-50" data-pi18n-html="docsText13">Mode</th><th class="px-3 py-2 text-left font-semibold text-gray-900 dark:text-zinc-50" data-pi18n-html="docsText14">Credits per image</th></tr></thead><tbody class="divide-y divide-gray-100 dark:divide-zinc-800">
+<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">fast</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText16">Standard mode</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">1</td></tr>
+<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">fur</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText19">Fine edges mode (hair, fur, plush, plants)</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">2</td></tr>
+</tbody></table></div>
 
-<h2 class="mt-10 text-xl font-semibold tracking-tight text-gray-900 dark:text-zinc-50">Endpoints</h2>
-<h3 class="mt-6 font-semibold text-gray-900 dark:text-zinc-50">1. Create a job</h3>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">POST /api/v1/jobs</code> with a JSON body. Nothing is charged yet.</p>
+<h2 class="mt-10 text-xl font-semibold tracking-tight text-gray-900 dark:text-zinc-50" data-pi18n-html="docsText21">Endpoints</h2>
+<h3 class="mt-6 font-semibold text-gray-900 dark:text-zinc-50" data-pi18n-html="docsText22">1. Create a job</h3>
+<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText23"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">POST /api/v1/jobs</code> with a JSON body. Nothing is charged yet.</p>
 <pre class="mt-3 overflow-x-auto rounded-xl border border-gray-200 bg-gray-900 p-4 font-mono text-[13px] leading-relaxed text-gray-100 dark:border-zinc-800 dark:bg-zinc-950"><code>{
   "profile": "fast",
   "files": [{ "name": "photo-1.jpg" }, { "name": "photo-2.png" }]
 }</code></pre>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300">Response:</p>
+<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText24">Response:</p>
 <pre class="mt-3 overflow-x-auto rounded-xl border border-gray-200 bg-gray-900 p-4 font-mono text-[13px] leading-relaxed text-gray-100 dark:border-zinc-800 dark:bg-zinc-950"><code>{
   "job_id": "3f0c9a52-…",
   "profile": "fast",
@@ -77,16 +162,16 @@
     { "image_id": "…", "orig_filename": "photo-2.png", "put_url": "https://…" }
   ]
 }</code></pre>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300">The number of images per job depends on your plan (up to 200 on the free tier and Basic, up to 500 on Pro and Business). If your balance is lower than <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">total_cost</code> you get <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">402 insufficient_credits</code>.</p>
+<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText25">The number of images per job depends on your plan (up to 200 on the free tier and Basic, up to 500 on Pro and Business). If your balance is lower than <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">total_cost</code> you get <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">402 insufficient_credits</code>.</p>
 
-<h3 class="mt-6 font-semibold text-gray-900 dark:text-zinc-50">2. Upload the images</h3>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">PUT</code> the raw image bytes to each <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">put_url</code>, in the same order as <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">files</code>. No <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">Authorization</code> header is needed (and do not add one): the link carries its own signature and is valid for <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">expires_in</code> seconds (1 hour). Supported formats: PNG, JPEG and WebP. Images larger than 60 megapixels fail.</p>
+<h3 class="mt-6 font-semibold text-gray-900 dark:text-zinc-50" data-pi18n-html="docsText26">2. Upload the images</h3>
+<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText27"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">PUT</code> the raw image bytes to each <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">put_url</code>, in the same order as <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">files</code>. No <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">Authorization</code> header is needed (and do not add one): the link carries its own signature and is valid for <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">expires_in</code> seconds (1 hour). Supported formats: PNG, JPEG and WebP. Images larger than 60 megapixels fail.</p>
 
-<h3 class="mt-6 font-semibold text-gray-900 dark:text-zinc-50">3. Start the job</h3>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">POST /api/v1/jobs/{{job_id}}/start</code> reserves the credits and queues the images. Response: <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">{{ "status": "processing", "total": 2, "enqueued": 2 }}</code>. A job can be started only once (<code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">409 already_started</code>).</p>
+<h3 class="mt-6 font-semibold text-gray-900 dark:text-zinc-50" data-pi18n-html="docsText28">3. Start the job</h3>
+<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText29"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">POST /api/v1/jobs/{{job_id}}/start</code> reserves the credits and queues the images. Response: <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">{{ "status": "processing", "total": 2, "enqueued": 2 }}</code>. A job can be started only once (<code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">409 already_started</code>).</p>
 
-<h3 class="mt-6 font-semibold text-gray-900 dark:text-zinc-50">4. Check progress and download</h3>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">GET /api/v1/jobs/{{job_id}}</code>. Poll every 2–5 seconds. The first images can take up to a minute while a GPU starts. When <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">done</code> is <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">true</code>, every image has finished.</p>
+<h3 class="mt-6 font-semibold text-gray-900 dark:text-zinc-50" data-pi18n-html="docsText30">4. Check progress and download</h3>
+<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText31"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">GET /api/v1/jobs/{{job_id}}</code>. Poll every 2–5 seconds. The first images can take up to a minute while a GPU starts. When <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">done</code> is <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">true</code>, every image has finished.</p>
 <pre class="mt-3 overflow-x-auto rounded-xl border border-gray-200 bg-gray-900 p-4 font-mono text-[13px] leading-relaxed text-gray-100 dark:border-zinc-800 dark:bg-zinc-950"><code>{
   "job_id": "3f0c9a52-…",
   "profile": "fast",
@@ -102,122 +187,32 @@
   "retention_days": 1,
   "retention_ends_at": "2026-10-21T08:00:00.000Z"
 }</code></pre>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300">Image <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">status</code> is <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">queued</code>, <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">processing</code>, <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">done</code> or <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">failed</code>. A <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">done</code> image has a <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">download_url</code> (a transparent PNG, valid for 1 hour; call this endpoint again for a fresh link). A <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">failed</code> image has an <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">error</code> and its credits are refunded. Results are kept for 1 day (7 days with a subscription), then deleted.</p>
+<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText32">Image <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">status</code> is <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">queued</code>, <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">processing</code>, <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">done</code> or <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">failed</code>. A <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">done</code> image has a <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">download_url</code> (a transparent PNG, valid for 1 hour; call this endpoint again for a fresh link). A <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">failed</code> image has an <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">error</code> and its credits are refunded. Results are kept for 1 day (7 days with a subscription), then deleted.</p>
 
-<h2 class="mt-10 text-xl font-semibold tracking-tight text-gray-900 dark:text-zinc-50">Limits</h2>
+<h2 class="mt-10 text-xl font-semibold tracking-tight text-gray-900 dark:text-zinc-50" data-pi18n-html="docsText33">Limits</h2>
 <ul class="mt-3 list-disc space-y-1.5 pl-5 text-sm text-gray-700 marker:text-gray-400 dark:text-zinc-300">
-  <li>60 requests per minute per key. Over the limit you get <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">429 rate_limited</code> and a <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">Retry-After</code> header (seconds).</li>
-  <li>Up to 5 jobs in progress per key (processing, or created within the last hour and not started yet). Over the limit you get <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">429 too_many_active_jobs</code>.</li>
-  <li>Up to 5 active keys per account.</li>
-  <li>A key can only see and start jobs created through the API.</li>
+  <li data-pi18n-html="docsText34">60 requests per minute per key. Over the limit you get <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">429 rate_limited</code> and a <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">Retry-After</code> header (seconds).</li>
+  <li data-pi18n-html="docsText35">Up to 5 jobs in progress per key (processing, or created within the last hour and not started yet). Over the limit you get <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">429 too_many_active_jobs</code>.</li>
+  <li data-pi18n-html="docsText36">Up to 5 active keys per account.</li>
+  <li data-pi18n-html="docsText37">A key can only see and start jobs created through the API.</li>
 </ul>
 
-<h2 class="mt-10 text-xl font-semibold tracking-tight text-gray-900 dark:text-zinc-50">Errors</h2>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300">Errors are JSON like <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">{{ "error": "insufficient_credits", "balance": 3, "needed": 10 }}</code>.</p>
-<table class="mt-3 w-full overflow-hidden rounded-xl border border-gray-200 text-sm dark:border-zinc-800"><thead class="bg-gray-50 dark:bg-zinc-900"><tr><th class="px-3 py-2 text-left font-semibold text-gray-900 dark:text-zinc-50">Status</th><th class="px-3 py-2 text-left font-semibold text-gray-900 dark:text-zinc-50">error</th><th class="px-3 py-2 text-left font-semibold text-gray-900 dark:text-zinc-50">Meaning</th></tr></thead><tbody class="divide-y divide-gray-100 dark:divide-zinc-800">
-<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">400</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">no_files</code>, <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">too_many_images</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">No files in the request, or more images than your plan allows (<code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">max</code> is returned).</td></tr>
-<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">401</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">invalid_api_key</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">The key is missing, malformed, unknown or revoked.</td></tr>
-<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">402</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">insufficient_credits</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">Not enough credits (<code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">balance</code> and <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">needed</code> are returned when creating a job).</td></tr>
-<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">404</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">not_found</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">The job does not exist, or was not created through the API.</td></tr>
-<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">409</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">already_started</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">The job was already started.</td></tr>
-<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">429</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">rate_limited</code>, <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">too_many_active_jobs</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">Slow down and retry after the <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">Retry-After</code> seconds.</td></tr>
-<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">503</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">api_disabled</code>, <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">api_unavailable</code>, <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">enqueue_failed</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">Temporarily unavailable, retry later. <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">enqueue_failed</code> refunds the reserved credits.</td></tr>
-</tbody></table>
-
-</div>
-<div data-doc="zh" hidden>
-
-<h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50">MiaoCut API</h1>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300">在你自己的应用里调用抠图。API 和网页批量工具走同一条处理流水线，所以积分、结果保留时间和退款规则都和网页一致。</p>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300">接口地址：<code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">https://pro-api.miaocut.app</code>。请求和响应都是 JSON（图片上传和下载链接除外）。</p>
-
-<h2 class="mt-10 text-xl font-semibold tracking-tight text-gray-900 dark:text-zinc-50">快速开始</h2>
-<ol class="mt-3 list-decimal space-y-1.5 pl-5 text-sm text-gray-700 marker:text-gray-400 dark:text-zinc-300">
-  <li>在<a class="font-medium underline underline-offset-4" href="/account/api/">开发者 API 页面</a>生成一把 API Key（需要登录）。</li>
-  <li>带上文件名创建任务，每张图会得到一个上传链接。</li>
-  <li>把每张图上传到对应链接，然后开始任务。</li>
-  <li>轮询任务直到完成，下载透明底 PNG 结果。</li>
-</ol>
-
-<h2 class="mt-10 text-xl font-semibold tracking-tight text-gray-900 dark:text-zinc-50">鉴权</h2>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300">把 Key 放在 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">Authorization</code> 请求头里：<code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">Authorization: Bearer mc_live_YOUR_API_KEY</code>。Key 以 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">mc_live_</code> 开头，完整的 Key 只在生成时显示一次。请妥善保管：拿到 Key 的人就能花掉你的积分。Key 泄露了就在开发者 API 页面吊销，吊销后立刻失效。</p>
-
-<h2 class="mt-10 text-xl font-semibold tracking-tight text-gray-900 dark:text-zinc-50">积分</h2>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300">API 调用和网页共用积分。调用 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">start</code> 时会按整个任务预留积分；处理失败的图片会自动退回积分。</p>
-<table class="mt-3 w-full overflow-hidden rounded-xl border border-gray-200 text-sm dark:border-zinc-800"><thead class="bg-gray-50 dark:bg-zinc-900"><tr><th class="px-3 py-2 text-left font-semibold text-gray-900 dark:text-zinc-50">profile</th><th class="px-3 py-2 text-left font-semibold text-gray-900 dark:text-zinc-50">模式</th><th class="px-3 py-2 text-left font-semibold text-gray-900 dark:text-zinc-50">每张图积分</th></tr></thead><tbody class="divide-y divide-gray-100 dark:divide-zinc-800">
-<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">fast</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">标准模式</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">1</td></tr>
-<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">fur</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">细腻边缘模式（毛发、绒毛、植物）</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">2</td></tr>
-</tbody></table>
-
-<h2 class="mt-10 text-xl font-semibold tracking-tight text-gray-900 dark:text-zinc-50">接口</h2>
-<h3 class="mt-6 font-semibold text-gray-900 dark:text-zinc-50">1. 创建任务</h3>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">POST /api/v1/jobs</code>，请求体为 JSON。这一步不扣积分。</p>
-<pre class="mt-3 overflow-x-auto rounded-xl border border-gray-200 bg-gray-900 p-4 font-mono text-[13px] leading-relaxed text-gray-100 dark:border-zinc-800 dark:bg-zinc-950"><code>{
-  "profile": "fast",
-  "files": [{ "name": "photo-1.jpg" }, { "name": "photo-2.png" }]
-}</code></pre>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300">响应：</p>
-<pre class="mt-3 overflow-x-auto rounded-xl border border-gray-200 bg-gray-900 p-4 font-mono text-[13px] leading-relaxed text-gray-100 dark:border-zinc-800 dark:bg-zinc-950"><code>{
-  "job_id": "3f0c9a52-…",
-  "profile": "fast",
-  "cost_per_image": 1,
-  "total_cost": 2,
-  "expires_in": 3600,
-  "uploads": [
-    { "image_id": "…", "orig_filename": "photo-1.jpg", "put_url": "https://…" },
-    { "image_id": "…", "orig_filename": "photo-2.png", "put_url": "https://…" }
-  ]
-}</code></pre>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300">每个任务的图片数量按套餐而定（免费版和 Basic 最多 200 张，Pro 和 Business 最多 500 张）。余额低于 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">total_cost</code> 时返回 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">402 insufficient_credits</code>。</p>
-
-<h3 class="mt-6 font-semibold text-gray-900 dark:text-zinc-50">2. 上传图片</h3>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300">把图片原始字节 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">PUT</code> 到各自的 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">put_url</code>，顺序和 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">files</code> 一致。不需要（也不要加）<code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">Authorization</code> 请求头：链接自带签名，<code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">expires_in</code> 秒（1 小时）内有效。支持 PNG、JPEG、WebP；超过 6000 万像素的图片会处理失败。</p>
-
-<h3 class="mt-6 font-semibold text-gray-900 dark:text-zinc-50">3. 开始任务</h3>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">POST /api/v1/jobs/{{job_id}}/start</code> 预留积分并把图片排入队列。响应：<code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">{{ "status": "processing", "total": 2, "enqueued": 2 }}</code>。同一个任务只能开始一次（再次开始返回 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">409 already_started</code>）。</p>
-
-<h3 class="mt-6 font-semibold text-gray-900 dark:text-zinc-50">4. 查进度、下载结果</h3>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">GET /api/v1/jobs/{{job_id}}</code>，建议每 2–5 秒轮询一次。GPU 启动时，前几张图可能要等将近一分钟。<code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">done</code> 为 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">true</code> 表示所有图片都处理完了。</p>
-<pre class="mt-3 overflow-x-auto rounded-xl border border-gray-200 bg-gray-900 p-4 font-mono text-[13px] leading-relaxed text-gray-100 dark:border-zinc-800 dark:bg-zinc-950"><code>{
-  "job_id": "3f0c9a52-…",
-  "profile": "fast",
-  "status": "processing",
-  "total": 2,
-  "succeeded": 1,
-  "failed": 0,
-  "done": false,
-  "images": [
-    { "image_id": "…", "idx": 0, "filename": "photo-1.jpg", "status": "done", "download_url": "https://…" },
-    { "image_id": "…", "idx": 1, "filename": "photo-2.png", "status": "queued" }
-  ],
-  "retention_days": 1,
-  "retention_ends_at": "2026-10-21T08:00:00.000Z"
-}</code></pre>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300">图片的 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">status</code> 有 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">queued</code>（排队中）、<code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">processing</code>（处理中）、<code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">done</code>（完成）、<code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">failed</code>（失败）。完成的图片带 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">download_url</code>（透明底 PNG，1 小时内有效；过期了再调用本接口会拿到新链接）。失败的图片带 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">error</code>，积分会退回。处理结果保留 1 天（订阅用户 7 天），之后自动删除。</p>
-
-<h2 class="mt-10 text-xl font-semibold tracking-tight text-gray-900 dark:text-zinc-50">限额</h2>
-<ul class="mt-3 list-disc space-y-1.5 pl-5 text-sm text-gray-700 marker:text-gray-400 dark:text-zinc-300">
-  <li>每把 Key 每分钟 60 次请求。超过时返回 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">429 rate_limited</code>，并带 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">Retry-After</code> 响应头（秒）。</li>
-  <li>每把 Key 同时最多 5 个进行中的任务（处理中，或 1 小时内创建、还没开始的）。超过时返回 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">429 too_many_active_jobs</code>。</li>
-  <li>每个账号最多 5 把有效 Key。</li>
-  <li>Key 只能查看和开始通过 API 创建的任务。</li>
-</ul>
-
-<h2 class="mt-10 text-xl font-semibold tracking-tight text-gray-900 dark:text-zinc-50">错误</h2>
-<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300">错误响应是 JSON，例如 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">{{ "error": "insufficient_credits", "balance": 3, "needed": 10 }}</code>。</p>
-<table class="mt-3 w-full overflow-hidden rounded-xl border border-gray-200 text-sm dark:border-zinc-800"><thead class="bg-gray-50 dark:bg-zinc-900"><tr><th class="px-3 py-2 text-left font-semibold text-gray-900 dark:text-zinc-50">状态码</th><th class="px-3 py-2 text-left font-semibold text-gray-900 dark:text-zinc-50">error</th><th class="px-3 py-2 text-left font-semibold text-gray-900 dark:text-zinc-50">含义</th></tr></thead><tbody class="divide-y divide-gray-100 dark:divide-zinc-800">
-<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">400</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">no_files</code>、<code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">too_many_images</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">请求里没有文件，或图片数量超过套餐上限（会返回 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">max</code>）。</td></tr>
-<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">401</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">invalid_api_key</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">Key 缺失、格式不对、不存在或已吊销。</td></tr>
-<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">402</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">insufficient_credits</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">积分不足（创建任务时会返回 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">balance</code> 和 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">needed</code>）。</td></tr>
-<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">404</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">not_found</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">任务不存在，或不是通过 API 创建的。</td></tr>
-<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">409</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">already_started</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">任务已经开始过。</td></tr>
-<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">429</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">rate_limited</code>、<code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">too_many_active_jobs</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">请求太频繁，等 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">Retry-After</code> 秒后重试。</td></tr>
-<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">503</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">api_disabled</code>、<code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">api_unavailable</code>、<code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">enqueue_failed</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">暂时不可用，稍后重试。<code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">enqueue_failed</code> 会退回预留的积分。</td></tr>
-</tbody></table>
+<h2 class="mt-10 text-xl font-semibold tracking-tight text-gray-900 dark:text-zinc-50" data-pi18n-html="docsText38">Errors</h2>
+<p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText39">Errors are JSON like <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">{{ "error": "insufficient_credits", "balance": 3, "needed": 10 }}</code>.</p>
+<div class="member-doc-table"><table class="mt-3 w-full overflow-hidden rounded-xl border border-gray-200 text-sm dark:border-zinc-800"><thead class="bg-gray-50 dark:bg-zinc-900"><tr><th class="px-3 py-2 text-left font-semibold text-gray-900 dark:text-zinc-50" data-pi18n-html="docsText40">Status</th><th class="px-3 py-2 text-left font-semibold text-gray-900 dark:text-zinc-50">error</th><th class="px-3 py-2 text-left font-semibold text-gray-900 dark:text-zinc-50" data-pi18n-html="docsText42">Meaning</th></tr></thead><tbody class="divide-y divide-gray-100 dark:divide-zinc-800">
+<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">400</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText44"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">no_files</code>, <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">too_many_images</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText45">No files in the request, or more images than your plan allows (<code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">max</code> is returned).</td></tr>
+<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">401</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">invalid_api_key</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText48">The key is missing, malformed, unknown or revoked.</td></tr>
+<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">402</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">insufficient_credits</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText51">Not enough credits (<code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">balance</code> and <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">needed</code> are returned when creating a job).</td></tr>
+<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">404</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">not_found</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText54">The job does not exist, or was not created through the API.</td></tr>
+<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">409</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">already_started</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText57">The job was already started.</td></tr>
+<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">429</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText59"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">rate_limited</code>, <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">too_many_active_jobs</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText60">Slow down and retry after the <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">Retry-After</code> seconds.</td></tr>
+<tr><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300">503</td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText62"><code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">api_disabled</code>, <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">api_unavailable</code>, <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">enqueue_failed</code></td><td class="px-3 py-2 align-top text-gray-700 dark:text-zinc-300" data-pi18n-html="docsText63">Temporarily unavailable, retry later. <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100">enqueue_failed</code> refunds the reserved credits.</td></tr>
+</tbody></table></div>
 
 </div>
 
-<h2 class="mt-10 text-xl font-semibold tracking-tight text-gray-900 dark:text-zinc-50" data-doc-h="examples">Examples</h2>
+
+<h2 class="mt-10 text-xl font-semibold tracking-tight text-gray-900 dark:text-zinc-50" data-pi18n="docsExamples">Examples</h2>
 <h3 class="mt-6 font-semibold text-gray-900 dark:text-zinc-50">curl</h3>
 <pre class="mt-3 overflow-x-auto rounded-xl border border-gray-200 bg-gray-900 p-4 font-mono text-[13px] leading-relaxed text-gray-100 dark:border-zinc-800 dark:bg-zinc-950"><code>KEY=mc_live_YOUR_API_KEY
 API=https://pro-api.miaocut.app
@@ -277,7 +272,7 @@ console.log(status.images);</code></pre>
         <p class="mt-10 text-sm"><a href="/account/api/" class="font-medium text-gray-700 underline underline-offset-4 hover:text-gray-900 dark:text-zinc-300 dark:hover:text-zinc-50" data-pi18n="apiDocsBack">Manage your API keys →</a></p>
     </main>
 
-    <footer class="border-t border-gray-200 py-8 text-center text-sm text-gray-500 dark:border-zinc-800 dark:text-zinc-400">
+    <footer class="member-footer">
         <p data-pi18n="footerTagline">MiaoCut · Free, privacy-first AI image tools.</p>
         <p class="mt-2 space-x-4">
             <a href="/terms/" class="hover:text-gray-800 dark:hover:text-zinc-200" data-pi18n="footerTerms">Terms</a>
@@ -285,15 +280,6 @@ console.log(status.images);</code></pre>
         </p>
     </footer>
 
-    <script>
-        // 文档的文字有中英两份：只显示和当前语言一致的那份（语言来自 pro-i18n.js，和站点其它会员页一致）
-        (function () {
-            var lang = (window.MiaoCutProI18n && window.MiaoCutProI18n.lang) || 'en';
-            document.querySelectorAll('[data-doc]').forEach(function (el) { el.hidden = el.getAttribute('data-doc') !== lang; });
-            var ex = document.querySelector('[data-doc-h="examples"]');
-            if (ex && lang === 'zh') ex.textContent = '示例代码';
-        })();
-    </script>
 </body>
 
 </html>

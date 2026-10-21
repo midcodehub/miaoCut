@@ -34,19 +34,22 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 
 // 需要打戳的资源：物理文件路径 + 在 HTML 里的引用属性。
-// 只收 _headers 里走 immutable 长缓存的资源；language-menu.js / feedback.js
-// 是 4h must-revalidate，自愈快，先不纳入（要加的话照此再补一项即可）。
+// 包含 immutable 长缓存资源，以及必须与会员页面同步更新的文案和外观脚本。
+// feedback.js 是 4h must-revalidate，先不纳入。
 const ASSETS = [
   { file: 'output.css', attr: 'href', url: '/output.css' },
   { file: 'app.js', attr: 'src', url: '/app.js' },
+  { file: 'pro-i18n.js', attr: 'src', url: '/pro-i18n.js' },
+  { file: 'account/workspace.js', attr: 'src', url: '/account/workspace.js' },
+  { file: 'language-menu.js', attr: 'src', url: '/language-menu.js' },
   // 结果页编辑器（/editor/*，_headers 里同样是 immutable 长缓存）
   { file: 'editor/presets.js', attr: 'src', url: '/editor/presets.js' },
   { file: 'editor/engine.js', attr: 'src', url: '/editor/engine.js' },
   { file: 'editor/panel.js', attr: 'src', url: '/editor/panel.js' },
 ];
 
-// 不扫描的目录：依赖、git、playwright 抓取产物
-const IGNORE_DIRS = new Set(['node_modules', '.git', '.playwright-cli']);
+// 不扫描依赖、其他本地工作区和浏览器检查产物，避免改写邻近 checkout。
+const IGNORE_DIRS = new Set(['node_modules', '.git', '.claude', '.codex', '.playwright-cli', 'output']);
 
 /** 取文件内容的 8 位短 hash（sha256 前 8 hex），足够区分版本又不啰嗦 */
 function hashFile(absPath) {

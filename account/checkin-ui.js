@@ -195,7 +195,7 @@ export function calendarHTML(s, { t, lang }) {
   const heads = [];
   for (let i = 0; i < 7; i++) {
     const w = Date.UTC(1970, 0, 4 + i + (mondayFirst ? 1 : 0));
-    heads.push(`<li class="py-1 text-center text-xs font-medium text-gray-500 dark:text-zinc-500">${escapeHtml(new Date(w).toLocaleDateString(locale, { weekday: "short", timeZone: "UTC" }))}</li>`);
+    heads.push(`<li class="py-1 text-center text-xs font-medium text-gray-500 dark:text-zinc-400">${escapeHtml(new Date(w).toLocaleDateString(locale, { weekday: "short", timeZone: "UTC" }))}</li>`);
   }
 
   const cells = [];

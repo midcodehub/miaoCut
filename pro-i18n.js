@@ -1,13 +1,12 @@
 // =============================================================================
-// MiaoCut Pro 页面（/pricing/、/batch/、/account/credits/）的中英文案
+// MiaoCut Pro 页面共用文案：与首页一致的八种语言
 // -----------------------------------------------------------------------------
 // 为什么不走 scripts/build-i18n.mjs：那套机制会给每个页面生成全部 8 种语言的静态 URL
-// （/zh/、/hi/ ...），这几个付费页目前只做中英文，生成另外 6 种语言的「英文内容页」
-// 会形成重复内容、伤 SEO。所以这里采用运行时切换：URL 不变（只有英文 URL 参与索引），
-// 打开时按用户语言渲染中文或英文。
+// （/zh/、/hi/ ...）。会员页使用运行时翻译和固定的 canonical，避免生成重复的可索引页面。
+// en / zh 内置；其他语言按需加载 i18n/pro/*.json。页面模块等待 ready 后再渲染账户数据。
 //
-// 语言判定顺序：?lang=zh|en  >  localStorage.lang（app.js 会记录用户在站内最后使用的语言）
-//              >  浏览器语言。非中文一律英文。
+// 语言判定顺序：?lang=<语言代码>  >  localStorage.lang（app.js 会记录用户在站内最后使用的语言）
+//              >  浏览器语言。与首页支持相同的八种语言。
 //
 // 用法（普通 <script>，需在页面其他脚本之前加载）：
 //   HTML：<span data-pi18n="key">English fallback</span>
@@ -21,6 +20,80 @@
 
     const DICT = {
         en: {
+            "docsTitle": "API documentation | MiaoCut",
+            "docsExamples": "Examples",
+            "docsText1": "Remove image backgrounds from your own apps. The API runs on the same pipeline as the website's batch tool, so credits, result retention and refunds work the same way.",
+            "docsText2": "Base URL: <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">https://pro-api.miaocut.app</code>. All requests and responses are JSON, except the image upload and download links.",
+            "docsText3": "Quick start",
+            "docsText4": "Create an API key on the <a class=\"font-medium underline underline-offset-4\" href=\"/account/api/\">Developer API page</a> (sign-in required).",
+            "docsText5": "Create a job with the file names, and get an upload link for each image.",
+            "docsText6": "Upload each image to its link, then start the job.",
+            "docsText7": "Poll the job until it is done, then download the transparent PNG results.",
+            "docsText8": "Authentication",
+            "docsText9": "Send your key in the <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">Authorization</code> header: <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">Authorization: Bearer mc_live_YOUR_API_KEY</code>. Keys start with <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">mc_live_</code>. The full key is shown only once when you create it. Keep it secret: anyone with the key can spend your credits. If a key leaks, revoke it on the Developer API page and it stops working immediately.",
+            "docsText10": "Credits",
+            "docsText11": "API calls use the same credits as the website. Credits are reserved for the whole job when you call <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">start</code>. Images that fail to process are refunded automatically.",
+            "docsText13": "Mode",
+            "docsText14": "Credits per image",
+            "docsText16": "Standard mode",
+            "docsText19": "Fine edges mode (hair, fur, plush, plants)",
+            "docsText21": "Endpoints",
+            "docsText22": "1. Create a job",
+            "docsText23": "<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">POST /api/v1/jobs</code> with a JSON body. Nothing is charged yet.",
+            "docsText24": "Response:",
+            "docsText25": "The number of images per job depends on your plan (up to 200 on the free tier and Basic, up to 500 on Pro and Business). If your balance is lower than <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">total_cost</code> you get <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">402 insufficient_credits</code>.",
+            "docsText26": "2. Upload the images",
+            "docsText27": "<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">PUT</code> the raw image bytes to each <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">put_url</code>, in the same order as <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">files</code>. No <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">Authorization</code> header is needed (and do not add one): the link carries its own signature and is valid for <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">expires_in</code> seconds (1 hour). Supported formats: PNG, JPEG and WebP. Images larger than 60 megapixels fail.",
+            "docsText28": "3. Start the job",
+            "docsText29": "<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">POST /api/v1/jobs/{{job_id}}/start</code> reserves the credits and queues the images. Response: <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">{{ \"status\": \"processing\", \"total\": 2, \"enqueued\": 2 }}</code>. A job can be started only once (<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">409 already_started</code>).",
+            "docsText30": "4. Check progress and download",
+            "docsText31": "<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">GET /api/v1/jobs/{{job_id}}</code>. Poll every 2–5 seconds. The first images can take up to a minute while a GPU starts. When <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">done</code> is <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">true</code>, every image has finished.",
+            "docsText32": "Image <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">status</code> is <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">queued</code>, <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">processing</code>, <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">done</code> or <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">failed</code>. A <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">done</code> image has a <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">download_url</code> (a transparent PNG, valid for 1 hour; call this endpoint again for a fresh link). A <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">failed</code> image has an <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">error</code> and its credits are refunded. Results are kept for 1 day (7 days with a subscription), then deleted.",
+            "docsText33": "Limits",
+            "docsText34": "60 requests per minute per key. Over the limit you get <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">429 rate_limited</code> and a <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">Retry-After</code> header (seconds).",
+            "docsText35": "Up to 5 jobs in progress per key (processing, or created within the last hour and not started yet). Over the limit you get <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">429 too_many_active_jobs</code>.",
+            "docsText36": "Up to 5 active keys per account.",
+            "docsText37": "A key can only see and start jobs created through the API.",
+            "docsText38": "Errors",
+            "docsText39": "Errors are JSON like <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">{{ \"error\": \"insufficient_credits\", \"balance\": 3, \"needed\": 10 }}</code>.",
+            "docsText40": "Status",
+            "docsText42": "Meaning",
+            "docsText44": "<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">no_files</code>, <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">too_many_images</code>",
+            "docsText45": "No files in the request, or more images than your plan allows (<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">max</code> is returned).",
+            "docsText48": "The key is missing, malformed, unknown or revoked.",
+            "docsText51": "Not enough credits (<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">balance</code> and <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">needed</code> are returned when creating a job).",
+            "docsText54": "The job does not exist, or was not created through the API.",
+            "docsText57": "The job was already started.",
+            "docsText59": "<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">rate_limited</code>, <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">too_many_active_jobs</code>",
+            "docsText60": "Slow down and retry after the <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">Retry-After</code> seconds.",
+            "docsText62": "<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">api_disabled</code>, <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">api_unavailable</code>, <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">enqueue_failed</code>",
+            "docsText63": "Temporarily unavailable, retry later. <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">enqueue_failed</code> refunds the reserved credits.",
+
+            languageLabel: 'Language',
+            languageOptionsLabel: 'Language options',
+            navBg: "Background Remover",
+            navProduct: "Product",
+            navPortrait: "Portrait",
+            navWatermark: "Watermark",
+            navId: "ID Photo",
+            navRestore: "Old Photo",
+            siteToolsLabel: "Image tools",
+            memberMenuLabel: "Member services",
+
+            // Shared member workspace
+            memberWorkspace: "Your workspace",
+            memberSidebarNote: "Less time editing. More room to create.",
+            memberTheme: "Switch appearance",
+            memberEmail: "Email address",
+            memberOverviewIntro: "Your credits, rewards and recent activity. Everything you need for your next batch.",
+            memberStartTitle: "Ready for your next batch?",
+            memberStartDesc: "Add your photos. Get clean cutouts in one download.",
+            memberRewardsTitle: "Make your next batch go further",
+            memberAuthTitle: "Less editing. More creating.",
+            memberAuthDesc: "Clean product photos, a batch at a time. Your credits, rewards and finished images, all in one place.",
+            memberAuthBonus: "100 free credits when you join",
+            memberCreditGuide: "How your credits work",
+
             // ---- 通用 ----
             navTools: 'Background Remover',
             navBatch: 'Batch',
@@ -30,7 +103,6 @@
             footerTagline: 'MiaoCut · Free, privacy-first AI image tools.',
             footerTerms: 'Terms',
             footerPrivacy: 'Privacy',
-            langSwitch: '中文',
             emailPlaceholder: 'you@example.com',
             loginGoogle: 'Continue with Google',
             loginGitHub: 'Continue with GitHub',
@@ -484,6 +556,80 @@
             viewClose: 'Close',
         },
         zh: {
+            "docsTitle": "API 文档 | MiaoCut",
+            "docsExamples": "示例代码",
+            "docsText1": "在你自己的应用里调用抠图。API 和网页批量工具走同一条处理流水线，所以积分、结果保留时间和退款规则都和网页一致。",
+            "docsText2": "接口地址：<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">https://pro-api.miaocut.app</code>。请求和响应都是 JSON（图片上传和下载链接除外）。",
+            "docsText3": "快速开始",
+            "docsText4": "在<a class=\"font-medium underline underline-offset-4\" href=\"/account/api/\">开发者 API 页面</a>生成一把 API Key（需要登录）。",
+            "docsText5": "带上文件名创建任务，每张图会得到一个上传链接。",
+            "docsText6": "把每张图上传到对应链接，然后开始任务。",
+            "docsText7": "轮询任务直到完成，下载透明底 PNG 结果。",
+            "docsText8": "鉴权",
+            "docsText9": "把 Key 放在 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">Authorization</code> 请求头里：<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">Authorization: Bearer mc_live_YOUR_API_KEY</code>。Key 以 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">mc_live_</code> 开头，完整的 Key 只在生成时显示一次。请妥善保管：拿到 Key 的人就能花掉你的积分。Key 泄露了就在开发者 API 页面吊销，吊销后立刻失效。",
+            "docsText10": "积分",
+            "docsText11": "API 调用和网页共用积分。调用 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">start</code> 时会按整个任务预留积分；处理失败的图片会自动退回积分。",
+            "docsText13": "模式",
+            "docsText14": "每张图积分",
+            "docsText16": "标准模式",
+            "docsText19": "细腻边缘模式（毛发、绒毛、植物）",
+            "docsText21": "接口",
+            "docsText22": "1. 创建任务",
+            "docsText23": "<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">POST /api/v1/jobs</code>，请求体为 JSON。这一步不扣积分。",
+            "docsText24": "响应：",
+            "docsText25": "每个任务的图片数量按套餐而定（免费版和 Basic 最多 200 张，Pro 和 Business 最多 500 张）。余额低于 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">total_cost</code> 时返回 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">402 insufficient_credits</code>。",
+            "docsText26": "2. 上传图片",
+            "docsText27": "把图片原始字节 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">PUT</code> 到各自的 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">put_url</code>，顺序和 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">files</code> 一致。不需要（也不要加）<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">Authorization</code> 请求头：链接自带签名，<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">expires_in</code> 秒（1 小时）内有效。支持 PNG、JPEG、WebP；超过 6000 万像素的图片会处理失败。",
+            "docsText28": "3. 开始任务",
+            "docsText29": "<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">POST /api/v1/jobs/{{job_id}}/start</code> 预留积分并把图片排入队列。响应：<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">{{ \"status\": \"processing\", \"total\": 2, \"enqueued\": 2 }}</code>。同一个任务只能开始一次（再次开始返回 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">409 already_started</code>）。",
+            "docsText30": "4. 查进度、下载结果",
+            "docsText31": "<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">GET /api/v1/jobs/{{job_id}}</code>，建议每 2–5 秒轮询一次。GPU 启动时，前几张图可能要等将近一分钟。<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">done</code> 为 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">true</code> 表示所有图片都处理完了。",
+            "docsText32": "图片的 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">status</code> 有 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">queued</code>（排队中）、<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">processing</code>（处理中）、<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">done</code>（完成）、<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">failed</code>（失败）。完成（<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">done</code>）的图片带 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">download_url</code>（透明底 PNG，1 小时内有效；过期了再调用本接口会拿到新链接）。失败（<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">failed</code>）的图片带 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">error</code>，积分会退回。处理结果保留 1 天（订阅用户 7 天），之后自动删除。",
+            "docsText33": "限额",
+            "docsText34": "每把 Key 每分钟 60 次请求。超过时返回 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">429 rate_limited</code>，并带 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">Retry-After</code> 响应头（秒）。",
+            "docsText35": "每把 Key 同时最多 5 个进行中的任务（处理中，或 1 小时内创建、还没开始的）。超过时返回 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">429 too_many_active_jobs</code>。",
+            "docsText36": "每个账号最多 5 把有效 Key。",
+            "docsText37": "Key 只能查看和开始通过 API 创建的任务。",
+            "docsText38": "错误",
+            "docsText39": "错误响应是 JSON，例如 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">{{ \"error\": \"insufficient_credits\", \"balance\": 3, \"needed\": 10 }}</code>。",
+            "docsText40": "状态码",
+            "docsText42": "含义",
+            "docsText44": "<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">no_files</code>、<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">too_many_images</code>",
+            "docsText45": "请求里没有文件，或图片数量超过套餐上限（会返回 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">max</code>）。",
+            "docsText48": "Key 缺失、格式不对、不存在或已吊销。",
+            "docsText51": "积分不足（创建任务时会返回 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">balance</code> 和 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">needed</code>）。",
+            "docsText54": "任务不存在，或不是通过 API 创建的。",
+            "docsText57": "任务已经开始过。",
+            "docsText59": "<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">rate_limited</code>、<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">too_many_active_jobs</code>",
+            "docsText60": "请求太频繁，等 <code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">Retry-After</code> 秒后重试。",
+            "docsText62": "<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">api_disabled</code>、<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">api_unavailable</code>、<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">enqueue_failed</code>",
+            "docsText63": "暂时不可用，稍后重试。<code class=\"rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[0.85em] text-gray-900 dark:bg-zinc-800 dark:text-zinc-100\">enqueue_failed</code> 会退回预留的积分。",
+
+            languageLabel: '语言',
+            languageOptionsLabel: '选择语言',
+            navBg: "AI 抠图",
+            navProduct: "商品图",
+            navPortrait: "人像",
+            navWatermark: "去水印",
+            navId: "证件照",
+            navRestore: "老照片修复",
+            siteToolsLabel: "图片工具",
+            memberMenuLabel: "会员服务",
+
+            // Shared member workspace
+            memberWorkspace: "会员工作区",
+            memberSidebarNote: "少一点重复修图，多一点创作时间。",
+            memberTheme: "切换浅色或深色外观",
+            memberEmail: "邮箱地址",
+            memberOverviewIntro: "积分、奖励与最近动态，为下一批图片做好准备。",
+            memberStartTitle: "让下一批图片，轻松就位。",
+            memberStartDesc: "放入图片，批量去除背景，一次打包下载。",
+            memberRewardsTitle: "为下一次创作，攒一点积分",
+            memberAuthTitle: "少一点修图，多一点创作。",
+            memberAuthDesc: "让商品图变得干净利落。积分、奖励与处理结果，在这里一目了然。",
+            memberAuthBonus: "注册即可获得 100 免费积分",
+            memberCreditGuide: "积分怎么用",
+
             navTools: 'AI 抠图',
             navBatch: '批量抠图',
             navPricing: '定价',
@@ -492,7 +638,6 @@
             footerTagline: 'MiaoCut · 免费、注重隐私的 AI 图片工具。',
             footerTerms: '服务条款',
             footerPrivacy: '隐私政策',
-            langSwitch: 'English',
             emailPlaceholder: '邮箱，例如 12345@qq.com',
             loginGoogle: '使用 Google 登录',
             loginGitHub: '使用 GitHub 登录',
@@ -926,50 +1071,91 @@
         },
     };
 
-    function detectLang() {
-        try {
-            const q = new URLSearchParams(location.search).get('lang');
-            if (q) return q.toLowerCase().startsWith('zh') ? 'zh' : 'en';
-        } catch (_) { /* ignore */ }
-        try {
-            const saved = localStorage.getItem('lang');
-            if (saved) return saved === 'zh' ? 'zh' : 'en';
-        } catch (_) { /* 隐私模式等场景 localStorage 不可用 */ }
-        return (navigator.language || '').toLowerCase().startsWith('zh') ? 'zh' : 'en';
+    const LOCALES = [
+        { code: 'en', htmlLang: 'en', prefix: '', dir: 'ltr' },
+        { code: 'zh', htmlLang: 'zh-CN', prefix: '/zh', dir: 'ltr' },
+        { code: 'hi', htmlLang: 'hi-IN', prefix: '/hi', dir: 'ltr' },
+        { code: 'id', htmlLang: 'id-ID', prefix: '/id', dir: 'ltr' },
+        { code: 'pt-br', htmlLang: 'pt-BR', prefix: '/pt-br', dir: 'ltr' },
+        { code: 'bn', htmlLang: 'bn-BD', prefix: '/bn', dir: 'ltr' },
+        { code: 'fil', htmlLang: 'fil-PH', prefix: '/fil', dir: 'ltr' },
+        { code: 'ur', htmlLang: 'ur-PK', prefix: '/ur', dir: 'rtl' },
+    ];
+
+    function normalizeLang(value) {
+        const code = String(value || '').toLowerCase();
+        if (code === 'tl' || code.startsWith('tl-')) return 'fil';
+        if (code === 'pt' || code.startsWith('pt-')) return 'pt-br';
+        return LOCALES.find(locale => code === locale.code || code.startsWith(locale.code + '-'))?.code || null;
     }
 
-    const lang = detectLang();
+    function detectLang() {
+        const query = normalizeLang(new URLSearchParams(location.search).get('lang'));
+        if (query) return query;
+        try {
+            const saved = normalizeLang(localStorage.getItem('lang'));
+            if (saved) return saved;
+        } catch (_) { /* Navigation works when storage is unavailable. */ }
+        return normalizeLang(navigator.language) || 'en';
+    }
+
+    let lang = detectLang();
+    const ready = DICT[lang] ? Promise.resolve() : fetch(`/i18n/pro/${lang}.json`, { cache: 'no-cache' })
+        .then(response => {
+            if (!response.ok) throw new Error('locale_' + response.status);
+            return response.json();
+        })
+        .then(pack => {
+            if (!Object.keys(DICT.en).every(key => typeof pack[key] === 'string')) throw new Error('locale_incomplete');
+            DICT[lang] = pack;
+        })
+        .catch(error => {
+            console.warn('[MiaoCut] Member translations unavailable:', error);
+            lang = 'en';
+        });
 
     function t(key, vars) {
         let s = (DICT[lang] && DICT[lang][key]) || DICT.en[key] || key;
-        if (vars) Object.keys(vars).forEach((k) => { s = s.split(`{${k}}`).join(String(vars[k])); });
+        if (vars) Object.keys(vars).forEach(k => { s = s.split(`{${k}}`).join(String(vars[k])); });
         return s;
     }
 
-    /** 渲染页面上所有 data-pi18n* 元素；英文页面不需要处理（HTML 里本来就是英文） */
-    function apply(root) {
-        const scope = root || document;
-        scope.querySelectorAll('[data-pi18n]').forEach((el) => { el.textContent = t(el.dataset.pi18n); });
-        scope.querySelectorAll('[data-pi18n-html]').forEach((el) => { el.innerHTML = t(el.dataset.pi18nHtml); });
-        scope.querySelectorAll('[data-pi18n-ph]').forEach((el) => { el.placeholder = t(el.dataset.pi18nPh); });
-        // 无障碍标签（读屏软件念的那句），例如会员页的标签栏、筛选按钮组
-        scope.querySelectorAll('[data-pi18n-aria]').forEach((el) => { el.setAttribute('aria-label', t(el.dataset.pi18nAria)); });
-        const titleKey = document.documentElement.dataset.pi18nTitle;
-        if (titleKey) document.title = t(titleKey);
-        document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
-        // 语言切换按钮：记住选择后刷新
-        scope.querySelectorAll('[data-pi18n-switch]').forEach((btn) => {
-            btn.textContent = t('langSwitch');
-            btn.onclick = () => {
-                try { localStorage.setItem('lang', lang === 'zh' ? 'en' : 'zh'); } catch (_) { /* ignore */ }
-                const url = new URL(location.href);
-                url.searchParams.delete('lang');
-                location.replace(url.toString());
-            };
-        });
+    function switchLang(value) {
+        const target = normalizeLang(value);
+        if (!target) return;
+        try { localStorage.setItem('lang', target); } catch (_) { /* Keep the URL as the language source. */ }
+        const url = new URL(location.href);
+        url.searchParams.set('lang', target);
+        location.assign(url.toString());
     }
 
-    window.MiaoCutProI18n = { lang, t, apply };
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => apply());
-    else apply();
+    function apply(root) {
+        const scope = root || document;
+        scope.querySelectorAll('[data-pi18n]').forEach(el => { el.textContent = t(el.dataset.pi18n); });
+        scope.querySelectorAll('[data-pi18n-html]').forEach(el => { el.innerHTML = t(el.dataset.pi18nHtml); });
+        scope.querySelectorAll('[data-pi18n-ph]').forEach(el => { el.placeholder = t(el.dataset.pi18nPh); });
+        scope.querySelectorAll('[data-pi18n-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.pi18nAria)); });
+        const titleKey = document.documentElement.dataset.pi18nTitle;
+        if (titleKey) document.title = t(titleKey);
+        const locale = LOCALES.find(item => item.code === lang);
+        document.documentElement.lang = locale.htmlLang;
+        document.documentElement.dir = locale.dir;
+        try { localStorage.setItem('lang', lang); } catch (_) { /* Ignore storage restrictions. */ }
+
+        // Shared tools use the same pre-rendered language URLs as the homepage.
+        const tools = {
+            navBg: '/', navProduct: '/product-photo-background-remover/',
+            navPortrait: '/portrait-background-remover/', navWatermark: '/watermark-remover/',
+            navId: '/id-photo-maker/', navRestore: '/old-photo-restoration/',
+        };
+        Object.entries(tools).forEach(([key, path]) => {
+            scope.querySelectorAll(`a[data-pi18n="${key}"]`).forEach(link => { link.href = locale.prefix + path; });
+        });
+        scope.querySelectorAll('a.site-brand').forEach(link => { link.href = locale.prefix + '/'; });
+    }
+
+    window.MiaoCutProI18n = { get lang() { return lang; }, t, apply, ready, switchLang, locales: LOCALES };
+    const start = () => ready.then(() => apply());
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
+    else start();
 })();
