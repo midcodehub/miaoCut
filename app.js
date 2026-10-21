@@ -1352,7 +1352,7 @@
     const htmlLang = (document.documentElement.lang || 'en').toLowerCase();
     let currentLang = localeFromHtmlLang(htmlLang);
     // 记住用户最后浏览的语言：/pricing/、/batch/、/account/ 只有英文 URL，
-    // 打开时由 /pro-i18n.js 读取 localStorage.lang 决定显示中文还是英文。
+    // 打开时由 /pro-i18n.js 读取 localStorage.lang，沿用首页选择的语言。
     try { localStorage.setItem('lang', currentLang); } catch (_) { /* 隐私模式等不可用时忽略 */ }
 
     function t(key) {

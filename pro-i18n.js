@@ -1,13 +1,12 @@
 // =============================================================================
-// MiaoCut Pro 页面（/pricing/、/batch/、/account/credits/）的中英文案
+// MiaoCut Pro 页面共用文案：与首页一致的八种语言
 // -----------------------------------------------------------------------------
 // 为什么不走 scripts/build-i18n.mjs：那套机制会给每个页面生成全部 8 种语言的静态 URL
-// （/zh/、/hi/ ...），这几个付费页目前只做中英文，生成另外 6 种语言的「英文内容页」
-// 会形成重复内容、伤 SEO。所以这里采用运行时切换：URL 不变（只有英文 URL 参与索引），
-// 打开时按用户语言渲染中文或英文。
+// （/zh/、/hi/ ...）。会员页使用运行时翻译和固定的 canonical，避免生成重复的可索引页面。
+// en / zh 内置；其他语言按需加载 i18n/pro/*.json。页面模块等待 ready 后再渲染账户数据。
 //
-// 语言判定顺序：?lang=zh|en  >  localStorage.lang（app.js 会记录用户在站内最后使用的语言）
-//              >  浏览器语言。非中文一律英文。
+// 语言判定顺序：?lang=<语言代码>  >  localStorage.lang（app.js 会记录用户在站内最后使用的语言）
+//              >  浏览器语言。与首页支持相同的八种语言。
 //
 // 用法（普通 <script>，需在页面其他脚本之前加载）：
 //   HTML：<span data-pi18n="key">English fallback</span>
@@ -21,6 +20,31 @@
 
     const DICT = {
         en: {
+            languageLabel: 'Language',
+            languageOptionsLabel: 'Language options',
+            navBg: "Background Remover",
+            navProduct: "Product",
+            navPortrait: "Portrait",
+            navWatermark: "Watermark",
+            navId: "ID Photo",
+            navRestore: "Old Photo",
+            siteToolsLabel: "Image tools",
+            memberMenuLabel: "Member services",
+
+            // Shared member workspace
+            memberWorkspace: "Your workspace",
+            memberSidebarNote: "Less time editing. More room to create.",
+            memberTheme: "Switch appearance",
+            memberEmail: "Email address",
+            memberOverviewIntro: "Your credits, rewards and recent activity. Everything you need for your next batch.",
+            memberStartTitle: "Ready for your next batch?",
+            memberStartDesc: "Add your photos. Get clean cutouts in one download.",
+            memberRewardsTitle: "Make your next batch go further",
+            memberAuthTitle: "Less editing. More creating.",
+            memberAuthDesc: "Clean product photos, a batch at a time. Your credits, rewards and finished images, all in one place.",
+            memberAuthBonus: "100 free credits when you join",
+            memberCreditGuide: "How your credits work",
+
             // ---- 通用 ----
             navTools: 'Background Remover',
             navBatch: 'Batch',
@@ -30,7 +54,6 @@
             footerTagline: 'MiaoCut · Free, privacy-first AI image tools.',
             footerTerms: 'Terms',
             footerPrivacy: 'Privacy',
-            langSwitch: '中文',
             emailPlaceholder: 'you@example.com',
             loginGoogle: 'Continue with Google',
             loginGitHub: 'Continue with GitHub',
@@ -443,6 +466,31 @@
             viewClose: 'Close',
         },
         zh: {
+            languageLabel: '语言',
+            languageOptionsLabel: '选择语言',
+            navBg: "AI 抠图",
+            navProduct: "商品图",
+            navPortrait: "人像",
+            navWatermark: "去水印",
+            navId: "证件照",
+            navRestore: "老照片修复",
+            siteToolsLabel: "图片工具",
+            memberMenuLabel: "会员服务",
+
+            // Shared member workspace
+            memberWorkspace: "会员工作区",
+            memberSidebarNote: "少一点重复修图，多一点创作时间。",
+            memberTheme: "切换浅色或深色外观",
+            memberEmail: "邮箱地址",
+            memberOverviewIntro: "积分、奖励与最近动态，为下一批图片做好准备。",
+            memberStartTitle: "让下一批图片，轻松就位。",
+            memberStartDesc: "放入图片，批量去除背景，一次打包下载。",
+            memberRewardsTitle: "为下一次创作，攒一点积分",
+            memberAuthTitle: "少一点修图，多一点创作。",
+            memberAuthDesc: "让商品图变得干净利落。积分、奖励与处理结果，在这里一目了然。",
+            memberAuthBonus: "注册即可获得 100 免费积分",
+            memberCreditGuide: "积分怎么用",
+
             navTools: 'AI 抠图',
             navBatch: '批量抠图',
             navPricing: '定价',
@@ -451,7 +499,6 @@
             footerTagline: 'MiaoCut · 免费、注重隐私的 AI 图片工具。',
             footerTerms: '服务条款',
             footerPrivacy: '隐私政策',
-            langSwitch: 'English',
             emailPlaceholder: '邮箱，例如 12345@qq.com',
             loginGoogle: '使用 Google 登录',
             loginGitHub: '使用 GitHub 登录',
@@ -844,50 +891,91 @@
         },
     };
 
-    function detectLang() {
-        try {
-            const q = new URLSearchParams(location.search).get('lang');
-            if (q) return q.toLowerCase().startsWith('zh') ? 'zh' : 'en';
-        } catch (_) { /* ignore */ }
-        try {
-            const saved = localStorage.getItem('lang');
-            if (saved) return saved === 'zh' ? 'zh' : 'en';
-        } catch (_) { /* 隐私模式等场景 localStorage 不可用 */ }
-        return (navigator.language || '').toLowerCase().startsWith('zh') ? 'zh' : 'en';
+    const LOCALES = [
+        { code: 'en', htmlLang: 'en', prefix: '', dir: 'ltr' },
+        { code: 'zh', htmlLang: 'zh-CN', prefix: '/zh', dir: 'ltr' },
+        { code: 'hi', htmlLang: 'hi-IN', prefix: '/hi', dir: 'ltr' },
+        { code: 'id', htmlLang: 'id-ID', prefix: '/id', dir: 'ltr' },
+        { code: 'pt-br', htmlLang: 'pt-BR', prefix: '/pt-br', dir: 'ltr' },
+        { code: 'bn', htmlLang: 'bn-BD', prefix: '/bn', dir: 'ltr' },
+        { code: 'fil', htmlLang: 'fil-PH', prefix: '/fil', dir: 'ltr' },
+        { code: 'ur', htmlLang: 'ur-PK', prefix: '/ur', dir: 'rtl' },
+    ];
+
+    function normalizeLang(value) {
+        const code = String(value || '').toLowerCase();
+        if (code === 'tl' || code.startsWith('tl-')) return 'fil';
+        if (code === 'pt' || code.startsWith('pt-')) return 'pt-br';
+        return LOCALES.find(locale => code === locale.code || code.startsWith(locale.code + '-'))?.code || null;
     }
 
-    const lang = detectLang();
+    function detectLang() {
+        const query = normalizeLang(new URLSearchParams(location.search).get('lang'));
+        if (query) return query;
+        try {
+            const saved = normalizeLang(localStorage.getItem('lang'));
+            if (saved) return saved;
+        } catch (_) { /* Navigation works when storage is unavailable. */ }
+        return normalizeLang(navigator.language) || 'en';
+    }
+
+    let lang = detectLang();
+    const ready = DICT[lang] ? Promise.resolve() : fetch(`/i18n/pro/${lang}.json`, { cache: 'no-cache' })
+        .then(response => {
+            if (!response.ok) throw new Error('locale_' + response.status);
+            return response.json();
+        })
+        .then(pack => {
+            if (!Object.keys(DICT.en).every(key => typeof pack[key] === 'string')) throw new Error('locale_incomplete');
+            DICT[lang] = pack;
+        })
+        .catch(error => {
+            console.warn('[MiaoCut] Member translations unavailable:', error);
+            lang = 'en';
+        });
 
     function t(key, vars) {
         let s = (DICT[lang] && DICT[lang][key]) || DICT.en[key] || key;
-        if (vars) Object.keys(vars).forEach((k) => { s = s.split(`{${k}}`).join(String(vars[k])); });
+        if (vars) Object.keys(vars).forEach(k => { s = s.split(`{${k}}`).join(String(vars[k])); });
         return s;
     }
 
-    /** 渲染页面上所有 data-pi18n* 元素；英文页面不需要处理（HTML 里本来就是英文） */
-    function apply(root) {
-        const scope = root || document;
-        scope.querySelectorAll('[data-pi18n]').forEach((el) => { el.textContent = t(el.dataset.pi18n); });
-        scope.querySelectorAll('[data-pi18n-html]').forEach((el) => { el.innerHTML = t(el.dataset.pi18nHtml); });
-        scope.querySelectorAll('[data-pi18n-ph]').forEach((el) => { el.placeholder = t(el.dataset.pi18nPh); });
-        // 无障碍标签（读屏软件念的那句），例如会员页的标签栏、筛选按钮组
-        scope.querySelectorAll('[data-pi18n-aria]').forEach((el) => { el.setAttribute('aria-label', t(el.dataset.pi18nAria)); });
-        const titleKey = document.documentElement.dataset.pi18nTitle;
-        if (titleKey) document.title = t(titleKey);
-        document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
-        // 语言切换按钮：记住选择后刷新
-        scope.querySelectorAll('[data-pi18n-switch]').forEach((btn) => {
-            btn.textContent = t('langSwitch');
-            btn.onclick = () => {
-                try { localStorage.setItem('lang', lang === 'zh' ? 'en' : 'zh'); } catch (_) { /* ignore */ }
-                const url = new URL(location.href);
-                url.searchParams.delete('lang');
-                location.replace(url.toString());
-            };
-        });
+    function switchLang(value) {
+        const target = normalizeLang(value);
+        if (!target) return;
+        try { localStorage.setItem('lang', target); } catch (_) { /* Keep the URL as the language source. */ }
+        const url = new URL(location.href);
+        url.searchParams.set('lang', target);
+        location.assign(url.toString());
     }
 
-    window.MiaoCutProI18n = { lang, t, apply };
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => apply());
-    else apply();
+    function apply(root) {
+        const scope = root || document;
+        scope.querySelectorAll('[data-pi18n]').forEach(el => { el.textContent = t(el.dataset.pi18n); });
+        scope.querySelectorAll('[data-pi18n-html]').forEach(el => { el.innerHTML = t(el.dataset.pi18nHtml); });
+        scope.querySelectorAll('[data-pi18n-ph]').forEach(el => { el.placeholder = t(el.dataset.pi18nPh); });
+        scope.querySelectorAll('[data-pi18n-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.pi18nAria)); });
+        const titleKey = document.documentElement.dataset.pi18nTitle;
+        if (titleKey) document.title = t(titleKey);
+        const locale = LOCALES.find(item => item.code === lang);
+        document.documentElement.lang = locale.htmlLang;
+        document.documentElement.dir = locale.dir;
+        try { localStorage.setItem('lang', lang); } catch (_) { /* Ignore storage restrictions. */ }
+
+        // Shared tools use the same pre-rendered language URLs as the homepage.
+        const tools = {
+            navBg: '/', navProduct: '/product-photo-background-remover/',
+            navPortrait: '/portrait-background-remover/', navWatermark: '/watermark-remover/',
+            navId: '/id-photo-maker/', navRestore: '/old-photo-restoration/',
+        };
+        Object.entries(tools).forEach(([key, path]) => {
+            scope.querySelectorAll(`a[data-pi18n="${key}"]`).forEach(link => { link.href = locale.prefix + path; });
+        });
+        scope.querySelectorAll('a.site-brand').forEach(link => { link.href = locale.prefix + '/'; });
+    }
+
+    window.MiaoCutProI18n = { get lang() { return lang; }, t, apply, ready, switchLang, locales: LOCALES };
+    const start = () => ready.then(() => apply());
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
+    else start();
 })();

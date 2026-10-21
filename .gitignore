@@ -52,6 +52,7 @@ models/*.bak
 .claude
 .agent
 .playwright-cli
+/output/playwright/
 ads.txt
 b27e253973b44d85af293d4f007fba0c.txt
 googlebbfb4abe1fc3d9df.html

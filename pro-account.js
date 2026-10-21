@@ -533,7 +533,7 @@ const MiaoCutPro = {
   /** 公开接口:订阅是否已配置。失败时当作未开放(页面不显示订阅入口) */
   async plans() {
     try {
-      const res = await fetch(`${PRO_API_BASE}/plans`);
+      const res = MOCK ? await this.proFetch('/plans') : await fetch(`${PRO_API_BASE}/plans`);
       if (!res.ok) return { subscriptions_enabled: false, plans: [] };
       return await res.json();
     } catch (_) {

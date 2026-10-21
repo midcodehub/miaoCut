@@ -14,8 +14,11 @@
 // 文案全部在 /pro-i18n.js（中英文），本文件不写死任何用户可见的句子。
 // =============================================================================
 import MiaoCutPro from "/pro-account.js";
+import { mockBanner, localeOf } from "/account/account-ui.js";
 
-const { t } = window.MiaoCutProI18n;
+await window.MiaoCutProI18n.ready;
+const { t, lang } = window.MiaoCutProI18n;
+mockBanner(MiaoCutPro, { t });
 const { presets, engine } = window.MiaoCutEditor;
 
 // ---------- 常量 ----------
@@ -159,7 +162,7 @@ function writeLS(key, value) {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const show = (el, on = true) => { el.classList.toggle("hidden", !on); };
-const fmt = (n) => Number(n).toLocaleString();
+const fmt = (n) => Number(n).toLocaleString(localeOf(lang));
 const outputById = (id) => OUTPUTS.find((o) => o.id === id) || OUTPUTS[0];
 
 // 并发池：同时最多跑 concurrency 个 worker

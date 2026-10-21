@@ -12,8 +12,10 @@
     <title>Account | MiaoCut</title>
     <meta name="description" content="Your MiaoCut account: credits, rewards and batch history.">
     <meta name="robots" content="noindex,nofollow">
-    <link rel="stylesheet" href="/output.css?v=76ef820b">
-    <script src="/pro-i18n.js"></script>
+    <link rel="stylesheet" href="/output.css?v=c76e1458">
+    <script src="/pro-i18n.js?v=939bf308"></script>
+    <script src="/account/workspace.js?v=71f3b771" defer></script>
+    <script src="/language-menu.js?v=218641ac" defer></script>
     <script>
         const isDev = window.location.hostname.includes('dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         window.MIAOCUT_PRO_CONFIG = isDev ? {
@@ -30,28 +32,117 @@
     </script>
 </head>
 
-<body class="flex min-h-screen flex-col bg-gray-50 font-sans text-gray-800 dark:bg-zinc-950 dark:text-zinc-200">
-    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
+<body class="flex min-h-screen flex-col bg-gray-50 font-sans text-gray-800 dark:bg-zinc-950 dark:text-zinc-200 member-page">
+    <header
+        class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
             <a href="/" class="site-brand" aria-label="MiaoCut home">
                 <img src="/favicon-nav.png" alt="" class="site-brand-mark" width="36" height="36">
                 <span class="site-brand-text">MiaoCut</span>
             </a>
-            <nav class="flex items-center gap-3 text-sm font-medium text-gray-600 sm:gap-4 dark:text-zinc-300">
-                <a href="/" class="hidden hover:text-gray-900 sm:inline dark:hover:text-zinc-100" data-pi18n="navTools">Background Remover</a>
-                <a href="/batch/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-pi18n="navBatch">Batch</a>
-                <a href="/pricing/" class="hover:text-gray-900 dark:hover:text-zinc-100" data-pi18n="navPricing">Pricing</a>
-                <!-- nav-auth 的文字由下方脚本按登录态设置，不挂 data-pi18n（避免语言脚本覆盖） -->
-                <a id="nav-auth" href="/account/" class="text-gray-900 dark:text-zinc-50" aria-current="page">Sign in</a>
-                <button type="button" data-pi18n-switch class="rounded-full border border-gray-300 px-2.5 py-1 text-xs text-gray-600 hover:border-gray-500 dark:border-zinc-700 dark:text-zinc-300">中文</button>
-            </nav>
+            <div class="flex items-center gap-4">
+                <nav aria-label="Image tools" data-pi18n-aria="siteToolsLabel" class="hidden items-center gap-4 text-sm font-medium text-gray-600 lg:flex dark:text-zinc-300">
+                    <a href="/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100" data-pi18n="navBg">Background Remover</a>
+                    <a href="/product-photo-background-remover/"
+                        class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100"
+                        data-pi18n="navProduct">Product</a>
+                    <a href="/portrait-background-remover/"
+                        class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100"
+                        data-pi18n="navPortrait">Portrait</a>
+                    <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100"
+                        data-pi18n="navWatermark">Watermark</a>
+                    <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100"
+                        data-pi18n="navId">ID Photo</a>
+                    <a href="/old-photo-restoration/"
+                        class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100"
+                        data-pi18n="navRestore">Old Photo</a>
+                </nav>
+                <a href="https://github.com/midcodehub/miaoCut" target="_blank" rel="noopener"
+                    aria-label="MiaoCut on GitHub (open source)" title="View source on GitHub"
+                    class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><svg
+                        class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z" />
+                    </svg></a>
+                <button id="theme-toggle" type="button" aria-label="Toggle dark mode" data-pi18n-aria="memberTheme"
+                    class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors">
+                    <svg class="h-5 w-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.5"
+                        viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                    </svg>
+                    <svg class="h-5 w-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.5"
+                        viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                    </svg>
+                </button>
+                <div class="language-select" data-language-menu>
+                    <button id="lang-switch" type="button" class="language-select-control" aria-label="Language" data-pi18n-aria="languageLabel"
+                        aria-haspopup="listbox" aria-expanded="false" aria-controls="language-options">
+                        <svg class="language-select-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3.6 9h16.8M3.6 15h16.8M12 3c2.1 2.1 3.2 5.2 3.2 9S14.1 18.9 12 21M12 3C9.9 5.1 8.8 8.2 8.8 12s1.1 6.9 3.2 9" />
+                        </svg>
+                        <span class="language-select-label" data-lang-current>English</span>
+                        <svg class="language-select-chevron" width="16" height="16" viewBox="0 0 20 20" fill="none"
+                            stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m5 7.5 5 5 5-5" />
+                        </svg>
+                    </button>
+                    <div id="language-options" class="language-select-options" role="listbox"
+                        aria-label="Language options" data-pi18n-aria="languageOptionsLabel" hidden>
+                        <button type="button" class="language-select-option" role="option" aria-selected="true"
+                            data-lang-option="en" dir="auto">English</button>
+                        <button type="button" class="language-select-option" role="option" aria-selected="false"
+                            data-lang-option="zh" dir="auto">简体中文</button>
+                        <button type="button" class="language-select-option" role="option" aria-selected="false"
+                            data-lang-option="hi" dir="auto">हिन्दी</button>
+                        <button type="button" class="language-select-option" role="option" aria-selected="false"
+                            data-lang-option="id" dir="auto">Bahasa Indonesia</button>
+                        <button type="button" class="language-select-option" role="option" aria-selected="false"
+                            data-lang-option="pt-br" dir="auto">Português (BR)</button>
+                        <button type="button" class="language-select-option" role="option" aria-selected="false"
+                            data-lang-option="bn" dir="auto">বাংলা</button>
+                        <button type="button" class="language-select-option" role="option" aria-selected="false"
+                            data-lang-option="fil" dir="auto">Filipino</button>
+                        <button type="button" class="language-select-option" role="option" aria-selected="false"
+                            data-lang-option="ur" dir="auto">اردو</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
+    <nav class="site-member-navigation" aria-label="Member services" data-pi18n-aria="memberMenuLabel">
+        <div class="site-member-navigation-inner">
+            <div class="site-mobile-tools">
+        <a href="/" class="shrink-0" data-pi18n="navBg">Background Remover</a>
+        <a href="/product-photo-background-remover/" class="shrink-0" data-pi18n="navProduct">Product</a>
+        <a href="/portrait-background-remover/" class="shrink-0" data-pi18n="navPortrait">Portrait</a>
+        <a href="/watermark-remover/" class="shrink-0" data-pi18n="navWatermark">Watermark</a>
+        <a href="/id-photo-maker/" class="shrink-0" data-pi18n="navId">ID Photo</a>
+        <a href="/old-photo-restoration/" class="shrink-0" data-pi18n="navRestore">Old Photo</a>
+    </div>
+            <span class="site-member-divider" aria-hidden="true"></span>
+            <div class="site-member-links"><a href="/batch/" class="site-member-link" data-pi18n="navBatch">Batch</a><a href="/pricing/" class="site-member-link" data-pi18n="navPricing">Pricing</a><a id="nav-auth" href="/account/" class="site-member-link" aria-current="page">Account</a></div>
+        </div>
+    </nav>
 
-    <main class="mx-auto w-full max-w-4xl flex-1 px-5 pb-16 pt-10 sm:pt-14">
+    <main class="member-main">
 
         <!-- ========== 未登录：登录卡（与积分页、批量页同一套样式） ========== -->
-        <section id="login-view" class="mx-auto hidden max-w-md">
+        <section id="login-view" class="hidden member-auth-layout"><aside class="member-auth-story">
+        <div class="member-auth-visual"><div class="member-cutout-preview checker " aria-hidden="true">
+        <img src="/examples/product-cutout.webp" alt="" width="256" height="256">
+        <span class="member-cutout-check"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></span>
+    </div></div>
+        <h2 data-pi18n="memberAuthTitle">Less editing. More creating.</h2>
+        <p data-pi18n="memberAuthDesc">Clean product photos, a batch at a time. Your credits, rewards and finished images, all in one place.</p>
+        <div class="member-auth-benefit"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg><span data-pi18n="memberAuthBonus">100 free credits when you join</span></div>
+    </aside><div class="member-auth-form">
             <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-zinc-50" data-pi18n="loginH1">Sign in to MiaoCut</h1>
             <p class="mt-2 text-gray-600 dark:text-zinc-400" data-pi18n="loginSub">Access your credits, history and top-ups. New accounts get 100 free credits.</p>
             <div class="mt-6 space-y-3 rounded-xl border border-gray-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
@@ -71,39 +162,44 @@
                     <span class="h-px flex-1 bg-gray-200 dark:bg-zinc-800"></span><span data-pi18n="loginOr">or</span><span class="h-px flex-1 bg-gray-200 dark:bg-zinc-800"></span>
                 </div>
                 <form data-login-email class="space-y-3" novalidate>
-                    <label for="hub-email-input" class="sr-only">Email</label>
+                    <label for="hub-email-input" class="member-email-label" data-pi18n="memberEmail">Email address</label>
                     <input id="hub-email-input" type="email" placeholder="you@example.com" data-pi18n-ph="emailPlaceholder" autocomplete="email" inputmode="email" required
                         class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-500 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-300">
                     <button type="submit" class="flex min-h-11 w-full items-center justify-center rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-pi18n="loginEmailBtn">Email me a sign-in link</button>
                 </form>
                 <p data-login-msg class="text-sm text-gray-600 dark:text-zinc-400" role="status"></p>
             </div>
-        </section>
+        </div></section>
 
         <!-- ========== 已登录：会员中心 ========== -->
-        <section id="hub-view" class="hidden">
-            <nav class="-mx-1 mb-8 flex gap-1 overflow-x-auto overflow-y-hidden border-b [scrollbar-width:none] [&::-webkit-scrollbar]:hidden border-gray-200 text-sm font-medium dark:border-zinc-800" aria-label="Account" data-pi18n-aria="tabsLabel">
-                <a href="/account/" aria-current="page" class="-mb-px whitespace-nowrap border-b-2 border-gray-900 px-2 py-2.5 sm:px-3 text-gray-900 dark:border-zinc-50 dark:text-zinc-50" data-pi18n="tabOverview">Overview</a>
-                <a href="/account/checkin/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 sm:px-3 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabCheckin">Check-in</a>
-                <a href="/account/invite/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 text-gray-600 hover:border-gray-300 hover:text-gray-900 sm:px-3 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabInvite">Invite</a>
-                <a href="/account/credits/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 sm:px-3 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabCredits">Credits</a>
-                <a href="/account/batches/" class="-mb-px whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 sm:px-3 text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100" data-pi18n="tabBatches">Batch history</a>
-            </nav>
+        <section id="hub-view" class="hidden"><div class="member-layout"><aside class="member-sidebar">
+                <p class="member-workspace-label" data-pi18n="memberWorkspace">Your workspace</p>
+                <nav class="member-nav" aria-label="Account" data-pi18n-aria="tabsLabel"><a href="/account/" class="member-nav-link" aria-current="page"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span data-pi18n="tabOverview">Overview</span></a>
+<a href="/account/credits/" class="member-nav-link"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 9h18M15 14h3"/></svg><span data-pi18n="tabCredits">Credits</span></a>
+<a href="/account/batches/" class="member-nav-link"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/><rect x="8" y="3" width="13" height="11" rx="2"/><path d="m10 11 3-3 3 3 2-2 3 3"/></svg><span data-pi18n="tabBatches">Batch history</span></a>
+<a href="/account/checkin/" class="member-nav-link"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18m-12 5 2 2 4-4"/></svg><span data-pi18n="tabCheckin">Check-in</span></a>
+<a href="/account/invite/" class="member-nav-link"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 21v-2a6 6 0 0 1 12 0v2M19 8v6M16 11h6"/></svg><span data-pi18n="tabInvite">Invite</span></a></nav>
+                <div class="member-sidebar-note"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 3-6 9h7l-1 9 12-13h-8l2-5"/></svg>
+                    <p data-pi18n="memberSidebarNote">A little less editing. A little more creating.</p>
+                    <a href="/batch/" data-pi18n="goBatch">Start a batch</a>
+                </div>
+            </aside><div class="member-content">
 
-            <div class="flex flex-wrap items-start justify-between gap-4">
+
+            <div class="flex flex-wrap items-start justify-between gap-4 member-page-heading">
                 <div class="min-w-0">
                     <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-zinc-50" data-pi18n="hubH1">Your account</h1>
                     <p class="mt-1 flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-zinc-400">
                         <span id="hub-email" class="truncate"></span>
                         <span id="hub-plan" class="hidden rounded-full bg-brand-50 px-2 py-0.5 text-xs font-semibold text-brand-800 dark:bg-brand-500/15 dark:text-brand-300"></span>
                     </p>
-                </div>
+                <p class="member-intro" data-pi18n="memberOverviewIntro">Your next batch starts here. Keep track of credits and pick up a few more along the way.</p></div>
                 <button type="button" id="hub-logout" class="text-sm font-medium text-gray-600 underline-offset-4 hover:text-gray-900 hover:underline dark:text-zinc-400 dark:hover:text-zinc-50" data-pi18n="signOut">Sign out</button>
             </div>
             <p id="hub-error" class="mt-4 hidden text-sm text-red-600 dark:text-red-400" role="alert" data-pi18n="loadFailed">Could not load your account. Please refresh the page.</p>
 
             <!-- 余额卡（与积分页同一套渲染） -->
-            <div class="mt-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-7 dark:border-zinc-800 dark:bg-zinc-900">
+            <div class="member-overview-hero"><div class="member-balance">
                 <div class="flex flex-wrap items-end justify-between gap-4">
                     <div>
                         <p class="text-sm text-gray-600 dark:text-zinc-400" data-pi18n="balTotal">Available credits</p>
@@ -111,29 +207,40 @@
                     </div>
                     <a href="/account/credits/" class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 underline-offset-4 hover:text-gray-900 hover:underline dark:text-zinc-300 dark:hover:text-zinc-50"><span data-pi18n="hubCreditsLink">Credit details</span><span aria-hidden="true">→</span></a>
                 </div>
-                <ul id="hub-buckets" class="mt-4 flex hidden flex-wrap gap-2 text-sm" aria-label="Credit types" data-pi18n-aria="bucketsLabel"></ul>
+                <ul id="hub-buckets" class="member-credit-breakdown hidden" aria-label="Credit types" data-pi18n-aria="bucketsLabel"></ul>
                 <p id="hub-expiring" class="mt-4 hidden rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800 dark:bg-amber-500/10 dark:text-amber-300" role="status"></p>
                 <div class="mt-6 flex flex-wrap gap-3">
-                    <a href="/batch/" class="inline-flex min-h-11 items-center justify-center rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-pi18n="goBatch">Start a batch</a>
+
                     <a href="/pricing/" class="inline-flex min-h-11 items-center justify-center rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-pi18n="buyMore">Buy more credits</a>
                 </div>
-            </div>
+            </div><aside class="member-start"><div class="member-cutout-preview checker " aria-hidden="true"><img src="/examples/product-cutout.webp" alt="" width="256" height="256"><span class="member-cutout-check"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></span></div><div><h2 data-pi18n="memberStartTitle">Make room for your next idea.</h2><p data-pi18n="memberStartDesc">Drop your photos. Get clean cutouts, together in one download.</p></div><a href="/batch/" class="inline-flex min-h-11 items-center justify-center rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-900" data-pi18n="goBatch">Start a batch</a></aside></div>
 
             <!-- 今日签到（签到开放后显示；内容由 /account/checkin-ui.js 渲染） -->
-            <section id="checkin-card" class="mt-4 hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6 dark:border-zinc-800 dark:bg-zinc-900" aria-labelledby="checkin-card-title">
+            <section class="member-rewards-section"><h2 class="member-section-title" data-pi18n="memberRewardsTitle">A little boost for your next batch</h2><div class="member-rewards"><section id="checkin-card" class="hidden member-reward" aria-labelledby="checkin-card-title">
                 <h2 id="checkin-card-title" class="sr-only" data-pi18n="perkCheckinT">Daily check-in</h2>
                 <div data-checkin-body></div>
             </section>
 
             <!-- 邀请好友（邀请开放后显示；内容由 /account/referral-ui.js 渲染） -->
-            <section id="invite-card" class="mt-4 hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6 dark:border-zinc-800 dark:bg-zinc-900" aria-label="Invite friends" data-pi18n-aria="perkInviteT">
+            <section id="invite-card" class="hidden member-reward" aria-label="Invite friends" data-pi18n-aria="perkInviteT">
                 <div data-invite-body></div>
-            </section>
+            </section></div></section>
 
             <!-- 会员权益：签到 / 邀请 / 开发者 API（还没上线的显示“即将上线”；开放后换成上面对应的卡片） -->
-            <h2 class="mt-10 text-lg font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="hubPerksH">Earn and build</h2>
-            <ul id="perks-grid" class="mt-3 grid gap-3 sm:grid-cols-3">
-                <li id="perk-checkin" class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+
+
+            <!-- 最近的积分变动（与积分页同一套合并 / 渲染） -->
+            <div class="mt-10 flex items-end justify-between gap-4">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="hubRecentH">Recent activity</h2>
+                <a href="/account/credits/" class="text-sm font-medium text-gray-700 underline-offset-4 hover:text-gray-900 hover:underline dark:text-zinc-300 dark:hover:text-zinc-50" data-pi18n="hubRecentAll">View all</a>
+            </div>
+            <div class="mt-3 overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+                <ul id="hub-recent" class="divide-y divide-gray-100 dark:divide-zinc-800"></ul>
+                <p id="hub-recent-state" class="px-5 py-8 text-center text-sm text-gray-500 dark:text-zinc-400" role="status" data-pi18n="ledgerLoading">Loading…</p>
+            </div>
+        <div class="member-future"><h2 class="mt-10 text-lg font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="hubPerksH">Earn and build</h2>
+            <ul id="perks-grid" class="member-perks">
+                <li id="perk-checkin" class="rounded-xl border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
                     <div class="flex items-center justify-between">
                         <span class="grid h-9 w-9 place-items-center rounded-xl bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400" aria-hidden="true">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M9 15l2 2 4-4"/></svg>
@@ -143,7 +250,7 @@
                     <h3 class="mt-4 font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="perkCheckinT">Daily check-in</h3>
                     <p class="mt-1 text-sm text-gray-600 dark:text-zinc-400" data-pi18n="perkCheckinD">Check in every day for 10–20 free credits. Keep your streak going to earn more.</p>
                 </li>
-                <li id="perk-invite" class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+                <li id="perk-invite" class="rounded-xl border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
                     <div class="flex items-center justify-between">
                         <span class="grid h-9 w-9 place-items-center rounded-xl bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400" aria-hidden="true">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M19 8v6M16 11h6"/></svg>
@@ -153,7 +260,7 @@
                     <h3 class="mt-4 font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="perkInviteT">Invite friends</h3>
                     <p class="mt-1 text-sm text-gray-600 dark:text-zinc-400" data-pi18n="perkInviteD">Get 50 credits for every friend who signs up with your link.</p>
                 </li>
-                <li class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+                <li class="rounded-xl border border-gray-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
                     <div class="flex items-center justify-between">
                         <span class="grid h-9 w-9 place-items-center rounded-xl bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400" aria-hidden="true">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 9-4 3 4 3M16 9l4 3-4 3M13.5 6l-3 12"/></svg>
@@ -163,21 +270,10 @@
                     <h3 class="mt-4 font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="perkApiT">Developer API</h3>
                     <p class="mt-1 text-sm text-gray-600 dark:text-zinc-400" data-pi18n="perkApiD">Create API keys and remove backgrounds from your own apps, using the same credits.</p>
                 </li>
-            </ul>
-
-            <!-- 最近的积分变动（与积分页同一套合并 / 渲染） -->
-            <div class="mt-10 flex items-end justify-between gap-4">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="hubRecentH">Recent activity</h2>
-                <a href="/account/credits/" class="text-sm font-medium text-gray-700 underline-offset-4 hover:text-gray-900 hover:underline dark:text-zinc-300 dark:hover:text-zinc-50" data-pi18n="hubRecentAll">View all</a>
-            </div>
-            <div class="mt-3 overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-                <ul id="hub-recent" class="divide-y divide-gray-100 dark:divide-zinc-800"></ul>
-                <p id="hub-recent-state" class="px-5 py-8 text-center text-sm text-gray-500 dark:text-zinc-400" role="status" data-pi18n="ledgerLoading">Loading…</p>
-            </div>
-        </section>
+            </ul></div></div></div></section>
     </main>
 
-    <footer class="border-t border-gray-200 py-8 text-center text-sm text-gray-500 dark:border-zinc-800 dark:text-zinc-400">
+    <footer class="member-footer">
         <p data-pi18n="footerTagline">MiaoCut · Free, privacy-first AI image tools.</p>
         <p class="mt-2 space-x-4">
             <a href="/terms/" class="hover:text-gray-800 dark:hover:text-zinc-200" data-pi18n="footerTerms">Terms</a>
@@ -190,6 +286,7 @@
         import { groupLedger, ledgerItemHTML, renderBalance, mountLogin, mockBanner, revealActiveTab } from "/account/account-ui.js";
         import { mountCheckinCard } from "/account/checkin-ui.js";
         import { mountInviteCard } from "/account/referral-ui.js";
+        await window.MiaoCutProI18n.ready;
         const { t, lang } = window.MiaoCutProI18n;
 
         const $ = (id) => document.getElementById(id);

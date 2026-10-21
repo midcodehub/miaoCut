@@ -124,10 +124,10 @@ export function referralRowHTML(item, { t, lang }) {
     ? "font-semibold text-brand-700 dark:text-brand-400"
     : "text-gray-600 dark:text-zinc-400";
   return `
-    <li class="flex items-start justify-between gap-3 px-4 py-3.5 sm:px-5">
+    <li class="member-referral-row">
       <div class="min-w-0">
         <p class="truncate font-medium text-gray-900 dark:text-zinc-50">${escapeHtml(item.email)}</p>
-        <p class="mt-0.5 text-xs text-gray-500 dark:text-zinc-500">${escapeHtml(dateText(Date.parse(item.created_at), lang, true))}</p>
+        <p class="mt-0.5 text-xs text-gray-500 dark:text-zinc-400">${escapeHtml(dateText(Date.parse(item.created_at), lang, true))}</p>
       </div>
       <p class="shrink-0 text-right text-sm tabular-nums ${tone}">${escapeHtml(label)}</p>
     </li>`;

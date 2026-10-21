@@ -9,8 +9,8 @@
 
 export const escapeHtml = (s) =>
   String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-export const fmt = (n) => Number(n || 0).toLocaleString();
-export const localeOf = (lang) => (lang === "zh" ? "zh-CN" : "en-US"); // 跟随页面语言，不跟浏览器
+export const localeOf = (lang) => ({ en: "en-US", zh: "zh-CN", hi: "hi-IN", id: "id-ID", "pt-br": "pt-BR", bn: "bn-BD", fil: "fil-PH", ur: "ur-PK" }[lang] || "en-US");
+export const fmt = (n) => Number(n || 0).toLocaleString(localeOf(window.MiaoCutProI18n?.lang));
 const DAY = 86400e3;
 
 // 流水“类型”筛选 → 网关的 reason 参数（逗号分隔）
@@ -138,16 +138,16 @@ export function ledgerItemHTML(item, { t, lang }) {
   const plus = item.delta > 0;
   const amountTone = plus ? "text-brand-700 dark:text-brand-400" : item.delta < 0 ? "text-gray-900 dark:text-zinc-50" : "text-gray-500";
   return `
-    <li class="flex items-start gap-3 px-4 py-3.5 sm:px-5">
+    <li class="member-ledger-row flex items-start gap-3 px-4 py-3.5 sm:px-5">
       ${icon(kind)}
       <div class="min-w-0 flex-1">
         <p class="font-medium text-gray-900 dark:text-zinc-50">${escapeHtml(title)}</p>
         ${detail ? `<p class="mt-0.5 text-sm text-gray-600 dark:text-zinc-400">${escapeHtml(detail)}</p>` : ""}
-        <p class="mt-0.5 text-xs text-gray-500 dark:text-zinc-500">${escapeHtml(when)}</p>
+        <p class="mt-0.5 text-xs text-gray-500 dark:text-zinc-400">${escapeHtml(when)}</p>
       </div>
       <div class="shrink-0 text-right">
         <p class="font-semibold tabular-nums ${amountTone}">${plus ? "+" : ""}${fmt(item.delta)}</p>
-        <p class="mt-0.5 text-xs tabular-nums text-gray-500 dark:text-zinc-500">${escapeHtml(t("ledgerBalanceAfter", { n: fmt(item.balance) }))}</p>
+        <p class="mt-0.5 text-xs tabular-nums text-gray-500 dark:text-zinc-400">${escapeHtml(t("ledgerBalanceAfter", { n: fmt(item.balance) }))}</p>
       </div>
     </li>`;
 }
@@ -164,11 +164,11 @@ export function renderBalance(els, credits, summary, { t, lang }) {
     ["topup", credits.topup, "bucketTopup", "bucketTopupTip"],
   ].filter(([, n]) => n > 0);
   const frozen = credits.frozen > 0
-    ? `<li class="inline-flex items-center gap-1.5 rounded-full border border-dashed border-gray-300 px-3 py-1 text-gray-600 dark:border-zinc-700 dark:text-zinc-400" title="${escapeHtml(t("bucketFrozenTip"))}">
+    ? `<li class="member-credit-bucket member-credit-bucket-frozen" title="${escapeHtml(t("bucketFrozenTip"))}">
          <span>${escapeHtml(t("bucketFrozen"))}</span><span class="font-semibold tabular-nums text-gray-900 dark:text-zinc-100">${fmt(credits.frozen)}</span></li>`
     : "";
   els.buckets.innerHTML = chips.map(([key, n, label, tip]) => `
-    <li class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-gray-700 dark:bg-zinc-800 dark:text-zinc-300" title="${escapeHtml(t(tip))}" data-bucket="${key}">
+    <li class="member-credit-bucket" title="${escapeHtml(t(tip))}" data-bucket="${key}">
       <span>${escapeHtml(t(label))}</span><span class="font-semibold tabular-nums text-gray-900 dark:text-zinc-100">${fmt(n)}</span>
     </li>`).join("") + frozen;
   els.buckets.classList.toggle("hidden", !chips.length && !frozen);
@@ -240,8 +240,11 @@ export function mockBanner(MiaoCutPro, { t }) {
  * 只改标签栏自己的横向滚动位置，不会让整个页面上下滚动。
  */
 export function revealActiveTab() {
-  const nav = document.querySelector("nav[aria-label] [aria-current='page']")?.closest("nav");
+  const nav = document.querySelector(".member-nav");
   const cur = nav && nav.querySelector("[aria-current='page']");
   if (!nav || !cur) return;
-  nav.scrollLeft = Math.max(0, cur.offsetLeft - (nav.clientWidth - cur.offsetWidth) / 2);
+  if (nav.scrollWidth <= nav.clientWidth) return;
+  const bounds = nav.getBoundingClientRect();
+  const active = cur.getBoundingClientRect();
+  nav.scrollLeft += active.left + active.width / 2 - bounds.left - nav.clientWidth / 2;
 }

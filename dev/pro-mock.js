@@ -6,6 +6,7 @@
 //   ?mock=empty    刚注册的新用户（只有注册赠送，没签到过）
 //   ?mock=soon     签到、邀请都还没开放（会员中心显示“即将上线”）
 //   ?mock=unverified  邮箱未验证（签到按钮不可点、邀请页提示先验证）
+//   ?mock=history     处理记录页展示完成、处理中、部分失败和已过期的示例批次
 // 点页面上的“退出登录”即退出模拟模式。
 //
 // 接口形状和规则与私有仓库 pro-gateway 保持一致（/auth/me、/credits/balance、/credits/summary、
@@ -324,7 +325,24 @@ export async function handle(path, opts = {}, scenario = "1") {
       return json({ status: "done" });
     }
     case "/plans": return json({ subscriptions_enabled: true, plans: [] });
-    case "/v1/batches": return json({ batches: [] });
+    case "/v1/batches": {
+      const now = Date.now();
+      const examples = [
+        { age: 0.1, status: "done", total: 24, succeeded: 24, failed: 0, profile: "fast" },
+        { age: 0.2, status: "processing", total: 80, succeeded: 31, failed: 0, profile: "fur" },
+        { age: 1.2, status: "done", total: 50, succeeded: 48, failed: 2, profile: "fast" },
+        { age: 8, status: "done", total: 12, succeeded: 12, failed: 0, profile: "fur" },
+      ];
+      const batches = scenario === "history" ? examples.map((b, i) => ({
+        ...b,
+        job_id: `demo_batch_${i + 1}`,
+        created_at: new Date(now - b.age * DAY).toISOString(),
+        retention_ends_at: new Date(now + (7 - b.age) * DAY).toISOString(),
+        expired: b.age >= 7,
+        covers: b.age >= 7 ? [] : ["/examples/product-cutout.webp", "/examples/portrait-cutout.webp"],
+      })) : [];
+      return json({ batches, limits: d.me.limits });
+    }
     case "/billing/portal": return json({ error: "mock" }, 400);
     default: return json({ error: "not_found_in_mock", path: url.pathname }, 404);
   }
