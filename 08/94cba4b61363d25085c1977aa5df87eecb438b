@@ -1,0 +1,227 @@
+i18n/pro/bn.json
+  s_a5c6fd6f918db6::t_fe68828f381fa1 415-504
+account/credits/index.html
+  s_a5c6fd6f918db6::t_4f07b985320871 183
+  s_a5c6fd6f918db6::t_bd7fa54263b549 15-16
+account/checkin/index.html
+  s_a5c6fd6f918db6::t_4f07b985320871 181
+  s_a5c6fd6f918db6::t_e8de7cf857893f 15-16
+account/invite/index.html
+  s_a5c6fd6f918db6::t_4f07b985320871 181
+  s_a5c6fd6f918db6::t_5671eeb0dcdf01 15-16
+dev/pro-mock.js
+  s_a5c6fd6f918db6::t_4dbd650cd3b833 9
+  s_a5c6fd6f918db6::t_27e6359b069df4 7-8,13,46-64,173,302-311,357-375
+  s_a5c6fd6f918db6::t_05ef3b05b07944 376
+account/index.html
+  s_a5c6fd6f918db6::t_4f07b985320871 181
+  s_a5c6fd6f918db6::t_27e6359b069df4 268,272-273,315,331-338,360,366,370
+  s_a5c6fd6f918db6::t_4dbd650cd3b833 263
+  s_a5c6fd6f918db6::t_c7e047724609e8 15-16
+account/batches/index.html
+  s_a5c6fd6f918db6::t_4f07b985320871 182
+  s_a5c6fd6f918db6::t_99ea47c1222ec8 15-16
+i18n/pro/hi.json
+  s_a5c6fd6f918db6::t_fe68828f381fa1 415-504
+i18n/pro/pt-br.json
+  s_a5c6fd6f918db6::t_a76f1605321733 415-504
+pro-account.js
+  s_a5c6fd6f918db6::t_27e6359b069df4 497-530
+api-docs/index.html
+  s_a5c6fd6f918db6::t_27e6359b069df4 1,3-15,20-21,25-29,104-105,120,123-124,127,129,134-135,145,149-152,154-164,166,169,172,175-189,191,193,198-199,211-214,216-274,276-285
+  s_a5c6fd6f918db6::t_4f07b985320871 2,22-24,30-103,106-119,121-122,125-126,128,130-133,136-140,142-143,146-148,153,165,167-168,170-171,173-174,190,192,194-197,200-201,203-209,215,275
+  s_a5c6fd6f918db6::t_b6b9dcee46234d 141,144,202,210
+  s_a5c6fd6f918db6::t_1236f73e7f88e7 16-19
+output.css
+  s_a5c6fd6f918db6::t_7f1c2253a99b29 1
+pro-i18n.js
+  s_a5c6fd6f918db6::t_6aba05f51a9fbe 587
+  s_a5c6fd6f918db6::t_b6b9dcee46234d 23-71,559-586,588-607
+  s_a5c6fd6f918db6::t_27e6359b069df4 372-412,898-938
+src/input.css
+  s_a5c6fd6f918db6::t_2bfbbf2a4268ff 51-57
+tailwind.config.js
+  s_a5c6fd6f918db6::t_27e6359b069df4 35-37,44
+i18n/pro/id.json
+  s_a5c6fd6f918db6::t_a76f1605321733 415-504
+i18n/pro/fil.json
+  s_a5c6fd6f918db6::t_88775cca5e7065 415-504
+tests/pro-i18n.test.mjs
+  s_a5c6fd6f918db6::t_5ca7c32afa9f04 89-90
+  s_a5c6fd6f918db6::t_b6b9dcee46234d 18
+  s_a5c6fd6f918db6::t_db0b42b9427b91 88,91
+i18n/pro/ur.json
+  s_a5c6fd6f918db6::t_88775cca5e7065 415-504
+account/api-ui.js
+  s_a5c6fd6f918db6::t_4f07b985320871 18,21-24,40
+  s_a5c6fd6f918db6::t_27e6359b069df4 1-17,19-20,25-39,41-69
+terms/index.html
+  s_a5c6fd6f918db6::t_27e6359b069df4 68,114-116
+  s_a5c6fd6f918db6::t_b37970ef067b6c 23,117-118
+account/api/index.html
+  s_a5c6fd6f918db6::t_4f07b985320871 35-37,43-116,119-132,134,137-145,147,165,172,175-186,200,207,210,214,230,236,241,244,257,348
+  s_a5c6fd6f918db6::t_27e6359b069df4 1-14,19-34,38-42,117-118,133,135-136,146,148-164,166-171,173-174,188-199,201-206,208-209,211-213,215-229,231-235,237-240,242-243,245-256,258-320,323-347,349-395
+  s_a5c6fd6f918db6::t_6aba05f51a9fbe 187
+  s_a5c6fd6f918db6::t_5ca7c32afa9f04 321-322
+  s_a5c6fd6f918db6::t_2836c0f9f178c9 15-18
+alternatives/remove-bg/index.html
+  s_a5c6fd6f918db6::t_d1bca7cce31331 100
+batch/index.html
+  s_a5c6fd6f918db6::t_944b328f0220bc 16,18
+bn/id-photo-maker/index.html
+  s_a5c6fd6f918db6::t_e11fd3ff1a4dc1 187
+bn/index.html
+  s_a5c6fd6f918db6::t_b23451c9f3c5d4 235
+bn/jpg-to-transparent-png/index.html
+  s_a5c6fd6f918db6::t_da3bcacd1bc956 174
+bn/old-photo-restoration/index.html
+  s_a5c6fd6f918db6::t_f5579806aea494 178
+bn/png-to-jpg-white-background/index.html
+  s_a5c6fd6f918db6::t_8db41020cd187d 173
+bn/portrait-background-remover/index.html
+  s_a5c6fd6f918db6::t_5b5687780aa637 174
+bn/product-photo-background-remover/index.html
+  s_a5c6fd6f918db6::t_adaf76218aa4f3 177
+bn/watermark-remover/index.html
+  s_a5c6fd6f918db6::t_85b3026f646892 178
+fil/id-photo-maker/index.html
+  s_a5c6fd6f918db6::t_8b4718a57b798d 187
+fil/index.html
+  s_a5c6fd6f918db6::t_a00f4ec0ddd8bc 235
+fil/jpg-to-transparent-png/index.html
+  s_a5c6fd6f918db6::t_b4d002637f8baf 174
+fil/old-photo-restoration/index.html
+  s_a5c6fd6f918db6::t_3052c67d024489 178
+fil/png-to-jpg-white-background/index.html
+  s_a5c6fd6f918db6::t_a627f2f0083880 173
+fil/portrait-background-remover/index.html
+  s_a5c6fd6f918db6::t_ee9888ec3dc271 174
+fil/product-photo-background-remover/index.html
+  s_a5c6fd6f918db6::t_9f3677ed8483a5 177
+fil/watermark-remover/index.html
+  s_a5c6fd6f918db6::t_0e70f4f7269aae 178
+hi/id-photo-maker/index.html
+  s_a5c6fd6f918db6::t_74e2ee17fa8fea 187
+hi/index.html
+  s_a5c6fd6f918db6::t_f4967277e4d690 235
+hi/jpg-to-transparent-png/index.html
+  s_a5c6fd6f918db6::t_1641781e7339b7 174
+hi/old-photo-restoration/index.html
+  s_a5c6fd6f918db6::t_89adaefe6f32ff 178
+hi/png-to-jpg-white-background/index.html
+  s_a5c6fd6f918db6::t_11062cb1622f31 173
+hi/portrait-background-remover/index.html
+  s_a5c6fd6f918db6::t_f31d96bfc5dbc7 174
+hi/product-photo-background-remover/index.html
+  s_a5c6fd6f918db6::t_cfb37d17669607 177
+hi/watermark-remover/index.html
+  s_a5c6fd6f918db6::t_d08b2899a82301 178
+how-to-remove-background/gimp/index.html
+  s_a5c6fd6f918db6::t_78b2661610d72f 136
+how-to-remove-background/index.html
+  s_a5c6fd6f918db6::t_809600eb4b6dc1 64
+how-to-remove-background/powerpoint/index.html
+  s_a5c6fd6f918db6::t_9c9688357ec744 136
+id-photo-maker/index.html
+  s_a5c6fd6f918db6::t_05385d7770730b 119
+id/id-photo-maker/index.html
+  s_a5c6fd6f918db6::t_a4f7c9f509cf0d 187
+id/index.html
+  s_a5c6fd6f918db6::t_767df4cd19f5b6 235
+id/jpg-to-transparent-png/index.html
+  s_a5c6fd6f918db6::t_eef44322b8e085 174
+id/old-photo-restoration/index.html
+  s_a5c6fd6f918db6::t_8147921fbab440 178
+id/png-to-jpg-white-background/index.html
+  s_a5c6fd6f918db6::t_67e42bdd704485 173
+id/portrait-background-remover/index.html
+  s_a5c6fd6f918db6::t_a6935e7b12d64a 174
+id/product-photo-background-remover/index.html
+  s_a5c6fd6f918db6::t_d87c2bed274cc5 177
+id/watermark-remover/index.html
+  s_a5c6fd6f918db6::t_17707cef44a208 178
+index.html
+  s_a5c6fd6f918db6::t_599092355ae45e 230
+invite/index.html
+  s_a5c6fd6f918db6::t_46c38d73371a62 15-16
+jpg-to-transparent-png/index.html
+  s_a5c6fd6f918db6::t_586f188d34b10e 155
+old-photo-restoration/index.html
+  s_a5c6fd6f918db6::t_79617f72c886af 159
+png-to-jpg-white-background/index.html
+  s_a5c6fd6f918db6::t_f19a5f14736d98 154
+portrait-background-remover/index.html
+  s_a5c6fd6f918db6::t_d22b9db5b86583 155
+pricing/index.html
+  s_a5c6fd6f918db6::t_3b192d0e411274 16-17
+privacy/index.html
+  s_a5c6fd6f918db6::t_e409677f9fb145 23
+product-photo-background-remover/index.html
+  s_a5c6fd6f918db6::t_3da33ff6a147d0 158
+pt-br/id-photo-maker/index.html
+  s_a5c6fd6f918db6::t_18d2e932bf8a16 187
+pt-br/index.html
+  s_a5c6fd6f918db6::t_37d1232647ec89 235
+pt-br/jpg-to-transparent-png/index.html
+  s_a5c6fd6f918db6::t_2b5919a8945ef2 174
+pt-br/old-photo-restoration/index.html
+  s_a5c6fd6f918db6::t_9541d3d7d3a2c6 178
+pt-br/png-to-jpg-white-background/index.html
+  s_a5c6fd6f918db6::t_ca704f88289baf 173
+pt-br/portrait-background-remover/index.html
+  s_a5c6fd6f918db6::t_6a89754644515d 174
+pt-br/product-photo-background-remover/index.html
+  s_a5c6fd6f918db6::t_079a00cb2ab2fc 177
+pt-br/watermark-remover/index.html
+  s_a5c6fd6f918db6::t_3d8db66416906d 178
+ur/id-photo-maker/index.html
+  s_a5c6fd6f918db6::t_6764c3314cf4fb 187
+ur/index.html
+  s_a5c6fd6f918db6::t_e149518a4cd099 235
+ur/jpg-to-transparent-png/index.html
+  s_a5c6fd6f918db6::t_442514778e9eb5 174
+ur/old-photo-restoration/index.html
+  s_a5c6fd6f918db6::t_9d640caa007fcb 178
+ur/png-to-jpg-white-background/index.html
+  s_a5c6fd6f918db6::t_2738196e69caed 173
+ur/portrait-background-remover/index.html
+  s_a5c6fd6f918db6::t_69a1652b4cd7e3 174
+ur/product-photo-background-remover/index.html
+  s_a5c6fd6f918db6::t_aaf46e357b785c 177
+ur/watermark-remover/index.html
+  s_a5c6fd6f918db6::t_5f84b2c49f1b15 178
+watermark-remover/index.html
+  s_a5c6fd6f918db6::t_987f18835b2548 159
+zh/id-photo-maker/index.html
+  s_a5c6fd6f918db6::t_46c35f1884198a 187
+zh/index.html
+  s_a5c6fd6f918db6::t_cf8ca84763e67f 235
+zh/jpg-to-transparent-png/index.html
+  s_a5c6fd6f918db6::t_ba29190a8b4881 174
+zh/old-photo-restoration/index.html
+  s_a5c6fd6f918db6::t_5179345b0b29f9 178
+zh/png-to-jpg-white-background/index.html
+  s_a5c6fd6f918db6::t_6d74aabfe73d4f 173
+zh/portrait-background-remover/index.html
+  s_a5c6fd6f918db6::t_243729ffbf5d09 174
+zh/product-photo-background-remover/index.html
+  s_a5c6fd6f918db6::t_2f2256ca9eaa2b 177
+zh/watermark-remover/index.html
+  s_a5c6fd6f918db6::t_e60c9859e86bb8 178
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "0894cba4b61363d25085c1977aa5df87eecb438b",
+  "prompts": {},
+  "sessions": {
+    "s_a5c6fd6f918db6": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15f4e-eaa0-7f92-95e9-51fd4006bf0f",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "midcodehub <408124546@qq.com>"
+    }
+  }
+}
