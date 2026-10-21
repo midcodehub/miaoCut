@@ -494,6 +494,40 @@ const MiaoCutPro = {
     return res.json();
   },
 
+  /** 开发者 API Key 列表 + 限额。没开放返回 {enabled:false}；邮箱没验证返回 {enabled:true, eligible:false}；
+   *  可用时 {enabled, eligible, keys:[{id, name, prefix, created_at, last_used_at, month_jobs, month_images}],
+   *  max_keys, rate_per_min, max_active_jobs}。列表里只有前缀，没有完整 Key（完整 Key 只在生成时返回一次） */
+  async apiKeys() {
+    const res = await this.proFetch("/member/api-keys");
+    if (!res.ok) throw new Error(`api_keys_failed_${res.status}`);
+    return res.json();
+  },
+
+  /** 生成一把 Key → {key, id, name, prefix, created_at}。⚠️ 完整的 key 只在这次响应里有，之后任何接口都取不到。
+   *  失败时抛 Error，message 是网关的错误码（too_many_keys / invalid_name / email_not_verified / api_keys_disabled …） */
+  async createApiKey(name) {
+    const res = await this.proFetch("/member/api-keys", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name }),
+    });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const err = new Error(body.error || `api_key_create_failed_${res.status}`);
+      err.max = body.max; // too_many_keys 时带上限
+      throw err;
+    }
+    return body;
+  },
+
+  /** 吊销一把 Key，立刻失效。失败抛 Error（not_found / api_keys_disabled …） */
+  async revokeApiKey(id) {
+    const res = await this.proFetch(`/member/api-keys/${encodeURIComponent(id)}/revoke`, { method: "POST" });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(body.error || `api_key_revoke_failed_${res.status}`);
+    return body;
+  },
+
   /** 发起充值:返回 Stripe Checkout URL 并跳转 */
   async checkout(sku) {
     const res = await this.proFetch("/checkout", {

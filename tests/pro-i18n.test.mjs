@@ -15,7 +15,7 @@ test('member pages keep the same global tools and language menu as the homepage'
     const links = html => [...html.matchAll(/<a\b[^>]*href="([^"]+)"/g)].map(match => match[1]);
     const options = html => [...html.matchAll(/data-lang-option="([^"]+)"/g)].map(match => match[1]);
     for (const path of ['account/', 'account/credits/', 'account/checkin/', 'account/invite/',
-        'account/batches/', 'pricing/', 'batch/', 'invite/']) {
+        'account/batches/', 'account/api/', 'api-docs/', 'pricing/', 'batch/', 'invite/']) {
         const member = header(`../${path}index.html`);
         assert.deepEqual(links(member), links(home), `${path}: global tool links`);
         assert.deepEqual(options(member), options(home), `${path}: language choices`);
@@ -84,6 +84,10 @@ test('every locale preserves all variables and trusted HTML', async () => {
             for (const pattern of [/\{[A-Za-z0-9_]+\}/g, /<[^>]+>/g]) {
                 assert.deepEqual([...(pack[key].match(pattern) || [])].sort(),
                     [...(value.match(pattern) || [])].sort(), `${code}.${key}: changed variable or HTML`);
+            }
+            if (key.startsWith('docsText')) {
+                const codeContents = html => [...html.matchAll(/<code\b[^>]*>([\s\S]*?)<\/code>/g)].map(match => match[1]).sort();
+                assert.deepEqual(codeContents(pack[key]), codeContents(value), `${code}.${key}: changed API syntax`);
             }
         }
     }

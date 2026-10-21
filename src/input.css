@@ -48,6 +48,13 @@
   .member-sidebar-note > svg { @apply mb-3 text-gray-600 dark:text-zinc-400; }
   .member-sidebar-note a { @apply mt-3 inline-block font-medium text-gray-900 underline decoration-gray-300 underline-offset-4 dark:text-zinc-200 dark:decoration-zinc-600; }
   .member-content { @apply min-w-0; }
+  .member-api-docs { @apply max-w-4xl; }
+  .member-doc-body { @apply min-w-0; }
+  .member-doc-table { @apply overflow-x-auto; }
+  .member-api-docs pre { direction: ltr; text-align: left; }
+  .member-api-docs :not(pre) > code { overflow-wrap: anywhere; unicode-bidi: isolate; }
+  .member-api-docs ol, .member-api-docs ul, #api-limits { padding-inline-start: 1.25rem; padding-inline-end: 0; }
+  .member-api-docs th { text-align: start; }
   .member-content h1 { @apply text-[30px] font-semibold leading-tight tracking-tight; }
   .member-content > h1 + p { @apply mt-3 max-w-2xl leading-relaxed; }
   .member-intro { @apply mt-3 max-w-xl text-sm leading-relaxed text-gray-600 dark:text-zinc-400; }
