@@ -7,6 +7,8 @@
 //    改了 class 要重新 npm run build:css。
 // =============================================================================
 
+import { mountWechatLogin } from './wechat-login.js';
+
 export const escapeHtml = (s) =>
   String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 export const localeOf = (lang) => ({ en: "en-US", zh: "zh-CN", hi: "hi-IN", id: "id-ID", "pt-br": "pt-BR", bn: "bn-BD", fil: "fil-PH", ur: "ur-PK" }[lang] || "en-US");
@@ -198,6 +200,7 @@ export function renderBalance(els, credits, summary, { t, lang }) {
 
 /** 登录卡：Google、邮箱链接、后台开启了的其他登录方式（GitHub 等）。登录后回到当前页 */
 export function mountLogin(root, MiaoCutPro, { t }) {
+  void mountWechatLogin(root, MiaoCutPro);
   const msg = root.querySelector("[data-login-msg]");
   const setMsg = (key) => { msg.textContent = key ? t(key) : ""; };
   root.querySelector("[data-login-google]").addEventListener("click", () => {
