@@ -14,6 +14,7 @@
 // 文案全部在 /pro-i18n.js（中英文），本文件不写死任何用户可见的句子。
 // =============================================================================
 import MiaoCutPro from "/pro-account.js";
+import { mountWechatLogin } from '/account/wechat-login.js';
 import { mockBanner, localeOf } from "/account/account-ui.js";
 
 await window.MiaoCutProI18n.ready;
@@ -1220,6 +1221,7 @@ els.btnStart.addEventListener("click", startBatch);
 // 启动
 // =============================================================================
 async function boot() {
+  void mountWechatLogin(els.gate, MiaoCutPro, { beforeLogin: persistSelection });
   renderLimits();
   els.gatePoint2.textContent = t("gatePoint2", { price: MIN_PACK_PRICE });
   renderOutputGroups();

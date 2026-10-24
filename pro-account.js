@@ -334,6 +334,27 @@ const MiaoCutPro = {
     return !!MOCK;
   },
 
+  /** 微信小程序扫码接口不等待第三方登录 SDK 初始化。凭证不进入 URL 或本地存储。 */
+  async wechatRequest(action, body, signal) {
+    if (!['config', 'challenge', 'status', 'exchange'].includes(action)) throw new Error('invalid_action');
+    const response = await fetch(`${PRO_API_BASE}/auth/wechat/${action}`, {
+      method: action === 'config' ? 'GET' : 'POST', cache: 'no-store', signal,
+      ...(action === 'config' ? {} : { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body || {}) }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'wechat_unavailable');
+    return data;
+  },
+
+  async completeWechatLogin(credentials) {
+    if (!credentials?.token_hash || !['magiclink', 'signup'].includes(credentials.type)) throw new Error('invalid_wechat_session');
+    const client = await getClient();
+    if (!client) throw new Error('auth_unavailable');
+    const { data, error } = await client.auth.verifyOtp({ token_hash: credentials.token_hash, type: credentials.type });
+    if (error || !data?.session) throw error || new Error('wechat_login_failed');
+    return data.session;
+  },
+
   /** 发送邮箱魔法链接 */
   async signInWithEmail(email, redirectTo) {
     const c = await getClient();

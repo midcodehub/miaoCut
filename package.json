@@ -13,7 +13,8 @@
     "test:editor": "node --test tests/editor-engine.test.cjs",
     "test:login": "node --test tests/login-redirect.test.mjs",
     "test:i18n": "node --test tests/pro-i18n.test.mjs",
-    "check:seo": "node scripts/seo-guard.mjs"
+    "check:seo": "node scripts/seo-guard.mjs",
+    "test:wechat": "node --test tests/wechat-login.test.mjs"
   },
   "devDependencies": {
     "playwright": "^1.59.1",

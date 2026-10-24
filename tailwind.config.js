@@ -42,6 +42,7 @@ module.exports = {
     './account/checkin-ui.js',
     './account/referral-ui.js',
     './account/api-ui.js',
+    './account/wechat-login.js',
     // 批量页：class 同时写在 HTML 和 batch.js 的模板字符串里
     './batch/index.html',
     './batch/batch.js',
