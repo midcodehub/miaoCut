@@ -1,0 +1,27 @@
+tests/wechat-login.test.mjs
+  s_13d2f4ab14c3db::t_57ff4fa2b2a20f 110-117
+  s_13d2f4ab14c3db::t_8104438408c644 121-127
+  s_13d2f4ab14c3db::t_d833282d416824 52-56
+  s_13d2f4ab14c3db::t_e1d83387d54b5b 35-36
+  s_13d2f4ab14c3db::t_2a66e31c4da8d9 108-109
+  s_13d2f4ab14c3db::t_569d5785e40059 118-120
+  s_13d2f4ab14c3db::t_843bb5e3492e9e 128
+account/wechat-login.js
+  s_13d2f4ab14c3db::t_06013cb7f8071a 36-38,42,60,65-68,71-75,78-84,86-93
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "58bc42cd8d15ec11a4f1df84f61543d0f1d2b9d9",
+  "prompts": {},
+  "sessions": {
+    "s_13d2f4ab14c3db": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2858d64a-71e3-4fe3-9294-3f79aa6d786e",
+        "model": "unknown"
+      },
+      "human_author": "midcodehub <408124546@qq.com>"
+    }
+  }
+}
