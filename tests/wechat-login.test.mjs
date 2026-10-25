@@ -32,7 +32,8 @@ before(async () => {
 });
 after(async () => { await browser?.close(); await new Promise(resolve => server?.close(resolve)); });
 
-async function setup({ lang = 'zh', enabled = true, state = 'waiting', failCreate = false } = {}) {
+// exchangeFailures：前几次领取返回 502（模拟网关签发会话失败、码已被退回“已确认”）。
+async function setup({ lang = 'zh', enabled = true, state = 'waiting', failCreate = false, exchangeFailures = 0 } = {}) {
   const context = await browser.newContext({ viewport: { width: 320, height: 700 } });
   const page = await context.newPage();
   const calls = [];
@@ -48,6 +49,11 @@ async function setup({ lang = 'zh', enabled = true, state = 'waiting', failCreat
     const body = action === 'config' ? { enabled, miniapp_name: 'MiaoCut' } : action === 'challenge'
       ? { scene, poll_token: pollToken, expires_at: new Date(Date.now() + 300000).toISOString(), qrcode: png }
       : action === 'status' ? { state } : { state: 'ok', type: 'magiclink', token_hash: 'test-one-time-token' };
+    if (action === 'exchange' && exchangeFailures > 0) {
+      exchangeFailures--;
+      await route.fulfill({ status: 502, json: { error: 'wechat_unavailable' } });
+      return;
+    }
     await route.fulfill({ status: action === 'challenge' && failCreate ? 502 : 200, json: body });
   });
   await page.goto(base + '/?lang=' + lang);
@@ -98,4 +104,25 @@ test('expired codes and generation failures offer a fresh attempt without issuin
     assert.equal(calls.filter(c => c.action === 'exchange').length, 0);
     await context.close();
   }
+});
+test('a failed exchange is retried on the same code and still installs the session', async () => {
+  const { page, context, calls } = await setup({ state: 'confirmed', exchangeFailures: 1 });
+  // 断言失败也要关掉上下文，否则浏览器连接不断开，测试进程会挂住。
+  try {
+    await page.locator('[data-login-wechat]').click();
+    await page.waitForFunction(() => !!window.verifiedCredentials, null, { timeout: 15000 });
+    assert.equal(calls.filter(c => c.action === 'exchange').length, 2);
+    assert.equal(calls.filter(c => c.action === 'challenge').length, 1);
+    assert.equal(await page.locator('dialog').evaluate(d => d.open), false);
+  } finally { await context.close(); }
+});
+test('repeated exchange failures give up after three attempts and offer a fresh code', async () => {
+  const { page, context, calls } = await setup({ state: 'confirmed', exchangeFailures: 99 });
+  try {
+    await page.locator('[data-login-wechat]').click();
+    await page.waitForSelector('[data-wx-refresh]:not(.hidden)', { timeout: 15000 });
+    assert.equal(calls.filter(c => c.action === 'exchange').length, 3);
+    assert.equal(await page.locator('[data-wx-code]').getAttribute('src'), null);
+    assert.equal(await page.evaluate(() => window.verifiedCredentials), undefined);
+  } finally { await context.close(); }
 });
