@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "generatedAt": "2026-10-25",
+  "realGpu": true,
+  "qualityCertified": false,
+  "scope": "Previously recorded isolated GPU runs. Public/constructed fixtures only; no customer uploads or runtime credentials.",
+  "samples": [
+    {
+      "id": "shoe",
+      "label": "运动鞋",
+      "kind": "实拍商品样图",
+      "foreground": "shoe-foreground.png",
+      "final": "shoe-final.png",
+      "sha256": {
+        "foreground": "a8147a43d968ab83caf12d86c605b92cebc9a6d01cf078963f5bcce005956095",
+        "final": "a9a9cc2ce63d1b41f3b281d90d7ff0891dc7afe5db9e900455db7f29623b6b2d"
+      },
+      "document": {
+        "id": "sample-shoe",
+        "revision": 1,
+        "sourceAssetId": "shoe-source",
+        "foregroundAssetId": "shoe-foreground",
+        "scene": "wood",
+        "canvas": {
+          "width": 1024,
+          "height": 1024,
+          "ratio": "1:1"
+        },
+        "placement": {
+          "x": 0.14,
+          "y": 0.3866341463414634,
+          "width": 0.72,
+          "height": 0.3933658536585366
+        }
+      },
+      "elapsedSeconds": 117.428,
+      "protectedPixels": 163073,
+      "badPixels": 0
+    },
+    {
+      "id": "packaging",
+      "label": "包装文字",
+      "kind": "合成测试图",
+      "foreground": "packaging-foreground.png",
+      "final": "packaging-final.png",
+      "sha256": {
+        "foreground": "df4587def254c48c1d533e3d7f99ad3c7d64a44e43f2db629dcfee04df183666",
+        "final": "44508100589638690ae809ba4b9db660d98db6ffa925237747d53a1c005eff9a"
+      },
+      "document": {
+        "id": "sample-packaging",
+        "revision": 1,
+        "sourceAssetId": "packaging-source",
+        "foregroundAssetId": "packaging-foreground",
+        "scene": "wood",
+        "canvas": {
+          "width": 1024,
+          "height": 1024,
+          "ratio": "1:1"
+        },
+        "placement": {
+          "x": 0.3560681520314548,
+          "y": 0.18999999999999995,
+          "width": 0.28786369593709044,
+          "height": 0.68
+        }
+      },
+      "elapsedSeconds": 135.197,
+      "protectedPixels": 191685,
+      "badPixels": 0
+    }
+  ]
+}
