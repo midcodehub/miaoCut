@@ -33,10 +33,13 @@ export async function mountWechatLogin(root, account, { beforeLogin } = {}) {
   const placeholder = dialog.querySelector('[data-wx-placeholder]');
   const status = dialog.querySelector('[data-wx-status]');
   const refresh = dialog.querySelector('[data-wx-refresh]');
-  let timer, controller, challenge, generation = 0;
+  // failures：当前这张码连续查询 / 领取失败的次数，到 MAX_FAILURES 才放弃。
+  let timer, controller, challenge, failures = 0, generation = 0;
+  const MAX_FAILURES = 3;
 
   function stop() {
     generation++;
+    failures = 0;
     clearTimeout(timer);
     controller?.abort();
     challenge = null;
@@ -54,24 +57,40 @@ export async function mountWechatLogin(root, account, { beforeLogin } = {}) {
     if (ticket !== generation || !dialog.open || !challenge) return;
     if (Date.now() >= Date.parse(challenge.expires_at)) { showError('二维码已过期，请刷新后重新扫码。'); return; }
     if (document.hidden) { timer = setTimeout(() => poll(ticket), 2000); return; }
+    let credentials;
     try {
       const proof = { scene: challenge.scene, poll_token: challenge.poll_token };
       const result = await account.wechatRequest('status', proof, controller.signal);
       if (ticket !== generation) return;
-      if (result.state === 'confirmed') {
-        status.textContent = '手机已确认，正在登录…';
-        const credentials = await account.wechatRequest('exchange', proof, controller.signal);
-        if (ticket !== generation) return;
-        if (credentials.state !== 'ok') throw new Error('exchange_failed');
-        await account.completeWechatLogin(credentials);
-        if (dialog.open) dialog.close();
+      if (result.state === 'waiting') {
+        if (failures) status.textContent = '等待扫码，请在 5 分钟内完成确认。';
+        failures = 0;
+        timer = setTimeout(() => poll(ticket), 2000);
         return;
       }
-      if (result.state !== 'waiting') { showError('此二维码已过期或已使用，请刷新后重新扫码。'); return; }
-      timer = setTimeout(() => poll(ticket), 2000);
+      if (result.state !== 'confirmed') { showError('此二维码已过期或已使用，请刷新后重新扫码。'); return; }
+      status.textContent = '手机已确认，正在登录…';
+      credentials = await account.wechatRequest('exchange', proof, controller.signal);
+      if (ticket !== generation) return;
+      if (credentials.state !== 'ok') { showError('此二维码已过期或已使用，请刷新后重新扫码。'); return; }
     } catch (error) {
       if (ticket !== generation || error.name === 'AbortError') return;
+      // 网络抖动，或网关签发会话失败（网关会把码退回“已确认”）：2 秒后重新查状态、再领取，
+      // 不必让用户重新扫码。凭证无效（invalid_challenge）重试也没用，直接放弃。
+      if (error.message !== 'invalid_challenge' && ++failures < MAX_FAILURES) {
+        status.textContent = '网络不稳定，正在重试…';
+        timer = setTimeout(() => poll(ticket), 2000);
+        return;
+      }
       showError('暂时无法完成微信登录，请刷新二维码后重试。');
+      return;
+    }
+    // token_hash 只能用一次，verifyOtp 失败不能拿同一个码重领，只能重新扫码。
+    try {
+      await account.completeWechatLogin(credentials);
+      if (dialog.open) dialog.close();
+    } catch (_) {
+      if (ticket === generation) showError('暂时无法完成微信登录，请刷新二维码后重试。');
     }
   }
   async function start() {
