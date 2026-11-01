@@ -65,7 +65,7 @@
     <main class="flex-grow w-full max-w-3xl mx-auto px-4">
         <article class="prose-custom">
             <h1 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-2 dark:text-zinc-50">Privacy Policy</h1>
-            <p class="text-sm text-gray-500 mb-8 dark:text-zinc-400">Last updated: October 20, 2026</p>
+            <p class="text-sm text-gray-500 mb-8 dark:text-zinc-400">Last updated: November 1, 2026</p>
 
             <p class="text-gray-600 leading-relaxed mb-8 dark:text-zinc-300">MiaoCut (<a href="https://miaocut.app" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">miaocut.app</a>) offers free online image tools that work without an account, plus an optional account for paid batch processing. We collect as little data as possible. This page explains what happens to your images and what data we process in each case.</p>
 
@@ -73,7 +73,7 @@
                 <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Your images</h2>
                 <ul class="space-y-2 text-gray-600 text-sm md:text-base list-disc list-inside dark:text-zinc-300">
                     <li><strong>Free single-image tools: processed in memory only.</strong> Images are held in server memory just long enough to produce a result, then discarded. They are not saved to disk or any database.</li>
-                    <li><strong>Batch processing: stored for up to 24 hours.</strong> When you use batch processing with an account, your uploaded images and the results are stored temporarily in cloud storage (Cloudflare R2) so they can be processed and downloaded. They are deleted automatically within 24 hours. To process them, a GPU worker running on Kaggle (a Google service) downloads each image through a link that is valid for 15 minutes, processes it in memory and uploads the result back to our storage. We do not keep copies on the worker.</li>
+                    <li><strong>Batch processing: stored for up to 24 hours, or 7 days while a monthly plan is active.</strong> When you use batch processing with an account, your uploaded images and the results are stored temporarily in cloud storage (Cloudflare R2) so they can be processed and downloaded. They are deleted automatically within 24 hours, or within 7 days while a monthly plan is active. To process them, a GPU worker running on Kaggle (a Google service) downloads each image through a link that is valid for 15 minutes, processes it in memory and uploads the result back to our storage. We do not keep copies on the worker.</li>
                     <li><strong>Never used for training.</strong> Your images are never used to train AI models.</li>
                     <li><strong>No human review.</strong> No one at MiaoCut looks at your images.</li>
                 </ul>
@@ -92,7 +92,7 @@
 
             <section class="mb-8">
                 <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Payments</h2>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">Payments are processed by Stripe. We never see or store your full card details. We keep order records (credit pack, amount, currency, Stripe reference and date) for accounting, tax and fraud-prevention purposes.</p>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">Payments are processed by our payment provider. We never see or store your full card details. We keep order records (what you bought, amount, currency, the provider's payment reference and date) for accounting, tax and fraud-prevention purposes.</p>
             </section>
 
             <section class="mb-8">
@@ -111,7 +111,7 @@
 
             <section class="mb-8">
                 <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Service providers</h2>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">We rely on the following providers to run the service. They process data on our behalf only to deliver it: Cloudflare (website, gateway and temporary file storage), Hugging Face (free image processing), Supabase (accounts and credit records), Stripe (payments), Kaggle, a Google service (GPU processing for batch jobs), Google, Microsoft and GitHub (optional sign-in) and Umami (analytics). We do not sell your data or share it with advertisers.</p>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">We rely on the following providers to run the service. They process data on our behalf only to deliver it: Cloudflare (website, gateway and temporary file storage), Hugging Face (free image processing), Supabase (accounts and credit records), our payment provider (payments), Kaggle, a Google service (GPU processing for batch jobs), Google, Microsoft and GitHub (optional sign-in) and Umami (analytics). We do not sell your data or share it with advertisers.</p>
             </section>
 
             <section class="mb-8">

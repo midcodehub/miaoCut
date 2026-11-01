@@ -13,7 +13,7 @@
     <meta name="description" content="Manage your MiaoCut credits: balance, transaction history, and top-ups.">
     <meta name="robots" content="noindex,nofollow">
     <link rel="stylesheet" href="/output.css?v=bc2f319b">
-    <script src="/pro-i18n.js?v=51c00c16"></script>
+    <script src="/pro-i18n.js?v=1d96cfb4"></script>
     <script src="/account/workspace.js?v=71f3b771" defer></script>
     <script src="/language-menu.js?v=218641ac" defer></script>
     <script>
@@ -277,10 +277,13 @@
         const acctView = $("account-view");
         const nav = $("nav-auth");
         const params = new URLSearchParams(location.search);
-        const paidJustNow = params.get("status") === "success";
+        // 成功回跳：网关自己的 status=success / subscribed，以及 Dodo 追加的 status=succeeded、checkout 完成标记。
+        // Dodo 会在网关参数后再追加一个 status，所以要用 getAll，不能只看第一个。
+        const returnStatuses = new Set(params.getAll("status"));
+        const paidJustNow = returnStatuses.has("success") || returnStatuses.has("succeeded") || params.has("checkout_id");
         const PACK_NAMES = { starter_100: "packStarter", creator_500: "packCreator", seller_1500: "packSeller", studio_5000: "packStudio" };
         const PLAN_NAMES = { basic: "planBasic", pro: "planPro", business: "planBusiness" };
-        const subscribedJustNow = params.get("status") === "subscribed";
+        const subscribedJustNow = returnStatuses.has("subscribed") || (returnStatuses.has("active") && params.has("subscription_id"));
         const show = (el, on) => el.classList.toggle("hidden", !on);
 
         // 从定价页带 ?buy=sku 过来但还没登录：说明登录后会直接去结账
@@ -322,7 +325,7 @@
             if (paidJustNow || subscribedJustNow) showPaymentSuccess();
         }
 
-        // Stripe 支付成功跳回 ?status=success。积分由 webhook 异步入账，可能晚几秒到：
+        // 付款成功跳回。积分由 webhook 异步入账，可能晚几秒到：
         // 先提示「已支付、马上到账」，再每 3 秒刷新一次余额，最多 30 秒。
         let polling = false;
         function showPaymentSuccess() {

@@ -549,7 +549,7 @@ const MiaoCutPro = {
     return body;
   },
 
-  /** 发起充值:返回 Stripe Checkout URL 并跳转 */
+  /** 发起充值:向网关要结账 URL 并跳转 */
   async checkout(sku) {
     const res = await this.proFetch("/checkout", {
       method: "POST",
@@ -562,7 +562,7 @@ const MiaoCutPro = {
     return url;
   },
 
-  /** 发起月度订阅:返回 Stripe Checkout URL 并跳转。已有有效订阅时抛 Error("already_subscribed") */
+  /** 发起月度订阅:向网关要结账 URL 并跳转。已有有效订阅且网关返回 409 时抛 Error("already_subscribed") */
   async checkoutPlan(plan) {
     const res = await this.proFetch("/checkout", {
       method: "POST",
@@ -576,7 +576,7 @@ const MiaoCutPro = {
     return url;
   },
 
-  /** 打开 Stripe 客户门户(改档 / 取消 / 更新银行卡 / 发票) */
+  /** 打开客户门户(改档 / 取消 / 更新支付方式 / 发票) */
   async billingPortal() {
     const res = await this.proFetch("/billing/portal", { method: "POST" });
     if (!res.ok) throw new Error(`portal_failed_${res.status}`);

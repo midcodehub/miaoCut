@@ -175,7 +175,7 @@
             faqQ6: 'Can I get a refund?',
             faqA6: 'Unused credits can be refunded within 14 days of purchase. See the <a href="/terms/" class="underline underline-offset-2">Terms</a> for details.',
             faqQ7: 'How is payment handled?',
-            faqA7: 'Checkout runs on Stripe. MiaoCut never sees or stores your card details. Tax is calculated at checkout.',
+            faqA7: 'Checkout is handled by our payment provider. MiaoCut never sees or stores your card details. Tax is calculated at checkout.',
 
             // ---- 账户 / 积分页 ----
             creditsDocTitle: 'Your Credits | MiaoCut',
@@ -707,7 +707,7 @@
             faqQ6: '可以退款吗？',
             faqA6: '未使用的积分可在购买后 14 天内申请退款，详见<a href="/terms/" class="underline underline-offset-2">服务条款</a>。',
             faqQ7: '支付安全吗？',
-            faqA7: '支付由 Stripe 处理，MiaoCut 不会接触或保存你的卡信息。税费在结账时计算。',
+            faqA7: '支付由收款服务商处理，MiaoCut 不会接触或保存你的卡信息。税费在结账时计算。',
 
             creditsDocTitle: '我的积分 | MiaoCut',
             loginH1: '登录 MiaoCut',

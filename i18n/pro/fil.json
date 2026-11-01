@@ -95,7 +95,7 @@
   "faqQ6": "Maaari ba akong makakuha ng refund?",
   "faqA6": "Maaaring i-refund ang mga hindi nagamit na credit sa loob ng 14 araw ng pagbili. Tingnan ang <a href=\"/terms/\" class=\"underline underline-offset-2\">Mga Tuntunin</a> para sa mga detalye.",
   "faqQ7": "Paano pinangangasiwaan ang pagbabayad?",
-  "faqA7": "Tumatakbo ang checkout sa Stripe. MiaoCut hindi kailanman nakikita o iniimbak ang mga detalye ng iyong card. Kinakalkula ang buwis sa pag-checkout.",
+  "faqA7": "Ang checkout ay pinangangasiwaan ng aming payment provider. MiaoCut hindi kailanman nakikita o iniimbak ang mga detalye ng iyong card. Kinakalkula ang buwis sa pag-checkout.",
   "creditsDocTitle": "Iyong Mga Kredito | MiaoCut",
   "loginH1": "Mag-sign in sa MiaoCut",
   "loginSub": "I-access ang iyong mga kredito, kasaysayan at mga top-up. Makakakuha ang mga bagong account ng 100 libreng credits.",

@@ -95,7 +95,7 @@
   "faqQ6": "Bisakah saya mendapatkan pengembalian dana?",
   "faqA6": "Kredit yang belum digunakan dapat dikembalikan dalam waktu 14 hari setelah pembelian. Lihat <a href=\"/terms/\" class=\"underline underline-offset-2\">Ketentuan</a> untuk detailnya.",
   "faqQ7": "Bagaimana cara pembayarannya?",
-  "faqA7": "Pembayaran berjalan pada Stripe. MiaoCut tidak pernah melihat atau menyimpan detail kartu Anda. Pajak dihitung saat checkout.",
+  "faqA7": "Checkout ditangani oleh penyedia pembayaran kami. MiaoCut tidak pernah melihat atau menyimpan detail kartu Anda. Pajak dihitung saat checkout.",
   "creditsDocTitle": "Kredit Anda | MiaoCut",
   "loginH1": "Masuk ke MiaoCut",
   "loginSub": "Akses kredit, riwayat, dan isi ulang Anda. Akun baru mendapatkan 100 kredit gratis.",
