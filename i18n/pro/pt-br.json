@@ -95,7 +95,7 @@
   "faqQ6": "Posso obter um reembolso?",
   "faqA6": "Os créditos não utilizados podem ser reembolsados dentro de 14 dias após a compra. Consulte os <a href=\"/terms/\" class=\"underline underline-offset-2\">Termos</a> para obter detalhes.",
   "faqQ7": "Como é feito o pagamento?",
-  "faqA7": "A finalização da compra é executada em Stripe. MiaoCut nunca vê ou armazena os detalhes do seu cartão. O imposto é calculado na finalização da compra.",
+  "faqA7": "A finalização da compra é feita pelo nosso provedor de pagamento. MiaoCut nunca vê ou armazena os detalhes do seu cartão. O imposto é calculado na finalização da compra.",
   "creditsDocTitle": "Seus créditos | MiaoCut",
   "loginH1": "Faça login em MiaoCut",
   "loginSub": "Acesse seus créditos, histórico e recargas. Novas contas recebem 100 créditos gratuitos.",
