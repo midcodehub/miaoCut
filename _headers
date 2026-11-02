@@ -31,3 +31,8 @@
   Content-Type: text/plain; charset=utf-8
 /sitemap.xml
   Cache-Control: public, max-age=3600
+
+# 工作台（内测）：只有名单里的账号登录后才有用，先不让搜索引擎收录。
+# 放开给所有人之前，把这一段连同下面的 noindex 一起去掉。
+/workbench/*
+  X-Robots-Tag: noindex, nofollow

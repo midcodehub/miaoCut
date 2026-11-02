@@ -1,0 +1,22 @@
+{
+  "commit": "27d1c04b90a981415db23462a76bf885423004b4",
+  "dirty": true,
+  "internal": true,
+  "apiUrl": "https://pro-api.miaocut.app",
+  "builtAt": "2026-11-02T17:50:39.325Z",
+  "files": 85,
+  "bytes": 4160071,
+  "pages": [
+    "404",
+    "_not-found",
+    "auth/callback",
+    "batch",
+    "compare",
+    ".",
+    "login",
+    "poster",
+    "product",
+    "product/internal",
+    "recolor"
+  ]
+}
