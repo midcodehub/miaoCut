@@ -1,11 +1,11 @@
 {
-  "commit": "c31292be65f7d62a3ffeaaaa02dfff08a787e206",
+  "commit": "3148e11fd313a9006cda45ac76fcf69c7de3a68d",
   "dirty": false,
   "internal": true,
   "apiUrl": "https://pro-api.miaocut.app",
-  "builtAt": "2026-11-03T03:35:11.620Z",
+  "builtAt": "2026-11-06T13:43:06.178Z",
   "files": 85,
-  "bytes": 4159935,
+  "bytes": 3400632,
   "pages": [
     "404",
     "_not-found",
