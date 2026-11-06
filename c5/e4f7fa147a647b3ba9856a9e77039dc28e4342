@@ -1,0 +1,23 @@
+_headers
+  s_5e55143c7b307d::t_7777f5ac53974f 39-45
+package.json
+  s_5e55143c7b307d::t_f5886955c4bcd9 17-18
+tests/headers.test.mjs
+  s_5e55143c7b307d::t_a4b1809b17422b 1-48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "c5e4f7fa147a647b3ba9856a9e77039dc28e4342",
+  "prompts": {},
+  "sessions": {
+    "s_5e55143c7b307d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8225475b-c011-45a0-82d5-2e20004ed994",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "midcodehub <408124546@qq.com>"
+    }
+  }
+}
