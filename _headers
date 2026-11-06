@@ -36,3 +36,10 @@
 # 放开给所有人之前，把这一段连同下面的 noindex 一起去掉。
 /workbench/*
   X-Robots-Tag: noindex, nofollow
+
+# 工作台的脚本块和样式（Next 构建产物）：文件名里带内容哈希，内容变了名字就变，所以可以长缓存 + immutable。
+# 不加这条时用 Pages 默认的 max-age=14400, must-revalidate：缓存超过 4 小时后，回访者每个文件都要发一次条件请求，
+# 链路差的时候每个要 1.4～1.8 秒（2026-11-06 量到过）。HTML 页面不在这条规则里，仍然每次都能拿到最新的。
+# 检查：tests/headers.test.mjs
+/workbench/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
