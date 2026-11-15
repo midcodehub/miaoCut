@@ -339,14 +339,21 @@
             </div>
         </div>
     </header>
-    <nav
-        class="lg:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
-        <a href="/fil/" class="shrink-0 text-gray-900 dark:text-zinc-50" data-i18n="navBg">Background Remover</a>
-        <a href="/fil/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">produkto</a>
-        <a href="/fil/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">Larawan</a>
-        <a href="/fil/watermark-remover/" class="shrink-0" data-i18n="navWatermark">Watermark</a>
-        <a href="/fil/id-photo-maker/" class="shrink-0" data-i18n="navId">ID Larawan</a>
-        <a href="/fil/old-photo-restoration/" class="shrink-0" data-i18n="navRestore">Lumang Larawan</a>
+
+    <nav class="site-member-navigation" aria-label="Batch, presyo, at account" data-i18n-aria="navMemberLabel">
+        <div class="site-member-navigation-inner">
+            <div class="site-member-links"><a href="/batch/" class="site-member-link" data-i18n="navBatch">Batch</a><a href="/pricing/" class="site-member-link" data-i18n="navPricing">Presyo</a><a href="/account/" class="site-member-link" data-i18n="navAccount">Account</a></div>
+            <span class="site-member-divider" aria-hidden="true"></span>
+            <div class="site-mobile-tools">
+                <a href="/fil/" class="shrink-0 text-gray-900 dark:text-zinc-50" data-i18n="navBg">Background Remover</a>
+                <a href="/fil/product-photo-background-remover/" class="shrink-0" data-i18n="navProduct">produkto</a>
+                <a href="/fil/portrait-background-remover/" class="shrink-0" data-i18n="navPortrait">Larawan</a>
+                <a href="/fil/watermark-remover/" class="shrink-0" data-i18n="navWatermark">Watermark</a>
+                <a href="/fil/id-photo-maker/" class="shrink-0" data-i18n="navId">ID Larawan</a>
+                <a href="/fil/old-photo-restoration/" class="shrink-0" data-i18n="navRestore">Lumang Larawan</a>
+            </div>
+            
+        </div>
     </nav>
 
     <!-- 核心区域 -->
@@ -395,16 +402,19 @@
                 </div>
             </div>
 
-            <div id="batch-fake-door"
+            <div id="batch-entry"
                 class="mt-4 flex flex-col items-center justify-center gap-2 text-center sm:flex-row">
-                <button id="batch-pro-trigger" type="button"
+                <a id="batch-pro-trigger" href="/batch/"
                     class="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm transition-colors hover:border-gray-400 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:border-zinc-500 dark:hover:bg-zinc-800 dark:focus:ring-zinc-100">
                     <span data-i18n="batchDoorButton">Batch Process</span>
                     <span
                         class="rounded-full bg-gray-900 px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.08em] text-white dark:bg-zinc-50 dark:text-zinc-900"
                         data-i18n="batchDoorBadge">Pro</span>
-                </button>
-                <p class="text-xs text-gray-500 dark:text-zinc-400" data-i18n="batchDoorHint">Alisin ang background ng 20+ larawan nang sabay.</p>
+                </a>
+                <p class="text-xs text-gray-500 dark:text-zinc-400">
+                    <span data-i18n="batchDoorHint">Alisin ang background ng 20+ larawan nang sabay.</span>
+                    <a href="/pricing/" class="font-medium text-gray-800 underline underline-offset-2 hover:text-gray-900 dark:text-zinc-200 dark:hover:text-zinc-50" data-i18n="batchDoorPricing">Tingnan ang presyo</a>
+                </p>
             </div>
 
             <!-- 信任背书 -->

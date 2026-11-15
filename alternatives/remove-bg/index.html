@@ -114,7 +114,7 @@
                 <img src="/favicon-nav.png" alt="" class="site-brand-mark" width="36" height="36">
                 <span class="site-brand-text">MiaoCut</span>
             </a>
-            <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600 dark:text-zinc-300">
+            <nav class="hidden lg:flex items-center gap-4 text-sm font-medium text-gray-600 dark:text-zinc-300">
                 <a href="/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Background Remover</a>
                 <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Product</a>
                 <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Portrait</a>
@@ -129,13 +129,21 @@
             </nav>
         </div>
     </header>
-    <nav class="md:hidden flex gap-3 overflow-x-auto border-b border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
-        <a href="/" class="shrink-0">Background Remover</a>
-        <a href="/product-photo-background-remover/" class="shrink-0">Product</a>
-        <a href="/portrait-background-remover/" class="shrink-0">Portrait</a>
-        <a href="/watermark-remover/" class="shrink-0">Watermark</a>
-        <a href="/id-photo-maker/" class="shrink-0">ID Photo</a>
-        <a href="/old-photo-restoration/" class="shrink-0">Old Photo</a>
+
+    <nav class="site-member-navigation" aria-label="Batch, pricing, and account">
+        <div class="site-member-navigation-inner">
+            <div class="site-member-links"><a href="/batch/" class="site-member-link">Batch</a><a href="/pricing/" class="site-member-link">Pricing</a><a href="/account/" class="site-member-link">Account</a></div>
+            <span class="site-member-divider" aria-hidden="true"></span>
+            <div class="site-mobile-tools">
+                <a href="/" class="shrink-0">Background Remover</a>
+                <a href="/product-photo-background-remover/" class="shrink-0">Product</a>
+                <a href="/portrait-background-remover/" class="shrink-0">Portrait</a>
+                <a href="/watermark-remover/" class="shrink-0">Watermark</a>
+                <a href="/id-photo-maker/" class="shrink-0">ID Photo</a>
+                <a href="/old-photo-restoration/" class="shrink-0">Old Photo</a>
+            </div>
+            
+        </div>
     </nav>
 
     <!-- 面包屑 -->
