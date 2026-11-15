@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" data-li18n-title="aupMetaTitle">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preload" href="/fonts/geist/geist-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script>/* redesign-dark-applied */(function () {
+        try { var s = localStorage.getItem('theme');
+            var d = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', d); } catch (e) {}
+        document.addEventListener('DOMContentLoaded', function () {
+            var b = document.getElementById('theme-toggle');
+            if (b) b.addEventListener('click', function () {
+                var dark = document.documentElement.classList.toggle('dark');
+                try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {} });
+        });
+    })();</script>
+    <title>Acceptable Use Policy | MiaoCut</title>
+    <meta name="description" content="MiaoCut acceptable use policy: do not generate or upload NSFW, exploitative, illegal, or infringing content. Prompts and images are screened, and violations can suspend an account.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://miaocut.app/acceptable-use/">
+    <link rel="stylesheet" href="/output.css?v=bc2f319b">
+    <!-- umami-filter.js：上报前过滤/去重以节省 Umami 额度（规则见该文件顶部注释），须在 Umami 脚本之前加载 -->
+    <script defer src="/umami-filter.js"></script>
+    <script defer src="https://cloud.umami.is/script.js"
+        data-website-id="a3674746-2fc8-4b54-8fe8-3e01e4c0028a"
+        data-domains="miaocut.app,www.miaocut.app"
+        data-before-send="miaocutUmamiBeforeSend"></script>
+</head>
+
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-brand-100 selection:text-brand-900 dark:bg-zinc-950 dark:text-zinc-200">
+
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
+            <a href="/" class="site-brand" aria-label="MiaoCut home">
+                <img src="/favicon-nav.png" alt="" class="site-brand-mark" width="36" height="36">
+                <span class="site-brand-text">MiaoCut</span>
+            </a>
+            <div class="flex items-center gap-3">
+                <label for="legal-lang" class="sr-only" data-li18n="langLabel">Language</label>
+                <select id="legal-lang" data-li18n-aria="langLabel" aria-label="Language" class="rounded-lg border border-gray-300 bg-white px-2 py-1 text-sm text-gray-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100">
+                    <option value="en">English</option>
+                    <option value="zh">中文</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="pt-br">Português</option>
+                    <option value="bn">বাংলা</option>
+                    <option value="fil">Filipino</option>
+                    <option value="ur">اردو</option>
+                </select>
+            <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600 dark:text-zinc-300">
+                <a href="/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Background Remover</a>
+                <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Product</a>
+                <a href="/portrait-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Portrait</a>
+                <a href="/watermark-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Watermark</a>
+                <a href="/id-photo-maker/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">ID Photo</a>
+                <a href="/old-photo-restoration/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Old Photo</a>
+                <a href="https://github.com/midcodehub/miaoCut" target="_blank" rel="noopener" aria-label="MiaoCut on GitHub (open source)" title="View source on GitHub" class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z" /></svg></a>
+                <button id="theme-toggle" type="button" aria-label="Toggle dark mode" class="text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors">
+                    <svg class="h-5 w-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
+                    <svg class="h-5 w-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
+                </button>
+            </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow w-full max-w-3xl mx-auto px-4">
+        <article>
+            <nav class="mb-4 mt-4 text-sm text-gray-500 dark:text-zinc-400" aria-label="Breadcrumb">
+                <ol class="flex items-center gap-2">
+                    <li><a href="/" class="hover:text-gray-900 dark:hover:text-zinc-100">MiaoCut</a></li>
+                    <li class="text-gray-300">/</li>
+                    <li class="text-gray-700 dark:text-zinc-200" data-li18n="aupCrumb">Acceptable Use</li>
+                </ol>
+            </nav>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-2 dark:text-zinc-50" data-li18n="aupH1">Acceptable Use Policy</h1>
+            <p class="text-sm text-gray-500 mb-8 dark:text-zinc-400" data-li18n="aupUpdated">Last updated: November 15, 2026</p>
+
+            <p class="text-gray-600 leading-relaxed mb-8 dark:text-zinc-300" data-li18n-html="aupIntro">These rules apply to everyone who uses MiaoCut (<a href="https://miaocut.app" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">miaocut.app</a>), including the free tools, batch processing, the developer API, and any account. They cover images you upload, prompts you submit, and results you download or generate. This policy is part of our <a href="/terms/" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">Terms of Use</a>.</p>
+
+            <section class="mb-8">
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50" data-li18n="aupBanH">What you must not generate or upload</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed mb-3 dark:text-zinc-300" data-li18n="aupBanIntro">Do not generate or upload any of the following. Only use images you own or have the right to use.</p>
+                <ul class="space-y-2 text-gray-600 text-sm md:text-base list-disc list-inside dark:text-zinc-300">
+                    <li data-li18n="aupBanNsfw">NSFW, explicit, or sexually suggestive content.</li>
+                    <li data-li18n="aupBanMinor">Content involving minors, including any sexual, nude, suggestive, or exploitative depiction of a person under 18. A photo you have the right to edit, such as a passport photo of your own child, is allowed.</li>
+                    <li data-li18n="aupBanReal">Non-consensual imagery of real people, including intimate images created or shared without the person's consent, and deepfakes or face-swaps.</li>
+                    <li data-li18n="aupBanViolence">Violence or gore, or content that encourages violent harm.</li>
+                    <li data-li18n="aupBanHate">Hate content that attacks people for who they are.</li>
+                    <li data-li18n="aupBanIllegal">Illegal content, or use of the service to commit a crime.</li>
+                    <li data-li18n="aupBanIp">Content that infringes someone else's intellectual property or other rights, including copyright, trademarks, and publicity rights.</li>
+                    <li data-li18n="aupBanFraud">Deceptive or fraudulent use, including impersonation, fake documents, and scams.</li>
+                </ul>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50" data-li18n="aupServiceH">Do not disrupt the service</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300" data-li18n="aupService">Do not attempt to overload, scrape, or circumvent the fair-use rate limits, or otherwise disrupt the service. Do not create extra accounts to obtain free credits.</p>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50" data-li18n="aupScreenH">Screening and enforcement</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300" data-li18n="aupScreen">Prompts and images are automatically screened by content moderation. Violating requests are refused and may lead to account suspension. We may also remove credits and, where the law requires it, report illegal content.</p>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50" data-li18n="aupReportH">Report a violation</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300" data-li18n-html="aupReport">If you believe someone is using MiaoCut in violation of this policy, email <a href="mailto:support@miaocut.app" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">support@miaocut.app</a>.</p>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50" data-li18n="aupRelatedH">Related policies</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300" data-li18n-html="aupRelated">Payments, credits and refunds are covered in the <a href="/terms/" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">Terms of Use</a>. How we handle images and account data is covered in the <a href="/privacy/" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">Privacy Policy</a>.</p>
+            </section>
+        </article>
+    </main>
+
+    <footer class="w-full bg-gray-900 text-gray-300 mt-0">
+        <div class="max-w-6xl mx-auto px-6 py-10 text-center text-xs text-gray-500 dark:text-zinc-400">
+            <p class="mb-2" data-li18n="footerTagline">MiaoCut · Free AI image tools that respect your privacy.</p>
+            <p><a href="/" class="hover:text-white transition-colors" data-li18n="footerHome">Home</a> · <a href="/privacy/" class="hover:text-white transition-colors" data-li18n="footerPrivacy">Privacy</a> · <a href="/terms/" class="hover:text-white transition-colors" data-li18n="footerTerms">Terms</a> · <a href="/acceptable-use/" class="hover:text-white transition-colors" data-li18n="footerAup">Acceptable Use</a></p>
+            <p class="mt-2"><span data-li18n="footerSupportLabel">Support</span>: <a href="mailto:support@miaocut.app" class="hover:text-white transition-colors">support@miaocut.app</a></p>
+        </div>
+    </footer>
+    <script src="/legal-i18n.js?v=58a7c51f"></script>
+
+</body>
+
+</html>

@@ -42,6 +42,7 @@ const ASSETS = [
   { file: 'pro-i18n.js', attr: 'src', url: '/pro-i18n.js' },
   { file: 'account/workspace.js', attr: 'src', url: '/account/workspace.js' },
   { file: 'language-menu.js', attr: 'src', url: '/language-menu.js' },
+  { file: 'legal-i18n.js', attr: 'src', url: '/legal-i18n.js' },
   // 结果页编辑器（/editor/*，_headers 里同样是 immutable 长缓存）
   { file: 'editor/presets.js', attr: 'src', url: '/editor/presets.js' },
   { file: 'editor/engine.js', attr: 'src', url: '/editor/engine.js' },
