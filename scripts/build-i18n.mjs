@@ -97,7 +97,10 @@ const EN_ONLY_PAGES = [
   // 法务页：参与索引但优先级低
   { urlPath: '/privacy/',                             changefreq: 'yearly',  priority: '0.3' },
   { urlPath: '/terms/',                               changefreq: 'yearly',  priority: '0.3' },
-  // Pro 付费页（/pricing/、/batch/）暂不进 sitemap：批量服务后端上线并测试通过后再加回来
+  // 定价和批量已经对公众开放。账户是登录后的私人页面，不进 sitemap。
+  // /workbench/ 仍 noindex，场景工作台这次不开放，也不进 sitemap。
+  { urlPath: '/pricing/',                             changefreq: 'weekly',  priority: '0.8' },
+  { urlPath: '/batch/',                               changefreq: 'weekly',  priority: '0.8' },
 ];
 
 // 资源链接前缀，重写内链时跳过这些（它们只有英文版，不应改成 /zh/...）
@@ -125,7 +128,7 @@ const ASSET_PATH_PREFIXES = [
   '/alternatives',
   '/privacy',
   '/terms',
-  // Pro 付费页（定价 / 批量 / 账户）：只有英文 URL，中英文由 /pro-i18n.js 运行时切换
+  // 定价 / 批量 / 账户只有一条英文 URL，文案由 /pro-i18n.js 运行时切换，不要改写成 /zh/pricing/
   '/pricing',
   '/batch',
   '/account',

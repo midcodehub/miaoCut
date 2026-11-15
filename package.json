@@ -15,7 +15,8 @@
     "test:i18n": "node --test tests/pro-i18n.test.mjs",
     "check:seo": "node scripts/seo-guard.mjs",
     "test:wechat": "node --test tests/wechat-login.test.mjs",
-    "test:headers": "node --test tests/headers.test.mjs"
+    "test:headers": "node --test tests/headers.test.mjs",
+    "test:links": "node --test tests/public-links.test.mjs"
   },
   "devDependencies": {
     "playwright": "^1.59.1",

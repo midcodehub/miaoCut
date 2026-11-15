@@ -15,11 +15,11 @@ MiaoCut 是一个免登录的在线 AI 抠图服务（[miaocut.app](https://miao
 
 ### 两个仓库：Pro 版是闭源的
 
-付费的 Pro 版（批量抠图、积分、订阅、GPU 抠图）的**后端**在私有仓库 `midcodehub/miaoCut-pro`：`pro-gateway`（`pro-api.miaocut.app`）、`pro-gpu`（Beam / Modal）、`gpu-scheduler`、数据库迁移、`PRODUCT.md` 和相关文档。本仓库只放 Pro 的**前端页面**（`batch/`、`pricing/`、`account/`、`pro-account.js`、`pro-i18n.js`）。
+付费的 Pro 版（批量抠图、积分、订阅、GPU 抠图）的**后端**在私有仓库 `midcodehub/miaoCut-pro`：`pro-gateway`（`pro-api.miaocut.app`）、GPU 抠图、`gpu-scheduler`、数据库迁移和相关文档。积分包和月度套餐的付款由 **Dodo** 处理。本仓库只放 Pro 的**前端页面**（`batch/`、`pricing/`、`account/`、`pro-account.js`、`pro-i18n.js`）。
 
 - **Pro 后端代码、密钥、内部文档绝对不能提交到本仓库。** 本地可能还有 `pro-gateway/`、`pro-gpu/`、`gpu-scheduler/`、`PRODUCT.md` 的副本，已在 `.gitignore` 里，不要 `git add -f`。
 - 本仓库是公开的，**任何密钥都不能写进文件**：Worker 用 `wrangler secret put`（Cloudflare **Secret** 类型），后端用 Hugging Face Space 的 Secrets。
-- 批量和定价入口目前对外关闭（首页是「批量抠图 Pro 即将上线」候补名单，`/pricing/`、`/batch/` 不在菜单和 sitemap 里），等私有仓库后端上线并测试通过后再打开。
+- 批量抠图和定价已经对公众开放。首页「批量处理」进入 `/batch/`，免费额度用尽时的弹窗链到 `/pricing/` 和 `/batch/`。各免费工具页的导航都有 Batch、Pricing、Account。`/pricing/` 和 `/batch/` 在 sitemap 里，`/batch/` 可被收录。`/account/` 是登录后的私人页面，保持 noindex，不进 sitemap。`/workbench/*` 仍是 noindex，场景工作台这次不开放。
 
 ## 常用命令
 
