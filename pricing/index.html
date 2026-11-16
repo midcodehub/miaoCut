@@ -14,7 +14,7 @@
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://miaocut.app/pricing/">
     <link rel="stylesheet" href="/output.css?v=bc2f319b">
-    <script src="/pro-i18n.js?v=1d96cfb4"></script>
+    <script src="/pro-i18n.js?v=f8827d8a"></script>
     <script src="/account/workspace.js?v=71f3b771" defer></script>
     <script src="/language-menu.js?v=218641ac" defer></script>
     <!-- Pro 配置:部署时填入真实值 -->
@@ -175,10 +175,9 @@
             <p id="est-plan" class="mt-2 hidden text-sm text-gray-600 [text-wrap:pretty] dark:text-zinc-400"></p>
         </section>
 
-        <!-- 月度订阅：默认隐藏，网关 /plans 确认三档价格都配置好了才显示（先上线前端也不会出现点了报错的按钮）。
-             ⚠️ 价格必须与支付商里的月付价格一致；积分数必须与 Pro 网关（私有仓库 miaoCut-pro）里的订阅档位一致。
-             月费区块默认隐藏。GET /plans 返回 subscriptions_enabled 后才显示，因此 Dodo 三个订阅商品 id 配齐后这里会出现月度套餐。 -->
-        <section id="plans" class="hidden member-plans" aria-labelledby="plans-title">
+        <!-- 月度价格始终写在 HTML 里，不登录也能看到。订阅按钮仍等 GET /plans 返回 subscriptions_enabled 后再显示。
+             ⚠️ 价格必须与支付商里的月付价格一致；积分数必须与 Pro 网关（私有仓库 miaoCut-pro）里的订阅档位一致。 -->
+        <section id="plans" class="member-plans" aria-labelledby="plans-title">
             <div class="px-5 pt-5 sm:px-6 sm:pt-6">
                 <h2 id="plans-title" class="text-lg font-semibold text-gray-900 dark:text-zinc-50" data-pi18n="plansTitle">Monthly plans</h2>
                 <p class="mt-1 text-sm text-gray-600 dark:text-zinc-400" data-pi18n="plansSub">For sellers who list every month. Unused plan credits roll over for one month, results are kept for 7 days, and you can cancel anytime.</p>
@@ -191,7 +190,7 @@
                         <p class="mt-0.5 text-xs text-gray-600 dark:text-zinc-400" data-pi18n="planPerk200">Up to 200 photos per batch</p>
                     </div>
                     <p class="member-plan-price">$6.99<span data-pi18n="planPerMonth">/mo</span></p><p class="member-plan-unit"><span class="text-2xl font-bold tabular-nums text-gray-900 dark:text-zinc-50">$0.023</span><span class="block text-xs text-gray-600 dark:text-zinc-400" data-pi18n="packPerPhoto">per photo</span></p>
-                    <button type="button" data-plan-btn="basic" class="justify-self-end"></button>
+                    <button type="button" data-plan-btn="basic" class="hidden" hidden></button>
                 </li>
                 <li data-plan="pro" data-credits="1500" data-cents="1999" class="member-plan">
                     <div class="min-w-0">
@@ -200,7 +199,7 @@
                         <p class="mt-0.5 text-xs text-gray-600 dark:text-zinc-400" data-pi18n="planPerk500">Up to 500 photos per batch</p>
                     </div>
                     <p class="member-plan-price">$19.99<span data-pi18n="planPerMonth">/mo</span></p><p class="member-plan-unit"><span class="text-2xl font-bold tabular-nums text-gray-900 dark:text-zinc-50">$0.013</span><span class="block text-xs text-gray-600 dark:text-zinc-400" data-pi18n="packPerPhoto">per photo</span></p>
-                    <button type="button" data-plan-btn="pro" class="justify-self-end"></button>
+                    <button type="button" data-plan-btn="pro" class="hidden" hidden></button>
                 </li>
                 <li data-plan="business" data-credits="5000" data-cents="4999" class="member-plan">
                     <div class="min-w-0">
@@ -209,7 +208,7 @@
                         <p class="mt-0.5 text-xs text-gray-600 dark:text-zinc-400" data-pi18n="planPerk500">Up to 500 photos per batch</p>
                     </div>
                     <p class="member-plan-price">$49.99<span data-pi18n="planPerMonth">/mo</span></p><p class="member-plan-unit"><span class="text-2xl font-bold tabular-nums text-gray-900 dark:text-zinc-50">$0.010</span><span class="block text-xs text-gray-600 dark:text-zinc-400" data-pi18n="packPerPhoto">per photo</span></p>
-                    <button type="button" data-plan-btn="business" class="justify-self-end"></button>
+                    <button type="button" data-plan-btn="business" class="hidden" hidden></button>
                 </li>
             </ul>
         </section>
@@ -266,7 +265,10 @@
 
         <p class="mt-6 max-w-2xl text-sm text-gray-600 dark:text-zinc-400" data-pi18n-html="pricingFine">
             Purchased credits are valid for 12 months. Prices exclude tax, which is calculated at checkout.
-            Unused credits can be refunded within 14 days. See our <a href="/terms/" class="underline underline-offset-2">Terms</a>.
+            Unused credit packs can be refunded within 14 days. Downgrades apply immediately and do not refund unused time. See our <a href="/terms/" class="underline underline-offset-2">Terms</a>.
+        </p>
+        <p class="mt-3 max-w-2xl text-sm text-gray-600 dark:text-zinc-400" data-pi18n-html="pricingContact">
+            Questions about pricing, payments or refunds? Email <a href="mailto:support@miaocut.app" class="underline underline-offset-2">support@miaocut.app</a>.
         </p>
         <p class="mt-4"><a href="/batch/" class="text-sm font-medium text-gray-900 underline underline-offset-4 dark:text-zinc-50" data-pi18n="pricingTryBatch">Try batch processing</a></p>
 
@@ -290,13 +292,13 @@
                     <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-gray-900 dark:text-zinc-50 [&::-webkit-details-marker]:hidden"><span data-pi18n="faqQ4">Which formats do I get?</span><svg class="h-4 w-4 flex-none text-gray-500 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
                     <p class="mt-2 max-w-2xl text-sm text-gray-600 dark:text-zinc-400" data-pi18n="faqA4">Download each batch as transparent PNG, white-background JPG, or an Amazon-ready 2000 × 2000 white JPG. You can switch formats and download again for 24 hours, or 7 days on a monthly plan.</p>
                 </details>
-                <details class="group hidden py-4" data-subs-only>
+                <details class="group py-4">
                     <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-gray-900 dark:text-zinc-50 [&::-webkit-details-marker]:hidden"><span data-pi18n="faqQ8">How do monthly plans work?</span><svg class="h-4 w-4 flex-none text-gray-500 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
                     <p class="mt-2 max-w-2xl text-sm text-gray-600 dark:text-zinc-400" data-pi18n="faqA8">Each billing month your plan adds its credits to your balance. Unused plan credits roll over for one month, up to one month of credits, and plan credits are used before pack credits.</p>
                 </details>
-                <details class="group hidden py-4" data-subs-only>
+                <details class="group py-4">
                     <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-gray-900 dark:text-zinc-50 [&::-webkit-details-marker]:hidden"><span data-pi18n="faqQ9">Can I change or cancel my plan?</span><svg class="h-4 w-4 flex-none text-gray-500 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
-                    <p class="mt-2 max-w-2xl text-sm text-gray-600 dark:text-zinc-400" data-pi18n="faqA9">Yes, anytime from your account page. Upgrades take effect right away and add the extra credits immediately. Downgrades and cancellations take effect at the end of the billing month. Plan credits end with the subscription; pack credits are not affected.</p>
+                    <p class="mt-2 max-w-2xl text-sm text-gray-600 dark:text-zinc-400" data-pi18n="faqA9">Yes, anytime from your account page. Upgrades are charged the prorated difference immediately, and the extra credits are added right away. Downgrades apply immediately and do not refund unused time. Cancelling stops the next renewal; the current period stays active until it ends. Plan credits end when the subscription ends. Pack credits are not affected.</p>
                 </details>
                 <details class="group py-4">
                     <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-gray-900 dark:text-zinc-50 [&::-webkit-details-marker]:hidden"><span data-pi18n="faqQ5">Do credits expire?</span><svg class="h-4 w-4 flex-none text-gray-500 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
@@ -304,11 +306,11 @@
                 </details>
                 <details class="group py-4">
                     <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-gray-900 dark:text-zinc-50 [&::-webkit-details-marker]:hidden"><span data-pi18n="faqQ6">Can I get a refund?</span><svg class="h-4 w-4 flex-none text-gray-500 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
-                    <p class="mt-2 max-w-2xl text-sm text-gray-600 dark:text-zinc-400" data-pi18n-html="faqA6">Unused credits can be refunded within 14 days of purchase. See the <a href="/terms/" class="underline underline-offset-2">Terms</a> for details.</p>
+                    <p class="mt-2 max-w-2xl text-sm text-gray-600 dark:text-zinc-400" data-pi18n-html="faqA6">Unused credit packs can be refunded within 14 days of purchase. If you have used some of a pack, we refund the unused portion. Cancelling a subscription stops the next renewal and leaves the current period active; it is not a refund. Downgrades apply immediately and do not refund unused time. Email <a href="mailto:support@miaocut.app" class="underline underline-offset-2">support@miaocut.app</a>. See the <a href="/terms/" class="underline underline-offset-2">Terms</a>.</p>
                 </details>
                 <details class="group py-4">
                     <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-gray-900 dark:text-zinc-50 [&::-webkit-details-marker]:hidden"><span data-pi18n="faqQ7">How is payment handled?</span><svg class="h-4 w-4 flex-none text-gray-500 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
-                    <p class="mt-2 max-w-2xl text-sm text-gray-600 dark:text-zinc-400" data-pi18n="faqA7">Checkout is handled by our payment provider. MiaoCut never sees or stores your card details. Tax is calculated at checkout.</p>
+                    <p class="mt-2 max-w-2xl text-sm text-gray-600 dark:text-zinc-400" data-pi18n="faqA7">Checkout, tax and receipts are handled by our payment partner Creem (creem.io), the merchant of record. MiaoCut never sees or stores your full card number.</p>
                 </details>
             </div>
         </section>
@@ -319,6 +321,8 @@
         <p class="mt-2 space-x-4">
             <a href="/terms/" class="hover:text-gray-800 dark:hover:text-zinc-200" data-pi18n="footerTerms">Terms</a>
             <a href="/privacy/" class="hover:text-gray-800 dark:hover:text-zinc-200" data-pi18n="footerPrivacy">Privacy</a>
+            <a href="/acceptable-use/" class="hover:text-gray-800 dark:hover:text-zinc-200" data-pi18n="footerAup">Acceptable Use</a>
+            <a href="mailto:support@miaocut.app" class="hover:text-gray-800 dark:hover:text-zinc-200"><span data-pi18n="footerSupportLabel">Support</span>: support@miaocut.app</a>
         </p>
     </footer>
 
@@ -402,7 +406,9 @@
         planRows.forEach((li) => {
             const btn = li.querySelector("[data-plan-btn]");
             btn.textContent = t("subscribeBtn");
-            btn.className = `${BTN_BASE} ${BTN_SECONDARY}`;
+            // 价格始终可见。按钮保持隐藏，直到 /plans 确认可以结账。
+            btn.className = `hidden ${BTN_BASE} ${BTN_SECONDARY}`;
+            btn.hidden = true;
         });
 
         // 估算器的订阅建议：每月都要处理这么多时，哪一档的月额度够用
@@ -441,12 +447,15 @@
         await MiaoCutPro.init().catch(() => {});
         updateNav();
 
-        // 订阅是否开放：网关 GET /plans 确认当前支付商的三档价格都配置好了才显示。Dodo 配齐三个订阅商品 id 后这里会显示月度套餐。
+        // 价格已经写在页面上。这里只决定要不要放出订阅按钮。
         MiaoCutPro.plans().then((info) => {
             subsEnabled = !!(info && info.subscriptions_enabled);
             if (!subsEnabled) return;
-            document.getElementById("plans").classList.remove("hidden");
-            document.querySelectorAll("[data-subs-only]").forEach((el) => el.classList.remove("hidden"));
+            planRows.forEach((li) => {
+                const btn = li.querySelector("[data-plan-btn]");
+                btn.classList.remove("hidden");
+                btn.hidden = false;
+            });
             estimate();
         });
 

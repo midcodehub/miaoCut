@@ -97,6 +97,7 @@ const EN_ONLY_PAGES = [
   // 法务页：参与索引但优先级低
   { urlPath: '/privacy/',                             changefreq: 'yearly',  priority: '0.3' },
   { urlPath: '/terms/',                               changefreq: 'yearly',  priority: '0.3' },
+  { urlPath: '/acceptable-use/',                      changefreq: 'yearly',  priority: '0.3' },
   // Pro 付费页（/pricing/、/batch/）暂不进 sitemap：批量服务后端上线并测试通过后再加回来
 ];
 
@@ -125,6 +126,8 @@ const ASSET_PATH_PREFIXES = [
   '/alternatives',
   '/privacy',
   '/terms',
+  '/acceptable-use',
+  '/legal-i18n.js',
   // Pro 付费页（定价 / 批量 / 账户）：只有英文 URL，中英文由 /pro-i18n.js 运行时切换
   '/pricing',
   '/batch',

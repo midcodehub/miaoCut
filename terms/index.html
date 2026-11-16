@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-li18n-title="termsMetaTitle">
 
 <head>
     <meta charset="UTF-8">
@@ -37,6 +37,18 @@
                 <img src="/favicon-nav.png" alt="" class="site-brand-mark" width="36" height="36">
                 <span class="site-brand-text">MiaoCut</span>
             </a>
+            <div class="flex items-center gap-3">
+                <label for="legal-lang" class="sr-only" data-li18n="langLabel">Language</label>
+                <select id="legal-lang" data-li18n-aria="langLabel" aria-label="Language" class="rounded-lg border border-gray-300 bg-white px-2 py-1 text-sm text-gray-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100">
+                    <option value="en">English</option>
+                    <option value="zh">中文</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="pt-br">Português</option>
+                    <option value="bn">বাংলা</option>
+                    <option value="fil">Filipino</option>
+                    <option value="ur">اردو</option>
+                </select>
             <nav class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-600 dark:text-zinc-300">
                 <a href="/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Background Remover</a>
                 <a href="/product-photo-background-remover/" class="hover:text-gray-900 transition-colors dark:hover:text-zinc-100">Product</a>
@@ -50,6 +62,7 @@
                     <svg class="h-5 w-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
                 </button>
             </nav>
+            </div>
         </div>
     </header>
 
@@ -58,104 +71,119 @@
         <ol class="flex items-center gap-2">
             <li><a href="/" class="hover:text-gray-900 dark:hover:text-zinc-100">MiaoCut</a></li>
             <li class="text-gray-300">/</li>
-            <li class="text-gray-700 dark:text-zinc-200">Terms of Use</li>
+            <li class="text-gray-700 dark:text-zinc-200" data-li18n="termsCrumb">Terms of Use</li>
         </ol>
     </nav>
 
     <main class="flex-grow w-full max-w-3xl mx-auto px-4">
         <article>
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-2 dark:text-zinc-50">Terms of Use</h1>
-            <p class="text-sm text-gray-500 mb-8 dark:text-zinc-400">Last updated: November 1, 2026</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-2 dark:text-zinc-50" data-li18n="termsH1">Terms of Use</h1>
+            <p class="text-sm text-gray-500 mb-8 dark:text-zinc-400" data-li18n="termsUpdated">Last updated: November 15, 2026</p>
 
-            <p class="text-gray-600 leading-relaxed mb-8 dark:text-zinc-300">By using MiaoCut (<a href="https://miaocut.app" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">miaocut.app</a>) you agree to these terms. Our single-image tools are free and require no account. Batch processing requires an account and uses credits, which you can receive or buy as described below.</p>
+            <p class="text-gray-600 leading-relaxed mb-8 dark:text-zinc-300" data-li18n-html="termsIntro">By using MiaoCut (<a href="https://miaocut.app" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">miaocut.app</a>) you agree to these terms and to the <a href="/acceptable-use/" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">Acceptable Use Policy</a>. Our single-image tools are free and require no account. Batch processing requires an account and uses credits, which you can receive or buy as described below.</p>
 
             <section class="mb-8">
-                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Acceptable use</h2>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50" data-li18n="termsUseH">Acceptable use</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed mb-3 dark:text-zinc-300" data-li18n-html="termsUseIntro">Only upload images you own or have the right to use. Do not generate or upload anything in the list below. The full rules are in our <a href="/acceptable-use/" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">Acceptable Use Policy</a>, which is part of these terms.</p>
                 <ul class="space-y-2 text-gray-600 text-sm md:text-base list-disc list-inside dark:text-zinc-300">
-                    <li>Only upload images you own or have the right to use.</li>
-                    <li>Do not use the service for unlawful, infringing, or abusive content.</li>
-                    <li>Do not attempt to overload, scrape, or circumvent the fair-use rate limits, or otherwise disrupt the service.</li>
+                    <li data-li18n="termsBanNsfw">Do not generate or upload NSFW, explicit, or sexually suggestive content.</li>
+                    <li data-li18n="termsBanMinor">Do not generate or upload content involving minors, including any sexual, nude, suggestive, or exploitative depiction of a person under 18.</li>
+                    <li data-li18n="termsBanReal">Do not generate or upload non-consensual imagery of real people, including intimate images made or shared without their consent, or deepfakes and face-swaps.</li>
+                    <li data-li18n="termsBanHarm">Do not generate or upload violence, gore, hate, or other illegal content.</li>
+                    <li data-li18n="termsBanIp">Do not infringe someone else's intellectual property or other rights.</li>
+                    <li data-li18n="termsBanFraud">Do not use the service deceptively or fraudulently, including impersonation, fake documents, and scams.</li>
+                    <li data-li18n="termsBanAbuse">Do not attempt to overload, scrape, or circumvent the fair-use rate limits, or otherwise disrupt the service.</li>
+                    <li data-li18n="termsScreen">Prompts and images are automatically screened by content moderation. Violating requests are refused and may lead to account suspension.</li>
                 </ul>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Accounts</h2>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">You need an account to use batch processing. Keep your sign-in method secure and use an email address you control. One person should not create multiple accounts to obtain extra free credits. We may suspend accounts used for abuse or fraud.</p>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50" data-li18n="termsAccountsH">Accounts</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300" data-li18n="termsAccounts">You need an account to use batch processing. Keep your sign-in method secure and use an email address you control. One person should not create multiple accounts to obtain extra free credits. We may suspend accounts used for abuse or fraud.</p>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Credits</h2>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50" data-li18n="termsCreditsH">Credits</h2>
                 <ul class="space-y-2 text-gray-600 text-sm md:text-base list-disc list-inside dark:text-zinc-300">
-                    <li><strong>What credits are for.</strong> Credits are used for batch processing: 1 credit per image in Fast mode and 2 credits per image in Fine mode. You are only charged for images that are processed successfully; credits for failed images are returned automatically.</li>
-                    <li><strong>Credit packs.</strong> Credits are also sold as one-time packs. Pack credits are valid for 12 months from the date of purchase. Prices are shown in US dollars and exclude applicable taxes, which are calculated at checkout.</li>
-                    <li><strong>Monthly plans.</strong> A monthly plan renews each billing period until you cancel. Each period adds that plan's credits. Unused plan credits roll over for at most one month. You can upgrade immediately: the price difference is charged and the extra credits are added right away. Downgrades and cancellations take effect at the end of the current billing period, and you keep the current plan until then. When the plan ends, unused plan credits expire. Pack credits are not affected. While a plan is active, batch results are kept for 7 days instead of 24 hours.</li>
-                    <li><strong>Validity.</strong> Purchased pack credits are valid for 12 months from the date of purchase. Plan credits follow the monthly plan rules above.</li>
-                    <li><strong>Sign-up credits.</strong> New accounts with a verified email address receive 100 free credits, once per person. Sign-up credits may be withheld or removed if they are obtained through multiple accounts, disposable email addresses or other abuse.</li>
-                    <li><strong>Bonus credits.</strong> Credits we give you for free &mdash; sign-up credits, daily check-in credits and invitation rewards &mdash; are bonus credits. Sign-up credits are valid for 12 months from the date they are granted, daily check-in credits for 30 days and invitation rewards for 90 days. Bonus credits that are not used by then expire automatically. They are used before purchased credits, and the credits that expire first are used first. We may withhold or remove bonus credits obtained through abuse, such as multiple accounts, disposable email addresses, or automated check-ins or invitations.</li>
-                    <li><strong>Invitations.</strong> If someone signs up through your invitation link, verifies their email and receives sign-up credits, you receive 50 bonus credits (valid for 90 days). Each person can be invited only once, and rewards are limited to 20 per calendar month. Inviting yourself, creating multiple accounts or using disposable email addresses does not earn rewards, and we may remove rewards obtained this way.</li>
-                    <li><strong>No cash value.</strong> Credits have no cash value and cannot be transferred or exchanged, except for refunds described below.</li>
+                    <li data-li18n-html="termsCreditUse"><strong>What credits are for.</strong> Credits are used for batch processing: 1 credit per image in Fast mode and 2 credits per image in Fine mode. You are only charged for images that are processed successfully; credits for failed images are returned automatically.</li>
+                    <li data-li18n-html="termsCreditPacks"><strong>Credit packs.</strong> Credits are also sold as one-time packs. Pack credits are valid for 12 months from the date of purchase. Prices are shown in US dollars and exclude applicable taxes, which are calculated at checkout.</li>
+                    <li data-li18n-html="termsCreditPlans"><strong>Monthly plans.</strong> A monthly plan renews each billing period until you cancel. Each period adds that plan's credits. Unused plan credits roll over for at most one month. You can upgrade immediately: the prorated difference is charged at once and the extra credits are added right away. A downgrade applies immediately and does not refund unused time. Cancelling stops the next renewal, and the current plan stays active until the period ends. When the plan ends, unused plan credits expire. Pack credits are not affected. While a plan is active, batch results are kept for 7 days instead of 24 hours.</li>
+                    <li data-li18n-html="termsCreditValidity"><strong>Validity.</strong> Purchased pack credits are valid for 12 months from the date of purchase. Plan credits follow the monthly plan rules above.</li>
+                    <li data-li18n-html="termsCreditSignup"><strong>Sign-up credits.</strong> New accounts with a verified email address receive 100 free credits, once per person. Sign-up credits may be withheld or removed if they are obtained through multiple accounts, disposable email addresses or other abuse.</li>
+                    <li data-li18n-html="termsCreditBonus"><strong>Bonus credits.</strong> Credits we give you for free &mdash; sign-up credits, daily check-in credits and invitation rewards &mdash; are bonus credits. Sign-up credits are valid for 12 months from the date they are granted, daily check-in credits for 30 days and invitation rewards for 90 days. Bonus credits that are not used by then expire automatically. They are used before purchased credits, and the credits that expire first are used first. We may withhold or remove bonus credits obtained through abuse, such as multiple accounts, disposable email addresses, or automated check-ins or invitations.</li>
+                    <li data-li18n-html="termsCreditInvite"><strong>Invitations.</strong> If someone signs up through your invitation link, verifies their email and receives sign-up credits, you receive 50 bonus credits (valid for 90 days). Each person can be invited only once, and rewards are limited to 20 per calendar month. Inviting yourself, creating multiple accounts or using disposable email addresses does not earn rewards, and we may remove rewards obtained this way.</li>
+                    <li data-li18n-html="termsCreditCash"><strong>No cash value.</strong> Credits have no cash value and cannot be transferred or exchanged, except for refunds described below.</li>
                 </ul>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Refunds</h2>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50" data-li18n="termsPayH">Payments</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300" data-li18n-html="termsPay">Paid checkout is provided by our payment partner <a href="https://creem.io" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">Creem</a> (creem.io). Creem is the merchant of record and reseller. Creem processes the payment, calculates tax, and sends your receipt. MiaoCut never sees or stores your full card number.</p>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50" data-li18n="termsRefundH">Refunds</h2>
                 <ul class="space-y-2 text-gray-600 text-sm md:text-base list-disc list-inside dark:text-zinc-300">
-                    <li>If you have not used any credits from a pack, you can request a full refund within 14 days of purchase by emailing <a href="mailto:support@miaocut.app" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">support@miaocut.app</a>.</li>
-                    <li>If you have used some credits from a pack, contact us and we will refund the unused portion.</li>
-                    <li>Cancelling a monthly plan stops the next renewal. It does not refund the current period, because the plan stays active until that period ends. Downgrading also waits until the end of the period and is not a refund.</li>
-                    <li>When a payment is refunded, the corresponding credits are removed from your account. If a payment is disputed or charged back, the credits from that payment are removed and the account may be suspended while the dispute is reviewed.</li>
-                    <li>These terms do not limit any rights you have under applicable consumer protection law.</li>
+                    <li data-li18n-html="termsRefundUnused">If you have not used any credits from a pack, you can request a full refund within 14 days of purchase by emailing <a href="mailto:support@miaocut.app" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">support@miaocut.app</a>.</li>
+                    <li data-li18n-html="termsRefundPartial">If you have used some credits from a pack, email <a href="mailto:support@miaocut.app" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">support@miaocut.app</a> and we will refund the unused portion.</li>
+                    <li data-li18n="termsRefundCancel">Cancelling a monthly plan stops the next renewal. The plan stays active until the end of the current period. Cancelling does not refund that period.</li>
+                    <li data-li18n="termsRefundDown">Creem applies a plan downgrade immediately. Unused time on the previous plan is not refunded.</li>
+                    <li data-li18n="termsRefundUp">An upgrade is charged the prorated difference immediately, and the extra credits are added right away.</li>
+                    <li data-li18n="termsRefundRevoke">When a payment is refunded, the corresponding credits are removed from your account. If a payment is disputed or charged back, the credits from that payment are removed and the account may be suspended while the dispute is reviewed.</li>
+                    <li data-li18n="termsRefundLaw">These terms do not limit any rights you have under applicable consumer protection law.</li>
                 </ul>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Batch files</h2>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">Batch results are available to download for 24 hours, or 7 days while a monthly plan is active. After that, uploaded images and results are deleted automatically. Please download your results within that time.</p>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50" data-li18n="termsBatchH">Batch files</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300" data-li18n="termsBatch">Batch results are available to download for 24 hours, or 7 days while a monthly plan is active. After that, uploaded images and results are deleted automatically. Please download your results within that time.</p>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Developer API</h2>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">If you create API keys, you are responsible for everything done with them. Keep your keys secret and do not share them or publish them, for example in public code. API calls use the same credits and the same processing as batch processing, and are subject to rate limits and a limit on the number of jobs in progress. You can revoke a key at any time, and we may revoke keys that are leaked, abused or that harm the service.</p>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50" data-li18n="termsApiH">Developer API</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300" data-li18n="termsApi">If you create API keys, you are responsible for everything done with them. Keep your keys secret and do not share them or publish them, for example in public code. API calls use the same credits and the same processing as batch processing, and are subject to rate limits and a limit on the number of jobs in progress. You can revoke a key at any time, and we may revoke keys that are leaked, abused or that harm the service.</p>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Your content</h2>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">You keep all rights to the images you upload and to the results you download. See our <a href="/privacy/" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">Privacy Policy</a> for how images are processed and stored.</p>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50" data-li18n="termsContentH">Your content</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300" data-li18n-html="termsContent">You keep all rights to the images you upload and to the results you download. See our <a href="/privacy/" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">Privacy Policy</a> for how images are processed and stored.</p>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Service availability</h2>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">The service is provided "as is" and "as available", without warranties of any kind. We do not guarantee that it will be uninterrupted, error-free, or that results will meet your requirements. Fair-use rate limits apply to the free tools and may change at any time. If we discontinue paid batch processing, we will give reasonable notice and refund unused purchased credits.</p>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50" data-li18n="termsAvailH">Service availability</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300" data-li18n="termsAvail">The service is provided "as is" and "as available", without warranties of any kind. We do not guarantee that it will be uninterrupted, error-free, or that results will meet your requirements. Fair-use rate limits apply to the free tools and may change at any time. If we discontinue paid batch processing, we will give reasonable notice and refund unused purchased credits.</p>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Limitation of liability</h2>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">To the maximum extent permitted by law, MiaoCut and its maintainers are not liable for any indirect, incidental, or consequential damages arising from your use of the service. Our total liability for any claim relating to paid features is limited to the amount you paid us in the 12 months before the claim.</p>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50" data-li18n="termsLiabilityH">Limitation of liability</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300" data-li18n="termsLiability">To the maximum extent permitted by law, MiaoCut and its maintainers are not liable for any indirect, incidental, or consequential damages arising from your use of the service. Our total liability for any claim relating to paid features is limited to the amount you paid us in the 12 months before the claim.</p>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Open source</h2>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">The MiaoCut software is open source under the MIT License. You are free to self-host it; the hosted service at miaocut.app is operated separately and these terms apply to that hosted service.</p>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50" data-li18n="termsOssH">Open source</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300" data-li18n="termsOss">The MiaoCut software is open source under the MIT License. You are free to self-host it; the hosted service at miaocut.app is operated separately and these terms apply to that hosted service.</p>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Changes</h2>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">We may update these terms as the service evolves. Continued use after changes means you accept the updated terms. Changes do not affect credits you have already purchased.</p>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50" data-li18n="termsChangesH">Changes</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300" data-li18n="termsChanges">We may update these terms as the service evolves. Continued use after changes means you accept the updated terms. Changes do not affect credits you have already purchased.</p>
             </section>
 
             <section class="mb-12">
-                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50">Contact</h2>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300">Questions about these terms, payments or refunds? Email <a href="mailto:support@miaocut.app" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">support@miaocut.app</a>.</p>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50" data-li18n="termsContactH">Contact</h2>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300" data-li18n-html="termsContact">Questions about these terms, payments or refunds? Email <a href="mailto:support@miaocut.app" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">support@miaocut.app</a>.</p>
             </section>
         </article>
     </main>
 
     <footer class="w-full bg-gray-900 text-gray-300 mt-0">
         <div class="max-w-6xl mx-auto px-6 py-10 text-center text-xs text-gray-500 dark:text-zinc-400">
-            <p class="mb-2">MiaoCut · Free AI image tools that respect your privacy.</p>
-            <p><a href="/" class="hover:text-white transition-colors">Home</a> · <a href="/privacy/" class="hover:text-white transition-colors">Privacy</a> · <a href="/terms/" class="hover:text-white transition-colors">Terms</a></p>
+            <p class="mb-2" data-li18n="footerTagline">MiaoCut · Free AI image tools that respect your privacy.</p>
+            <p><a href="/" class="hover:text-white transition-colors" data-li18n="footerHome">Home</a> · <a href="/privacy/" class="hover:text-white transition-colors" data-li18n="footerPrivacy">Privacy</a> · <a href="/terms/" class="hover:text-white transition-colors" data-li18n="footerTerms">Terms</a> · <a href="/acceptable-use/" class="hover:text-white transition-colors" data-li18n="footerAup">Acceptable Use</a></p>
+            <p class="mt-2"><span data-li18n="footerSupportLabel">Support</span>: <a href="mailto:support@miaocut.app" class="hover:text-white transition-colors">support@miaocut.app</a></p>
         </div>
     </footer>
+    <script src="/legal-i18n.js?v=58a7c51f"></script>
 
 </body>
 
