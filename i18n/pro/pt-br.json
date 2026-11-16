@@ -55,7 +55,7 @@
   "buyBtn": "Comprar créditos",
   "buyRedirecting": "Redirecionando…",
   "buyFailed": "Falha na finalização da compra, tente novamente.",
-  "pricingFine": "Os créditos comprados valem por 12 meses. Os preços não incluem impostos, calculados no checkout. Pacotes de créditos não usados podem ser reembolsados em 14 dias. O downgrade vale na hora e não reembolsa o tempo não usado. Veja os <a href=\"/terms/\" class=\"underline underline-offset-2\">Termos</a>.",
+  "pricingFine": "Os créditos comprados valem por 12 meses. Os preços não incluem impostos, calculados no checkout. Pacotes de créditos não usados podem ser reembolsados em 14 dias. O downgrade espera até o fim do período atual. Veja os <a href=\"/terms/\" class=\"underline underline-offset-2\">Termos</a>.",
   "pricingCanceled": "A finalização da compra foi cancelada. Você não foi cobrado.",
   "estTitle": "Quantas fotos você precisa processar?",
   "estLabel": "Fotos",
@@ -78,7 +78,7 @@
   "faqQ8": "Como funcionam os planos mensais?",
   "faqA8": "A cada mês de faturamento, seu plano adiciona créditos ao seu saldo. Os créditos do plano não utilizados são acumulados por um mês, até um mês de créditos, e os créditos do plano são usados antes dos créditos do pacote.",
   "faqQ9": "Posso alterar ou cancelar meu plano?",
-  "faqA9": "Sim, quando quiser, na página da conta. O upgrade cobra na hora a diferença proporcional e adiciona os créditos extras imediatamente. O downgrade vale na hora e não reembolsa o tempo não usado. O cancelamento interrompe a próxima renovação; o período atual segue até o fim. Os créditos do plano terminam com a assinatura. Os créditos do pacote não mudam.",
+  "faqA9": "Sim, quando quiser, na página da conta. O upgrade vale na hora: a diferença de preço é cobrada e os créditos extras entram imediatamente. Downgrades e cancelamentos valem no fim do período de cobrança, e você mantém o plano atual até lá. Os créditos do plano terminam com a assinatura; os créditos do pacote não mudam.",
   "packFit": "Melhor ajuste",
   "packPerPhoto": "por foto",
   "faqTitle": "Perguntas",
@@ -93,9 +93,9 @@
   "faqQ5": "Os créditos expiram?",
   "faqA5": "Os créditos adquiridos são válidos por 12 meses a partir da data da compra.",
   "faqQ6": "Posso obter um reembolso?",
-  "faqA6": "Pacotes de créditos não usados podem ser reembolsados em até 14 dias após a compra. Se você usou parte de um pacote, reembolsamos a parte não usada. Cancelar a assinatura interrompe a próxima renovação e mantém o período atual; isso não é um reembolso. O downgrade vale na hora e não reembolsa o tempo não usado. Escreva para <a href=\"mailto:support@miaocut.app\" class=\"underline underline-offset-2\">support@miaocut.app</a>. Veja os <a href=\"/terms/\" class=\"underline underline-offset-2\">Termos</a>.",
+  "faqA6": "Pacotes de créditos não usados podem ser reembolsados em até 14 dias após a compra. Se você usou parte de um pacote, reembolsamos a parte não usada. Cancelar a assinatura interrompe a próxima renovação e mantém o período atual; isso não é um reembolso. O downgrade espera até o fim do período atual e não é um reembolso. Escreva para <a href=\"mailto:support@miaocut.app\" class=\"underline underline-offset-2\">support@miaocut.app</a>. Veja os <a href=\"/terms/\" class=\"underline underline-offset-2\">Termos</a>.",
   "faqQ7": "Como é feito o pagamento?",
-  "faqA7": "O checkout, os impostos e os recibos ficam com nosso parceiro de pagamento, a Creem (creem.io). A Creem é a merchant of record e a revendedora. A MiaoCut nunca vê nem guarda o número completo do seu cartão.",
+  "faqA7": "O checkout é feito hoje pelo nosso parceiro de pagamento, a Dodo. A Creem não está ativada e não processa pagamentos. A MiaoCut nunca vê nem guarda o número completo do seu cartão. O imposto é calculado no checkout.",
   "creditsDocTitle": "Seus créditos | MiaoCut",
   "loginH1": "Faça login em MiaoCut",
   "loginSub": "Acesse seus créditos, histórico e recargas. Novas contas recebem 100 créditos gratuitos.",
@@ -504,5 +504,6 @@
   "tabApi": "API",
   "footerAup": "Uso aceitável",
   "footerSupportLabel": "Suporte",
-  "pricingContact": "Dúvidas sobre preços, pagamentos ou reembolsos? Escreva para <a href=\"mailto:support@miaocut.app\" class=\"underline underline-offset-2\">support@miaocut.app</a>."
+  "pricingContact": "Dúvidas sobre preços, pagamentos ou reembolsos? Escreva para <a href=\"mailto:support@miaocut.app\" class=\"underline underline-offset-2\">support@miaocut.app</a>.",
+  "footerModels": "O MiaoCut é um produto independente. Não é afiliado nem endossado pelos criadores dos modelos de terceiros que usa, incluindo BiRefNet e LaMa."
 }

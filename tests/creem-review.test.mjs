@@ -60,8 +60,10 @@ test('pricing shows pack and plan prices without waiting for the plans API', () 
   assert.match(html, />1,500</);
   assert.match(html, />5,000</);
   assert.match(html, /support@miaocut\.app/);
-  assert.match(html, /Downgrades apply immediately/);
-  assert.match(html, /Creem \(creem\.io\)/);
+  assert.match(html, /Downgrades wait until the end of the current period/);
+  assert.match(html, /payment partner Dodo/);
+  assert.match(html, /Creem is not enabled/);
+  assert.doesNotMatch(html, /merchant of record/);
   for (const button of html.match(/<button[^>]*data-plan-btn="[^"]+"[^>]*>/g)) {
     assert.match(button, /\bhidden\b/, button);
   }
@@ -72,17 +74,19 @@ test('terms and privacy name Creem and state the refund and content rules', () =
   const privacy = read('privacy/index.html');
   const aup = read('acceptable-use/index.html');
   for (const html of [terms, privacy]) {
-    assert.match(html, /https:\/\/creem\.io/);
-    assert.match(html, /merchant of record/);
-    assert.match(html, /reseller/);
+    assert.match(html, /https:\/\/dodopayments\.com/);
+    assert.match(html, /Creem is not enabled/);
     assert.match(html, /full card number/);
+    assert.doesNotMatch(html, /merchant of record/);
+    assert.doesNotMatch(html, /automatically screened/);
   }
-  assert.match(terms, /prorated difference/);
-  assert.match(terms, /downgrade immediately/i);
+  assert.match(terms, /Downgrades and cancellations take effect at the end of the current billing period/);
   assert.match(terms, /does not refund that period/);
   assert.match(terms, /NSFW, explicit, or sexually suggestive/);
   assert.match(terms, /content involving minors/i);
-  assert.match(terms, /automatically screened by content moderation/);
+  assert.match(terms, /not affiliated with or endorsed by the creators of those models/);
+  assert.match(terms, /BiRefNet/);
+  assert.match(terms, /LaMa/);
   assert.match(terms, /href="\/acceptable-use\/"/);
   assert.match(aup, /NSFW, explicit, or sexually suggestive/);
   assert.match(aup, /content involving minors/i);
@@ -92,8 +96,8 @@ test('terms and privacy name Creem and state the refund and content rules', () =
   assert.match(aup, /Illegal content/);
   assert.match(aup, /intellectual property/);
   assert.match(aup, /Deceptive or fraudulent use/);
-  assert.match(aup, /automatically screened by content moderation/);
-  assert.match(aup, /account suspension/);
+  assert.match(aup, /does not currently screen every prompt or image automatically/);
+  assert.match(aup, /suspend the account/);
   assert.equal((terms.match(/<h1\b/g) || []).length, 1);
   assert.match(terms, /<h1[^>]*>Terms of Use<\/h1>/);
   assert.match(privacy, /<h1[^>]*>Privacy Policy<\/h1>/);
