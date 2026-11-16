@@ -55,7 +55,7 @@
   "buyBtn": "Beli kredit",
   "buyRedirecting": "Mengarahkan…",
   "buyFailed": "Pembayaran gagal, silakan coba lagi.",
-  "pricingFine": "Kredit yang dibeli berlaku 12 bulan. Harga belum termasuk pajak, yang dihitung saat checkout. Paket kredit yang belum terpakai dapat dikembalikan dalam 14 hari. Penurunan paket berlaku segera dan tidak mengembalikan sisa waktu. Lihat <a href=\"/terms/\" class=\"underline underline-offset-2\">Ketentuan</a> kami.",
+  "pricingFine": "Kredit yang dibeli berlaku 12 bulan. Harga belum termasuk pajak, yang dihitung saat checkout. Paket kredit yang belum terpakai dapat dikembalikan dalam 14 hari. Penurunan paket menunggu sampai akhir periode ini. Lihat <a href=\"/terms/\" class=\"underline underline-offset-2\">Ketentuan</a> kami.",
   "pricingCanceled": "Pembayaran dibatalkan. Anda belum dikenakan biaya.",
   "estTitle": "Berapa banyak foto yang perlu Anda proses?",
   "estLabel": "Foto",
@@ -78,7 +78,7 @@
   "faqQ8": "Bagaimana cara kerja paket bulanan?",
   "faqA8": "Setiap bulan penagihan, kredit langganan ditambahkan ke saldo Anda. Kredit langganan yang belum terpakai dapat dibawa ke bulan berikutnya, hingga satu bulan kuota. Kredit langganan dipakai sebelum kredit isi ulang.",
   "faqQ9": "Bisakah saya mengubah atau membatalkan paket saya?",
-  "faqA9": "Ya, kapan saja dari halaman akun. Upgrade ditagih selisih prorata segera, dan kredit tambahan masuk saat itu juga. Penurunan paket berlaku segera dan tidak mengembalikan sisa waktu. Pembatalan menghentikan perpanjangan berikutnya; periode ini tetap aktif sampai berakhir. Kredit paket langganan berakhir saat langganan berakhir. Kredit isi ulang tidak terpengaruh.",
+  "faqA9": "Ya, kapan saja dari halaman akun. Upgrade berlaku segera: selisih harga ditagih dan kredit tambahan masuk saat itu juga. Penurunan paket dan pembatalan berlaku pada akhir periode tagihan, dan Anda tetap memakai paket saat ini sampai saat itu. Kredit langganan berakhir bersama langganan; kredit isi ulang tidak terpengaruh.",
   "packFit": "Paling cocok",
   "packPerPhoto": "per foto",
   "faqTitle": "Pertanyaan",
@@ -93,9 +93,9 @@
   "faqQ5": "Apakah kredit habis masa berlakunya?",
   "faqA5": "Kredit yang dibeli berlaku selama 12 bulan sejak tanggal pembelian.",
   "faqQ6": "Bisakah saya mendapatkan pengembalian dana?",
-  "faqA6": "Paket kredit yang belum terpakai dapat dikembalikan dalam 14 hari setelah pembelian. Jika sebagian sudah terpakai, kami mengembalikan sisanya. Membatalkan langganan menghentikan perpanjangan berikutnya dan periode ini tetap aktif; itu bukan pengembalian dana. Penurunan paket berlaku segera dan tidak mengembalikan sisa waktu. Email <a href=\"mailto:support@miaocut.app\" class=\"underline underline-offset-2\">support@miaocut.app</a>. Lihat <a href=\"/terms/\" class=\"underline underline-offset-2\">Ketentuan</a>.",
+  "faqA6": "Paket kredit yang belum terpakai dapat dikembalikan dalam 14 hari setelah pembelian. Jika sebagian sudah terpakai, kami mengembalikan sisanya. Membatalkan langganan menghentikan perpanjangan berikutnya dan periode ini tetap aktif; itu bukan pengembalian dana. Penurunan paket menunggu sampai akhir periode ini dan bukan pengembalian dana. Email <a href=\"mailto:support@miaocut.app\" class=\"underline underline-offset-2\">support@miaocut.app</a>. Lihat <a href=\"/terms/\" class=\"underline underline-offset-2\">Ketentuan</a>.",
   "faqQ7": "Bagaimana cara pembayarannya?",
-  "faqA7": "Checkout, pajak, dan tanda terima ditangani oleh mitra pembayaran kami, Creem (creem.io). Creem adalah merchant of record dan reseller. MiaoCut tidak pernah melihat atau menyimpan nomor kartu lengkap Anda.",
+  "faqA7": "Checkout saat ini ditangani oleh mitra pembayaran kami, Dodo. Creem belum diaktifkan dan tidak memproses pembayaran. MiaoCut tidak pernah melihat atau menyimpan nomor kartu lengkap Anda. Pajak dihitung saat checkout.",
   "creditsDocTitle": "Kredit Anda | MiaoCut",
   "loginH1": "Masuk ke MiaoCut",
   "loginSub": "Akses kredit, riwayat, dan isi ulang Anda. Akun baru mendapatkan 100 kredit gratis.",
@@ -504,5 +504,6 @@
   "tabApi": "API",
   "footerAup": "Penggunaan wajar",
   "footerSupportLabel": "Dukungan",
-  "pricingContact": "Ada pertanyaan tentang harga, pembayaran, atau pengembalian dana? Email <a href=\"mailto:support@miaocut.app\" class=\"underline underline-offset-2\">support@miaocut.app</a>."
+  "pricingContact": "Ada pertanyaan tentang harga, pembayaran, atau pengembalian dana? Email <a href=\"mailto:support@miaocut.app\" class=\"underline underline-offset-2\">support@miaocut.app</a>.",
+  "footerModels": "MiaoCut adalah produk independen. MiaoCut tidak berafiliasi dengan, dan tidak didukung oleh, pembuat model pihak ketiga yang dipakainya, termasuk BiRefNet dan LaMa."
 }

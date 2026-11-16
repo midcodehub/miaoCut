@@ -78,7 +78,7 @@
     <main class="flex-grow w-full max-w-3xl mx-auto px-4">
         <article class="prose-custom">
             <h1 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-2 dark:text-zinc-50" data-li18n="privacyH1">Privacy Policy</h1>
-            <p class="text-sm text-gray-500 mb-8 dark:text-zinc-400" data-li18n="privacyUpdated">Last updated: November 15, 2026</p>
+            <p class="text-sm text-gray-500 mb-8 dark:text-zinc-400" data-li18n="privacyUpdated">Last updated: November 16, 2026</p>
 
             <p class="text-gray-600 leading-relaxed mb-8 dark:text-zinc-300" data-li18n-html="privacyIntro">MiaoCut (<a href="https://miaocut.app" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">miaocut.app</a>) offers free online image tools that work without an account, plus an optional account for paid batch processing. We collect as little data as possible. This page explains what happens to your images and what data we process in each case.</p>
 
@@ -88,7 +88,7 @@
                     <li data-li18n-html="privacyImagesFree"><strong>Free single-image tools: processed in memory only.</strong> Images are held in server memory just long enough to produce a result, then discarded. They are not saved to disk or any database.</li>
                     <li data-li18n-html="privacyImagesBatch"><strong>Batch processing: stored for up to 24 hours, or 7 days while a monthly plan is active.</strong> When you use batch processing with an account, your uploaded images and the results are stored temporarily in cloud storage (Cloudflare R2) so they can be processed and downloaded. They are deleted automatically within 24 hours, or within 7 days while a monthly plan is active. To process them, a GPU worker running on Kaggle (a Google service) downloads each image through a link that is valid for 15 minutes, processes it in memory and uploads the result back to our storage. We do not keep copies on the worker.</li>
                     <li data-li18n-html="privacyImagesTrain"><strong>Never used for training.</strong> Your images are never used to train AI models.</li>
-                    <li data-li18n-html="privacyImagesScreen"><strong>Automated screening.</strong> Prompts and images are checked automatically so we can enforce our <a href="/acceptable-use/" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">Acceptable Use Policy</a>. We do not browse your images for any other reason. A flagged item may be reviewed only to enforce that policy. Requests that break it are refused, and the account may be suspended.</li>
+                    <li data-li18n-html="privacyImagesScreen"><strong>No routine review.</strong> We do not browse your images to run the tool, and we do not currently screen every upload automatically. You must follow the <a href="/acceptable-use/" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">Acceptable Use Policy</a>. If we learn of a violation, we may review that item, refuse the result, and suspend the account.</li>
                 </ul>
             </section>
 
@@ -105,7 +105,7 @@
 
             <section class="mb-8">
                 <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50" data-li18n="privacyPayH">Payments</h2>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300" data-li18n-html="privacyPay">Paid checkout is handled by our payment partner <a href="https://creem.io" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">Creem</a> (creem.io). Creem is the merchant of record and reseller for MiaoCut purchases: it processes the payment, calculates and collects tax, and issues your receipt. MiaoCut never sees or stores your full card number. We keep order records (what you bought, the amount, the currency, Creem's payment reference and the date) for accounting, tax and fraud prevention.</p>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300" data-li18n-html="privacyPay">Paid checkout is currently processed by our payment partner <a href="https://dodopayments.com" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">Dodo</a>. Creem is not enabled and does not process MiaoCut payments. MiaoCut never sees or stores your full card number. We keep order records (what you bought, the amount, the currency, the payment reference and the date) for accounting, tax and fraud prevention.</p>
             </section>
 
             <section class="mb-8">
@@ -124,7 +124,7 @@
 
             <section class="mb-8">
                 <h2 class="text-xl font-bold text-gray-900 mb-3 dark:text-zinc-50" data-li18n="privacyProvidersH">Service providers</h2>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300" data-li18n-html="privacyProviders">We rely on the following providers to run the service. They process data only to deliver it: Cloudflare (website, gateway and temporary file storage), Hugging Face (free image processing), Supabase (accounts and credit records), <a href="https://creem.io" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">Creem</a> (payments, tax and receipts, as merchant of record), Kaggle, a Google service (GPU processing for batch jobs), Google, Microsoft and GitHub (optional sign-in) and Umami (analytics). We do not sell your data or share it with advertisers.</p>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed dark:text-zinc-300" data-li18n-html="privacyProviders">We rely on the following providers to run the service. They process data only to deliver it: Cloudflare (website, gateway and temporary file storage), Hugging Face (free image processing), Supabase (accounts and credit records), <a href="https://dodopayments.com" class="text-gray-900 underline underline-offset-2 dark:text-zinc-50">Dodo</a> (current payment processing), Kaggle, a Google service (GPU processing for batch jobs), Google, Microsoft and GitHub (optional sign-in) and Umami (analytics). We do not sell your data or share it with advertisers.</p>
             </section>
 
             <section class="mb-8">
@@ -154,6 +154,7 @@
             <p class="mb-2" data-li18n="footerTagline">MiaoCut · Free AI image tools that respect your privacy.</p>
             <p><a href="/" class="hover:text-white transition-colors" data-li18n="footerHome">Home</a> · <a href="/privacy/" class="hover:text-white transition-colors" data-li18n="footerPrivacy">Privacy</a> · <a href="/terms/" class="hover:text-white transition-colors" data-li18n="footerTerms">Terms</a> · <a href="/acceptable-use/" class="hover:text-white transition-colors" data-li18n="footerAup">Acceptable Use</a></p>
             <p class="mt-2"><span data-li18n="footerSupportLabel">Support</span>: <a href="mailto:support@miaocut.app" class="hover:text-white transition-colors">support@miaocut.app</a></p>
+            <p class="mt-2" data-li18n="footerModels">MiaoCut is an independent product. It is not affiliated with or endorsed by the creators of the third-party models it uses, including BiRefNet and LaMa.</p>
         </div>
     </footer>
     <script src="/legal-i18n.js?v=58a7c51f"></script>

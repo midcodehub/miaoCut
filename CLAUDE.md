@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 MiaoCut 是一个免登录的在线 AI 抠图服务（[miaocut.app](https://miaocut.app)）。本仓库（`midcodehub/miaoCut`，**公开、MIT**）包含免费版的三部分，各自部署到不同位置：
 
-- **前端**：首页 [index.html](index.html) + 共用脚本 [app.js](app.js) + 编译后的 [output.css](output.css)，加上各 SEO 子页 / 子工具（`id-photo-maker/`、`watermark-remover/` 等）和多语言静态页（`zh/`、`hi/`、`pt-br/` 等）→ Cloudflare Pages。公开法务页是 [privacy/](privacy/)、[terms/](terms/)、[acceptable-use/](acceptable-use/)（英文为源，sitemap 各一条；其余 7 种语言由 [legal-i18n.js](legal-i18n.js) 按站内语言切换）。每页页脚都链到这三页，并显示 support@miaocut.app。付款文案把 Creem（creem.io）写成 merchant of record / reseller。
+- **前端**：首页 [index.html](index.html) + 共用脚本 [app.js](app.js) + 编译后的 [output.css](output.css)，加上各 SEO 子页 / 子工具（`id-photo-maker/`、`watermark-remover/` 等）和多语言静态页（`zh/`、`hi/`、`pt-br/` 等）→ Cloudflare Pages。公开法务页是 [privacy/](privacy/)、[terms/](terms/)、[acceptable-use/](acceptable-use/)（英文为源，sitemap 各一条；其余 7 种语言由 [legal-i18n.js](legal-i18n.js) 按站内语言切换）。每页页脚都链到这三页，并显示 support@miaocut.app。付款文案写当前由 Dodo 处理，并写明 Creem 尚未启用。使用规范、页脚 support@miaocut.app 和定价仍在。条款里说明 BiRefNet / LaMa 是第三方模型，MiaoCut 与其创建者无隶属关系。不要把未上线的自动审核写成已经在跑。
 - **免费 API 网关**：Cloudflare Worker [url-proxy/](url-proxy/)（`api2.miaocut.app`），排队、重试，并给后端带上 `X-Gateway-Secret`
 - **免费后端**：FastAPI [main.py](main.py) + BiRefNet（rembg，CPU）→ Hugging Face Docker Spaces（[midcodex/miao_cut](https://huggingface.co/spaces/midcodex/miao_cut)、[midcodex/miao_cut2](https://huggingface.co/spaces/midcodex/miao_cut2)、[midcodex/miao_cut3](https://huggingface.co/spaces/midcodex/miao_cut3)）
 - 前端通过 `https://api2.miaocut.app` 调后端；本地开发时切到 `http://localhost:8000`（判断逻辑在 [app.js](app.js) 的 `API_BASE`）
